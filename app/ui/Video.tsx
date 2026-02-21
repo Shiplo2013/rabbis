@@ -20,7 +20,17 @@ function Video(props: {
       scale: 0,
     });
     // Animate Text
-    let tl = gsap.timeline();
+    let tl = gsap.timeline({
+      onComplete: function () {
+        localStorage.setItem("hasVisited", "true");
+        gsap.to("#page", {
+          opacity: 1,
+          ease: "easeInOut",
+          duration: 1,
+          delay: 0,
+        });
+      },
+    });
     if (props.isComplete == true) {
       tl.to("#video-animation .video-animated-text", {
         y: 0,

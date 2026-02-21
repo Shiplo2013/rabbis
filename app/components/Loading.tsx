@@ -2,7 +2,7 @@
 import TitleGray from "@/app/assets/images/title-gray.svg";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import poster from "../assets/images/doors.jpg";
 import Video from "../ui/Video";
 
@@ -11,8 +11,6 @@ gsap.registerPlugin(useGSAP);
 function Loading() {
   // State
   const [animComplete, setAnimComplete] = useState(false);
-  // Video Ref
-  const videoRef = useRef(null);
   // Video Link
   const videoLink =
     "http://dovp7.sg-host.com/wp-content/uploads/2026/02/doors.mp4";

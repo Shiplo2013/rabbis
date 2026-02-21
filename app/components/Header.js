@@ -2,7 +2,7 @@ import Link from "next/link";
 
 function Header() {
   return (
-    <header>
+    <header className="hidden">
       <h2>Header</h2>
       <nav>
         <Link href="/">Home</Link>
