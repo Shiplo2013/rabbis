@@ -7,11 +7,17 @@ export default function HomeBanner() {
       style={{ backgroundImage: `url(${banner.src})` }}
     >
       <div className="flex items-center h-full">
-        <div className="secton-wrapper">
-          <h1 className="text-9xl">
-            ישיבת<span className="block">חברון</span>כנסת ישראל
+        <div className="section-wrapper">
+          <h1 className="text-[135px] text-[#AC832E] leading-none">
+            ישיבת
+            <span className="block text-[250px] text-[#D1A941] relative z-10 leading-none -mt-15 -mb-15 font-bold italic">
+              חברון
+            </span>
+            כנסת ישראל
           </h1>
-          <h4>מאה חמישים שנות תורה, מוסר וגדלות האדם</h4>
+          <h4 className="text-[55px] md:text-5xl text-[#D1A941]">
+            מאה חמישים שנות תורה, מוסר וגדלות האדם
+          </h4>
         </div>
       </div>
     </section>
