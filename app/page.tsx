@@ -1,7 +1,8 @@
 "use client";
 import gsap from "gsap";
 import { useEffect } from "react";
-import HomeBanner from "./components/HomeBanner";
+import HomeBanner from "./components/home/HomeBanner";
+import IntroSection from "./components/home/IntroSection";
 
 export default function Home() {
   useEffect(() => {
@@ -20,6 +21,7 @@ export default function Home() {
   return (
     <>
       <HomeBanner />
+      <IntroSection />
     </>
   );
 }
