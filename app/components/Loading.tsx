@@ -1,7 +1,6 @@
 "use client";
 import TitleGray from "@/app/assets/images/title-gray.svg";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import {gsap, useGSAP} from "../ui/plugins";
 import { useState } from "react";
 import poster from "../assets/images/doors.jpg";
 import Video from "../ui/Video";

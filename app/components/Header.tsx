@@ -15,22 +15,22 @@ function Header() {
             <HambergerIcon />
           </div>
           <nav className="nav-menu absolute top-14.5 right-0 w-[calc(100vh-58px)] h-14.5 flex items-stretch justify-stretch origin-topright mr-14.5 -rotate-90">
-            <Link href={"/"}>
+            <Link className="text-[#E2D7C3]" href={"/"}>
               <span>הווייתה</span>
             </Link>
-            <Link href={"/"}>
+            <Link className="text-[#E2D7C3]" href={"/"}>
               <span>דברי הימים</span>
             </Link>
-            <Link href={"/"}>
+            <Link className="text-[#E2D7C3]" href={"/"}>
               <span>מזקנים אתבונן</span>
             </Link>
-            <Link href={"/"}>
+            <Link className="text-[#E2D7C3]" href={"/"}>
               <span>רבני הישיבה</span>
             </Link>
-            <Link href={"/"}>
+            <Link className="text-[#E2D7C3]" href={"/"}>
               <span>מועדים וזמנים</span>
             </Link>
-            <Link href={"/"}>
+            <Link className="text-[#E2D7C3]" href={"/"}>
               <span>כנסת הבוגרים</span>
             </Link>
             <Link

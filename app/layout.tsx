@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import Footer from "../app/components/Footer";
+import Footer from "./components/Footer";
 import Header from "../app/components/Header";
 import LoadingEffect from "./components/LoadingEffect";
 import "./globals.css";
