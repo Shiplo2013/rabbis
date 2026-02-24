@@ -1,9 +1,26 @@
 import banner from "../../assets/images/home-banner.jpg";
+import { gsap } from "../../ui/plugins";
 
-export default function HomeBanner() {
+export default function HomeBanner(props: { extraClass: string }) {
+  // Cursor Follower Function
+  function moveCircle(e: { screenY: number; clientX: any; clientY: any }) {
+    const yskale = -(e.screenY / 100) * 1;
+    //console.log(e.clientX, e.clientY)
+    gsap.to("#cursorFollower", { x: e.clientX, y: e.clientY });
+  }
   return (
     <section
-      className={`w-screen h-screen bg-center bg-cover`}
+      dir="rtl"
+      onMouseMove={(e) => {
+        moveCircle(e);
+      }}
+      onMouseEnter={() => {
+        gsap.to("#cursorFollower", { opacity: 1 });
+      }}
+      onMouseLeave={() => {
+        gsap.to("#cursorFollower", { opacity: 0 });
+      }}
+      className={`${props.extraClass} overflow-hidden bg-center bg-cover`}
       style={{ backgroundImage: `url(${banner.src})` }}
     >
       <div className="flex items-center h-full relative">
