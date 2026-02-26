@@ -28,6 +28,11 @@ const customFont = localFont({
       weight: "700",
       style: "normal",
     },
+    {
+      path: "../app/assets/fonts/LavaPro_HLBoldItalic.woff2",
+      weight: "700",
+      style: "italic",
+    },
   ],
   display: "swap",
   variable: "--custom-font",
