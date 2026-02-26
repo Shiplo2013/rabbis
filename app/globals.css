@@ -51,14 +51,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 10px 2vh;
       position: relative;
       flex-grow: 1;
 
       &&:not(:last-child) {
         border-right: 1px solid #dbbd5c80;
       }
-      &&:not(:last-child):before {
+      /* &&:not(:last-child):before {
         content: "";
         display: block;
         width: 100%;
@@ -84,7 +83,95 @@
         -moz-transform: scaleY(1);
         -ms-transform: scaleY(1);
         -o-transform: scaleY(1);
+      } */
+    }
+  }
+  .theme-button {
+    .group {
+      .btn-bg {
+        inset: 0%;
+        transform: translateY(100%);
+        transition: transform 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+        -webkit-transition: transform 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+        -moz-transition: transform 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+        -ms-transition: transform 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+        -o-transition: transform 0.5s cubic-bezier(0.625, 0.05, 0, 1);
       }
+      .text {
+        transition: color 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+        -webkit-transition: color 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+        -moz-transition: color 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+        -ms-transition: color 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+        -o-transition: color 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+      }
+      &&:hover .btn-bg {
+        transform: translateY(0em) rotate(0.001deg);
+      }
+    }
+  }
+  .circle-button {
+    .group {
+      .button-content {
+        svg.star-icon {
+          transition: all 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+          -webkit-transition: all 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+          -moz-transition: all 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+          -ms-transition: all 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+          -o-transition: all 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+        }
+      }
+      .button-border {
+        animation: spin-border 20s linear infinite;
+        -webkit-animation: spin-border 20s linear infinite;
+      }
+      .button-text {
+        animation: spin-text 20s linear infinite;
+        -webkit-animation: spin-text 20s linear infinite;
+      }
+      .button-layer {
+        opacity: 0;
+      }
+      &&:hover .button-border {
+        scale: 1.2;
+        opacity: 0;
+      }
+      &&:hover .button-text {
+        opacity: 0;
+      }
+      &&:hover .button-layer {
+        scale: 0.6;
+        opacity: 1;
+      }
+      &&:hover .button-content {
+        svg.star-icon {
+          rotate: 90deg;
+          path {
+            stroke: #ffffff;
+          }
+        }
+      }
+      &&:hover .button-bg {
+        transform: translateY(0em) rotate(0.001deg);
+      }
+    }
+  }
+
+  @keyframes spin-text {
+    to {
+      transform: rotate(1turn);
+      -webkit-transform: rotate(1turn);
+      -moz-transform: rotate(1turn);
+      -ms-transform: rotate(1turn);
+      -o-transform: rotate(1turn);
+    }
+  }
+  @keyframes spin-border {
+    to {
+      transform: rotate(-1turn);
+      -webkit-transform: rotate(-1turn);
+      -moz-transform: rotate(-1turn);
+      -ms-transform: rotate(-1turn);
+      -o-transform: rotate(-1turn);
     }
   }
 }
