@@ -3,6 +3,8 @@ export default function HomeSection2(props: { extraClass: string }) {
     <section
       dir="rtl"
       className={`${props.extraClass} h-screen flex items-center`}
-    ></section>
+    >
+      <h2>Hello From HomeSection2</h2>
+    </section>
   );
 }
