@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 
-function LoadingEffect() {
+function LoadingEffect(props: { animated: (value: boolean) => void }) {
   // Initialize state to check if the user has visited
   const [isFirstVisit, setIsFirstVisit] = useState(false);
   // Set localStorage variable
@@ -18,7 +18,7 @@ function LoadingEffect() {
   }, []);
   // loadin is true
   if (isFirstVisit) {
-    return <Loading />;
+    return <Loading animated={props.animated} />;
   }
   return <></>;
 }

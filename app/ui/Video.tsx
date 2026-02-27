@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { gsap, SplitText, useGSAP } from "../ui/plugins";
+import { useEffect, useRef, useState } from "react";
+import { gsap, useGSAP } from "../ui/plugins";
 
 gsap.registerPlugin(useGSAP);
 
@@ -9,8 +9,14 @@ function Video(props: {
   classes: string;
   poster_image: string;
   isComplete: boolean;
+  onVideoEnd: (value: boolean) => void;
 }) {
   const video = useRef<HTMLVideoElement | null>(null);
+  const [isVideoComplete, setIsVideoComplete] = useState(false);
+  function videoPlayed() {
+    setIsVideoComplete(true);
+  }
+  // Setup GSAP Animation
   useGSAP(() => {
     // Set Items
     gsap.set("#video-animation .video-animated-text", {
@@ -18,101 +24,23 @@ function Video(props: {
       opacity: 0,
       scale: 0,
     });
-
-    // Set Title
-    var stitle = SplitText.create(".split-title", { type: "words,chars" }),
-      sTitlechars = stitle.chars;
-    gsap.set(".split-title", { perspective: 400 });
-    gsap.set(sTitlechars, { yPercent: 100, opacity: 0 });
-    // Subtitle
-    let splitText = SplitText.create(".split-content", {
-      type: "words",
-      aria: "hidden",
-    });
-    gsap.set(splitText.words, { yPercent: 100, opacity: 0 });
-    // Banner Button
-    gsap.set(".banner-button", { opacity: 0, y: 100 });
-    // Animate Text
-    let tl = gsap.timeline({
-      onComplete: function () {
-        localStorage.setItem("hasVisited", "true");
-        // Timeline
-        const tl = gsap.timeline();
-        tl.to(
-          "#page",
-          {
-            opacity: 1,
-            ease: "easeInOut",
-            duration: 1,
-            delay: 0.5,
-          },
-          "-=0.5",
-        )
-          .to(
-            ".header-left",
-            {
-              opacity: 1,
-              y: 0,
-              ease: "easeInOut",
-              duration: 1,
-            },
-            "-=0.5",
-          )
-          .to(
-            ".header-right",
-            {
-              opacity: 1,
-              x: 0,
-              ease: "easeInOut",
-              duration: 1,
-            },
-            "-=0.5",
-          )
-          .to(
-            sTitlechars,
-            {
-              duration: 0.5,
-              yPercent: 0,
-              opacity: 1,
-              //rotationX: 180,
-              transformOrigin: "0% 50%",
-              ease: "back.easeIn",
-              stagger: 0.1,
-            },
-            "-=0.5",
-          )
-          .to(
-            splitText.words,
-            {
-              duration: 0.5,
-              yPercent: 0,
-              opacity: 1,
-              //rotationX: 180,
-              transformOrigin: "0% 50%",
-              ease: "back.easeIn",
-              stagger: 0.1,
-            },
-            "-=0.5",
-          )
-          .to(
-            ".banner-button",
-            {
-              duration: 0.5,
-              opacity: 1,
-              y: 0,
-              ease: "back.easeIn",
-            },
-            "-=0.5",
-          );
-      },
-    });
-    if (props.isComplete == true) {
+  }, [props.isComplete]);
+  // When video is complete, trigger animation
+  useGSAP(() => {
+    if (isVideoComplete) {
+      // Animate Text
+      let tl = gsap.timeline({
+        onComplete: function () {
+          localStorage.setItem("hasVisited", "true");
+          props.onVideoEnd(true);
+        },
+      });
       tl.to("#video-animation .video-animated-text", {
         y: 0,
         scale: 1,
         opacity: 1,
         duration: 1,
-        delay: 1.5,
+        delay: 0,
       })
         .to("#video-animation #doors-video", {
           opacity: 0,
@@ -130,7 +58,8 @@ function Video(props: {
           delay: 0,
         });
     }
-  }, [props.isComplete]);
+  }, [isVideoComplete]);
+  // PLAY OR PAUSE VIDEO BASED ON isComplete
   useEffect(() => {
     if (video.current !== null) {
       if (props.isComplete == true) {
@@ -151,6 +80,7 @@ function Video(props: {
       poster={props.poster_image}
       autoPlay
       muted
+      onEnded={videoPlayed}
     >
       <source src={props.link} type="video/mp4" />
     </video>

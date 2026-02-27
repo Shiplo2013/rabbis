@@ -1,13 +1,13 @@
 "use client";
 import TitleGray from "@/app/assets/images/title-gray.svg";
-import {gsap, useGSAP} from "../ui/plugins";
 import { useState } from "react";
 import poster from "../assets/images/doors.jpg";
+import { gsap, useGSAP } from "../ui/plugins";
 import Video from "../ui/Video";
 
 gsap.registerPlugin(useGSAP);
 
-function Loading() {
+function Loading(props: { animated: (value: boolean) => void }) {
   // State
   const [animComplete, setAnimComplete] = useState(false);
   // Video Link
@@ -50,6 +50,7 @@ function Loading() {
         className="z-10 absolute top-0 left-0 w-screen h-screen"
       >
         <Video
+          onVideoEnd={props.animated}
           isComplete={animComplete}
           poster_image={poster.src}
           video_id="doors-video"

@@ -29,7 +29,9 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "app/page.js"
+    "app/page.js",
+    "app/contact/page.js",
+    "app/about/page.js"
   ],
   "exclude": ["node_modules"]
 }
