@@ -18,12 +18,18 @@ function Header() {
             <HambergerIcon />
           </div>
           <nav className="nav-menu absolute top-14.5 right-0 w-[calc(100vh-58px)] h-14.5 flex items-stretch justify-stretch origin-topright mr-14.5 -rotate-90">
-            <Link className="group text-[#E2D7C3] bg-[#000000B2]" href={"/"}>
+            <Link
+              className="group text-[#E2D7C3] bg-[#000000B2]"
+              href={"/contact"}
+            >
               <span className="flex justify-center items-center w-full h-full bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
                 הווייתה
               </span>
             </Link>
-            <Link className="group text-[#E2D7C3] bg-[#000000B2]" href={"/"}>
+            <Link
+              className="group text-[#E2D7C3] bg-[#000000B2]"
+              href={"/about"}
+            >
               <span className="flex justify-center items-center w-full h-full bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
                 דברי הימים
               </span>
@@ -109,7 +115,7 @@ function Header() {
         <div className="logo">
           <Link href={"/"}>
             <Image
-              className="lg:w-25 sm:w-20 xl:w-30 2xl:w-36.5 white-image"
+              className="lg:w-25 sm:w-20 xl:w-30 2xl:w-36.5 h-auto white-image"
               src={logo.src}
               width={146}
               height={188}
