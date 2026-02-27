@@ -10,13 +10,14 @@ import HomeSection2 from "../app/components/home/HomeSection2";
 import HomeSection3 from "../app/components/home/HomeSection3";
 import HomeSection4 from "../app/components/home/HomeSection4";
 import IntroSection from "../app/components/home/IntroSection";
+import SlidingArrow from "../app/ui/SlidingArrow";
 import SmoothWrapper from "../app/ui/SmoothWrapper";
 import {
-    gsap,
-    ScrollToPlugin,
-    ScrollTrigger,
-    SplitText,
-    useGSAP,
+  gsap,
+  ScrollToPlugin,
+  ScrollTrigger,
+  SplitText,
+  useGSAP,
 } from "../app/ui/plugins";
 import CursorFollow from "./components/CursorFollow";
 
@@ -176,7 +177,7 @@ export default function Home() {
     var introTitle = new SplitText('.intro-title', { type: "words,chars" }),
       introTitlechars = introTitle.chars;
       gsap.set('.intro-title', { perspective: 400 });
-      gsap.set(introTitlechars, {yPercent: 100, opacity: 0})
+      gsap.set(introTitlechars, {yPercent: 100, opacity: 0});
       gsap.to(introTitlechars, {
         scrollTrigger: {
           start: () => { return (window.innerWidth*0.2) },
@@ -189,7 +190,31 @@ export default function Home() {
         ease: "back.easeIn",
         stagger: 0.05
     });
-
+    // HomeSection1
+    gsap.set("#home-post", {yPercent: 100, opacity: 0});
+    gsap.set("#cycle-preview", {yPercent: 100, opacity: 0});
+    gsap.to("#home-post", {
+        scrollTrigger: {
+          start: () => { return (window.innerWidth*1) },
+        },
+        duration: 0.6,
+        yPercent: 0,
+        opacity: 1,
+        //rotationX: 180,
+        transformOrigin: "0% 50%",
+        ease: "back.easeIn",
+    });
+    gsap.to("#cycle-preview", {
+        scrollTrigger: {
+          start: () => { return (window.innerWidth*1.3) },
+        },
+        duration: 0.6,
+        yPercent: 0,
+        opacity: 1,
+        //rotationX: 180,
+        transformOrigin: "0% 50%",
+        ease: "back.easeIn",
+    });
   }, []);
   return (
     <div className="relative overflow-hidden">
@@ -202,20 +227,21 @@ export default function Home() {
         >
             <SmoothWrapper>
                 <div id="panel-wrapper" className="w-screen h-screen">
-                    <div id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[525vw] h-screen`}>
+                    <div id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[505vw] h-screen`}>
                         <HomeBanner animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen"} />
                         <IntroSection extraClass={"panel-section min-w-[50vw] w-[50vw]"} />
                         <HomeSection1 extraClass={"panel-section min-w-[70vw] w-[70vw]"} />
                         <BackgroundSection extraClass={"panel-section min-w-[35vw] w-[35vw]"} />
                         <HomeSection2 extraClass={"panel-section min-w-[70vw] w-[70vw] bg-black"} />
-                        <HomeSection3 extraClass={"panel-section min-w-screen w-screen"} />
-                        <HomeSection4 extraClass={"panel-section min-w-screen w-screen"} />
+                        <HomeSection3 extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
+                        <HomeSection4 extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
                     </div>
                 </div>
             </SmoothWrapper>
         </main>
         <Footer />
         <CursorFollow />
+        <SlidingArrow />
     </div>
   );
 }

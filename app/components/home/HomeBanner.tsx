@@ -1,6 +1,7 @@
 import banner from "../../assets/images/home-banner.jpg";
 import BackgroundImage from "../../ui/BackgroundImage";
 import { gsap } from "../../ui/plugins";
+import ScrollButton from "../../ui/ScrollButton";
 
 export default function HomeBanner(props: {
   extraClass: string;
@@ -38,10 +39,9 @@ export default function HomeBanner(props: {
           <h4 className="split-content overflow-hidden text-[55px] text-[#D1A941] mt-19">
             מאה חמישים שנות תורה, מוסר וגדלות האדם
           </h4>
-          <button className="banner-button absolute left-13 bottom-19.5 flex text-[17px] text-[#E2D7C3] hover:opacity-60 transition-opacity cursor-pointer gap-2 items-center">
-            <span>התחילו לגלול</span>
-            <div className="w-34 h-0.5 bg-[#D4AF37]"></div>
-          </button>
+          <div className="banner-button absolute left-13 bottom-19.5">
+            <ScrollButton />
+          </div>
         </div>
       </div>
     </section>
