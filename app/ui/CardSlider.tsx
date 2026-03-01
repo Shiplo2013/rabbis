@@ -1,19 +1,9 @@
 import { useRef } from "react";
-import "swiper/css";
-import "swiper/css/effect-cards";
-import { EffectCards } from "swiper/modules";
-import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import { gsap } from "../ui/plugins";
 
-export default function ArrowSlider() {
-  const sliderRef = useRef<SwiperRef>(null);
-  const handleNextSlide = () => {
-    if (sliderRef.current?.swiper && !sliderRef.current.swiper.isEnd) {
-      sliderRef.current.swiper.slideNext();
-    } else {
-      sliderRef.current?.swiper.slideTo(0);
-    }
-  };
+export default function CardSlider() {
+  const sliderRef = useRef(null);
+  const handleNextSlide = () => {};
   // Cursor Follower Function
   function moveCircle(e: { screenY: number; clientX: any; clientY: any }) {
     const yskale = -(e.screenY / 100) * 1;
@@ -48,14 +38,11 @@ export default function ArrowSlider() {
         }}
         className="arrow-slider w-117 relative z-10 cursor-none"
       >
-        <Swiper
+        <div
           ref={sliderRef}
-          effect={"cards"}
-          grabCursor={true}
-          modules={[EffectCards]}
           className="card-slider text-[#000000] text-[20px] cursor-none"
         >
-          <SwiperSlide className="py-12 px-7 bg-[#F1EADA] active:bg-[#E2D7C3]">
+          <div className="py-12 px-7 bg-[#F1EADA] active:bg-[#E2D7C3] relative">
             <div className="slide-content">
               <span className="absolute left-5 top-3">1/2</span>
               <p className="font-bold">
@@ -64,8 +51,8 @@ export default function ArrowSlider() {
                 <strong>"להחיות רוח שפלים ולהחיות לב נדכאים"</strong>
               </p>
             </div>
-          </SwiperSlide>
-          <SwiperSlide>
+          </div>
+          <div className="py-12 px-7 bg-[#F1EADA] active:bg-[#E2D7C3] relative">
             <div className="slide-content py-12 px-7 bg-[#F1EADA] active:bg-[#E2D7C3]">
               <span className="absolute left-5 top-3">2/2</span>
               <p className="font-bold">
@@ -75,8 +62,8 @@ export default function ArrowSlider() {
                 של גדלות האדם.
               </p>
             </div>
-          </SwiperSlide>
-        </Swiper>
+          </div>
+        </div>
       </div>
     </>
   );

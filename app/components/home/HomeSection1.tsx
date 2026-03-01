@@ -1,5 +1,6 @@
 import ArrowLeft from "@/app/assets/icons/ArrowLeft";
 import WishIcon from "@/app/assets/icons/WishIcon";
+import CardSlider from "@/app/ui/CardSlider";
 import Image from "next/image";
 import Link from "next/link";
 import SimpleBar from "simplebar-react";
@@ -8,7 +9,6 @@ import "swiper/css/effect-cards";
 import sectionBg from "../../assets/images/section-image.jpg";
 import { useGSAP } from "../../ui/plugins";
 import PostItem from "../../ui/PostItem";
-import ArrowSlider from "../ArrowSlider";
 
 export default function HomeSection1(props: { extraClass: string }) {
   useGSAP(() => {}, []);
@@ -33,7 +33,7 @@ export default function HomeSection1(props: { extraClass: string }) {
           id="cycle-preview"
           className="cycle-preview absolute left-30 top-1/6"
         >
-          <ArrowSlider />
+          <CardSlider />
         </div>
         <div
           id="home-post"
