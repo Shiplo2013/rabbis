@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Footer from "../app/components/Footer";
 import Header from "../app/components/Header";
 import LoadingEffect from "../app/components/LoadingEffect";
@@ -10,6 +10,7 @@ import HomeSection2 from "../app/components/home/HomeSection2";
 import HomeSection3 from "../app/components/home/HomeSection3";
 import HomeSection4 from "../app/components/home/HomeSection4";
 import IntroSection from "../app/components/home/IntroSection";
+import AudioPlayer from "../app/ui/AudioPlayer";
 import SlidingArrow from "../app/ui/SlidingArrow";
 import SmoothWrapper from "../app/ui/SmoothWrapper";
 import {
@@ -24,6 +25,8 @@ import CursorFollow from "./components/CursorFollow";
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 export default function Home() {
+  const [audioLink, setAudioLink] = useState("http://dovp7.sg-host.com/wp-content/uploads/2026/02/music.mp3");
+  const audio = useRef(null);
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -216,32 +219,59 @@ export default function Home() {
         ease: "back.easeIn",
     });
   }, []);
+
+  // Play Pause State
+  const [isPlaying, setIsPlaying] = useState(false);
+  function isAudioPlaying(value) {
+    return !value.paused;
+  }
+  const togglePlayPause = () => {
+    if (isAudioPlaying(audio.current)) {
+      gsap.to(audio.current, {volume: 0, duration: 2, onComplete: () => {
+        audio.current.pause();
+      }});
+      setIsPlaying(false);
+    } else {
+      gsap.to(audio.current, {volume: 1, duration: 2});
+      audio.current.play();
+      setIsPlaying(true);
+    }
+  };
+  // On Video End
+  useEffect(() => {
+    audio.current.addEventListener("ended", () => {
+      audio.current.currentTime = 0;
+      audio.current.play();
+    }, false);
+  }, [audio.current]);
+
   return (
     <div className="relative overflow-hidden">
-        <LoadingEffect animated={setAnimationPlayed} />
-        <Header />
-        <main
-            id="page"
-            dir="ltr"
-            className="main opacity-0 relative overflow-hidden"
-        >
-            <SmoothWrapper>
-                <div id="panel-wrapper" className="w-screen h-screen">
-                    <div id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[505vw] h-screen`}>
-                        <HomeBanner animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen"} />
-                        <IntroSection extraClass={"panel-section min-w-[50vw] w-[50vw]"} />
-                        <HomeSection1 extraClass={"panel-section min-w-[70vw] w-[70vw]"} />
-                        <BackgroundSection extraClass={"panel-section min-w-[35vw] w-[35vw]"} />
-                        <HomeSection2 extraClass={"panel-section min-w-[70vw] w-[70vw] bg-black"} />
-                        <HomeSection3 extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
-                        <HomeSection4 extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
-                    </div>
-                </div>
-            </SmoothWrapper>
-        </main>
-        <Footer />
-        <CursorFollow />
-        <SlidingArrow />
+      <LoadingEffect animated={setAnimationPlayed} />
+      <Header />
+      <main
+          id="page"
+          dir="ltr"
+          className="main opacity-0 relative overflow-hidden"
+      >
+        <SmoothWrapper>
+          <div id="panel-wrapper" className="w-screen h-screen">
+              <div id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[505vw] h-screen`}>
+                  <HomeBanner audioControl={togglePlayPause} animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen cursor-pointer"} />
+                  <IntroSection extraClass={"panel-section min-w-[50vw] w-[50vw]"} />
+                  <HomeSection1 extraClass={"panel-section min-w-[70vw] w-[70vw]"} />
+                  <BackgroundSection extraClass={"panel-section min-w-[35vw] w-[35vw]"} />
+                  <HomeSection2 extraClass={"panel-section min-w-[70vw] w-[70vw] bg-black"} />
+                  <HomeSection3 extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
+                  <HomeSection4 extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
+              </div>
+          </div>
+        </SmoothWrapper>
+      </main>
+      <Footer />
+      <SlidingArrow />
+      <CursorFollow isPlaying={isPlaying} />
+      <AudioPlayer audioRef={audio} src={audioLink} />
     </div>
   );
 }

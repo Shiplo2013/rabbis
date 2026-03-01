@@ -31,7 +31,8 @@
     "**/*.mts",
     "app/page.js",
     "app/contact/page.js",
-    "app/about/page.js"
+    "app/about/page.js",
+    "app/components/CursorFollow.js"
   ],
   "exclude": ["node_modules"]
 }
