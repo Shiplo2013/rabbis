@@ -1,6 +1,7 @@
 export default function WishIcon(props: { className?: string }) {
   return (
     <svg
+      className="relative z-30"
       width="29"
       height="28"
       viewBox="0 0 29 28"

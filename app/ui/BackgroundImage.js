@@ -18,17 +18,17 @@ export default function BackgroundImage({animated, ...props}) {
   }, [animated]);
   useEffect(() => {
     // Banner Background
-    // gsap.to('.bg-container', {
-    //     x: () => { return -((window.innerWidth*1)) },
-    //     ease: "none",
-    //     scrollTrigger: {
-    //         trigger: ".section-wrapper",
-    //         start: 'top top',
-    //         scrub: true,
-    //         invalidateOnRefresh: true,
-    //         end: () => "+=" + (window.innerWidth*1.3),
-    //     }
-    // });
+    gsap.to('.bg-container', {
+        x: () => { return -((window.innerWidth*1)) },
+        ease: "none",
+        scrollTrigger: {
+            trigger: "#panel-wrapper",
+            start: 'top top',
+            scrub: true,
+            invalidateOnRefresh: true,
+            end: () => "+=" + (window.innerWidth*1.3),
+        }
+    });
   }, []);
   return (
     <div className={`bg-container absolute top-0 left-0 w-full h-full bg-black z-10 transition-none`}>

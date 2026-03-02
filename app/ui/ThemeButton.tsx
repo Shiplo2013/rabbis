@@ -1,24 +1,30 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 
-export default function ThemeButton(props: {
+interface ChildProps {
+  extraClass?: string;
   bgColor?: string;
   textColor?: string;
   hoverBgColor?: string;
   text?: string;
   hoverTextColor?: string;
   icon?: StaticImageData;
-}) {
+  svgIcon?: React.ReactNode;
+}
+
+export default function ThemeButton(props: ChildProps) {
   return (
     <div className="theme-button">
       <Link
-        className={`group btn-header flex items-center ${props?.icon && "pl-18"} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full`}
+        className={`group flex items-center ${props?.icon !== undefined ? "pl-18" : ""} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full text-[28px] leading-[1em] ${props?.extraClass}`}
         href="/"
       >
-        <span className={`text relative z-30 ${props?.hoverTextColor}`}>
-          {props?.text}
-        </span>
-        {props?.icon && (
+        {props?.text && (
+          <span className={`text relative z-30 ${props?.hoverTextColor}`}>
+            {props?.text}
+          </span>
+        )}
+        {props?.icon ? (
           <Image
             className="block absolute z-30 left-5 top-1/2 -translate-y-1/2 black-white"
             src={props?.icon?.src}
@@ -26,6 +32,8 @@ export default function ThemeButton(props: {
             height={"30"}
             alt="Button"
           />
+        ) : (
+          props?.svgIcon
         )}
         <span
           className={`btn-bg absolute z-10 left-0 top-0 w-full h-full ${props?.hoverBgColor}`}

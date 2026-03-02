@@ -5,7 +5,7 @@ export default function HomeSection4(props: { extraClass: string }) {
   return (
     <section
       dir="rtl"
-      className={`${props.extraClass} h-screen bg-no-repeat bg-center bg-cover flex items-center`}
+      className={`${props.extraClass} home-section4 h-screen bg-no-repeat bg-center bg-cover flex items-center`}
     >
       <AnimatedBackground bgImage={sectionBg} />
       <div

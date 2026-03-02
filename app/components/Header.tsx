@@ -83,6 +83,7 @@ function Header() {
         </div>
         <div className="header-left flex items-center gap-6 pt-7 pb-7 -translate-y-full opacity-0">
           <ThemeButton
+            extraClass="py-3.5 px-5"
             bgColor="bg-[#BBA588]"
             textColor="text-[#000000]"
             hoverBgColor="bg-[#000000]"
@@ -90,6 +91,7 @@ function Header() {
             text="הרימו תרומה"
           />
           <ThemeButton
+            extraClass="py-3.5 px-5"
             bgColor="bg-[#5a7c4e]"
             textColor="text-[#000000]"
             hoverBgColor="bg-[#ac832e]"

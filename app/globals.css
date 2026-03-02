@@ -230,6 +230,9 @@
       }
     }
   }
+  #card-slider .card-slide.active {
+    background-color: #ffffff !important;
+  }
 }
 body {
   background: var(--background);

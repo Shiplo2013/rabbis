@@ -1,9 +1,5 @@
 import MicIcon from "@/app/assets/icons/MicIcon";
-import { useEffect } from "react";
 export default function CursorFollow({isPlaying}) {
-  useEffect(() => {
-    console.log(isPlaying);
-  })
   return (
     <div
       id="cursorFollower"

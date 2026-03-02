@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import Footer from "../app/components/Footer";
 import Header from "../app/components/Header";
 import LoadingEffect from "../app/components/LoadingEffect";
-import BackgroundSection from "../app/components/home/BackgroundSection";
 import HomeBanner from "../app/components/home/HomeBanner";
 import HomeSection1 from "../app/components/home/HomeSection1";
 import HomeSection2 from "../app/components/home/HomeSection2";
@@ -18,11 +17,13 @@ import {
   ScrollToPlugin,
   ScrollTrigger,
   SplitText,
-  useGSAP,
+  useGSAP
 } from "../app/ui/plugins";
 import CursorFollow from "./components/CursorFollow";
+import ContentSplit from "./ui/ContentSplit";
+import TitleSplit from "./ui/TitleSplit";
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText);
 
 export default function Home() {
   const [audioLink, setAudioLink] = useState("http://dovp7.sg-host.com/wp-content/uploads/2026/02/music.mp3");
@@ -30,19 +31,16 @@ export default function Home() {
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+
   // Load Page 
   useEffect(() => {
     // Set localStorage variable
     const userVisit = localStorage.getItem("hasVisited");
     if (userVisit === "true") {
       // Set Title
-      var stitle = SplitText.create('.split-title', { type: "words,chars" }),
-      sTitlechars = stitle.chars;
-      gsap.set('.split-title', { perspective: 400 });
-      gsap.set(sTitlechars, {yPercent: 100, opacity: 0});
+      const headingTitle = TitleSplit('.split-title', 'chars');
       // Subtitle 
-      let splitText = SplitText.create(".split-content", { type: "words", aria: "hidden" });
-      gsap.set(splitText.words, {yPercent: 100, opacity: 0});
+      const headingContent = TitleSplit('.split-content', 'words');
       // Banner Button
       gsap.set(".banner-button", {opacity: 0, y: 50});
       // Timeline
@@ -70,23 +68,23 @@ export default function Home() {
         ease: "easeInOut",
         duration: 1,
       }, "-=0.5")
-      .to(sTitlechars, {
+      .to(headingTitle, {
         duration: 0.5,
         yPercent: 0,
         opacity: 1,
         //rotationX: 180,
         transformOrigin: "0% 50%",
-        ease: "back.easeIn",
+        ease: "slow.inOut",
         stagger: 0.1
       }, "-=0.5")
-      .to(splitText.words, {
-        duration: 0.5,
+      .to(headingContent, {
+        duration: 0.3,
         yPercent: 0,
         opacity: 1,
         //rotationX: 180,
         transformOrigin: "0% 50%",
-        ease: "back.easeIn",
-        stagger: 0.1
+        ease: "slow.inOut",
+        stagger: 0.07
       }, "-=0.5")
       .to(".banner-button", {
         duration: 0.5,
@@ -175,22 +173,19 @@ export default function Home() {
   }, []);
   // Page Element Animation
   useGSAP(() => {
-    // Set Items
     // Section Title 2
-    var introTitle = new SplitText('.intro-title', { type: "words,chars" }),
-      introTitlechars = introTitle.chars;
-      gsap.set('.intro-title', { perspective: 400 });
-      gsap.set(introTitlechars, {yPercent: 100, opacity: 0});
-      gsap.to(introTitlechars, {
+    const introTitle = TitleSplit('.intro-title');
+      gsap.to(introTitle, {
         scrollTrigger: {
           start: () => { return (window.innerWidth*0.2) },
+          toggleActions: "restart pause resume reverse"
         },
-        duration: 0.6,
+        duration: 0.5,
         yPercent: 0,
         opacity: 1,
         //rotationX: 180,
         transformOrigin: "0% 50%",
-        ease: "back.easeIn",
+        ease: "slow.inOut",
         stagger: 0.05
     });
     // HomeSection1
@@ -198,26 +193,108 @@ export default function Home() {
     gsap.set("#cycle-preview", {yPercent: 100, opacity: 0});
     gsap.to("#home-post", {
         scrollTrigger: {
-          start: () => { return (window.innerWidth*1) },
+          start: () => { return (window.innerWidth*0.8) },
         },
-        duration: 0.6,
+        duration: 0.5,
         yPercent: 0,
         opacity: 1,
         //rotationX: 180,
         transformOrigin: "0% 50%",
-        ease: "back.easeIn",
+        ease: "slow.inOut",
     });
     gsap.to("#cycle-preview", {
         scrollTrigger: {
-          start: () => { return (window.innerWidth*1.3) },
+          start: () => { return (window.innerWidth*1.1) },
         },
         duration: 0.6,
         yPercent: 0,
         opacity: 1,
         //rotationX: 180,
         transformOrigin: "0% 50%",
-        ease: "back.easeIn",
+        ease: "slow.inOut",
     });
+    // Section 1 Image
+    gsap.to(".home-section2>.section-image", {
+        scrollTrigger: {
+          start: () => { return (window.innerWidth*1.7) },
+          toggleActions: "restart pause resume reverse"
+        },
+        scale: 1,
+        duration: 0.6,
+        ease: "slow.inOut",
+    });
+    // Section 1 content
+    const sec1Content = ContentSplit(".home-section2>.section-content>.text>p", "words");
+    gsap.set(".home-section2>.section-content>.text>p", {opacity: 1})
+    gsap.to(sec1Content, {
+        scrollTrigger: {
+          start: () => { return (window.innerWidth*2) },
+          toggleActions: "restart pause resume reverse"
+        },
+        duration: 0.6,
+        yPercent: 0,
+        opacity: 1,
+        stagger: 0.1,
+        ease: "expo.out",
+      });
+    // Section 2 Image
+    gsap.to(".home-section3 .section-image", {
+        scrollTrigger: {
+          start: () => { return (window.innerWidth*2.8) },
+          toggleActions: "restart pause resume reverse"
+        },
+        scale: 1,
+        duration: 0.6,
+        ease: "slow.inOut",
+    });
+    // Section 2 content
+    const sec2Content = ContentSplit(".home-section3 .section-content .text>p", "words");
+    gsap.set(".home-section3>.section-content>.text>p", {opacity: 1})
+    gsap.to(sec2Content, {
+      scrollTrigger: {
+        start: () => { return (window.innerWidth*3) },
+        toggleActions: "restart pause resume reverse"
+      },
+      duration: 0.6,
+      yPercent: 0,
+      opacity: 1,
+      stagger: 0.1,
+      ease: "expo.out",
+    });
+    // Section 3 content
+    const sec3Content = ContentSplit(".home-section4 .section-content .text>p", "lines");
+    gsap.to(sec3Content, {
+      scrollTrigger: {
+        start: () => { return (window.innerWidth*3.8) },
+        toggleActions: "restart pause resume reverse"
+      },
+      duration: 0.6,
+      yPercent: 0,
+      opacity: 1,
+      stagger: 0.1,
+      ease: "expo.out",
+    });
+    // let split;
+    // SplitText.create(".home-section4 .section-content .text>p", {
+    //   type: "words,lines",
+    //   linesClass: "line",
+    //   autoSplit: true,
+    //   mask: "lines",
+    //   onSplit: (self) => {
+    //     split = gsap.from(self.lines, {
+    //       scrollTrigger: {
+    //         start: () => { return (window.innerWidth*3.8) },
+    //         toggleActions: "restart pause resume reverse"
+    //       },
+    //       duration: 0.6,
+    //       yPercent: 100,
+    //       opacity: 0,
+    //       stagger: 0.1,
+    //       ease: "expo.out",
+    //     });
+    //     return split;
+    //   }
+    // });
   }, []);
 
   // Play Pause State
@@ -252,16 +329,15 @@ export default function Home() {
       <main
           id="page"
           dir="ltr"
-          className="main opacity-0 relative overflow-hidden"
+          className="main opacity-0 relative overflow-hidden z-10"
       >
         <SmoothWrapper>
           <div id="panel-wrapper" className="w-screen h-screen">
-              <div id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[505vw] h-screen`}>
+              <div id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[500vw] h-screen`}>
                   <HomeBanner audioControl={togglePlayPause} animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen cursor-pointer"} />
                   <IntroSection extraClass={"panel-section min-w-[50vw] w-[50vw]"} />
                   <HomeSection1 extraClass={"panel-section min-w-[70vw] w-[70vw]"} />
-                  <BackgroundSection extraClass={"panel-section min-w-[35vw] w-[35vw]"} />
-                  <HomeSection2 extraClass={"panel-section min-w-[70vw] w-[70vw] bg-black"} />
+                  <HomeSection2 extraClass={"panel-section min-w-screen w-screen bg-black"} />
                   <HomeSection3 extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
                   <HomeSection4 extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
               </div>
