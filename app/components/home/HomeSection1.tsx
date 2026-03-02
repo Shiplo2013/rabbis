@@ -1,17 +1,15 @@
-import ArrowLeft from "@/app/assets/icons/ArrowLeft";
-import WishIcon from "@/app/assets/icons/WishIcon";
-import CardSlider from "@/app/ui/CardSlider";
+"use client";
 import Image from "next/image";
-import Link from "next/link";
 import SimpleBar from "simplebar-react";
-import "swiper/css";
-import "swiper/css/effect-cards";
+import ArrowLeft from "../../assets/icons/ArrowLeft";
+import WishIcon from "../../assets/icons/WishIcon";
 import sectionBg from "../../assets/images/section-image.jpg";
-import { useGSAP } from "../../ui/plugins";
+import CardSlider from "../../ui/CardSlider";
 import PostItem from "../../ui/PostItem";
+import ThemeButton from "../../ui/ThemeButton";
 
 export default function HomeSection1(props: { extraClass: string }) {
-  useGSAP(() => {}, []);
+  //useGSAP(() => {}, []);
   return (
     <section
       dir="rtl"
@@ -31,7 +29,7 @@ export default function HomeSection1(props: { extraClass: string }) {
       <div className="section-content relative z-30 w-full h-full">
         <div
           id="cycle-preview"
-          className="cycle-preview absolute left-30 top-1/6"
+          className="cycle-preview absolute left-[15%] top-1/6"
         >
           <CardSlider />
         </div>
@@ -80,12 +78,13 @@ export default function HomeSection1(props: { extraClass: string }) {
             </div>
           </div>
           <div className="wish-icon py-5">
-            <Link
-              className="group bg-white w-13 h-13 rounded-full flex justify-center items-center hover:bg-[#C3A13F] transition-colors"
-              href="/"
-            >
-              <WishIcon className="group-hover:stroke-[#ffffff]" />
-            </Link>
+            <ThemeButton
+              extraClass="w-13 h-13 flex item-center justify-center"
+              bgColor="bg-[#ffffff]"
+              textColor="text-[#000000]"
+              hoverBgColor="bg-[#C3A13F]"
+              svgIcon={<WishIcon className="group-hover:stroke-[#ffffff]" />}
+            />
           </div>
         </div>
       </div>
