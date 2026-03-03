@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import HomeSection2 from "../components/home/HomeSection2";
+import HomeSection4 from "../components/home/HomeSection4";
 import LoadingEffect from "../components/LoadingEffect";
 import {
   gsap
@@ -48,7 +48,7 @@ export default function Contact() {
           dir="ltr"
           className="main opacity-0 relative overflow-hidden z-10"
       >
-      <HomeSection2 />
+      <HomeSection4 />
       </main>
       <Footer />
     </div>
