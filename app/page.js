@@ -20,7 +20,6 @@ import {
   useGSAP
 } from "../app/ui/plugins";
 import CursorFollow from "./components/CursorFollow";
-import ContentSplit from "./ui/ContentSplit";
 import TitleSplit from "./ui/TitleSplit";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText);
@@ -34,6 +33,7 @@ export default function Home() {
 
   // Load Page 
   useEffect(() => {
+    document.fonts.ready.then(() => {
     // Set localStorage variable
     const userVisit = localStorage.getItem("hasVisited");
     if (userVisit === "true") {
@@ -93,6 +93,7 @@ export default function Home() {
         ease: "back.easeIn",
       }, "-=0.5");
     }
+  });
   }, [animationPlayed]);
 
   // Container width
@@ -171,131 +172,6 @@ export default function Home() {
       ScrollTrigger.refresh()
     };
   }, []);
-  // Page Element Animation
-  useGSAP(() => {
-    // Section Title 2
-    const introTitle = TitleSplit('.intro-title');
-      gsap.to(introTitle, {
-        scrollTrigger: {
-          start: () => { return (window.innerWidth*0.2) },
-          toggleActions: "restart pause resume reverse"
-        },
-        duration: 0.5,
-        yPercent: 0,
-        opacity: 1,
-        //rotationX: 180,
-        transformOrigin: "0% 50%",
-        ease: "slow.inOut",
-        stagger: 0.05
-    });
-    // HomeSection1
-    gsap.set("#home-post", {yPercent: 100, opacity: 0});
-    gsap.set("#cycle-preview", {yPercent: 100, opacity: 0});
-    gsap.to("#home-post", {
-        scrollTrigger: {
-          start: () => { return (window.innerWidth*0.8) },
-        },
-        duration: 0.5,
-        yPercent: 0,
-        opacity: 1,
-        //rotationX: 180,
-        transformOrigin: "0% 50%",
-        ease: "slow.inOut",
-    });
-    gsap.to("#cycle-preview", {
-        scrollTrigger: {
-          start: () => { return (window.innerWidth*1.1) },
-        },
-        duration: 0.6,
-        yPercent: 0,
-        opacity: 1,
-        //rotationX: 180,
-        transformOrigin: "0% 50%",
-        ease: "slow.inOut",
-    });
-    // Section 1 Image
-    gsap.to(".home-section2>.section-image", {
-        scrollTrigger: {
-          start: () => { return (window.innerWidth*1.7) },
-          toggleActions: "restart pause resume reverse"
-        },
-        scale: 1,
-        duration: 0.6,
-        ease: "slow.inOut",
-    });
-    // Section 1 content
-    const sec1Content = ContentSplit(".home-section2>.section-content>.text>p", "words");
-    gsap.set(".home-section2>.section-content>.text>p", {opacity: 1})
-    gsap.to(sec1Content, {
-        scrollTrigger: {
-          start: () => { return (window.innerWidth*2) },
-          toggleActions: "restart pause resume reverse"
-        },
-        duration: 0.6,
-        yPercent: 0,
-        opacity: 1,
-        stagger: 0.1,
-        ease: "expo.out",
-      });
-    // Section 2 Image
-    gsap.to(".home-section3 .section-image", {
-        scrollTrigger: {
-          start: () => { return (window.innerWidth*2.8) },
-          toggleActions: "restart pause resume reverse"
-        },
-        scale: 1,
-        duration: 0.6,
-        ease: "slow.inOut",
-    });
-    // Section 2 content
-    const sec2Content = ContentSplit(".home-section3 .section-content .text>p", "words");
-    gsap.set(".home-section3>.section-content>.text>p", {opacity: 1})
-    gsap.to(sec2Content, {
-      scrollTrigger: {
-        start: () => { return (window.innerWidth*3) },
-        toggleActions: "restart pause resume reverse"
-      },
-      duration: 0.6,
-      yPercent: 0,
-      opacity: 1,
-      stagger: 0.1,
-      ease: "expo.out",
-    });
-    // Section 3 content
-    const sec3Content = ContentSplit(".home-section4 .section-content .text>p", "lines");
-    gsap.to(sec3Content, {
-      scrollTrigger: {
-        start: () => { return (window.innerWidth*3.8) },
-        toggleActions: "restart pause resume reverse"
-      },
-      duration: 0.6,
-      yPercent: 0,
-      opacity: 1,
-      stagger: 0.1,
-      ease: "expo.out",
-    });
-    // let split;
-    // SplitText.create(".home-section4 .section-content .text>p", {
-    //   type: "words,lines",
-    //   linesClass: "line",
-    //   autoSplit: true,
-    //   mask: "lines",
-    //   onSplit: (self) => {
-    //     split = gsap.from(self.lines, {
-    //       scrollTrigger: {
-    //         start: () => { return (window.innerWidth*3.8) },
-    //         toggleActions: "restart pause resume reverse"
-    //       },
-    //       duration: 0.6,
-    //       yPercent: 100,
-    //       opacity: 0,
-    //       stagger: 0.1,
-    //       ease: "expo.out",
-    //     });
-    //     return split;
-    //   }
-    // });
-  }, []);
 
   // Play Pause State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -335,11 +211,11 @@ export default function Home() {
           <div id="panel-wrapper" className="w-screen h-screen">
               <div id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[500vw] h-screen`}>
                   <HomeBanner audioControl={togglePlayPause} animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen cursor-pointer"} />
-                  <IntroSection extraClass={"panel-section min-w-[50vw] w-[50vw]"} />
-                  <HomeSection1 extraClass={"panel-section min-w-[70vw] w-[70vw]"} />
-                  <HomeSection2 extraClass={"panel-section min-w-screen w-screen bg-black"} />
-                  <HomeSection3 extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
-                  <HomeSection4 extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
+                  <IntroSection animWidthText={0.2} extraClass={"panel-section min-w-[50vw] w-[50vw]"} />
+                  <HomeSection1 animWidthPost={0.8} animWidthSlider={1.1} extraClass={"panel-section min-w-[70vw] w-[70vw]"} />
+                  <HomeSection2 animWidthImage={1.7} animWidthText={2} extraClass={"panel-section min-w-screen w-screen bg-black"} />
+                  <HomeSection3 animWidthImage={2.8} animWidthText={3} extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
+                  <HomeSection4 animWidth={3.8} extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
               </div>
           </div>
         </SmoothWrapper>

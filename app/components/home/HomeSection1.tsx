@@ -7,9 +7,46 @@ import sectionBg from "../../assets/images/section-image.jpg";
 import CardSlider from "../../ui/CardSlider";
 import PostItem from "../../ui/PostItem";
 import ThemeButton from "../../ui/ThemeButton";
+import { gsap, useGSAP } from "../../ui/plugins";
 
-export default function HomeSection1(props: { extraClass: string }) {
-  //useGSAP(() => {}, []);
+interface ChildProps {
+  extraClass: string;
+  animWidthPost: number;
+  animWidthSlider: number;
+}
+
+export default function HomeSection1(props: ChildProps) {
+  useGSAP(() => {
+    // HomeSection1
+    gsap.set("#home-post", { yPercent: 100, opacity: 0 });
+    gsap.set("#cycle-preview", { yPercent: 100, opacity: 0 });
+    gsap.to("#home-post", {
+      scrollTrigger: {
+        start: () => {
+          return window.innerWidth * props.animWidthPost;
+        },
+      },
+      duration: 0.5,
+      yPercent: 0,
+      opacity: 1,
+      //rotationX: 180,
+      transformOrigin: "0% 50%",
+      ease: "slow.inOut",
+    });
+    gsap.to("#cycle-preview", {
+      scrollTrigger: {
+        start: () => {
+          return window.innerWidth * props.animWidthSlider;
+        },
+      },
+      duration: 0.6,
+      yPercent: 0,
+      opacity: 1,
+      //rotationX: 180,
+      transformOrigin: "0% 50%",
+      ease: "slow.inOut",
+    });
+  }, []);
   return (
     <section
       dir="rtl"

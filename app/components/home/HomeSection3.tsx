@@ -1,9 +1,15 @@
 import Image from "next/image";
 import Juniper from "../../assets/images/juniper.jpg";
 import sectionBg from "../../assets/images/section-bg.jpg";
-import { gsap, useGSAP } from "../../ui/plugins";
+import { gsap, SplitText, useGSAP } from "../../ui/plugins";
 
-export default function HomeSection3(props: { extraClass: string }) {
+interface ChildProps {
+  extraClass: string;
+  animWidthText: number;
+  animWidthImage: number;
+}
+
+export default function HomeSection3(props: ChildProps) {
   function moveImage(e: { screenY: number; clientX: any; clientY: any }) {
     const { clientX, clientY } = e;
     const moveX = clientX - window.innerWidth / 2;
@@ -19,6 +25,49 @@ export default function HomeSection3(props: { extraClass: string }) {
   useGSAP(() => {
     gsap.set(".home-section3 .section-image", {
       scale: 0.6,
+    });
+    // Section 2 Image
+    gsap.to(".home-section3 .section-image", {
+      scrollTrigger: {
+        start: () => {
+          return window.innerWidth * props.animWidthImage;
+        },
+        toggleActions: "restart pause resume reverse",
+      },
+      scale: 1,
+      duration: 0.6,
+      ease: "slow.inOut",
+    });
+    document.fonts.ready.then(() => {
+      let split;
+      const text = document.querySelectorAll(
+        ".home-section3 .section-content .text>p",
+      );
+      text.forEach((element) => {
+        SplitText.create(element, {
+          type: "words,lines",
+          linesClass: "line overflow-hidden",
+          autoSplit: true,
+          mask: "lines",
+          onSplit: (self) => {
+            split = gsap.from(self.lines, {
+              scrollTrigger: {
+                start: () => {
+                  return window.innerWidth * props.animWidthText;
+                },
+                toggleActions: "restart pause resume reverse",
+              },
+              duration: 2,
+              yPercent: 100,
+              opacity: 0,
+              stagger: 1,
+              delay: 0,
+              ease: "expo.out",
+            });
+            return split;
+          },
+        });
+      });
     });
   }, []);
   return (
