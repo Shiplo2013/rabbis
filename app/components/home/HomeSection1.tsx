@@ -72,7 +72,7 @@ export default function HomeSection1(props: ChildProps) {
         </div>
         <div
           id="home-post"
-          className="post-wrapper fixed right-0 bottom-0 flex items-end gap-9"
+          className="post-wrapper absolute right-0 bottom-0 flex items-end gap-9"
         >
           <div className="post-grid bg-[#F1EADA] text-[#C3A13F] p-11 max-h-100 relative">
             <button className="absolute top-5 left-5 w-4 cursor-pointer">
