@@ -1,18 +1,15 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import HomeSection4 from "../components/home/HomeSection4";
 import LoadingEffect from "../components/LoadingEffect";
-import {
-  gsap
-} from "../ui/plugins";
+import { gsap } from "../ui/plugins";
 
 export default function Contact() {
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
-  // Load Page 
+  // Load Page
   useEffect(() => {
     // Set localStorage variable
     const userVisit = localStorage.getItem("hasVisited");
@@ -25,18 +22,26 @@ export default function Contact() {
         duration: 1,
         delay: 0,
       })
-      .to(".header-left", {
-        opacity: 1,
-        y: 0,
-        ease: "easeInOut",
-        duration: 1,
-      }, "-=0.5")
-      .to(".header-right", {
-        opacity: 1,
-        x: 0,
-        ease: "easeInOut",
-        duration: 1,
-      }, "-=0.5");
+        .to(
+          ".header-left",
+          {
+            opacity: 1,
+            y: 0,
+            ease: "easeInOut",
+            duration: 1,
+          },
+          "-=0.5",
+        )
+        .to(
+          ".header-right",
+          {
+            opacity: 1,
+            x: 0,
+            ease: "easeInOut",
+            duration: 1,
+          },
+          "-=0.5",
+        );
     }
   }, []);
   return (
@@ -44,13 +49,13 @@ export default function Contact() {
       <LoadingEffect animated={setAnimationPlayed} />
       <Header />
       <main
-          id="page"
-          dir="ltr"
-          className="main opacity-0 relative overflow-hidden z-10"
+        id="page"
+        dir="ltr"
+        className="main opacity-0 relative overflow-hidden z-10"
       >
-      <HomeSection4 />
+        <div className="h-screen w-screen"></div>
       </main>
-      <Footer />
+      <Footer className={"relative z-20"} />
     </div>
   );
 }

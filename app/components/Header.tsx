@@ -65,6 +65,9 @@ function Header() {
                   src={donationIcon.src}
                   width={13}
                   height={23}
+                  loading="lazy"
+                  //placeholder="blur"
+                  //blurDataURL={donationIcon?.blurDataURL}
                   alt="לתרומות"
                 />
                 <span>לתרומות</span>
@@ -77,6 +80,9 @@ function Header() {
               src={logo.src}
               width={50}
               height={40}
+              loading="lazy"
+              //placeholder="blur"
+              //blurDataURL={logo?.blurDataURL}
               alt="Logo"
             />
           </div>
@@ -116,13 +122,16 @@ function Header() {
               <div className="button-layer absolute top-0 left-0 w-full h-full z-30 rounded-full bg-[#000000] transition-all duration-500"></div>
             </Link>
           </div>
-          <div className="logo">
+          <div className="logo lg:w-25 sm:w-20 xl:w-30 2xl:w-36.5 w-36.5 h-auto">
             <Link href={"/"}>
               <Image
-                className="lg:w-25 sm:w-20 xl:w-30 2xl:w-36.5 h-auto white-image"
+                className="max-w-full white-image"
                 src={logo.src}
                 width={146}
-                height={188}
+                height={112}
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL={logo?.blurDataURL}
                 alt="Logo"
               />
             </Link>

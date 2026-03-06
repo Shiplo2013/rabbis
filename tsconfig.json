@@ -30,7 +30,7 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts",
     "app/page.js",
-    "app/contact/page.js",
+    "app/contact/pages.tsx",
     "app/about/page.js",
     "app/components/CursorFollow.js"
   ],

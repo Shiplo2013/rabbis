@@ -1,26 +1,26 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Footer from "../app/components/Footer";
-import Header from "../app/components/Header";
-import LoadingEffect from "../app/components/LoadingEffect";
-import HomeBanner from "../app/components/home/HomeBanner";
-import HomeSection1 from "../app/components/home/HomeSection1";
-import HomeSection2 from "../app/components/home/HomeSection2";
-import HomeSection3 from "../app/components/home/HomeSection3";
-import HomeSection4 from "../app/components/home/HomeSection4";
-import IntroSection from "../app/components/home/IntroSection";
-import AudioPlayer from "../app/ui/AudioPlayer";
-import SlidingArrow from "../app/ui/SlidingArrow";
-import SmoothWrapper from "../app/ui/SmoothWrapper";
+import CursorFollow from "./components/CursorFollow";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import LoadingEffect from "./components/LoadingEffect";
+import HomeBanner from "./components/home/HomeBanner";
+import HomeSection1 from "./components/home/HomeSection1";
+import HomeSection2 from "./components/home/HomeSection2";
+import HomeSection3 from "./components/home/HomeSection3";
+import HomeSection4 from "./components/home/HomeSection4";
+import IntroSection from "./components/home/IntroSection";
+import AudioPlayer from "./ui/AudioPlayer";
+import SlidingArrow from "./ui/SlidingArrow";
+import SmoothWrapper from "./ui/SmoothWrapper";
+import TitleSplit from "./ui/TitleSplit";
 import {
   gsap,
   ScrollToPlugin,
   ScrollTrigger,
   SplitText,
   useGSAP
-} from "../app/ui/plugins";
-import CursorFollow from "./components/CursorFollow";
-import TitleSplit from "./ui/TitleSplit";
+} from "./ui/plugins";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText);
 
@@ -98,80 +98,44 @@ export default function Home() {
 
   // Container width
   const [contWidth, setContWidth] = useState(0);
+  const panel = useRef(null);
+  const wrapper = useRef(null);
 
   // Page Section Animation
   useGSAP(() => {
-    // Overflow body
-    document.body.classList.add("overflow-x-hidden", "overscroll-none");
-    
-    //console.log(section1);
-    const scrubValue = 1;
-
-    let container = document.querySelector('#panel-wrapper');
-    //console.log(container.scrollWidth);
-    //console.log("ScrollTrigger", ScrollTrigger)
-    // Scroll Section
-    ScrollTrigger.create({
-        trigger: "#panel-wrapper",
-        start: "top top",
-        end: () => (container.scrollWidth - window.innerWidth),
+    let verticalSection = null;
+    if (typeof window !== 'undefined' && panel) {
+      // Overflow body
+      document.body.classList.add("overflow-x-hidden", "overscroll-none");
+      const scurbScale = 2;
+      
+      // Vertical Section
+      verticalSection = gsap.timeline({
+        scrollTrigger: {
+          trigger: panel.current,
+          start: "top top",
+          end: "+="+ (window.innerHeight * 6),
+          scrub: scurbScale,
           pin: true,
-          anticipatePin: 1,
-        scrub: scrubValue,
-        invalidateOnRefresh: true,
-    });
+        }
+      });
+      verticalSection.to(wrapper.current, {
+        x: () => ((wrapper.current.offsetWidth)  - window.innerWidth),
+        ease: "slow.inOut",
+        scrollTrigger: {
+          trigger: panel.current,
+          start: panel.current.offsetTop,
+          end: "+="+ ((window.innerHeight * 6) - 300),
+          scrub: scurbScale,
+        }
+      });
 
-    // Section Move
-    let thumbNails = gsap.utils.toArray(".panel-section");
-    let containerWidth = 0;
-
-    thumbNails.forEach((thumb, i) => {
-    
-      // Calculate Width
-      //console.log(thumb.scrollWidth);
-      containerWidth += thumb.scrollWidth;
-
-      // Find Pined Section
-      if (thumb.classList.contains('fakePin')) {
-
-        // Fixed
-        gsap.set(thumb, {x: () => { return -(container.scrollWidth - (window.innerWidth)) }});
-        
-        gsap.to(thumb, {
-          x: () => { return -((window.innerWidth*3.4)) },
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#section-wrapper",
-            start: 'top top',
-            scrub: scrubValue,
-            invalidateOnRefresh: false,
-            end: () => "+=" + (window.innerWidth),
-          }
-        });
-        
-      }
-      else {
-        gsap.set(thumb, {x: () => { return -(container.scrollWidth - window.innerWidth) }});
-        gsap.to(thumb, {
-          x: () => { return (window.innerWidth) },
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#section-wrapper",
-            start: 'top top',
-            scrub: scrubValue,
-            invalidateOnRefresh: false,
-            end: () => "+=" + (container.scrollWidth),
-          }
-        });
-      }
-    });
-    setContWidth(containerWidth);
-
+    }
     // Return
     return () => {
-      ScrollTrigger.refresh()
+      verticalSection.kill()
     };
-  }, []);
+  }, {scope: panel});
 
   // Play Pause State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -202,25 +166,25 @@ export default function Home() {
     <div className="relative overflow-hidden">
       <LoadingEffect animated={setAnimationPlayed} />
       <Header />
+      <SmoothWrapper>
       <main
           id="page"
           dir="ltr"
           className="main opacity-0 relative overflow-hidden z-10"
       >
-        <SmoothWrapper>
-          <div id="panel-wrapper" className="w-screen h-screen">
-              <div id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[500vw] h-screen`}>
-                  <HomeBanner audioControl={togglePlayPause} animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen cursor-pointer"} />
-                  <IntroSection animWidthText={0.2} extraClass={"panel-section min-w-[50vw] w-[50vw]"} />
-                  <HomeSection1 animWidthPost={0.8} animWidthSlider={1.1} extraClass={"panel-section min-w-[70vw] w-[70vw]"} />
-                  <HomeSection2 animWidthImage={1.7} animWidthText={2} extraClass={"panel-section min-w-screen w-screen bg-black"} />
-                  <HomeSection3 animWidthImage={2.8} animWidthText={3} extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
-                  <HomeSection4 animWidth={3.8} extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
+          <div ref={panel} id="panel-wrapper" className="w-screen h-screen flex items-end justify-end">
+              <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[510vw] h-screen`}>
+                  <HomeBanner audioControl={togglePlayPause} animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen cursor-pointer"} panel={panel} />
+                  <IntroSection animWidthText={0.1} extraClass={"panel-section min-w-[50vw] w-[50vw]"} />
+                  <HomeSection1 animWidthPost={0.4} animWidthSlider={0.5} extraClass={"panel-section min-w-[70vw] w-[70vw]"} panel={panel} />
+                  <HomeSection2 animWidthImage={0.8} animWidthText={0.9} extraClass={"panel-section min-w-screen w-screen bg-black"} />
+                  <HomeSection3 animWidthImage={1.2} animWidthText={1.4} extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
+                  <HomeSection4 animWidth={2} extraClass={"panel-section min-w-screen w-screen"} />
               </div>
           </div>
-        </SmoothWrapper>
       </main>
-      <Footer />
+      <Footer className={"relative z-20"} />
+      </SmoothWrapper>
       <SlidingArrow />
       <CursorFollow isPlaying={isPlaying} />
       <AudioPlayer audioRef={audio} src={audioLink} />

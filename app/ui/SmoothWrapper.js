@@ -1,20 +1,21 @@
-import { useGSAP } from "@gsap/react";
-import { gsap, ScrollSmoother } from "./../ui/plugins";
+import { useRef } from "react";
+import { gsap, ScrollSmoother, ScrollTrigger, useGSAP } from "./../ui/plugins";
 
-gsap.registerPlugin(ScrollSmoother);
+gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
 
 export default function SmoothWrapper({children}) {
+  const main = useRef();
     useGSAP(() => {
-        // create the scrollSmoother before your scrollTriggers
-        ScrollSmoother.create({
-          smooth: 1.5,
-          effects: true,
-          smoothTouch: 0.1,
-          normalizeScroll: true,
-        });
-    });
+      // create the scrollSmoother before your scrollTriggers
+      ScrollSmoother.create({
+        smooth: 1.5,
+        effects: true,
+        smoothTouch: 0.1,
+        normalizeScroll: true,
+      });
+    }, {scope: main});
   return (
-    <div id="smooth-wrapper">
+    <div ref={main} id="smooth-wrapper">
       <div id="smooth-content">
         {children}
       </div>
