@@ -7,6 +7,7 @@ interface ChildProps {
   extraClass: string;
   animated: boolean;
   audioControl: () => void;
+  panel: any;
 }
 
 export default function HomeBanner(props: ChildProps) {
@@ -30,7 +31,11 @@ export default function HomeBanner(props: ChildProps) {
       }}
       className={`${props.extraClass} overflow-hidden relative`}
     >
-      <BackgroundImage bgImage={banner} animated={props.animated} />
+      <BackgroundImage
+        bgImage={banner}
+        animated={props.animated}
+        panel={props.panel}
+      />
       <div dir="rtl" className="flex items-center h-full relative z-30">
         <div className="section-wrapper">
           <h1 className="split-title text-[135px] text-[#AC832E] leading-none">

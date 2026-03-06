@@ -91,6 +91,7 @@ export default function HomeSection2(props: ChildProps) {
           src={sectionImage?.src}
           width={sectionImage?.width}
           height={sectionImage?.height}
+          loading="lazy"
           blurDataURL={sectionImage?.blurDataURL}
           placeholder={"blur"}
           alt="Section Image"
@@ -110,6 +111,7 @@ export default function HomeSection2(props: ChildProps) {
             src={Koddisha?.src}
             width={Koddisha?.width}
             height={Koddisha?.height}
+            loading="lazy"
             blurDataURL={Koddisha?.blurDataURL}
             placeholder={"blur"}
             alt="Koddisha"

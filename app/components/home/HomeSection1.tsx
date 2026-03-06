@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
 import SimpleBar from "simplebar-react";
 import ArrowLeft from "../../assets/icons/ArrowLeft";
 import WishIcon from "../../assets/icons/WishIcon";
 import sectionBg from "../../assets/images/section-image.jpg";
+import BackgroundImage2 from "../../ui/BackgroundImage2";
 import CardSlider from "../../ui/CardSlider";
 import PostItem from "../../ui/PostItem";
 import ThemeButton from "../../ui/ThemeButton";
@@ -13,6 +13,7 @@ interface ChildProps {
   extraClass: string;
   animWidthPost: number;
   animWidthSlider: number;
+  panel: any;
 }
 
 export default function HomeSection1(props: ChildProps) {
@@ -52,17 +53,12 @@ export default function HomeSection1(props: ChildProps) {
       dir="rtl"
       className={`${props.extraClass} h-screen bg-no-repeat bg-center bg-cover flex items-center overflow-hidden relative`}
     >
-      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-10">
-        <Image
-          src={sectionBg.src}
-          width="1920"
-          height="1080"
-          blurDataURL={sectionBg?.blurDataURL}
-          placeholder={"blur"}
-          loading="lazy"
-          alt="Section Background"
-        />
-      </div>
+      <BackgroundImage2
+        bgImage={sectionBg}
+        start={0}
+        end={1.5}
+        panel={props.panel}
+      />
       <div className="section-content relative z-30 w-full h-full">
         <div
           id="cycle-preview"

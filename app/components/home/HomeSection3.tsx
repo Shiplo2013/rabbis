@@ -88,6 +88,7 @@ export default function HomeSection3(props: ChildProps) {
             src={Juniper?.src}
             width={Juniper?.width}
             height={Juniper?.height}
+            loading="lazy"
             blurDataURL={Juniper?.blurDataURL}
             placeholder={"blur"}
             alt="Juniper"

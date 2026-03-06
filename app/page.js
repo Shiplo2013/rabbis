@@ -103,38 +103,37 @@ export default function Home() {
 
   // Page Section Animation
   useGSAP(() => {
+    let verticalSection = null;
     if (typeof window !== 'undefined' && panel) {
-    // Overflow body
-    document.body.classList.add("overflow-x-hidden", "overscroll-none");
-    const scurbScale = 2;
-    
-		// Vertical Section
-    const verticalSection = gsap.timeline({
-      scrollTrigger: {
-        trigger: panel.current,
-        start: "top top",
-        end: "+="+ (window.innerHeight * 6),
-        scrub: scurbScale,
-        pin: true,
-      }
-    });
-    verticalSection.to(wrapper.current, {
-      x: () => ((wrapper.current.offsetWidth)  - window.innerWidth),
-      ease: "slow.inOut",
-      scrollTrigger: {
-        trigger: panel.current,
-        start: panel.current.offsetTop,
-        end: "+="+ ((window.innerHeight * 6) - 300),
-        scrub: scurbScale,
-      }
-    });
-    window.addEventListener("load", function () {
-      verticalSection.restart(true);
-    });
+      // Overflow body
+      document.body.classList.add("overflow-x-hidden", "overscroll-none");
+      const scurbScale = 2;
+      
+      // Vertical Section
+      verticalSection = gsap.timeline({
+        scrollTrigger: {
+          trigger: panel.current,
+          start: "top top",
+          end: "+="+ (window.innerHeight * 6),
+          scrub: scurbScale,
+          pin: true,
+        }
+      });
+      verticalSection.to(wrapper.current, {
+        x: () => ((wrapper.current.offsetWidth)  - window.innerWidth),
+        ease: "slow.inOut",
+        scrollTrigger: {
+          trigger: panel.current,
+          start: panel.current.offsetTop,
+          end: "+="+ ((window.innerHeight * 6) - 300),
+          scrub: scurbScale,
+        }
+      });
+
     }
     // Return
     return () => {
-      ScrollTrigger.refresh()
+      verticalSection.kill()
     };
   }, {scope: panel});
 
@@ -174,17 +173,17 @@ export default function Home() {
           className="main opacity-0 relative overflow-hidden z-10"
       >
           <div ref={panel} id="panel-wrapper" className="w-screen h-screen flex items-end justify-end">
-              <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[500vw] h-screen`}>
-                  <HomeBanner audioControl={togglePlayPause} animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen cursor-pointer"} />
+              <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[510vw] h-screen`}>
+                  <HomeBanner audioControl={togglePlayPause} animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen cursor-pointer"} panel={panel} />
                   <IntroSection animWidthText={0.1} extraClass={"panel-section min-w-[50vw] w-[50vw]"} />
-                  <HomeSection1 animWidthPost={0.4} animWidthSlider={0.5} extraClass={"panel-section min-w-[70vw] w-[70vw]"} />
-                  <HomeSection2 animWidthImage={0.8} animWidthText={1} extraClass={"panel-section min-w-screen w-screen bg-black"} />
-                  <HomeSection3 animWidthImage={1.2} animWidthText={1.3} extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
-                  <HomeSection4 animWidth={1.7} extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
+                  <HomeSection1 animWidthPost={0.4} animWidthSlider={0.5} extraClass={"panel-section min-w-[70vw] w-[70vw]"} panel={panel} />
+                  <HomeSection2 animWidthImage={0.8} animWidthText={0.9} extraClass={"panel-section min-w-screen w-screen bg-black"} />
+                  <HomeSection3 animWidthImage={1.2} animWidthText={1.4} extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
+                  <HomeSection4 animWidth={2} extraClass={"panel-section min-w-screen w-screen"} />
               </div>
           </div>
       </main>
-      <Footer />
+      <Footer className={"relative z-20"} />
       </SmoothWrapper>
       <SlidingArrow />
       <CursorFollow isPlaying={isPlaying} />
