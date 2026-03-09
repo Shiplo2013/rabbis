@@ -162,6 +162,11 @@ export default function Home() {
     }, false);
   }, [audio.current]);
 
+  useEffect(() => {
+    window.onbeforeunload = function () {
+      window.scrollTo(0, 0);
+    }
+  }, []);
   return (
     <div className="relative overflow-hidden">
       <LoadingEffect animated={setAnimationPlayed} />
@@ -176,8 +181,8 @@ export default function Home() {
               <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[510vw] h-screen`}>
                   <HomeBanner audioControl={togglePlayPause} animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen cursor-pointer"} panel={panel} />
                   <IntroSection animWidthText={0.1} extraClass={"panel-section min-w-[50vw] w-[50vw]"} />
-                  <HomeSection1 animWidthPost={0.4} animWidthSlider={0.5} extraClass={"panel-section min-w-[70vw] w-[70vw]"} panel={panel} />
-                  <HomeSection2 animWidthImage={0.8} animWidthText={0.9} extraClass={"panel-section min-w-screen w-screen bg-black"} />
+                  <HomeSection1 animWidthPost={0.4} animWidthSlider={0.45} extraClass={"panel-section min-w-[70vw] w-[70vw]"} panel={panel} />
+                  <HomeSection2 animWidthImage={0.7} animWidthText={0.8} extraClass={"panel-section min-w-screen w-screen bg-black"} />
                   <HomeSection3 animWidthImage={1.2} animWidthText={1.4} extraClass={"panel-section min-w-[90vw] w-[90vw]"} />
                   <HomeSection4 animWidth={2} extraClass={"panel-section min-w-screen w-screen"} />
               </div>
