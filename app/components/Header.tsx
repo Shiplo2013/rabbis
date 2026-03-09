@@ -10,10 +10,58 @@ import donationIcon from "../assets/images/donation-icon.svg";
 import buttonIcon2 from "../assets/images/header-button-icon.png";
 import logo from "../assets/images/logo.png";
 import MainMenu from "../components/MainMenu";
+import { gsap, useGSAP } from "../ui/plugins";
 import ThemeButton from "../ui/ThemeButton";
 
 function Header() {
   const [isMenuActive, setIsMenuActive] = useState(false);
+  const [menuTimeline] = useState(
+    gsap.timeline({
+      paused: true,
+    }),
+  );
+  // Animate on active
+  useGSAP(() => {
+    // Close button
+    gsap.set(".menu-close", {
+      scale: 0,
+      rotate: 360,
+    });
+    gsap.set(".menu-background", {
+      width: 0,
+      height: 0,
+    });
+    gsap.set(".menu-right, .menu-left, .bottom-menu, .bottom-search", {
+      yPercent: 100,
+      opacity: 0,
+    });
+    // Animate on active
+    menuTimeline
+      .to("#main-menu", {
+        opacity: 1,
+        visibility: "visible",
+        duration: 0,
+        delay: 0,
+      })
+      .to(".menu-background", {
+        width: "100vw",
+        height: "100vh",
+        ease: "easeInOut",
+        duration: 0.5,
+      })
+      .to(".menu-right, .menu-left, .bottom-menu, .bottom-search", {
+        yPercent: 0,
+        opacity: 1,
+        stagger: 0.1,
+      })
+      .to(".menu-close", {
+        scale: 1,
+        rotate: 0,
+      });
+  }, []);
+  useGSAP(() => {
+    menuTimeline.reversed() ? menuTimeline.play() : menuTimeline.reverse();
+  }, [isMenuActive]);
   return (
     <>
       <header className="fixed w-screen top-0 left-0 flex justify-between items-start z-40 pl-10">
@@ -139,7 +187,11 @@ function Header() {
         </div>
       </header>
 
-      <MainMenu active={isMenuActive} hideMenu={setIsMenuActive} />
+      <MainMenu
+        active={isMenuActive}
+        hideMenu={setIsMenuActive}
+        timeLine={menuTimeline}
+      />
     </>
   );
 }

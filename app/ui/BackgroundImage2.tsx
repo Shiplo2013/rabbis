@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRef } from "react";
-import { gsap, useGSAP } from "./plugins";
+//import { gsap, useGSAP } from "./plugins";
 
 interface ChildProps {
   bgImage: any;
@@ -11,26 +11,31 @@ interface ChildProps {
 
 export default function BackgroundImage2(props: ChildProps) {
   const background = useRef(null);
-  useGSAP(
-    () => {
-      // Banner Background
-      gsap.to(background.current, {
-        x: () => {
-          return -(window.innerWidth * 1);
-        },
-        ease: "none",
-        scrollTrigger: {
-          trigger: props.panel.current,
-          start: "right top",
-          horizontal: true,
-          scrub: 2,
-          invalidateOnRefresh: false,
-          end: () => "+=" + window.innerWidth * 2.5,
-        },
-      });
-    },
-    { scope: background },
-  );
+  // useGSAP(
+  //   () => {
+  //     gsap.set(background.current, {
+  //       x: () => {
+  //         return window.innerWidth * 0.3;
+  //       },
+  //     });
+  //     // Banner Background
+  //     gsap.to(background.current, {
+  //       x: () => {
+  //         return -(window.innerWidth * 1);
+  //       },
+  //       ease: "none",
+  //       scrollTrigger: {
+  //         trigger: props.panel.current,
+  //         start: "top 0%",
+  //         //horizontal: true,
+  //         scrub: 2,
+  //         invalidateOnRefresh: false,
+  //         end: () => "+=" + window.innerWidth * 2.5,
+  //       },
+  //     });
+  //   },
+  //   { scope: background },
+  // );
   return (
     <div
       ref={background}

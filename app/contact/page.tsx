@@ -53,7 +53,9 @@ export default function Contact() {
         dir="ltr"
         className="main opacity-0 relative overflow-hidden z-10"
       >
-        <div className="h-screen w-screen"></div>
+        <div className="h-screen w-screen flex items-center justify-center">
+          {/* <FlipItem /> */}
+        </div>
       </main>
       <Footer className={"relative z-20"} />
     </div>
