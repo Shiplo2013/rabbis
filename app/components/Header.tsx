@@ -60,7 +60,7 @@ function Header() {
       });
   }, []);
   useGSAP(() => {
-    menuTimeline.reversed() ? menuTimeline.play() : menuTimeline.reverse();
+    isMenuActive ? menuTimeline.play() : menuTimeline.reverse();
   }, [isMenuActive]);
   return (
     <>
@@ -89,7 +89,7 @@ function Header() {
                   מזקנים אתבונן
                 </span>
               </Link>
-              <Link className="group text-[#E2D7C3]" href={"/"}>
+              <Link className="group text-[#E2D7C3]" href={"/yeshiva-rabbis"}>
                 <span className="flex justify-center items-center w-full h-full group-hover:bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
                   רבני הישיבה
                 </span>

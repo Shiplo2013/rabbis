@@ -33,7 +33,8 @@
     "app/contact/pages.tsx",
     "app/about/page.js",
     "app/components/CursorFollow.js",
-    "app/ui/SubMenuItem.tsx"
+    "app/ui/SubMenuItem.tsx",
+    "app/yeshiva-rabbis/page.tsx"
   ],
   "exclude": ["node_modules"]
 }
