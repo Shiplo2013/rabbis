@@ -50,7 +50,7 @@ export default function MainMenu({ active, hideMenu, timeLine }) {
                                 <SubMenuItem itemText="מזקנים אתבונן" subItem={SUBMENU} />
                             </li>
                             <li className="group relative">
-                                <Link href={"/"} className="hover:text-[#C3A13F] transition-colors duration-500">רבני הישיבה</Link>
+                                <Link href={"/yeshiva-rabbis"} className="hover:text-[#C3A13F] transition-colors duration-500">רבני הישיבה</Link>
                                 <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
                             </li>
                             <li className="group relative">
