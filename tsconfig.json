@@ -34,7 +34,8 @@
     "app/about/page.js",
     "app/components/CursorFollow.js",
     "app/ui/SubMenuItem.tsx",
-    "app/yeshiva-rabbis/page.tsx"
+    "app/yeshiva-rabbis/page.tsx",
+    "app/chronicles/page.js"
   ],
   "exclude": ["node_modules"]
 }
