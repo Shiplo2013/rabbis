@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
+import BGImage from "../assets/images/content-bg.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LoadingEffect from "../components/LoadingEffect";
+import ParallaxBackground from "../ui/ParallaxBackground";
 import { gsap } from "../ui/plugins";
 
 export default function Contact() {
@@ -53,9 +55,10 @@ export default function Contact() {
         dir="ltr"
         className="main opacity-0 relative overflow-hidden z-10"
       >
-        <div className="h-screen w-screen flex items-center justify-center">
-          {/* <FlipItem /> */}
+        <div className="h-screen w-screen flex items-center justify-center relative">
+          <ParallaxBackground bgImage={BGImage} />
         </div>
+        <div className="h-screen w-screen flex items-center justify-center"></div>
       </main>
       <Footer className={"relative z-20"} />
     </div>
