@@ -1,8 +1,12 @@
+import IntroductionBackground from "@/app/ui/IntroductionBackground";
+
 interface ChildProps {
   extraClass: string;
   animated: boolean;
   audioControl: () => void;
   panel: any;
+  bgImage: any;
+  data: { title: string; subtitle: string }[];
 }
 
 export default function Introduction(props: ChildProps) {
@@ -26,14 +30,22 @@ export default function Introduction(props: ChildProps) {
       // }}
       className={`${props.extraClass} overflow-hidden relative h-screen bg-black`}
     >
-      <div dir="rtl" className="flex items-center h-full relative z-30">
+      {props.bgImage !== "" && (
+        <IntroductionBackground
+          bgImage={props.bgImage}
+          overlayClass={"bg-[#57717A] opacity-70"}
+        />
+      )}
+      <div dir="rtl" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-center">
-          <h1 className="split-title text-[204px] text-[#AC832E] leading-[1em] overflow-hidden relative z-20">
-            סלבודקא
-          </h1>
-          <h4 className="split-content overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] -mt-6 relative z-30">
-            תרל"ז - תרע"ד
-          </h4>
+          <h1
+            className="split-title text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20"
+            dangerouslySetInnerHTML={{ __html: props.data[0].title }}
+          ></h1>
+          <h4
+            className="split-content overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30"
+            dangerouslySetInnerHTML={{ __html: props.data[0].subtitle }}
+          ></h4>
         </div>
       </div>
     </section>

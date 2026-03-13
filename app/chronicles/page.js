@@ -1,16 +1,23 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import timelineBG from "../assets/images/history-bg.jpg";
+import IntroBG from "../assets/images/introduction-bg.jpg";
+import HistoryImage1 from "../assets/images/single-image.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ContentSection from "../components/history/ContentSection";
+import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
 import Introduction from "../components/history/Introduction";
+import MarkOfTheRoad from "../components/history/MarkOfTheRoad";
+import RabbisPeriodSection from "../components/history/RabbisPeriodSection";
+import RabbisTimeline from "../components/history/RabbisTimeline";
 import TitleSection from "../components/history/TitleSection";
 import LoadingEffect from "../components/LoadingEffect";
 import HistoryTimeline from "../ui/HistoryTimeline";
 import { gsap, useGSAP } from "../ui/plugins";
+import SingleImageSection from "../ui/SingleImageSection";
 import SmoothWrapper from "../ui/SmoothWrapper";
 import TitleSplit from "../ui/TitleSplit";
-
 
 
 export default function ChroniclesHistory() {
@@ -41,6 +48,14 @@ export default function ChroniclesHistory() {
         title: `תשנ"ז - הווה`,
     }
   ]
+  const IntroData1 = [{
+    title: `סלבודקא`,
+    subtitle: `תרל"ז - תרע"ד`,
+  }]
+  const IntroData2 = [{
+    title: `מלחמת העולם<br/>הראשונה`,
+    subtitle: `תרע"ד - תרפ"ד`,
+  }]
 
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
@@ -51,70 +66,70 @@ export default function ChroniclesHistory() {
   const history = useRef(null);
   const progress = useRef(null);
 
-    // Load Page 
-    useEffect(() => {
-      document.fonts.ready.then(() => {
-      // Set localStorage variable
-      const userVisit = localStorage.getItem("hasVisited");
-      if (userVisit === "true") {
-        // Set Title
-        const headingTitle = TitleSplit('.split-title', 'chars');
-        // Subtitle 
-        const headingContent = TitleSplit('.split-content', 'words');
-        // Page Timeline
-        gsap.set(history.current, {opacity: 0, y: 50});
-        // Timeline
-        const tl = gsap.timeline({
-          onComplete: () => {
-              // Set Animation Played to true
-              setIsAllAnimationComplete(true);
-           }
-        });
-        tl.to("#page", {
-          opacity: 1,
-          ease: "easeInOut",
-          duration: 1,
-          delay: 0,
-        })
-        .to(".header-left", {
-          opacity: 1,
-          y: 0,
-          ease: "easeInOut",
-          duration: 1,
-        }, "-=0.5")
-        .to(".header-right", {
-          opacity: 1,
-          x: 0,
-          ease: "easeInOut",
-          duration: 1,
-        }, "-=0.5")
-        .to(headingTitle, {
-          duration: 0.5,
-          yPercent: 0,
-          opacity: 1,
-          //rotationX: 180,
-          transformOrigin: "0% 50%",
-          ease: "slow.inOut",
-          stagger: 0.1
-        }, "-=0.5")
-        .to(headingContent, {
-          duration: 0.3,
-          yPercent: 0,
-          opacity: 1,
-          //rotationX: 180,
-          transformOrigin: "0% 50%",
-          ease: "slow.inOut",
-          stagger: 0.07
-        }, "-=0.5")
-      .to(history.current, {
-        duration: 0.5,
+  // Load Page 
+  useEffect(() => {
+    document.fonts.ready.then(() => {
+    // Set localStorage variable
+    const userVisit = localStorage.getItem("hasVisited");
+    if (userVisit === "true") {
+      // Set Title
+      const headingTitle = TitleSplit('.split-title', 'chars');
+      // Subtitle 
+      const headingContent = TitleSplit('.split-content', 'words');
+      // Page Timeline
+      gsap.set(history.current, {opacity: 0, y: 50});
+      // Timeline
+      const tl = gsap.timeline({
+        onComplete: () => {
+            // Set Animation Played to true
+            setIsAllAnimationComplete(true);
+          }
+      });
+      tl.to("#page", {
+        opacity: 1,
+        ease: "easeInOut",
+        duration: 1,
+        delay: 0,
+      })
+      .to(".header-left", {
         opacity: 1,
         y: 0,
-        ease: "back.easeIn",
-      }, "-=0.5");
-      }
-    });
-    }, [animationPlayed]);
+        ease: "easeInOut",
+        duration: 1,
+      }, "-=0.5")
+      .to(".header-right", {
+        opacity: 1,
+        x: 0,
+        ease: "easeInOut",
+        duration: 1,
+      }, "-=0.5")
+      .to(headingTitle, {
+        duration: 0.5,
+        yPercent: 0,
+        opacity: 1,
+        //rotationX: 180,
+        transformOrigin: "0% 50%",
+        ease: "slow.inOut",
+        stagger: 0.1
+      }, "-=0.5")
+      .to(headingContent, {
+        duration: 0.3,
+        yPercent: 0,
+        opacity: 1,
+        //rotationX: 180,
+        transformOrigin: "0% 50%",
+        ease: "slow.inOut",
+        stagger: 0.07
+      }, "-=0.5")
+    .to(history.current, {
+      duration: 0.5,
+      opacity: 1,
+      y: 0,
+      ease: "back.easeIn",
+    }, "-=0.5");
+    }
+  });
+  }, [animationPlayed]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -129,7 +144,7 @@ export default function ChroniclesHistory() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+="+ (window.innerHeight * 5),
+          end: "+="+ (window.innerHeight * 10),
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -148,7 +163,7 @@ export default function ChroniclesHistory() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current.offsetTop,
-          end: "+="+ ((window.innerHeight * 5) - 300),
+          end: "+="+ ((window.innerHeight * 10) - 300),
           scrub: scurbScale,
         }
       });
@@ -237,12 +252,17 @@ export default function ChroniclesHistory() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[400vw] h-screen items-center`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[1000vw] h-screen items-center`}
             >
-              <Introduction animated={isAllAnimationComplete} extraClass={"panel-section min-w-screen w-screen cursor-pointer"} panel={panel} />
+              <Introduction animated={isAllAnimationComplete} bgImage={""} data={IntroData1} extraClass={"panel-section min-w-screen w-screen"} panel={panel} />
               <ContentSection animWidthText={0.1} extraClass={"min-w-[80vw] w-[80vw] h-screen"} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
-              <section className="w-screen h-screen"></section>
+              <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
+              <SingleImageSection animWidthText={0.1} extraClass={"min-w-[32vw] w-[32vw] h-screen"} image={HistoryImage1} />
+              <MarkOfTheRoad animWidthText={0.1} extraClass={"min-w-[150vw] w-[150vw] h-screen"} />
+              <RabbisTimeline animWidthText={0.1} extraClass={"min-w-[150vw] w-[150vw] h-screen"} bgImage={timelineBG} />
+              <HistoryQuoteSection animWidthText={0.1} extraClass={"min-w-[45vw] w-[45vw] h-screen"} />
+              <Introduction animated={isAllAnimationComplete} bgImage={IntroBG} data={IntroData2} extraClass={"panel-section min-w-screen w-screen"} panel={panel} />
               <section className="w-screen h-screen"></section>
               <section className="w-screen h-screen"></section>
             </div>
