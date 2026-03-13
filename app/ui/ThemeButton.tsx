@@ -10,17 +10,19 @@ interface ChildProps {
   hoverTextColor?: string;
   icon?: StaticImageData;
   svgIcon?: React.ReactNode;
+  buttonLink?: string;
+  fontSize?: string;
 }
 
 export default function ThemeButton(props: ChildProps) {
   return (
     <div className="theme-button">
       <Link
-        className={`group flex items-center ${props?.icon !== undefined ? "pl-18" : ""} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full text-[28px] leading-[1em] ${props?.extraClass}`}
-        href="/"
+        className={`group flex items-center ${props?.icon !== undefined ? "pl-18" : ""} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[28px]"} ${props?.extraClass}`}
+        href={props.buttonLink ? props.buttonLink : "/"}
       >
         {props?.text && (
-          <span className={`text relative z-30 ${props?.hoverTextColor}`}>
+          <span className={`text block relative z-30 ${props?.hoverTextColor}`}>
             {props?.text}
           </span>
         )}

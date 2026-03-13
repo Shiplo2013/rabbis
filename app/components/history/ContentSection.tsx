@@ -65,7 +65,11 @@ export default function ContentSection(props: ChildProps) {
       dir="rtl"
       className={`${props.extraClass} history-content flex items-center relative justify-center`}
     >
-      <ParallaxBackground bgImage={contentBG} />
+      <ParallaxBackground
+        bgImage={contentBG}
+        overlayLeft={false}
+        overlayLeftColor={""}
+      />
       <div className="max-w-full w-[80%] relative z-40 text-[21px] text-[#3D3B37] flex gap-x-[7.5vw] pl-[3vw]">
         <div className="content-right">
           <h2 className="hiscont-title text-[44px] leading-[1em] mb-5 overflow-hidden">

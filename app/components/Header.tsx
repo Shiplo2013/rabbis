@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import ButtonBorder from "../assets/icons/ButtonBorder";
 import ButtonText from "../assets/icons/ButtonText";
@@ -14,6 +15,20 @@ import { gsap, useGSAP } from "../ui/plugins";
 import ThemeButton from "../ui/ThemeButton";
 
 function Header() {
+  // Get Location
+  const location = usePathname();
+  // Menu Links
+  const links = [
+    { href: "/contact", name: "הווייתה", icon: false },
+    { href: "/chronicles", name: "דברי הימים", icon: false },
+    { href: "/", name: "מזקנים אתבונן", icon: false },
+    { href: "/yeshiva-rabbis", name: "רבני הישיבה", icon: false },
+    { href: "/", name: "מועדים וזמנים", icon: false },
+    { href: "/", name: "כנסת הבוגרים", icon: false },
+    { href: "/donation", name: "לתרומות", icon: true },
+  ];
+
+  // Menu Activation
   const [isMenuActive, setIsMenuActive] = useState(false);
   const [menuTimeline] = useState(
     gsap.timeline({
@@ -74,52 +89,45 @@ function Header() {
               <HambergerIcon />
             </div>
             <nav className="nav-menu absolute top-14.5 right-0 w-[calc(100vh-58px)] h-14.5 flex items-stretch justify-stretch origin-topright mr-14.5 -rotate-90">
-              <Link className="group text-[#E2D7C3]" href={"/contact"}>
-                <span className="flex justify-center items-center w-full h-full group-hover:bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
-                  הווייתה
-                </span>
-              </Link>
-              <Link className="group text-[#E2D7C3]" href={"/chronicles"}>
-                <span className="flex justify-center items-center w-full h-full group-hover:bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
-                  דברי הימים
-                </span>
-              </Link>
-              <Link className="group text-[#E2D7C3]" href={"/"}>
-                <span className="flex justify-center items-center w-full h-full group-hover:bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
-                  מזקנים אתבונן
-                </span>
-              </Link>
-              <Link className="group text-[#E2D7C3]" href={"/yeshiva-rabbis"}>
-                <span className="flex justify-center items-center w-full h-full group-hover:bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
-                  רבני הישיבה
-                </span>
-              </Link>
-              <Link className="group text-[#E2D7C3]" href={"/"}>
-                <span className="flex justify-center items-center w-full h-full group-hover:bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
-                  מועדים וזמנים
-                </span>
-              </Link>
-              <Link className="group text-[#E2D7C3]" href={"/"}>
-                <span className="flex justify-center items-center w-full h-full group-hover:bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
-                  כנסת הבוגרים
-                </span>
-              </Link>
-              <Link
-                className="gap-4 bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-all"
-                href={"/"}
-              >
-                <Image
-                  className="rotate-90"
-                  src={donationIcon.src}
-                  width={13}
-                  height={23}
-                  loading="lazy"
-                  //placeholder="blur"
-                  //blurDataURL={donationIcon?.blurDataURL}
-                  alt="לתרומות"
-                />
-                <span>לתרומות</span>
-              </Link>
+              {links.map((link) => {
+                const isActive = location === link.href;
+                return (
+                  <Link
+                    key={link.name}
+                    className={
+                      link.icon
+                        ? "gap-4 bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-all"
+                        : "group text-[#E2D7C3]"
+                    }
+                    href={link.href}
+                  >
+                    {!link.icon && (
+                      <span
+                        className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-all duration-300`}
+                      ></span>
+                    )}
+                    {link.icon ? (
+                      <>
+                        <Image
+                          className="rotate-90"
+                          src={donationIcon.src}
+                          width={13}
+                          height={23}
+                          loading="lazy"
+                          //placeholder="blur"
+                          //blurDataURL={donationIcon?.blurDataURL}
+                          alt="לתרומות"
+                        />
+                        <span>לתרומות</span>
+                      </>
+                    ) : (
+                      <span className="flex justify-center items-center w-full h-full group-hover:bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
+                        {link.name}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
           <div className="small-logo pt-5 pb-5 white-image">

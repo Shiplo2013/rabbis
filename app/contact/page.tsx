@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import BGImage from "../assets/images/content-bg.jpg";
+import IntroBG from "../assets/images/introduction-bg.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import Introduction from "../components/history/Introduction";
 import LoadingEffect from "../components/LoadingEffect";
-import ParallaxBackground from "../ui/ParallaxBackground";
 import { gsap } from "../ui/plugins";
 
 export default function Contact() {
@@ -56,7 +56,16 @@ export default function Contact() {
         className="main opacity-0 relative overflow-hidden z-10"
       >
         <div className="h-screen w-screen flex items-center justify-center relative">
-          <ParallaxBackground bgImage={BGImage} />
+          <Introduction
+            animated={isAllAnimationComplete}
+            bgImage={IntroBG}
+            extraClass={"panel-section min-w-screen w-screen"}
+            audioControl={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+            panel={undefined}
+            data={[]}
+          />
         </div>
         <div className="h-screen w-screen flex items-center justify-center"></div>
       </main>

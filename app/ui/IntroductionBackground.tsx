@@ -4,11 +4,10 @@ import { useGSAP } from "./plugins";
 
 interface ChildProps {
   bgImage: any;
-  overlayLeft: boolean;
-  overlayLeftColor: string;
+  overlayClass: string;
 }
 
-export default function ParallaxBackground(props: ChildProps) {
+export default function IntroductionBackground(props: ChildProps) {
   const background = useRef(null);
   useGSAP(
     () => {
@@ -29,26 +28,21 @@ export default function ParallaxBackground(props: ChildProps) {
   return (
     <div
       ref={background}
-      className={`parallax-background absolute top-0 left-0 w-full h-full bg-black z-10 transition-none`}
+      className={`introduction-background absolute top-0 left-0 w-full h-full bg-black z-10 transition-none`}
     >
-      {props.overlayLeft && (
-        <div
-          style={{
-            backgroundImage: `linear-gradient(to right, ${props.overlayLeftColor}, ${props.overlayLeftColor}00)`,
-          }}
-          className="absolute left-0 top-0 w-25 h-full z-30"
-        ></div>
-      )}
       <Image
-        className="parallax-image w-full object-cover object-center h-full relative z-10"
+        className="w-full object-cover object-center h-full relative z-10"
         src={props?.bgImage?.src}
         width="1920"
         height="1080"
         blurDataURL={props?.bgImage?.blurDataURL}
         placeholder={"blur"}
         loading="lazy"
-        alt="Parallax Background"
+        alt="Introduction Background"
       />
+      <div
+        className={`absolute top-0 left-0 w-full h-full z-30 ${props.overlayClass}`}
+      ></div>
     </div>
   );
 }
