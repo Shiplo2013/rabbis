@@ -1,4 +1,5 @@
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
+import Image from "next/image";
 
 interface ChildProps {
   extraClass: string;
@@ -6,6 +7,7 @@ interface ChildProps {
   audioControl: () => void;
   panel: any;
   bgImage: any;
+  bgOverlay: any;
   overlayClass: string;
   bgPosition: string;
   bgClass: string;
@@ -40,6 +42,20 @@ export default function Introduction(props: ChildProps) {
           imagePosition={props.bgPosition}
           bgClass={props.bgClass}
         />
+      )}
+      {props.bgOverlay !== "" && (
+        <div className="absolute top-0 left-0 w-full h-full z-20">
+          <Image
+            className={`w-full object-contain h-full relative`}
+            src={props?.bgOverlay?.src}
+            width={`${props?.bgOverlay?.width > 1920 ? props?.bgOverlay?.width : "1920"}`}
+            height={`${props?.bgOverlay?.width > 1080 ? props?.bgOverlay?.width : "1080"}`}
+            blurDataURL={props?.bgOverlay?.blurDataURL}
+            placeholder={"blur"}
+            loading="lazy"
+            alt="Introduction Background Overlay"
+          />
+        </div>
       )}
       <div dir="rtl" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-center">

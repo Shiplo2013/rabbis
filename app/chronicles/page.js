@@ -1,13 +1,17 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import arrowSectionBG from "../assets/images/arrow-section-bg.jpg";
 import timelineBG from "../assets/images/history-bg.jpg";
 import IntroBG2 from "../assets/images/intro-bg.jpg";
+import IntroBGoverlay from "../assets/images/intro-bg2.png";
 import IntroBG from "../assets/images/introduction-bg.jpg";
 import NewsSectionBG from "../assets/images/new-section-bg2.jpg";
 import HistoryImage1 from "../assets/images/single-image.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import ArrowSliderSection from "../components/history/ArrowSliderSection";
 import ContentSection from "../components/history/ContentSection";
+import EvidenceOfPeriod from "../components/history/EvidenceOfPeriod";
 import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
 import Introduction from "../components/history/Introduction";
 import MarkOfTheRoad from "../components/history/MarkOfTheRoad";
@@ -20,6 +24,7 @@ import LoadingEffect from "../components/LoadingEffect";
 import HistoryTimeline from "../ui/HistoryTimeline";
 import { gsap, useGSAP } from "../ui/plugins";
 import SingleImageSection from "../ui/SingleImageSection";
+import SlidingArrow from "../ui/SlidingArrow";
 import SmoothWrapper from "../ui/SmoothWrapper";
 import TitleSplit from "../ui/TitleSplit";
 
@@ -152,7 +157,7 @@ export default function ChroniclesHistory() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+="+ (window.innerHeight * 15),
+          end: "+="+ (window.innerHeight * 20),
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -171,7 +176,7 @@ export default function ChroniclesHistory() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current.offsetTop,
-          end: "+="+ ((window.innerHeight * 15) - 300),
+          end: "+="+ ((window.innerHeight * 20) - 300),
           scrub: scurbScale,
         }
       });
@@ -226,9 +231,9 @@ export default function ChroniclesHistory() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[1500vw] h-screen items-center`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[2000vw] h-screen items-center`}
             >
-              <Introduction animated={isAllAnimationComplete} bgImage={""} data={IntroData1} extraClass={"panel-section min-w-screen w-screen"} panel={panel}  bgPosition="" overlayClass="hidden" bgClass="" />
+              <Introduction animated={isAllAnimationComplete} bgImage={""} bgOverlay={""} data={IntroData1} extraClass={"panel-section min-w-screen w-screen"} panel={panel}  bgPosition="" overlayClass="hidden" bgClass="" />
               <ContentSection animWidthText={0.1} extraClass={"min-w-[80vw] w-[80vw] h-screen"} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
@@ -236,13 +241,16 @@ export default function ChroniclesHistory() {
               <MarkOfTheRoad animWidthText={0.1} extraClass={"min-w-[150vw] w-[150vw] h-screen"} />
               <RabbisTimeline animWidthText={0.1} extraClass={"min-w-[150vw] w-[150vw] h-screen"} bgImage={timelineBG} />
               <HistoryQuoteSection animWidthText={0.1} extraClass={"min-w-[45vw] w-[45vw] h-screen"} />
-              <Introduction animated={isAllAnimationComplete} bgImage={IntroBG} data={IntroData2} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#57717A] opacity-70" bgClass="" />
+              <Introduction animated={isAllAnimationComplete} bgImage={IntroBG} bgOverlay={""} data={IntroData2} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#57717A] opacity-70" bgClass="" />
               <NewsPapperSection animWidthText={0.1} extraClass={"min-w-[128vw] w-[128vw] h-screen"} bgImage={NewsSectionBG} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
               <MarkOfTheRoad2 animWidthText={0.1} extraClass={"min-w-[210vw] w-[210vw] h-screen"} />
-              <Introduction animated={isAllAnimationComplete} bgImage={IntroBG2} data={IntroData2} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="hidden" bgClass="opacity-40" />
-              
+              <Introduction animated={isAllAnimationComplete} bgImage={IntroBG2} data={IntroData3} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="hidden" bgClass="opacity-40" bgOverlay={IntroBGoverlay} />
+              <ArrowSliderSection animWidthText={0.1} extraClass={"min-w-[65.8vw] w-[65.8vw] h-screen"} bgImage={arrowSectionBG} bgClass="" bgPosition="center" overlayClass="hidden" />
+              <EvidenceOfPeriod animWidthText={0.1} extraClass={"min-w-[93vw] w-[93vw] h-screen"} />
+              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
+              <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
               <section className="w-screen h-screen"></section>
             </div>
           </div>
@@ -250,6 +258,8 @@ export default function ChroniclesHistory() {
       <Footer className={"relative z-20"} />
       </SmoothWrapper>
       <HistoryTimeline wrapperRef={history} progressRef={progress} timelineData={TimelineData} />
+      <SlidingArrow />
+      
     </div>
   );
 }

@@ -2,7 +2,10 @@
 import { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import MarkOfTheRoad2 from "../components/history/MarkOfTheRoad2";
+
+import arrowSectionBG from "../assets/images/arrow-section-bg.jpg";
+import ArrowSliderSection from "../components/history/ArrowSliderSection";
+import EvidenceOfPeriod from "../components/history/EvidenceOfPeriod";
 import LoadingEffect from "../components/LoadingEffect";
 import {
   gsap,
@@ -11,6 +14,7 @@ import {
   SplitText,
   useGSAP
 } from "../ui/plugins";
+import SlidingArrow from "../ui/SlidingArrow";
 import SmoothWrapper from "../ui/SmoothWrapper";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText);
@@ -108,7 +112,8 @@ export default function About() {
           <div ref={panel} id="panel-wrapper" className="w-screen h-screen flex items-end justify-end">
               <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[510vw] h-screen`}>
               
-              <MarkOfTheRoad2 animWidthText={0.1} extraClass={"min-w-[210vw] w-[210vw] h-screen"} />
+              <ArrowSliderSection animWidthText={0.1} extraClass={"min-w-[65.8vw] w-[65.8vw] h-screen"} bgImage={arrowSectionBG} bgClass="" bgPosition="center" overlayClass="hidden" />
+              <EvidenceOfPeriod animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
               <section className="w-screen h-screen"></section>
               <section className="w-screen h-screen"></section>
               <section className="w-screen h-screen"></section>
@@ -118,6 +123,7 @@ export default function About() {
       </main>
       <Footer className={"relative z-20"} />
       </SmoothWrapper>
+      <SlidingArrow />
     </div>
   );
 }

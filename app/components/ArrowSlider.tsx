@@ -36,6 +36,7 @@ export default function ArrowSlider() {
           gsap.to(".arrow-button", {
             opacity: 1,
             scale: 1,
+            rotation: 30,
             delay: 0,
           });
         }}
@@ -43,6 +44,7 @@ export default function ArrowSlider() {
           gsap.to(".arrow-button", {
             opacity: 0,
             scale: 0,
+            rotation: 0,
             delay: 0,
           });
         }}

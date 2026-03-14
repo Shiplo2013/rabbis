@@ -17,6 +17,13 @@ interface ChildProps {
 }
 
 export default function HomeSection1(props: ChildProps) {
+  // Slider Data
+  const SliderData = [
+    {
+      text1: `כאשר שאל מרן הסבא מסלבודקא את רבי ישראל סלנטר: מהי המטרה העיקרית שאתה רואה בייסוד מוסד קדוש זה?ענה לו רבי ישראל: <strong>"להחיות רוח שפלים ולהחיות לב נדכאים"</strong>`,
+      text2: `להרים רוחם של המבקשים לגדול, לטעת בעמקי הלב כוחות חיים חדשים. וכך הניח רבי ישראל את היסוד: ישיבה איננה רק מקום לימוד, אלא בית היוצר לנשמות; מקום שבו מעוררים את השפל לרוממות, ואת הנדכא, לחיים של גדלות האדם.`,
+    },
+  ];
   useGSAP(() => {
     // HomeSection1
     gsap.set("#home-post", { yPercent: 100, opacity: 0 });
@@ -64,7 +71,7 @@ export default function HomeSection1(props: ChildProps) {
           id="cycle-preview"
           className="cycle-preview absolute left-[15%] top-1/6"
         >
-          <CardSlider />
+          <CardSlider SliderData={SliderData} />
         </div>
         <div
           id="home-post"
