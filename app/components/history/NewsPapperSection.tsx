@@ -25,6 +25,7 @@ export default function NewsPapperSection(props: ChildProps) {
           bgImage={props.bgImage}
           overlayClass={"hidden"}
           imagePosition="bottom"
+          bgClass=""
         />
       )}
       <div
