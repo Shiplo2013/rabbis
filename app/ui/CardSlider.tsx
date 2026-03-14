@@ -2,7 +2,11 @@
 import { useEffect } from "react";
 import { gsap } from "../ui/plugins";
 
-export default function CardSlider() {
+interface ChildProps {
+  SliderData: { text1: string; text2: string }[];
+}
+
+export default function CardSlider(props: ChildProps) {
   useEffect(() => {
     const inActiveSlide = document.querySelector(
       "#card-slider>.card-slide:not(.active)",
@@ -81,6 +85,7 @@ export default function CardSlider() {
           gsap.to(".arrow-button", {
             opacity: 1,
             scale: 1,
+            rotation: 180,
             delay: 0,
           });
         }}
@@ -88,6 +93,7 @@ export default function CardSlider() {
           gsap.to(".arrow-button", {
             opacity: 0,
             scale: 0,
+            rotation: 0,
             delay: 0,
           });
         }}
@@ -100,22 +106,23 @@ export default function CardSlider() {
           <div className="card-slide active pt-12 pb-5 px-7 bg-[#F1EADA] min-h-54.25 relative z-20 transition-colors duration-300">
             <div className="slide-content">
               <span className="absolute left-5 top-3">1/2</span>
-              <p className="font-bold">
-                כאשר שאל מרן הסבא מסלבודקא את רבי ישראל סלנטר: מהי המטרה העיקרית
-                שאתה רואה בייסוד מוסד קדוש זה?ענה לו רבי ישראל:
-                <strong>"להחיות רוח שפלים ולהחיות לב נדכאים"</strong>
-              </p>
+              <p
+                className="font-bold"
+                dangerouslySetInnerHTML={{
+                  __html: props?.SliderData[0]?.text1,
+                }}
+              ></p>
             </div>
           </div>
           <div className="card-slide pt-12 pb-5 px-7 bg-[#F1EADA] min-h-54.25 absolute top-0 left-0 z-10 transition-colors duration-300">
             <div className="slide-content">
               <span className="absolute left-5 top-3">2/2</span>
-              <p className="font-bold">
-                להרים רוחם של המבקשים לגדול, לטעת בעמקי הלב כוחות חיים חדשים.
-                וכך הניח רבי ישראל את היסוד: ישיבה איננה רק מקום לימוד, אלא בית
-                היוצר לנשמות; מקום שבו מעוררים את השפל לרוממות, ואת הנדכא, לחיים
-                של גדלות האדם.
-              </p>
+              <p
+                className="font-bold"
+                dangerouslySetInnerHTML={{
+                  __html: props?.SliderData[0]?.text2,
+                }}
+              ></p>
             </div>
           </div>
         </div>
