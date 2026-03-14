@@ -24,7 +24,7 @@ export default function HistoryTimeline(props: ChildProps) {
                 {!isLastChild && (
                   <div className="progress-line absolute top-2.25 right-1/2 w-[150%] border-b-2 border-[#C3A13F] border-dashed z-0"></div>
                 )}
-                <div className="w-5 h-5 rounded-full border-[3px] border-(--theme-color) bg-black relative z-10"></div>
+                <div className="w-5 h-5 rounded-full border-[3px] border-(--theme-color) relative z-10"></div>
                 <span className="text-[25px] leading-[1em] text-[#FBF4E6]">
                   {item.title}
                 </span>

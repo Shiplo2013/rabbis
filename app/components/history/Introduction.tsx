@@ -6,6 +6,9 @@ interface ChildProps {
   audioControl: () => void;
   panel: any;
   bgImage: any;
+  overlayClass: string;
+  bgPosition: string;
+  bgClass: string;
   data: { title: string; subtitle: string }[];
 }
 
@@ -33,7 +36,9 @@ export default function Introduction(props: ChildProps) {
       {props.bgImage !== "" && (
         <IntroductionBackground
           bgImage={props.bgImage}
-          overlayClass={"bg-[#57717A] opacity-70"}
+          overlayClass={props.overlayClass}
+          imagePosition={props.bgPosition}
+          bgClass={props.bgClass}
         />
       )}
       <div dir="rtl" className="flex items-center w-full h-full relative z-30">

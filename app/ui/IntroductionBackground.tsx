@@ -5,6 +5,8 @@ import { useGSAP } from "./plugins";
 interface ChildProps {
   bgImage: any;
   overlayClass: string;
+  imagePosition: string;
+  bgClass: string;
 }
 
 export default function IntroductionBackground(props: ChildProps) {
@@ -28,13 +30,13 @@ export default function IntroductionBackground(props: ChildProps) {
   return (
     <div
       ref={background}
-      className={`introduction-background absolute top-0 left-0 w-full h-full bg-black z-10 transition-none`}
+      className={`introduction-background ${props.bgClass} absolute top-0 left-0 w-full h-full bg-black z-10 transition-none`}
     >
       <Image
-        className="w-full object-cover object-center h-full relative z-10"
+        className={`w-full object-cover ${props.imagePosition === "bottom" ? "object-bottom" : "object-center"} h-full relative z-10`}
         src={props?.bgImage?.src}
-        width="1920"
-        height="1080"
+        width={`${props?.bgImage?.width > 1920 ? props?.bgImage?.width : "1920"}`}
+        height={`${props?.bgImage?.width > 1080 ? props?.bgImage?.width : "1080"}`}
         blurDataURL={props?.bgImage?.blurDataURL}
         placeholder={"blur"}
         loading="lazy"

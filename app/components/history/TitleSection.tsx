@@ -39,7 +39,7 @@ export default function TitleSection(props: ChildProps) {
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
     >
-      <div className="absolute top-0 right-full w-[15vw] h-full -mr-2">
+      <div className="absolute top-0 right-full w-[15vw] h-full -mr-2 select-none pointer-events-none">
         <Image
           className="parallax-image w-full object-cover object-center h-full"
           src={leftShape?.src}
@@ -69,7 +69,7 @@ export default function TitleSection(props: ChildProps) {
           dangerouslySetInnerHTML={{ __html: Title }}
         ></h2>
       </div>
-      <div className="absolute top-0 left-full w-[15vw] h-full -ml-2">
+      <div className="absolute top-0 left-full w-[15vw] h-full -ml-2 select-none pointer-events-none">
         <Image
           className="parallax-image w-full object-cover object-center h-full"
           src={rightShape?.src}
