@@ -21,10 +21,10 @@ function Header() {
   const links = [
     { href: "/contact", name: "הווייתה", icon: false },
     { href: "/chronicles", name: "דברי הימים", icon: false },
-    { href: "/", name: "מזקנים אתבונן", icon: false },
+    { href: "/about", name: "מזקנים אתבונן", icon: false },
     { href: "/yeshiva-rabbis", name: "רבני הישיבה", icon: false },
-    { href: "/", name: "מועדים וזמנים", icon: false },
-    { href: "/", name: "כנסת הבוגרים", icon: false },
+    { href: "", name: "מועדים וזמנים", icon: false },
+    { href: "", name: "כנסת הבוגרים", icon: false },
     { href: "/donation", name: "לתרומות", icon: true },
   ];
 
