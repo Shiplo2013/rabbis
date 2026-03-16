@@ -4,6 +4,7 @@ import arrowSectionBG from "../assets/images/arrow-section-bg.jpg";
 import timelineBG from "../assets/images/history-bg.jpg";
 import IntroBG2 from "../assets/images/intro-bg.jpg";
 import IntroBGoverlay from "../assets/images/intro-bg2.png";
+import introBG3 from "../assets/images/intro-bg3.jpg";
 import IntroBG from "../assets/images/introduction-bg.jpg";
 import NewsSectionBG from "../assets/images/new-section-bg2.jpg";
 import HistoryImage1 from "../assets/images/single-image.jpg";
@@ -16,6 +17,7 @@ import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
 import Introduction from "../components/history/Introduction";
 import MarkOfTheRoad from "../components/history/MarkOfTheRoad";
 import MarkOfTheRoad2 from "../components/history/MarkOfTheRoad2";
+import MarkOfTheRoad3 from "../components/history/MarkOfTheRoad3";
 import NewsPapperSection from "../components/history/NewsPapperSection";
 import RabbisPeriodSection from "../components/history/RabbisPeriodSection";
 import RabbisTimeline from "../components/history/RabbisTimeline";
@@ -69,6 +71,9 @@ export default function ChroniclesHistory() {
     title: `חברון`,
     subtitle: `תרפ"ד – תרפ"ט`,
   }]
+  const IntroData4 = [{
+    title: `פרעות תרפ״ט`,
+  }]
 
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
@@ -79,16 +84,18 @@ export default function ChroniclesHistory() {
   const history = useRef(null);
   const progress = useRef(null);
 
+  const {contextSafe} = useGSAP();
+
   // Load Page 
-  useEffect(() => {
+  useGSAP(() => {
     document.fonts.ready.then(() => {
     // Set localStorage variable
     const userVisit = localStorage.getItem("hasVisited");
     if (userVisit === "true") {
       // Set Title
-      const headingTitle = TitleSplit('.split-title', 'chars');
+      const headingTitle = TitleSplit('.first-intro .split-title', 'chars');
       // Subtitle 
-      const headingContent = TitleSplit('.split-content', 'words');
+      const headingContent = TitleSplit('.first-intro .split-content', 'words');
       // Page Timeline
       gsap.set(history.current, {opacity: 0, y: 50});
       // Timeline
@@ -157,7 +164,7 @@ export default function ChroniclesHistory() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+="+ (window.innerHeight * 20),
+          end: "+="+ (window.innerHeight * 30),
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -172,13 +179,8 @@ export default function ChroniclesHistory() {
       });
       verticalSection.to(wrapper.current, {
         x: () => ((wrapper.current.offsetWidth)  - window.innerWidth),
-        ease: "slow.inOut",
-        scrollTrigger: {
-          trigger: panel.current,
-          start: panel.current.offsetTop,
-          end: "+="+ ((window.innerHeight * 20) - 300),
-          scrub: scurbScale,
-        }
+        //duration: 50,
+        ease: "sine.out"
       });
       // History Content Section
     //   const historyTitle = TitleSplit(".hiscont-title");
@@ -231,9 +233,9 @@ export default function ChroniclesHistory() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[2000vw] h-screen items-center`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[2200vw] h-screen items-center`}
             >
-              <Introduction animated={isAllAnimationComplete} bgImage={""} bgOverlay={""} data={IntroData1} extraClass={"panel-section min-w-screen w-screen"} panel={panel}  bgPosition="" overlayClass="hidden" bgClass="" />
+              <Introduction animated={isAllAnimationComplete} bgImage={""} bgOverlay={""} data={IntroData1} extraClass={"first-intro panel-section min-w-screen w-screen"} panel={panel}  bgPosition="" overlayClass="hidden" bgClass="" />
               <ContentSection animWidthText={0.1} extraClass={"min-w-[80vw] w-[80vw] h-screen"} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
@@ -251,6 +253,8 @@ export default function ChroniclesHistory() {
               <EvidenceOfPeriod animWidthText={0.1} extraClass={"min-w-[93vw] w-[93vw] h-screen"} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
+              <MarkOfTheRoad3 animWidthText={0.1} extraClass={"min-w-[285vw] w-[285vw] h-screen"} />
+              <Introduction animated={isAllAnimationComplete} bgImage={introBG3} data={IntroData4} extraClass={"panel-section min-w-[75vw] w-[75vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-40" bgClass="" bgOverlay={""} />
               <section className="w-screen h-screen"></section>
             </div>
           </div>

@@ -17,6 +17,7 @@ interface ChildProps {
 
 export default function RabbisSlider(props: ChildProps) {
   const swiperRef = useRef<SwiperRef>(null);
+  const paginationRef = useRef(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   // Update button states on every slide change
@@ -33,7 +34,7 @@ export default function RabbisSlider(props: ChildProps) {
         onSlideChange={handleSlideChange}
         modules={[Pagination]}
         pagination={{
-          el: ".custom-pagination",
+          el: paginationRef?.current,
           clickable: true,
           // You can also use renderBullet for complete control over the bullet's HTML
           renderBullet: function (index, className) {
@@ -85,7 +86,10 @@ export default function RabbisSlider(props: ChildProps) {
         })}
       </Swiper>
       <div className="swiper-navigation relative h-27 w-full flex items-center justify-center">
-        <div className="custom-pagination flex items-center justify-center gap-5"></div>
+        <div
+          ref={paginationRef}
+          className="custom-pagination flex items-center justify-center gap-5"
+        ></div>
         <button
           style={{
             backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,

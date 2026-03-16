@@ -109,13 +109,13 @@ function Header() {
                     {link.icon ? (
                       <>
                         <Image
-                          className="rotate-90"
+                          className="w-auto h-auto rotate-90"
                           src={donationIcon.src}
                           width={13}
                           height={23}
                           loading="lazy"
-                          //placeholder="blur"
                           //blurDataURL={donationIcon?.blurDataURL}
+                          //placeholder="blur"
                           alt="לתרומות"
                         />
                         <span>לתרומות</span>
@@ -130,16 +130,14 @@ function Header() {
               })}
             </nav>
           </div>
-          <div className="small-logo pt-5 pb-5 white-image">
+          <div className="small-logo pt-5 pb-5 w-12.5 h-10">
             <Image
-              className=""
+              className="w-auto h-auto white-image"
               src={logo.src}
               width={50}
               height={40}
               loading="lazy"
-              //placeholder="blur"
-              //blurDataURL={logo?.blurDataURL}
-              alt="Logo"
+              alt="Small Logo"
             />
           </div>
         </div>
@@ -178,10 +176,10 @@ function Header() {
               <div className="button-layer absolute top-0 left-0 w-full h-full z-30 rounded-full bg-[#000000] transition-all duration-500"></div>
             </Link>
           </div>
-          <div className="logo lg:w-25 sm:w-20 xl:w-30 2xl:w-36.5 w-36.5 h-auto">
+          <div className="logo lg:w-25 sm:w-20 xl:w-30 2xl:w-36.5 w-36.5 h-28">
             <Link href={"/"}>
               <Image
-                className="max-w-full white-image"
+                className="w-full h-full object-contain object-center white-image"
                 src={logo.src}
                 width={146}
                 height={112}

@@ -31,7 +31,7 @@
     "**/*.mts",
     "app/page.js",
     "app/contact/pages.tsx",
-    "app/about/page.js",
+    "app/about/page-error.js",
     "app/components/CursorFollow.js",
     "app/ui/SubMenuItem.tsx",
     "app/yeshiva-rabbis/page.tsx",
