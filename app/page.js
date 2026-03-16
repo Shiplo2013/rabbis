@@ -32,7 +32,7 @@ export default function Home() {
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
 
   // Load Page 
-  useEffect(() => {
+  useGSAP(() => {
     document.fonts.ready.then(() => {
     // Set localStorage variable
     const userVisit = localStorage.getItem("hasVisited");
@@ -97,7 +97,7 @@ export default function Home() {
   }, [animationPlayed]);
 
   // Container width
-  const [contWidth, setContWidth] = useState(0);
+  //const [contWidth, setContWidth] = useState(0);
   const panel = useRef(null);
   const wrapper = useRef(null);
 
@@ -121,13 +121,7 @@ export default function Home() {
       });
       verticalSection.to(wrapper.current, {
         x: () => ((wrapper.current.offsetWidth)  - window.innerWidth),
-        ease: "slow.inOut",
-        scrollTrigger: {
-          trigger: panel.current,
-          start: panel.current.offsetTop,
-          end: "+="+ ((window.innerHeight * 6) - 300),
-          scrub: scurbScale,
-        }
+        ease: "sine.out",
       });
 
     }

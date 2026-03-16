@@ -3,10 +3,11 @@ import "swiper/css";
 import "swiper/css/effect-cards";
 import { EffectCards } from "swiper/modules";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
-import { gsap } from "../ui/plugins";
+import { gsap, useGSAP } from "../ui/plugins";
 
 export default function ArrowSlider() {
   const sliderRef = useRef<SwiperRef>(null);
+  const { contextSafe } = useGSAP({ scope: sliderRef });
   const handleNextSlide = () => {
     if (sliderRef.current?.swiper && !sliderRef.current.swiper.isEnd) {
       sliderRef.current.swiper.slideNext();
@@ -15,39 +16,43 @@ export default function ArrowSlider() {
     }
   };
   // Cursor Follower Function
-  function moveCircle(e: { screenY: number; clientX: any; clientY: any }) {
-    const yskale = -(e.screenY / 100) * 1;
-    //console.log(e.clientX, e.clientY)
+  const moveCircle = contextSafe(
+    (e: { screenY: number; clientX: any; clientY: any }) => {
+      const yskale = -(e.screenY / 100) * 1;
+      //console.log(e.clientX, e.clientY)
+      gsap.to(".arrow-button", {
+        x: e.clientX,
+        y: e.clientY,
+        delay: 0,
+        duration: 0.2,
+      });
+    },
+  );
+  // Handle Mouse Enter
+  const handleMouseEnter = contextSafe(() => {
     gsap.to(".arrow-button", {
-      x: e.clientX,
-      y: e.clientY,
+      opacity: 1,
+      scale: 1,
+      rotation: 30,
       delay: 0,
-      duration: 0.2,
     });
-  }
+  });
+  // Handle Mouse Leave
+  const handleMouseLeave = contextSafe(() => {
+    gsap.to(".arrow-button", {
+      opacity: 0,
+      scale: 0,
+      rotation: 0,
+      delay: 0,
+    });
+  });
   return (
     <>
       <div
         onClick={handleNextSlide}
-        onMouseMove={(e) => {
-          moveCircle(e);
-        }}
-        onMouseEnter={() => {
-          gsap.to(".arrow-button", {
-            opacity: 1,
-            scale: 1,
-            rotation: 30,
-            delay: 0,
-          });
-        }}
-        onMouseLeave={() => {
-          gsap.to(".arrow-button", {
-            opacity: 0,
-            scale: 0,
-            rotation: 0,
-            delay: 0,
-          });
-        }}
+        onMouseMove={moveCircle}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         className="arrow-slider w-117 relative z-10 cursor-none"
       >
         <Swiper

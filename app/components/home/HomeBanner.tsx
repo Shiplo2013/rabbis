@@ -1,6 +1,6 @@
 import banner from "../../assets/images/home-banner.jpg";
 import BackgroundImage from "../../ui/BackgroundImage";
-import { gsap } from "../../ui/plugins";
+import { gsap, useGSAP } from "../../ui/plugins";
 import ScrollButton from "../../ui/ScrollButton";
 
 interface ChildProps {
@@ -11,24 +11,29 @@ interface ChildProps {
 }
 
 export default function HomeBanner(props: ChildProps) {
+  const { contextSafe } = useGSAP();
   // Cursor Follower Function
-  function moveCircle(e: { screenY: number; clientX: any; clientY: any }) {
-    const yskale = -(e.screenY / 100) * 1;
-    //console.log(e.clientX, e.clientY)
-    gsap.to("#cursorFollower", { x: e.clientX, y: e.clientY, duration: 0.2 });
-  }
+  const moveCircle = contextSafe(
+    (e: { screenY: number; clientX: any; clientY: any }) => {
+      const yskale = -(e.screenY / 100) * 1;
+      //console.log(e.clientX, e.clientY)
+      gsap.to("#cursorFollower", { x: e.clientX, y: e.clientY, duration: 0.2 });
+    },
+  );
+  // On Mouse Enter
+  const handleMouseEnter = contextSafe(() => {
+    gsap.to("#cursorFollower", { opacity: 1, scale: 1 });
+  });
+  // On Mouse Leave
+  const handleMouseLeave = contextSafe(() => {
+    gsap.to("#cursorFollower", { opacity: 0, scale: 0 });
+  });
   return (
     <section
       onClick={props.audioControl}
-      onMouseMove={(e) => {
-        moveCircle(e);
-      }}
-      onMouseEnter={() => {
-        gsap.to("#cursorFollower", { opacity: 1, scale: 1 });
-      }}
-      onMouseLeave={() => {
-        gsap.to("#cursorFollower", { opacity: 0, scale: 0 });
-      }}
+      onMouseMove={moveCircle}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={`${props.extraClass} overflow-hidden relative`}
     >
       <BackgroundImage
@@ -38,7 +43,7 @@ export default function HomeBanner(props: ChildProps) {
       />
       <div dir="rtl" className="flex items-center h-full relative z-30">
         <div className="section-wrapper">
-          <h1 className="split-title text-[135px] text-[#AC832E] leading-none">
+          <h1 className="split-title text-[135px] text-[#AC832E] leading-none overflow-hidden">
             <span className="block overflow-hidden">ישיבת</span>
             <span className="block overflow-hidden text-[250px] text-[#D1A941] relative z-10 leading-none -mt-15 -mb-15 font-bold italic">
               חברון

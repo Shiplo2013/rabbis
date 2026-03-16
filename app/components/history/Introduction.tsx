@@ -60,7 +60,7 @@ export default function Introduction(props: ChildProps) {
       <div dir="rtl" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-center">
           <h1
-            className="split-title text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20"
+            className="split-title text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 flex justify-center"
             dangerouslySetInnerHTML={{ __html: props.data[0].title }}
           ></h1>
           <h4

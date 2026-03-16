@@ -28,7 +28,7 @@ export default function ThemeButton(props: ChildProps) {
         )}
         {props?.icon ? (
           <Image
-            className="block absolute z-30 left-5 top-1/2 -translate-y-1/2 black-white"
+            className="w-auto h-auto block absolute z-30 left-5 top-1/2 -translate-y-1/2 black-white"
             src={props?.icon?.src}
             width={"40"}
             height={"30"}

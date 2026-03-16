@@ -22,7 +22,7 @@ export default function ArrowSliderSection(props: ChildProps) {
   return (
     <section
       dir="rtl"
-      className={`${props.extraClass} bg-black flex items-center relative z-30`}
+      className={`bg-black flex items-center relative z-30 ${props.extraClass}`}
     >
       <IntroductionBackground
         bgImage={props.bgImage}
