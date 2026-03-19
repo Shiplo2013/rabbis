@@ -1,14 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import arrowSectionBG from "../assets/images/arrow-section-bg.jpg";
+import introBG5 from "../assets/images/intro-bg-5.jpg";
 import introBG3 from "../assets/images/intro-bg3.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import ArrowSliderSection from "../components/history/ArrowSliderSection";
-import EvidenceOfPeriod from "../components/history/EvidenceOfPeriod";
 import Introduction from "../components/history/Introduction";
 import LambOfferingSection from "../components/history/LambOfferingSection";
-import MarkOfTheRoad3 from "../components/history/MarkOfTheRoad3";
+import MoveToJerusalem from "../components/history/MoveToJerusalem";
+import TitleSection from "../components/history/TitleSection";
 import LoadingEffect from "../components/LoadingEffect";
 import {
   gsap,
@@ -26,6 +25,10 @@ export default function About() {
   const IntroData1 = [{
     title: `סלבודקא`,
     subtitle: `תרל"ז - תרע"ד`,
+  }]
+  const IntroData5 = [{
+    title: `ירושלים של מעלה`,
+    subtitle: `תרפ"ט - תשל"ו`,
   }]
   const IntroData4 = [{
     title: `פרעות תרפ״ט`,
@@ -121,16 +124,11 @@ export default function About() {
       >
           <div ref={panel} id="panel-wrapper" className="w-screen h-screen flex items-end justify-end">
               <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[510vw] h-screen`}>
+                <MoveToJerusalem animWidthText={0.1} extraClass={"min-w-[170vw] w-[170vw] h-screen"} />
+              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={false} />
+                <Introduction animated={isAllAnimationComplete} bgImage={introBG5} data={IntroData5} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#43493B] opacity-80" bgClass="" bgOverlay={""} />
                 <LambOfferingSection animWidthText={0.1} extraClass={"min-w-[146vw] w-[146vw] h-screen"} />
                 <Introduction animated={isAllAnimationComplete} bgImage={introBG3} data={IntroData4} extraClass={"panel-section min-w-[75vw] w-[75vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-40" bgClass="" bgOverlay={""} />
-              <MarkOfTheRoad3 animWidthText={0.1} extraClass={"min-w-[285vw] w-[285vw] h-screen"} />
-              <Introduction animated={isAllAnimationComplete} bgImage={""} bgOverlay={""} data={IntroData1} extraClass={"panel-section min-w-screen w-screen"} panel={panel}  bgPosition="" overlayClass="hidden" bgClass="" />
-              <ArrowSliderSection animWidthText={0.1} extraClass={"min-w-[65.8vw] w-[65.8vw] h-screen"} bgImage={arrowSectionBG} bgClass="" bgPosition="center" overlayClass="hidden" />
-              <EvidenceOfPeriod animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
-              <section className="w-screen h-screen"></section>
-              <section className="w-screen h-screen"></section>
-              <section className="w-screen h-screen"></section>
-              <section className="w-screen h-screen"></section>
               </div>
           </div>
       </main>
