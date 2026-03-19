@@ -1,5 +1,6 @@
 import TitleSplit from "@/app/ui/TitleSplit";
 import Image from "next/image";
+import { useEffect } from "react";
 import TitleImage from "../../assets/images/title-image.png";
 import rightShape from "../../assets/images/title-shape1.png";
 import leftShape from "../../assets/images/title-shape2.png";
@@ -9,6 +10,8 @@ gsap.registerPlugin(ScrollTrigger);
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  rightShape: boolean;
+  leftShape: boolean;
 }
 
 export default function TitleSection(props: ChildProps) {
@@ -34,23 +37,28 @@ export default function TitleSection(props: ChildProps) {
       });
     });
   }, []);
+  useEffect(() => {
+    console.log();
+  }, []);
   return (
     <section
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
     >
-      <div className="absolute top-0 right-full w-[15vw] h-full -mr-2 select-none pointer-events-none">
-        <Image
-          className="parallax-image w-full object-cover object-center h-full"
-          src={leftShape?.src}
-          width="288"
-          height="1080"
-          blurDataURL={leftShape?.blurDataURL}
-          placeholder={"blur"}
-          loading="lazy"
-          alt="Shape"
-        />
-      </div>
+      {props.leftShape && (
+        <div className="absolute top-0 right-full w-[15vw] h-full -mr-2 select-none pointer-events-none">
+          <Image
+            className="parallax-image w-full object-cover object-center h-full"
+            src={leftShape?.src}
+            width="288"
+            height="1080"
+            blurDataURL={leftShape?.blurDataURL}
+            placeholder={"blur"}
+            loading="lazy"
+            alt="Shape"
+          />
+        </div>
+      )}
       <div className="w-full pr-[15%] pt-[10%] pb-[10%] pl-[15%]">
         <div className="title-image absolute w-61.75 h-61.75 top-[21%] right-[9%] z-30 mix-blend-lighten">
           <Image
@@ -69,18 +77,20 @@ export default function TitleSection(props: ChildProps) {
           dangerouslySetInnerHTML={{ __html: Title }}
         ></h2>
       </div>
-      <div className="absolute top-0 left-full w-[15vw] h-full -ml-2 select-none pointer-events-none">
-        <Image
-          className="parallax-image w-full object-cover object-center h-full"
-          src={rightShape?.src}
-          width="288"
-          height="1080"
-          blurDataURL={rightShape?.blurDataURL}
-          placeholder={"blur"}
-          loading="lazy"
-          alt="Shape"
-        />
-      </div>
+      {props.rightShape && (
+        <div className="absolute top-0 left-full w-[15vw] h-full -ml-2 select-none pointer-events-none">
+          <Image
+            className="parallax-image w-full object-cover object-center h-full"
+            src={rightShape?.src}
+            width="288"
+            height="1080"
+            blurDataURL={rightShape?.blurDataURL}
+            placeholder={"blur"}
+            loading="lazy"
+            alt="Shape"
+          />
+        </div>
+      )}
     </section>
   );
 }

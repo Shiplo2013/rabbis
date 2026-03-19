@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import arrowSectionBG from "../assets/images/arrow-section-bg.jpg";
 import timelineBG from "../assets/images/history-bg.jpg";
+import introBG5 from "../assets/images/intro-bg-5.jpg";
 import IntroBG2 from "../assets/images/intro-bg.jpg";
 import IntroBGoverlay from "../assets/images/intro-bg2.png";
 import introBG3 from "../assets/images/intro-bg3.jpg";
@@ -15,9 +16,11 @@ import ContentSection from "../components/history/ContentSection";
 import EvidenceOfPeriod from "../components/history/EvidenceOfPeriod";
 import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
 import Introduction from "../components/history/Introduction";
+import LambOfferingSection from "../components/history/LambOfferingSection";
 import MarkOfTheRoad from "../components/history/MarkOfTheRoad";
 import MarkOfTheRoad2 from "../components/history/MarkOfTheRoad2";
 import MarkOfTheRoad3 from "../components/history/MarkOfTheRoad3";
+import MoveToJerusalem from "../components/history/MoveToJerusalem";
 import NewsPapperSection from "../components/history/NewsPapperSection";
 import RabbisPeriodSection from "../components/history/RabbisPeriodSection";
 import RabbisTimeline from "../components/history/RabbisTimeline";
@@ -73,6 +76,10 @@ export default function ChroniclesHistory() {
   }]
   const IntroData4 = [{
     title: `פרעות תרפ״ט`,
+  }]
+  const IntroData5 = [{
+    title: `ירושלים של מעלה`,
+    subtitle: `תרפ"ט - תשל"ו`,
   }]
 
   // Animation State
@@ -164,7 +171,7 @@ export default function ChroniclesHistory() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+="+ (window.innerHeight * 30),
+          end: "+="+ (window.innerHeight * 35),
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -233,11 +240,11 @@ export default function ChroniclesHistory() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[2200vw] h-screen items-center`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[2600vw] h-screen items-center`}
             >
               <Introduction animated={isAllAnimationComplete} bgImage={""} bgOverlay={""} data={IntroData1} extraClass={"first-intro panel-section min-w-screen w-screen"} panel={panel}  bgPosition="" overlayClass="hidden" bgClass="" />
               <ContentSection animWidthText={0.1} extraClass={"min-w-[80vw] w-[80vw] h-screen"} />
-              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
+              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={true} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
               <SingleImageSection animWidthText={0.1} extraClass={"min-w-[32vw] w-[32vw] h-screen"} image={HistoryImage1} />
               <MarkOfTheRoad animWidthText={0.1} extraClass={"min-w-[150vw] w-[150vw] h-screen"} />
@@ -245,16 +252,21 @@ export default function ChroniclesHistory() {
               <HistoryQuoteSection animWidthText={0.1} extraClass={"min-w-[45vw] w-[45vw] h-screen"} />
               <Introduction animated={isAllAnimationComplete} bgImage={IntroBG} bgOverlay={""} data={IntroData2} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#57717A] opacity-70" bgClass="" />
               <NewsPapperSection animWidthText={0.1} extraClass={"min-w-[128vw] w-[128vw] h-screen"} bgImage={NewsSectionBG} />
-              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
+              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={true} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
               <MarkOfTheRoad2 animWidthText={0.1} extraClass={"min-w-[210vw] w-[210vw] h-screen"} />
               <Introduction animated={isAllAnimationComplete} bgImage={IntroBG2} data={IntroData3} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="hidden" bgClass="opacity-40" bgOverlay={IntroBGoverlay} />
               <ArrowSliderSection animWidthText={0.1} extraClass={"min-w-[65.8vw] w-[65.8vw] h-screen"} bgImage={arrowSectionBG} bgClass="" bgPosition="center" overlayClass="hidden" />
               <EvidenceOfPeriod animWidthText={0.1} extraClass={"min-w-[93vw] w-[93vw] h-screen"} />
-              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
+              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={true} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
               <MarkOfTheRoad3 animWidthText={0.1} extraClass={"min-w-[285vw] w-[285vw] h-screen"} />
               <Introduction animated={isAllAnimationComplete} bgImage={introBG3} data={IntroData4} extraClass={"panel-section min-w-[75vw] w-[75vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-40" bgClass="" bgOverlay={""} />
+              <LambOfferingSection animWidthText={0.1} extraClass={"min-w-[146vw] w-[146vw] h-screen"} />
+              <Introduction animated={isAllAnimationComplete} bgImage={introBG5} data={IntroData5} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#43493B] opacity-80" bgClass="" bgOverlay={""} />
+              <MoveToJerusalem animWidthText={0.1} extraClass={"min-w-[170vw] w-[170vw] h-screen"} />
+              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={false} />
+              <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
               <section className="w-screen h-screen"></section>
             </div>
           </div>
