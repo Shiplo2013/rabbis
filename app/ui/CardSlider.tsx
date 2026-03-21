@@ -1,13 +1,15 @@
 "use client";
-import { useEffect } from "react";
-import { gsap } from "../ui/plugins";
+import { useRef } from "react";
+import { gsap, useGSAP } from "../ui/plugins";
 
 interface ChildProps {
-  SliderData: { text1: string; text2: string }[];
+  SlideData: { text1: string; text2: string }[];
 }
 
 export default function CardSlider(props: ChildProps) {
-  useEffect(() => {
+  const carSlider = useRef(null);
+  const { contextSafe } = useGSAP();
+  useGSAP(() => {
     const inActiveSlide = document.querySelector(
       "#card-slider>.card-slide:not(.active)",
     );
@@ -15,8 +17,8 @@ export default function CardSlider(props: ChildProps) {
       rotation: -6,
       x: -44,
     });
-  }, []);
-  const handleNextSlide = () => {
+  }, [carSlider]);
+  const handleNextSlide = contextSafe(() => {
     const activeSlide = document.querySelector(
       "#card-slider>.card-slide.active",
     );
@@ -62,41 +64,46 @@ export default function CardSlider(props: ChildProps) {
         delay: -0.5,
         duration: 0.5,
       });
-  };
+  });
   // Cursor Follower Function
-  function moveCircle(e: { screenY: number; clientX: any; clientY: any }) {
-    const yskale = -(e.screenY / 100) * 1;
-    //console.log(e.clientX, e.clientY)
+  const moveCircle = contextSafe(
+    (e: { screenY: number; clientX: any; clientY: any }) => {
+      const yskale = -(e.screenY / 100) * 1;
+      //console.log(e.clientX, e.clientY)
+      gsap.to(".arrow-button", {
+        x: e.clientX,
+        y: e.clientY,
+        delay: 0,
+        duration: 0.2,
+      });
+    },
+  );
+  // On Mouse Enter
+  const handleMouseEnter = contextSafe(() => {
     gsap.to(".arrow-button", {
-      x: e.clientX,
-      y: e.clientY,
+      opacity: 1,
+      scale: 1,
+      rotation: 180,
       delay: 0,
-      duration: 0.2,
     });
-  }
+  });
+  // On Mouse Leave
+  const handleMouseLeave = contextSafe(() => {
+    gsap.to(".arrow-button", {
+      opacity: 0,
+      scale: 0,
+      rotation: 0,
+      delay: 0,
+    });
+  });
   return (
     <>
       <div
+        ref={carSlider}
         onClick={handleNextSlide}
-        onMouseMove={(e) => {
-          moveCircle(e);
-        }}
-        onMouseEnter={() => {
-          gsap.to(".arrow-button", {
-            opacity: 1,
-            scale: 1,
-            rotation: 180,
-            delay: 0,
-          });
-        }}
-        onMouseLeave={() => {
-          gsap.to(".arrow-button", {
-            opacity: 0,
-            scale: 0,
-            rotation: 0,
-            delay: 0,
-          });
-        }}
+        onMouseMove={moveCircle}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         className="arrow-slider w-117 relative z-10 cursor-none"
       >
         <div
@@ -109,7 +116,7 @@ export default function CardSlider(props: ChildProps) {
               <p
                 className="font-bold"
                 dangerouslySetInnerHTML={{
-                  __html: props?.SliderData[0]?.text1,
+                  __html: props?.SlideData[0]?.text1,
                 }}
               ></p>
             </div>
@@ -120,7 +127,7 @@ export default function CardSlider(props: ChildProps) {
               <p
                 className="font-bold"
                 dangerouslySetInnerHTML={{
-                  __html: props?.SliderData[0]?.text2,
+                  __html: props?.SlideData[0]?.text2,
                 }}
               ></p>
             </div>

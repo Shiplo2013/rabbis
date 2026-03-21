@@ -149,6 +149,7 @@ function Header() {
             hoverBgColor="bg-[#000000]"
             hoverTextColor="group-hover:text-[#FFFFFF]"
             text="הרימו תרומה"
+            svgIconClass={""}
           />
           <ThemeButton
             extraClass="py-3.5 px-5"
@@ -158,6 +159,7 @@ function Header() {
             hoverTextColor="group-hover:text-[#000000]"
             icon={buttonIcon2}
             text="ביטאון"
+            svgIconClass={""}
           />
           <div className="circle-button">
             <Link className="group relative" href="/">

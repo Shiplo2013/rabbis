@@ -66,6 +66,7 @@ export default function RabbisSlider(props: ChildProps) {
                     textColor="text-[#000000]"
                     hoverBgColor="bg-[#ffffff]"
                     fontSize="text-[19px]"
+                    svgIconClass={""}
                   />
                   <div className="content leading-[1em] text-[#D1A941] flex justify-center flex-col items-center gap-y-3">
                     <h3 className="text-[33px] ">רבי נתן צבי פינקל</h3>

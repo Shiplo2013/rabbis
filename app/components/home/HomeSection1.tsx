@@ -71,7 +71,7 @@ export default function HomeSection1(props: ChildProps) {
           id="cycle-preview"
           className="cycle-preview absolute left-[15%] top-1/6"
         >
-          <CardSlider SliderData={SliderData} />
+          <CardSlider SlideData={SliderData} />
         </div>
         <div
           id="home-post"
@@ -124,6 +124,7 @@ export default function HomeSection1(props: ChildProps) {
               textColor="text-[#000000]"
               hoverBgColor="bg-[#C3A13F]"
               svgIcon={<WishIcon className="group-hover:stroke-[#ffffff]" />}
+              svgIconClass={""}
             />
           </div>
         </div>

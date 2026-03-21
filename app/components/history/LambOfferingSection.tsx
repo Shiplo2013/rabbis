@@ -96,7 +96,7 @@ export default function LambOfferingSection(props: ChildProps) {
               dangerouslySetInnerHTML={{ __html: sectionData[0]?.title }}
             ></h2>
           </div>
-          <div className="content-bottomo text-[21px] flex gap-x-[5.2vw]">
+          <div className="content-bottom text-[21px] flex gap-x-[5.2vw]">
             <div className="text1 w-1/2">
               <p
                 dangerouslySetInnerHTML={{ __html: sectionData[0]?.text1 }}
