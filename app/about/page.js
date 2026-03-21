@@ -1,12 +1,26 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import arrowSectionBG2 from "../assets/images/arrow-section-bg.jpg";
+import arrowSectionImage from "../assets/images/arrow-section-image2.jpg";
+import timelineBG from "../assets/images/history-bg.jpg";
 import introBG5 from "../assets/images/intro-bg-5.jpg";
+import introBG6 from "../assets/images/intro-bg-6.jpg";
+import introBG7 from "../assets/images/intro-bg-7.jpg";
 import introBG3 from "../assets/images/intro-bg3.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import ArrowSliderSection from "../components/history/ArrowSliderSection";
+import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
+import ImageOnlySection from "../components/history/ImageOnlySection";
+import ImageOnlySection2 from "../components/history/ImageOnlySection2";
 import Introduction from "../components/history/Introduction";
 import LambOfferingSection from "../components/history/LambOfferingSection";
 import MoveToJerusalem from "../components/history/MoveToJerusalem";
+import OnlyTextSection from "../components/history/OnlyTextSection";
+import OnlyTextSection2 from "../components/history/OnlyTextSection2";
+import RabbisTimeline2 from "../components/history/RabbisTimeline2";
+import RabbisTimeline3 from "../components/history/RabbisTimeline3";
+import SingleVideoSection from "../components/history/SingleVideoSection";
 import TitleSection from "../components/history/TitleSection";
 import LoadingEffect from "../components/LoadingEffect";
 import {
@@ -30,9 +44,27 @@ export default function About() {
     title: `ירושלים של מעלה`,
     subtitle: `תרפ"ט - תשל"ו`,
   }]
+  const IntroData6 = [{
+    title: `גבעת<br/>מרדכי`,
+    subtitle: `תשל״ו - תשנ״ז`,
+  }]
+  const IntroData7 = [{
+    title: `הרחיבי מקום<br/>אוהלך`,
+    subtitle: `תשנ"ז - הווה`,
+  }]
   const IntroData4 = [{
     title: `פרעות תרפ״ט`,
   }]
+  const HistoryData = [{
+    content: `<p><strong>שנת תשכ"ז:</strong> מינוי רבי רפאל אהרן יפהן לר"מ</p><p><strong>שנת תשכ"ח:</strong> רבי מרדכי חברוני לר"מ</p>`
+  }]
+  //Arrow Slider Data
+  const SliderData = [
+    {
+      text1: `מתוך מכתב רבי יצחק הוטנר על שנות לימודיו בחברון:<br/>"כי אמנם מהרגע הראשון להתבצרותה של הישיבה על אדמת חברון, עלו והתבלטו שני קוים יסודיים בתכונת חייה: רעננות הלבבות והתמתחות השרירים לעבודת תורה ויראה. והלכו להם שני אלה והתלכדו לשטף אחד. קשה היה להגיד, מי כאן האב ומי התולדה:`,
+      text2: `שמחה מתוך עבודה או עבודה מתוך שמחה. והנכון דדא ודא היו בה: שמחה מתוך עבודה ועבודה מתוך שמחה, וכתר אצילות של תלמידי חכמים מבהיק על גביהם. ולא עוד אלא שנסתגל להם, לבאים, אוירא דארעא דישראל לראות ברכה יתירה בעמלם, וכל חד לפום דרגיה עלה והתעלה במדה לא צפויה.`,
+    },
+  ];
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -89,20 +121,14 @@ export default function About() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+="+ (window.innerHeight * 6),
+          end: "+="+ (window.innerHeight * 10),
           scrub: scurbScale,
           pin: true,
         }
       });
       verticalSection.to(wrapper.current, {
         x: () => ((wrapper.current.offsetWidth)  - window.innerWidth),
-        ease: "slow.inOut",
-        scrollTrigger: {
-          trigger: panel.current,
-          start: panel.current.offsetTop,
-          end: "+="+ ((window.innerHeight * 6) - 300),
-          scrub: scurbScale,
-        }
+        ease: "sine.out"
       });
 
     }
@@ -123,7 +149,18 @@ export default function About() {
           className="main opacity-0 relative overflow-hidden z-10"
       >
           <div ref={panel} id="panel-wrapper" className="w-screen h-screen flex items-end justify-end">
-              <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[510vw] h-screen`}>
+              <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[810vw] h-screen`}>
+                <Introduction animated={isAllAnimationComplete} bgImage={introBG7} data={IntroData7} extraClass={"panel-section min-w-[84vw] w-[84vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-20" bgClass="" bgOverlay={""} />
+                <OnlyTextSection2 animWidthText={0.1} extraClass={"min-w-[32.5vw] w-[32.5vw] h-screen"} />
+                <ImageOnlySection2 animWidthText={0.1} extraClass={"min-w-[55.5vw] w-[55.5vw] h-screen"} />
+                <RabbisTimeline3 animWidthText={0.1} extraClass={"min-w-[125vw] w-[125vw] h-screen"} />
+              <ArrowSliderSection animWidthText={0.1} extraClass={"min-w-[70vw] w-[70vw] h-screen"} bgImage={arrowSectionBG2} bgClass="" bgPosition="center" overlayClass="hidden" SlideData={SliderData} sectionImage={arrowSectionImage} />
+              <ImageOnlySection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
+              <SingleVideoSection animWidthText={0.1} extraClass={"min-w-[26vw] w-[26vw] h-screen"} />
+                <Introduction animated={isAllAnimationComplete} bgImage={introBG6} data={IntroData6} extraClass={"panel-section min-w-[78vw] w-[78vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-60" bgClass="" bgOverlay={""} />
+                <OnlyTextSection animWidthText={0.1} extraClass={"min-w-[32vw] w-[32vw] h-screen"} />
+              <RabbisTimeline2 animWidthText={0.1} extraClass={"min-w-[405vw] w-[405vw] h-screen"} bgImage={timelineBG} />
+              <HistoryQuoteSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} data={HistoryData} boxClass="max-w-[40vw]" />
                 <MoveToJerusalem animWidthText={0.1} extraClass={"min-w-[170vw] w-[170vw] h-screen"} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={false} />
                 <Introduction animated={isAllAnimationComplete} bgImage={introBG5} data={IntroData5} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#43493B] opacity-80" bgClass="" bgOverlay={""} />

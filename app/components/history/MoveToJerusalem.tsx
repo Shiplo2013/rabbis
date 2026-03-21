@@ -37,6 +37,7 @@ export default function MoveToJerusalem(props: ChildProps) {
                 textColor="text-[#000000]"
                 hoverBgColor="bg-[#C3A13F]"
                 text={`המעבר לירושלים`}
+                svgIconClass={""}
               />
             </div>
           </div>

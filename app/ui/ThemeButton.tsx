@@ -12,6 +12,7 @@ interface ChildProps {
   svgIcon?: React.ReactNode;
   buttonLink?: string;
   fontSize?: string;
+  svgIconClass: string;
 }
 
 export default function ThemeButton(props: ChildProps) {
@@ -35,7 +36,9 @@ export default function ThemeButton(props: ChildProps) {
             alt="Button"
           />
         ) : (
-          props?.svgIcon
+          <div className={`relative z-30 ${props?.svgIconClass}`}>
+            {props?.svgIcon}
+          </div>
         )}
         <span
           className={`btn-bg absolute z-10 left-0 top-0 w-full h-full ${props?.hoverBgColor}`}

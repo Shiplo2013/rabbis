@@ -65,6 +65,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
             textColor="text-[#000000]"
             hoverBgColor="bg-[#C3A13F]"
             text={`כל הרבנים`}
+            svgIconClass={""}
           />
         </div>
         <div className="period-title absolute top-[9.5vh] right-[9vw]">
