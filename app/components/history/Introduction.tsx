@@ -15,24 +15,8 @@ interface ChildProps {
 }
 
 export default function Introduction(props: ChildProps) {
-  // Cursor Follower Function
-  // function moveCircle(e: { screenY: number; clientX: any; clientY: any }) {
-  //   const yskale = -(e.screenY / 100) * 1;
-  //   //console.log(e.clientX, e.clientY)
-  //   gsap.to("#cursorFollower", { x: e.clientX, y: e.clientY, duration: 0.2 });
-  // }
   return (
     <section
-      // onClick={props.audioControl}
-      // onMouseMove={(e) => {
-      //   moveCircle(e);
-      // }}
-      // onMouseEnter={() => {
-      //   gsap.to("#cursorFollower", { opacity: 1, scale: 1 });
-      // }}
-      // onMouseLeave={() => {
-      //   gsap.to("#cursorFollower", { opacity: 0, scale: 0 });
-      // }}
       className={`${props.extraClass} overflow-hidden relative h-screen bg-black`}
     >
       {props.bgImage !== "" && (

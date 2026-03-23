@@ -38,11 +38,14 @@ import SingleVideoSection from "../components/history/SingleVideoSection";
 import TitleSection from "../components/history/TitleSection";
 import LoadingEffect from "../components/LoadingEffect";
 import HistoryTimeline from "../ui/HistoryTimeline";
-import { gsap, useGSAP } from "../ui/plugins";
+import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 import SingleImageSection from "../ui/SingleImageSection";
 import SlidingArrow from "../ui/SlidingArrow";
 import SmoothWrapper from "../ui/SmoothWrapper";
-import TitleSplit from "../ui/TitleSplit";
+import TitleSplitChars from "../ui/TitleSplitChars";
+import TitleSplitWords from "../ui/TitleSplitWords";
+
+gsap.registerPlugin(ScrollTrigger)
 
 
 export default function ChroniclesHistory() {
@@ -203,17 +206,17 @@ export default function ChroniclesHistory() {
     const userVisit = localStorage.getItem("hasVisited");
     if (userVisit === "true") {
       // Set Title
-      const headingTitle = TitleSplit('.first-intro .split-title', 'chars');
+      const headingTitle = TitleSplitChars('.first-intro .split-title');
       // Subtitle 
-      const headingContent = TitleSplit('.first-intro .split-content', 'words');
+      const headingContent = TitleSplitWords('.first-intro .split-content');
       // Page Timeline
       gsap.set(history.current, {opacity: 0, y: 50});
       // Timeline
       const tl = gsap.timeline({
         onComplete: () => {
-            // Set Animation Played to true
-            setIsAllAnimationComplete(true);
-          }
+          // Set Animation Played to true
+          setIsAllAnimationComplete(true);
+        }
       });
       tl.to("#page", {
         opacity: 1,
@@ -289,8 +292,6 @@ export default function ChroniclesHistory() {
       const introLine4 = document.querySelector(`.history-timeline .intro-4 .progress-line .border-line`);
       // Intro Line 5
       const introLine5 = document.querySelector(`.history-timeline .intro-5 .progress-line .border-line`);
-
-      
       
       // Vertical Section
       verticalSection = gsap.timeline({
@@ -382,27 +383,7 @@ export default function ChroniclesHistory() {
         //duration: 50,
         ease: "none"
       });
-      // History Content Section
-    //   const historyTitle = TitleSplit(".hiscont-title");
-    //   gsap.to(historyTitle, {
-    //         scrollTrigger: {
-    //             trigger: ".historyTitle",
-    //             toggleActions: "restart pause resume reverse",
-    //             start: "left center",
-    //             containerAnimation: verticalSection,
-    //             scrub: true,
-    //             markers: true,
-    //             horizontal: true,
-    //             invalidateOnRefresh: true,
-    //         },
-    //         duration: 0.5,
-    //         yPercent: 0,
-    //         opacity: 1,
-    //         //rotationX: 180,
-    //         //transformOrigin: "0% 50%",
-    //         ease: "slow.inOut",
-    //         stagger: 0.05,
-    //     });
+      ScrollTrigger.refresh();
     }
     // Return
     return () => {
@@ -440,7 +421,7 @@ export default function ChroniclesHistory() {
             >
               <Introduction animated={isAllAnimationComplete} bgImage={""} bgOverlay={""} data={IntroData1} extraClass={"first-intro panel-section min-w-screen w-screen"} panel={panel}  bgPosition="" overlayClass="hidden" bgClass="" />
               <ContentSection animWidthText={0.1} extraClass={"min-w-[80vw] w-[80vw] h-screen"} />
-              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={true} />
+              <TitleSection animWidthText={2} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={true} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
               <SingleImageSection animWidthText={0.1} extraClass={"min-w-[32vw] w-[32vw] h-screen"} image={HistoryImage1} />
               <MarkOfTheRoad animWidthText={0.1} extraClass={"min-w-[150vw] w-[150vw] h-screen"} />
