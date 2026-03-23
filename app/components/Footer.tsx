@@ -113,11 +113,11 @@ function Footer(props: ChildProps) {
     });
     // Privacy Policy
     gsap.set(".privacy-policy", {
-      yPercent: 100,
+      y: 100,
       opacity: 0,
     });
     gsap.to(".privacy-policy", {
-      yPercent: 0,
+      y: 0,
       opacity: 1,
       scrollTrigger: {
         trigger: footerRef.current,

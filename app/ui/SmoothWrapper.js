@@ -8,10 +8,10 @@ export default function SmoothWrapper({children}) {
     useGSAP(() => {
       // create the scrollSmoother before your scrollTriggers
       ScrollSmoother.create({
-        smooth: 2,
+        smooth: 1,
         effects: true,
         smoothTouch: 0.1,
-        normalizeScroll: true,
+        //normalizeScroll: true,
       });
     }, {scope: main});
   return (

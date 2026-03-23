@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import ApolloWrapper from "./ui/ApolloWrapper";
 
 export const metadata: Metadata = {
   title: "Rabbis",
@@ -45,7 +44,7 @@ export default function RootLayout({
       <body
         className={`${customFont.className} antialiased bg-black text-white overflow-x-hidden`}
       >
-        <ApolloWrapper>{children}</ApolloWrapper>
+        {children}
       </body>
     </html>
   );
