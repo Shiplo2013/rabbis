@@ -10,6 +10,68 @@ import rabbisImage6 from "../../assets/images/rabbis-timeline6.jpg";
 import rabbisImage7 from "../../assets/images/rabbis-timeline7.jpg";
 import rabbisImage8 from "../../assets/images/rabbis-timeline8.jpg";
 import rabbisImage9 from "../../assets/images/rabbis-timeline9.jpg";
+const RabbisData = [
+  {
+    type: "history",
+    image: rabbisImage5,
+    text: `שנת תר"ץ:<br/>מינוי רבי מאיר חדש כמשגיח`,
+    size: "portrait",
+  },
+  {
+    type: "history",
+    image: rabbisImage6,
+    text: `שנת תרצ"ד:<br/>פטירת רבי משה מרדכי אפשטיין`,
+    size: "portrait",
+  },
+  {
+    type: "history",
+    image: rabbisImage7,
+    text: `שנת תרצ"ד:<br/>מינוי רבי אהרן כהן ורבי משה חברוני לראשי ישיבה`,
+    size: "landscape",
+  },
+  {
+    type: "history",
+    image: rabbisImage8,
+    text: `שנת תרצ"ו:<br/>פטירת רבי  אריה יהודה לייב חסמן`,
+    size: "portrait",
+  },
+  {
+    type: "history",
+    image: rabbisImage9,
+    text: `שנת תרצ"ט:<br/> כניסה לבניין החדש`,
+    size: "landscape",
+  },
+  {
+    type: "history",
+    image: rabbisImage10,
+    text: `שנת תש"ז:<br/>מינוי רבי שמחה זיסל ברוידא ורבי אברהם יהודה פרבשטיין לרמי"ם`,
+    size: "landscape",
+  },
+  {
+    type: "history",
+    image: rabbisImage11,
+    text: `שנת תש"ח:<br/>הקמת סניף זמני לישיבה בראשות ראש הישיבה רבי אהרן כהן ב'היכל התלמוד' בתל אביב`,
+    size: "landscape",
+  },
+  {
+    type: "notification",
+    image: bookIcon,
+    text: `ירושלים מופגזת ונצורה - מכתב חיזוק מרבי יחזקאל סרנא`,
+    size: "small",
+  },
+  {
+    type: "history",
+    image: rabbisImage12,
+    text: `שנת תש"כ: <br/>מינוי הרב יצחק חברוני להנהלת הישיבה ולימים מונה לנשיא הישיבה.`,
+    size: "landscape",
+  },
+  {
+    type: "history",
+    image: rabbisImage13,
+    text: `שנת תשכ"ב:<br/>הנחת אבן הפינה לישיבה בגבעת מרדכי`,
+    size: "landscape",
+  },
+];
 
 interface ChildProps {
   extraClass: string;
@@ -17,67 +79,6 @@ interface ChildProps {
   bgImage: any;
 }
 function RabbisTimeline2(props: ChildProps) {
-  const RabbisData = [
-    {
-      type: "history",
-      image: rabbisImage5,
-      text: `שנת תר"ץ:<br/>מינוי רבי מאיר חדש כמשגיח`,
-      size: "portrait",
-    },
-    {
-      type: "history",
-      image: rabbisImage6,
-      text: `שנת תרצ"ד:<br/>פטירת רבי משה מרדכי אפשטיין`,
-      size: "portrait",
-    },
-    {
-      type: "history",
-      image: rabbisImage7,
-      text: `שנת תרצ"ד:<br/>מינוי רבי אהרן כהן ורבי משה חברוני לראשי ישיבה`,
-      size: "landscape",
-    },
-    {
-      type: "history",
-      image: rabbisImage8,
-      text: `שנת תרצ"ו:<br/>פטירת רבי  אריה יהודה לייב חסמן`,
-      size: "portrait",
-    },
-    {
-      type: "history",
-      image: rabbisImage9,
-      text: `שנת תרצ"ט:<br/> כניסה לבניין החדש`,
-      size: "landscape",
-    },
-    {
-      type: "history",
-      image: rabbisImage10,
-      text: `שנת תש"ז:<br/>מינוי רבי שמחה זיסל ברוידא ורבי אברהם יהודה פרבשטיין לרמי"ם`,
-      size: "landscape",
-    },
-    {
-      type: "history",
-      image: rabbisImage11,
-      text: `שנת תש"ח:<br/>הקמת סניף זמני לישיבה בראשות ראש הישיבה רבי אהרן כהן ב'היכל התלמוד' בתל אביב`,
-      size: "landscape",
-    },
-    {
-      type: "notification",
-      title: `ירושלים מופגזת ונצורה - מכתב חיזוק מרבי יחזקאל סרנא`,
-      icon: bookIcon,
-    },
-    {
-      type: "history",
-      image: rabbisImage12,
-      text: `שנת תש"כ: <br/>מינוי הרב יצחק חברוני להנהלת הישיבה ולימים מונה לנשיא הישיבה.`,
-      size: "landscape",
-    },
-    {
-      type: "history",
-      image: rabbisImage13,
-      text: `שנת תשכ"ב:<br/>הנחת אבן הפינה לישיבה בגבעת מרדכי`,
-      size: "landscape",
-    },
-  ];
   return (
     <section
       dir="rtl"
@@ -99,9 +100,6 @@ function RabbisTimeline2(props: ChildProps) {
         <div className="rabbis-timeline flex gap-x-[20vw] relative">
           {RabbisData.map((item, index) => {
             //console.log(item);
-            const image = item?.icon?.src ?? "";
-            const title = item?.title ?? "";
-            const blurImage = item?.image?.blurDataURL ?? "";
             if (item.type === "notification") {
               return (
                 <div
@@ -111,11 +109,11 @@ function RabbisTimeline2(props: ChildProps) {
                   <div className="notify-icon w-50.5 h-33.75 absolute top-0 left-0 -translate-x-1/2">
                     <Image
                       className="w-full object-cover object-center h-full"
-                      src={image}
+                      src={item?.image?.src || ""}
                       width={"202"}
                       height={"135"}
-                      blurDataURL={item?.icon?.blurDataURL}
-                      placeholder={"blur"}
+                      //blurDataURL={item?.image?.blurDataURL || ""}
+                      //placeholder={"blur"}
                       loading="lazy"
                       alt={"Book Icon"}
                     />
@@ -123,7 +121,7 @@ function RabbisTimeline2(props: ChildProps) {
                   <p
                     className="text-[20px] leading-[1.25em]"
                     dangerouslySetInnerHTML={{
-                      __html: title,
+                      __html: item?.text || "",
                     }}
                   ></p>
                 </div>
@@ -138,10 +136,10 @@ function RabbisTimeline2(props: ChildProps) {
                     <div className="image w-64.5 h-76.25">
                       <Image
                         className="w-full object-cover object-center h-full relative z-10"
-                        src={image}
+                        src={item.image.src}
                         width="258"
                         height="305"
-                        blurDataURL={item?.image?.blurDataURL}
+                        blurDataURL={item.image.blurDataURL}
                         placeholder={"blur"}
                         loading="lazy"
                         alt="Rabbis Image"
@@ -151,10 +149,10 @@ function RabbisTimeline2(props: ChildProps) {
                     <div className="image w-111.5 h-76.25">
                       <Image
                         className="w-full object-cover object-center h-full relative z-10"
-                        src={image}
+                        src={item?.image?.src || ""}
                         width="446"
                         height="305"
-                        blurDataURL={blurImage}
+                        blurDataURL={item?.image.blurDataURL || ""}
                         placeholder={"blur"}
                         loading="lazy"
                         alt="Rabbis Image"

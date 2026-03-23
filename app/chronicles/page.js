@@ -126,12 +126,75 @@ export default function ChroniclesHistory() {
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
 
+  const mainContainer = useRef(null);
   const panel = useRef(null);
   const wrapper = useRef(null);
   const history = useRef(null);
   const progress = useRef(null);
 
   const {contextSafe} = useGSAP();
+
+  // Get Intro Right Position
+  function getRightPosition(selector) {
+      const intro = document.querySelector(selector);
+      const introObj = intro.getBoundingClientRect();
+      const introRight = Math.floor(window.innerWidth - introObj.right);
+      return introRight;
+  }
+
+  // Complete Timeline Function
+  function completeTimeline(selector) {
+    // Timeline Complete
+    const intro = document.querySelector(`.history-timeline ${selector}`);
+    const hasActiveClass = intro.classList.contains("complete");
+    if(!hasActiveClass) {
+      intro.classList.add("complete");
+    }
+  }
+
+  // Incomplete Timeline
+  function incompleteTimeline(selector) {
+    const intro = document.querySelector(`.history-timeline ${selector}`);
+    const hasActiveClass = intro.classList.contains("complete");
+    if(hasActiveClass) {
+      intro.classList.remove("complete");
+    }
+  }
+
+  // Active Timeline
+  function activeTimeline(selector) {
+    const intro = document.querySelector(`.history-timeline ${selector}`);
+    const hasActiveClass = intro.classList.contains("active");
+    if(!hasActiveClass) {
+      intro.classList.add("active");
+    }
+  }
+
+  // Inactive Timeline
+  function inActiveTimeline(selector) {
+    const intro = document.querySelector(`.history-timeline ${selector}`);
+    const hasActiveClass = intro.classList.contains("active");
+    if(hasActiveClass) {
+      intro.classList.remove("active");
+    }
+  }
+
+  // Intro Updating Function
+  // const introUpdating = contextSafe((selector, section, position, line, start) => {
+  //   // Active Timeline 1
+  //   if(selector === ".intro-1") {
+  //     completeTimeline(selector);
+  //   }
+  //   // Current Timeline
+  //   const offsetRight = getRightPosition(section);
+  //   if(offsetRight > start) {
+  //     if(selector !== ".intro-1") {
+  //       completeTimeline(selector);
+  //     }
+  //     const introPercent = Math.round(((position - offsetRight)/position)*100);
+  //     gsap.to(line, { width: `${introPercent}%` });
+  //   }
+  // });
 
   // Load Page 
   useGSAP(() => {
@@ -204,7 +267,30 @@ export default function ChroniclesHistory() {
     if (typeof window !== 'undefined' && panel) {
       // Overflow body
       document.body.classList.add("overflow-x-hidden", "overscroll-none");
-      const scurbScale = 2;
+      const scurbScale = true;
+      // Select Part 1 timeline
+      const intro2Right = getRightPosition(".second-intro");
+      // Select Part 2 timeline
+      const intro3Right = getRightPosition(".third-intro");
+      // Select Part 3 timeline
+      const intro4Right = getRightPosition(".fourth-intro");
+      // Select Part 4 timeline
+      const intro5Right = getRightPosition(".fifth-intro");
+      // Select Part 5 timeline
+      const intro6Right = getRightPosition(".sixth-intro");
+
+      // Intro Line 1
+      const introLine1 = document.querySelector(`.history-timeline .intro-1 .progress-line .border-line`);
+      // Intro Line 2
+      const introLine2 = document.querySelector(`.history-timeline .intro-2 .progress-line .border-line`);
+      // Intro Line 3
+      const introLine3 = document.querySelector(`.history-timeline .intro-3 .progress-line .border-line`);
+      // Intro Line 4
+      const introLine4 = document.querySelector(`.history-timeline .intro-4 .progress-line .border-line`);
+      // Intro Line 5
+      const introLine5 = document.querySelector(`.history-timeline .intro-5 .progress-line .border-line`);
+
+      
       
       // Vertical Section
       verticalSection = gsap.timeline({
@@ -215,8 +301,75 @@ export default function ChroniclesHistory() {
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
-            //gsap.to(progress.current, { width: `${(100*self.progress)}%` });
-            if(self.progress === 1) {
+            // First Chapter
+            const offsetRight = getRightPosition(".second-intro");
+            if(offsetRight > 0 && offsetRight < intro2Right) {
+              activeTimeline(".intro-1");
+              completeTimeline(".intro-1");
+
+              const introPercent = Math.round(((intro2Right - offsetRight)/intro2Right)*100);
+              gsap.to(introLine1, { width: `${introPercent}%`, delay: 0, duration: 0.1 });
+            } else {
+              inActiveTimeline(".intro-1");
+            }
+            // Second Chapter
+            const offsetRight2 = getRightPosition(".third-intro");
+            if(offsetRight2 > 0 && offsetRight2 < (intro3Right - intro2Right)) {
+              const chapterWidth = intro3Right - intro2Right;
+              const currentPost = chapterWidth - offsetRight2;
+              activeTimeline(".intro-2");
+              completeTimeline(".intro-2");
+              const introPercent = Math.round((currentPost/chapterWidth)*100);
+              gsap.to(introLine2, { width: `${introPercent}%`, delay: 0, duration: 0.1 });
+            } else {
+              inActiveTimeline(".intro-2");
+            }
+            // Third Chapter
+            const offsetRight3 = getRightPosition(".fourth-intro");
+            if(offsetRight3 > 0 && offsetRight3 < (intro4Right - intro3Right)) {
+              const chapterWidth = intro4Right - intro3Right;
+              const currentPost = chapterWidth - offsetRight3;
+              activeTimeline(".intro-3");
+              completeTimeline(".intro-3");
+              const introPercent = Math.round((currentPost/chapterWidth)*100);
+              gsap.to(introLine3, { width: `${introPercent}%`, delay: 0, duration: 0.1  });
+            } else {
+              inActiveTimeline(".intro-3");
+            }
+            // Fourth Chapter
+            const offsetRight4 = getRightPosition(".fifth-intro");
+            if(offsetRight4 > 0 && offsetRight4 < (intro5Right - intro4Right)) {
+              const chapterWidth = intro5Right - intro4Right;
+              const currentPost = chapterWidth - offsetRight4;
+              activeTimeline(".intro-4");
+              completeTimeline(".intro-4");
+              const introPercent = Math.round((currentPost/chapterWidth)*100);
+              gsap.to(introLine4, { width: `${introPercent}%`, delay: 0, duration: 0.1 });
+            } else {
+              inActiveTimeline(".intro-4");
+            }
+            // Fifth Chapter
+            const offsetRight5 = getRightPosition(".sixth-intro");
+            if(offsetRight5 > 0 && offsetRight5 < (intro6Right - intro5Right)) {
+              const chapterWidth = intro6Right - intro5Right;
+              const currentPost = chapterWidth - offsetRight5;
+              activeTimeline(".intro-5");
+              completeTimeline(".intro-5");
+              const introPercent = Math.round((currentPost/chapterWidth)*100);
+              gsap.to(introLine5, { width: `${introPercent}%`, delay: 0, duration: 0.1 });
+            } else {
+              inActiveTimeline(".intro-5");
+            }
+            // Sixth Chapter
+            if(offsetRight5 < 0){
+              completeTimeline(".intro-6");
+              activeTimeline(".intro-6");
+            } else {
+              inActiveTimeline(".intro-6");
+            }
+
+
+            if(self.progress > 0.99) {
               gsap.to(history.current, {display: "none", duration: 0.1, delay: 0});
             } else {
               gsap.to(history.current, {display: "block", duration: 0.1, delay: 0});
@@ -227,7 +380,7 @@ export default function ChroniclesHistory() {
       verticalSection.to(wrapper.current, {
         x: () => ((wrapper.current.offsetWidth)  - window.innerWidth),
         //duration: 50,
-        ease: "sine.out"
+        ease: "none"
       });
       // History Content Section
     //   const historyTitle = TitleSplit(".hiscont-title");
@@ -255,7 +408,7 @@ export default function ChroniclesHistory() {
     return () => {
       verticalSection.kill()
     };
-  }, {scope: panel});
+  }, {scope: mainContainer});
 
   useEffect(() => {
     window.onbeforeunload = function () {
@@ -263,7 +416,10 @@ export default function ChroniclesHistory() {
     };
   }, []);
   return (
-    <div className="relative overflow-hidden">
+    <div 
+    ref={mainContainer}
+    id="page"
+    className="relative overflow-hidden">
       <LoadingEffect animated={setAnimationPlayed} />
       <Header />
       <SmoothWrapper>
@@ -290,12 +446,12 @@ export default function ChroniclesHistory() {
               <MarkOfTheRoad animWidthText={0.1} extraClass={"min-w-[150vw] w-[150vw] h-screen"} />
               <RabbisTimeline animWidthText={0.1} extraClass={"min-w-[150vw] w-[150vw] h-screen"} bgImage={timelineBG} />
               <HistoryQuoteSection animWidthText={0.1} extraClass={"min-w-[45vw] w-[45vw] h-screen"} data={QuoteData} boxClass="translate-x-[6vw]" />
-              <Introduction animated={isAllAnimationComplete} bgImage={IntroBG} bgOverlay={""} data={IntroData2} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#57717A] opacity-70" bgClass="" />
+              <Introduction animated={isAllAnimationComplete} bgImage={IntroBG} bgOverlay={""} data={IntroData2} extraClass={"second-intro panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#57717A] opacity-70" bgClass="" />
               <NewsPapperSection animWidthText={0.1} extraClass={"min-w-[128vw] w-[128vw] h-screen"} bgImage={NewsSectionBG} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={true} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
               <MarkOfTheRoad2 animWidthText={0.1} extraClass={"min-w-[210vw] w-[210vw] h-screen"} />
-              <Introduction animated={isAllAnimationComplete} bgImage={IntroBG2} data={IntroData3} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="hidden" bgClass="opacity-40" bgOverlay={IntroBGoverlay} />
+              <Introduction animated={isAllAnimationComplete} bgImage={IntroBG2} data={IntroData3} extraClass={"third-intro panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="hidden" bgClass="opacity-40" bgOverlay={IntroBGoverlay} />
               <ArrowSliderSection animWidthText={0.1} extraClass={"min-w-[65.8vw] w-[65.8vw] h-screen"} bgImage={arrowSectionBG} bgClass="" bgPosition="center" overlayClass="hidden" SlideData={SliderData} sectionImage={sectionImage} />
               <EvidenceOfPeriod animWidthText={0.1} extraClass={"min-w-[93vw] w-[93vw] h-screen"} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={true} />
@@ -303,23 +459,23 @@ export default function ChroniclesHistory() {
               <MarkOfTheRoad3 animWidthText={0.1} extraClass={"min-w-[285vw] w-[285vw] h-screen"} />
               <Introduction animated={isAllAnimationComplete} bgImage={introBG3} data={IntroData4} extraClass={"panel-section min-w-[75vw] w-[75vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-40" bgClass="" bgOverlay={""} />
               <LambOfferingSection animWidthText={0.1} extraClass={"min-w-[146vw] w-[146vw] h-screen"} />
-              <Introduction animated={isAllAnimationComplete} bgImage={introBG5} data={IntroData5} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#43493B] opacity-80" bgClass="" bgOverlay={""} />
+              <Introduction animated={isAllAnimationComplete} bgImage={introBG5} data={IntroData5} extraClass={"fourth-intro panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#43493B] opacity-80" bgClass="" bgOverlay={""} />
               <MoveToJerusalem animWidthText={0.1} extraClass={"min-w-[170vw] w-[170vw] h-screen"} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={false} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
               <RabbisTimeline2 animWidthText={0.1} extraClass={"min-w-[405vw] w-[405vw] h-screen"} bgImage={timelineBG} />
               <HistoryQuoteSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} data={QuoteData2} boxClass="max-w-[40vw]" />
-              <Introduction animated={isAllAnimationComplete} bgImage={introBG6} data={IntroData6} extraClass={"panel-section min-w-[78vw] w-[78vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-60" bgClass="" bgOverlay={""} />
+              <Introduction animated={isAllAnimationComplete} bgImage={introBG6} data={IntroData6} extraClass={"fifth-intro panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-60" bgClass="" bgOverlay={""} />
               <OnlyTextSection animWidthText={0.1} extraClass={"min-w-[32vw] w-[32vw] h-screen"} />
               <ArrowSliderSection animWidthText={0.1} extraClass={"min-w-[70vw] w-[70vw] h-screen"} bgImage={arrowSectionBG2} bgClass="" bgPosition="center" overlayClass="hidden" SlideData={SliderData} sectionImage={arrowSectionImage} />
               <ImageOnlySection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
               <SingleVideoSection animWidthText={0.1} extraClass={"min-w-[26vw] w-[26vw] h-screen"} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={false} />
               <RabbisPeriodSection animWidthText={0.1} extraClass={"min-w-[90vw] w-[90vw] h-screen"} />
-                <RabbisTimeline3 animWidthText={0.1} extraClass={"min-w-[125vw] w-[125vw] h-screen"} />
-                <Introduction animated={isAllAnimationComplete} bgImage={introBG7} data={IntroData7} extraClass={"panel-section min-w-[84vw] w-[84vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-20" bgClass="" bgOverlay={""} />
-                <OnlyTextSection2 animWidthText={0.1} extraClass={"min-w-[32.5vw] w-[32.5vw] h-screen"} />
-                <ImageOnlySection2 animWidthText={0.1} extraClass={"min-w-[55.5vw] w-[55.5vw] h-screen"} />
+              <RabbisTimeline3 animWidthText={0.1} extraClass={"min-w-[125vw] w-[125vw] h-screen"} />
+              <Introduction animated={isAllAnimationComplete} bgImage={introBG7} data={IntroData7} extraClass={"sixth-intro panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-20" bgClass="" bgOverlay={""} />
+              <OnlyTextSection2 animWidthText={0.1} extraClass={"min-w-[32.5vw] w-[32.5vw] h-screen"} />
+              <ImageOnlySection2 animWidthText={0.1} extraClass={"min-w-[55.5vw] w-[55.5vw] h-screen"} />
             </div>
           </div>
         </main>

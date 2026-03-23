@@ -121,7 +121,7 @@ export default function About() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+="+ (window.innerHeight * 10),
+          end: "+="+ (window.innerWidth * 10),
           scrub: scurbScale,
           pin: true,
         }
@@ -149,7 +149,8 @@ export default function About() {
           className="main opacity-0 relative overflow-hidden z-10"
       >
           <div ref={panel} id="panel-wrapper" className="w-screen h-screen flex items-end justify-end">
-              <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[810vw] h-screen`}>
+              <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[1000vw] h-screen`}>
+              <RabbisTimeline2 animWidthText={0.1} extraClass={"min-w-[405vw] w-[405vw] h-screen"} bgImage={timelineBG} />
                 <Introduction animated={isAllAnimationComplete} bgImage={introBG7} data={IntroData7} extraClass={"panel-section min-w-[84vw] w-[84vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-20" bgClass="" bgOverlay={""} />
                 <OnlyTextSection2 animWidthText={0.1} extraClass={"min-w-[32.5vw] w-[32.5vw] h-screen"} />
                 <ImageOnlySection2 animWidthText={0.1} extraClass={"min-w-[55.5vw] w-[55.5vw] h-screen"} />
@@ -159,7 +160,6 @@ export default function About() {
               <SingleVideoSection animWidthText={0.1} extraClass={"min-w-[26vw] w-[26vw] h-screen"} />
                 <Introduction animated={isAllAnimationComplete} bgImage={introBG6} data={IntroData6} extraClass={"panel-section min-w-[78vw] w-[78vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-60" bgClass="" bgOverlay={""} />
                 <OnlyTextSection animWidthText={0.1} extraClass={"min-w-[32vw] w-[32vw] h-screen"} />
-              <RabbisTimeline2 animWidthText={0.1} extraClass={"min-w-[405vw] w-[405vw] h-screen"} bgImage={timelineBG} />
               <HistoryQuoteSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} data={HistoryData} boxClass="max-w-[40vw]" />
                 <MoveToJerusalem animWidthText={0.1} extraClass={"min-w-[170vw] w-[170vw] h-screen"} />
               <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={false} />
