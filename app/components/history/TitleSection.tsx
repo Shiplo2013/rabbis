@@ -1,6 +1,5 @@
 import TitleSplit from "@/app/ui/TitleSplit";
 import Image from "next/image";
-import { useEffect } from "react";
 import TitleImage from "../../assets/images/title-image.png";
 import rightShape from "../../assets/images/title-shape1.png";
 import leftShape from "../../assets/images/title-shape2.png";
@@ -37,9 +36,9 @@ export default function TitleSection(props: ChildProps) {
       });
     });
   }, []);
-  useEffect(() => {
-    console.log();
-  }, []);
+  // useEffect(() => {
+  //   console.log();
+  // }, []);
   return (
     <section
       dir="rtl"
