@@ -43,14 +43,18 @@ export default function Introduction(props: ChildProps) {
       )}
       <div dir="rtl" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-center">
-          <h1
-            className="split-title text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 flex justify-center"
-            dangerouslySetInnerHTML={{ __html: props.data[0].title }}
-          ></h1>
-          <h4
-            className="split-content overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30"
-            dangerouslySetInnerHTML={{ __html: props.data[0].subtitle }}
-          ></h4>
+          <h1 className="split-title text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 flex justify-center">
+            <span
+              className="block text"
+              dangerouslySetInnerHTML={{ __html: props.data[0].title }}
+            ></span>
+          </h1>
+          <h4 className="split-content overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30">
+            <span
+              className="block text"
+              dangerouslySetInnerHTML={{ __html: props.data[0].subtitle }}
+            ></span>
+          </h4>
         </div>
       </div>
     </section>

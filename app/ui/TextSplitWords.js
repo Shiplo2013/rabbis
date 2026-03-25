@@ -5,7 +5,7 @@ import {
 
 gsap.registerPlugin(SplitText);
 
-export default function ContenteSplit(item) {
+export default function TextSplitWords(item) {
     // Title Split
     var content = SplitText.create(item, { 
         type: "words", 

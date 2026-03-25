@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import CursorFollow from "./components/CursorFollow";
 import Footer from "./components/Footer";
@@ -30,6 +31,9 @@ export default function Home() {
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+
+  // Router Path
+  const pathname = usePathname();
 
   // Load Page 
   useGSAP(() => {
@@ -129,7 +133,7 @@ export default function Home() {
     return () => {
       verticalSection.kill()
     };
-  }, {scope: panel});
+  }, [pathname]);
 
   // Play Pause State
   const [isPlaying, setIsPlaying] = useState(false);

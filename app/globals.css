@@ -336,6 +336,11 @@
         }
       }
     }
+    section {
+      .direction-rtl {
+        direction: rtl;
+      }
+    }
   }
 }
 body {

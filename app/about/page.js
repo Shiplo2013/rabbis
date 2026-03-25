@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import arrowSectionBG2 from "../assets/images/arrow-section-bg.jpg";
 import arrowSectionImage from "../assets/images/arrow-section-image2.jpg";
@@ -10,6 +11,7 @@ import introBG3 from "../assets/images/intro-bg3.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ArrowSliderSection from "../components/history/ArrowSliderSection";
+import ContentSection from "../components/history/ContentSection";
 import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
 import ImageOnlySection from "../components/history/ImageOnlySection";
 import ImageOnlySection2 from "../components/history/ImageOnlySection2";
@@ -68,6 +70,8 @@ export default function About() {
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+  // Router
+  const pathname = usePathname();
 
   // Load Page 
   useEffect(() => {
@@ -124,19 +128,30 @@ export default function About() {
           end: "+="+ (window.innerWidth * 10),
           scrub: scurbScale,
           pin: true,
+          anticipatePin: 1,
+          //pinType: "fixed",
+          invalidateOnRefresh: true,
         }
       });
       verticalSection.to(wrapper.current, {
         x: () => ((wrapper.current.offsetWidth)  - window.innerWidth),
-        ease: "sine.out"
+        ease: "none"
       });
+      // History Content
+      //const historyTitle = TextSplitLines(".history-content .hiscont-title");
 
     }
     // Return
     return () => {
       verticalSection.kill()
     };
-  }, {scope: panel});
+  }, [pathname]);
+
+    useEffect(() => {
+    window.onbeforeunload = function () {
+      window.scrollTo(0, 0);
+    };
+  }, []);
 
   return (
     <div className="relative overflow-hidden">
@@ -150,22 +165,23 @@ export default function About() {
       >
           <div ref={panel} id="panel-wrapper" className="w-screen h-screen flex items-end justify-end">
               <div ref={wrapper} id="section-wrapper" className={`section-wrapp flex flex-nowrap flex-row-reverse w-[1000vw] h-screen`}>
-              <RabbisTimeline2 animWidthText={0.1} extraClass={"min-w-[405vw] w-[405vw] h-screen"} bgImage={timelineBG} />
-                <Introduction animated={isAllAnimationComplete} bgImage={introBG7} data={IntroData7} extraClass={"panel-section min-w-[84vw] w-[84vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-20" bgClass="" bgOverlay={""} />
-                <OnlyTextSection2 animWidthText={0.1} extraClass={"min-w-[32.5vw] w-[32.5vw] h-screen"} />
-                <ImageOnlySection2 animWidthText={0.1} extraClass={"min-w-[55.5vw] w-[55.5vw] h-screen"} />
-                <RabbisTimeline3 animWidthText={0.1} extraClass={"min-w-[125vw] w-[125vw] h-screen"} />
-              <ArrowSliderSection animWidthText={0.1} extraClass={"min-w-[70vw] w-[70vw] h-screen"} bgImage={arrowSectionBG2} bgClass="" bgPosition="center" overlayClass="hidden" SlideData={SliderData} sectionImage={arrowSectionImage} />
-              <ImageOnlySection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} />
-              <SingleVideoSection animWidthText={0.1} extraClass={"min-w-[26vw] w-[26vw] h-screen"} />
-                <Introduction animated={isAllAnimationComplete} bgImage={introBG6} data={IntroData6} extraClass={"panel-section min-w-[78vw] w-[78vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-60" bgClass="" bgOverlay={""} />
-                <OnlyTextSection animWidthText={0.1} extraClass={"min-w-[32vw] w-[32vw] h-screen"} />
-              <HistoryQuoteSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} data={HistoryData} boxClass="max-w-[40vw]" />
-                <MoveToJerusalem animWidthText={0.1} extraClass={"min-w-[170vw] w-[170vw] h-screen"} />
-              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen"} leftShape={true} rightShape={false} />
-                <Introduction animated={isAllAnimationComplete} bgImage={introBG5} data={IntroData5} extraClass={"panel-section min-w-screen w-screen"} panel={panel} bgPosition="" overlayClass="bg-[#43493B] opacity-80" bgClass="" bgOverlay={""} />
-                <LambOfferingSection animWidthText={0.1} extraClass={"min-w-[146vw] w-[146vw] h-screen"} />
-                <Introduction animated={isAllAnimationComplete} bgImage={introBG3} data={IntroData4} extraClass={"panel-section min-w-[75vw] w-[75vw]"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-40" bgClass="" bgOverlay={""} />
+                <Introduction animated={isAllAnimationComplete} bgImage={introBG7} data={IntroData7} extraClass={"panel-section min-w-[84vw] w-[84vw] will-change-transform"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-20" bgClass="" bgOverlay={""} />
+                <ContentSection animWidthText={0.1} extraClass={"min-w-[80vw] w-[80vw] h-screen panel-section will-change-transform"} />
+              <RabbisTimeline2 animWidthText={0.1} extraClass={"min-w-[405vw] w-[405vw] h-screen will-change-transform"} bgImage={timelineBG} />
+                <OnlyTextSection2 animWidthText={0.1} extraClass={"min-w-[32.5vw] w-[32.5vw] h-screen will-change-transform"} />
+                <ImageOnlySection2 animWidthText={0.1} extraClass={"min-w-[55.5vw] w-[55.5vw] h-screen will-change-transform"} />
+                <RabbisTimeline3 animWidthText={0.1} extraClass={"min-w-[125vw] w-[125vw] h-screen will-change-transform"} />
+              <ArrowSliderSection animWidthText={0.1} extraClass={"min-w-[70vw] w-[70vw] h-screen will-change-transform"} bgImage={arrowSectionBG2} bgClass="" bgPosition="center" overlayClass="hidden" SlideData={SliderData} sectionImage={arrowSectionImage} />
+              <ImageOnlySection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen will-change-transform"} />
+              <SingleVideoSection animWidthText={0.1} extraClass={"min-w-[26vw] w-[26vw] h-screen will-change-transform"} />
+                <Introduction animated={isAllAnimationComplete} bgImage={introBG6} data={IntroData6} extraClass={"panel-section min-w-[78vw] w-[78vw] will-change-transform"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-60" bgClass="" bgOverlay={""} />
+                <OnlyTextSection animWidthText={0.1} extraClass={"min-w-[32vw] w-[32vw] h-screen will-change-transform"} />
+              <HistoryQuoteSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen will-change-transform"} data={HistoryData} boxClass="max-w-[40vw]" />
+                <MoveToJerusalem animWidthText={0.1} extraClass={"min-w-[170vw] w-[170vw] h-screen will-change-transform"} />
+              <TitleSection animWidthText={0.1} extraClass={"min-w-[50vw] w-[50vw] h-screen will-change-transform"} leftShape={true} rightShape={false} />
+                <Introduction animated={isAllAnimationComplete} bgImage={introBG5} data={IntroData5} extraClass={"panel-section min-w-screen w-screen will-change-transform"} panel={panel} bgPosition="" overlayClass="bg-[#43493B] opacity-80" bgClass="" bgOverlay={""} />
+                <LambOfferingSection animWidthText={0.1} extraClass={"min-w-[146vw] w-[146vw] h-screen will-change-transform"} />
+                <Introduction animated={isAllAnimationComplete} bgImage={introBG3} data={IntroData4} extraClass={"panel-section min-w-[75vw] w-[75vw] will-change-transform"} panel={panel} bgPosition="" overlayClass="bg-[#000000] opacity-40" bgClass="" bgOverlay={""} />
               </div>
           </div>
       </main>

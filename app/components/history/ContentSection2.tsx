@@ -1,3 +1,4 @@
+import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import contentBG from "../../assets/images/content-bg.jpg";
@@ -11,7 +12,7 @@ interface ChildProps {
   animWidthText: number;
 }
 
-export default function ContentSection(props: ChildProps) {
+export default function ContentSection2(props: ChildProps) {
   // Selectors
   const heading = useRef<HTMLHeadingElement>(null);
   const content1 = useRef<HTMLDivElement>(null);
@@ -34,15 +35,15 @@ export default function ContentSection(props: ChildProps) {
       let splititle;
       SplitText.create(heading.current, {
         type: "lines",
-        linesClass: "line",
+        linesClass: "line direction-rtl",
         autoSplit: true,
         mask: "lines",
         onSplit: (self) => {
           splititle = gsap.from(self.lines, {
-            duration: 0.6,
+            duration: 0.7,
             yPercent: 100,
             opacity: 0,
-            stagger: 0.1,
+            stagger: 0.05,
             ease: "expo.out",
             scrollTrigger: {
               start: () => {
@@ -58,7 +59,7 @@ export default function ContentSection(props: ChildProps) {
       let spContent1;
       SplitText.create(content1.current, {
         type: "lines",
-        linesClass: "line",
+        linesClass: "line direction-rtl",
         autoSplit: true,
         mask: "lines",
         onSplit: (self) => {
@@ -66,7 +67,7 @@ export default function ContentSection(props: ChildProps) {
             duration: 0.6,
             yPercent: 100,
             opacity: 0,
-            stagger: 0.1,
+            stagger: 0.05,
             ease: "expo.out",
             scrollTrigger: {
               start: () => {
@@ -82,19 +83,19 @@ export default function ContentSection(props: ChildProps) {
       let spContent2;
       SplitText.create(content2.current, {
         type: "lines",
-        linesClass: "line",
-        autoSplit: true,
+        linesClass: "line direction-rtl",
+        autoSplit: false,
         mask: "lines",
         onSplit: (self) => {
           spContent2 = gsap.from(self.lines, {
             duration: 0.6,
             yPercent: 100,
             opacity: 0,
-            stagger: 0.1,
+            stagger: 0.05,
             ease: "expo.out",
             scrollTrigger: {
               start: () => {
-                return window.innerWidth * props.animWidthText;
+                return window.innerWidth * (props.animWidthText + 0.4);
               },
             },
           });
@@ -102,36 +103,29 @@ export default function ContentSection(props: ChildProps) {
         },
       });
     });
-  }, [pathname]);
+  }, []);
   return (
     <section
-      dir="rtl"
-      className={`${props.extraClass} history-content flex items-center relative justify-center`}
+      className={`${props.extraClass} flex items-center justify-center flex-col relative`}
     >
       <ParallaxBackground
         bgImage={contentBG}
         overlayLeft={false}
         overlayLeftColor={""}
       />
-      <div className="w-[80%] relative z-40 text-[21px] text-[#3D3B37] flex gap-x-[7.5vw] pl-[3vw]">
-        <div className="content-right w-1/2">
+      <div className="w-full h-full flex items-center justify-center flex-row-reverse text-[21px] text-[#3D3B37] gap-x-[7.5vw] px-[10.4vw] relative z-20">
+        <div className="w-1/2">
           <div className="text-[44px] leading-[1em] mb-5 w-full">
             <h2 ref={heading} className="hiscont-title overflow-hidden w-full">
               {sectionData[0].title}
             </h2>
           </div>
-          <div
-            ref={content1}
-            className="hiscont-text demoText overflow-hidden"
-            dangerouslySetInnerHTML={{ __html: sectionData[0].text1 }}
-          ></div>
+          <div ref={content1} className="w-full">
+            {parse(sectionData[0].text1)}
+          </div>
         </div>
-        <div className="content-left w-1/2">
-          <div
-            ref={content2}
-            className="hiscont-text2"
-            dangerouslySetInnerHTML={{ __html: sectionData[0].text2 }}
-          ></div>
+        <div ref={content2} className="w-1/2">
+          {parse(sectionData[0].text2)}
         </div>
       </div>
     </section>

@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Rabbis1 from "../assets/images/rabbis1.jpg";
 import Rabbis2 from "../assets/images/rabbis2.jpg";
@@ -17,6 +18,8 @@ import RabbisSection from "../ui/rabbis/RabbisSection";
 import SmoothWrapper from "../ui/SmoothWrapper";
 
 export default function Rabbis() {
+  // Router Path
+  const pathname = usePathname();
   // Rabbis Data
   const RabbisSection1 = [
     {

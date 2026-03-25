@@ -2,14 +2,14 @@ import { Ref } from "react";
 
 interface ChildProps {
   wrapperRef: Ref<HTMLDivElement>;
-  progrssRef: Ref<HTMLDivElement>;
+  progressRef: Ref<HTMLDivElement>;
   timelineData: { id: number; title: string }[];
 }
 export default function HistoryTimeline(props: ChildProps) {
   return (
     <div
       ref={props.wrapperRef}
-      className="history-timeline fixed bottom-[5vh] right-0 w-screen h-auto opacity-0"
+      className="history-timeline fixed bottom-[5vh] right-0 w-screen h-auto opacity-0 z-50"
     >
       <div className="timeline-wrapper w-[80%] mx-auto">
         <div className="timeline flex items-center justify-center gap-x-[4.2vw]">
@@ -35,7 +35,7 @@ export default function HistoryTimeline(props: ChildProps) {
           })}
         </div>
         <div
-          ref={props.progrssRef}
+          ref={props.progressRef}
           className="absolute w-0 h-2 bg-(--theme-color)"
         ></div>
       </div>

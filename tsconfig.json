@@ -35,7 +35,7 @@
     "app/components/CursorFollow.js",
     "app/ui/SubMenuItem.tsx",
     "app/yeshiva-rabbis/page.tsx",
-    "app/chronicles/page.js",
+    "app/chronicles/page-old.js",
     "app/ui/TitleSplitChars.js"
   ],
   "exclude": ["node_modules"]

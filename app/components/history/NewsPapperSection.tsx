@@ -6,7 +6,7 @@ import image3 from "../../assets/images/news-section-image3.jpg";
 
 interface ChildProps {
   extraClass: string;
-  animated: boolean;
+  animWidthText: number;
   bgImage: any;
 }
 
