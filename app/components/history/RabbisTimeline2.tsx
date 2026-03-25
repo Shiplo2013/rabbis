@@ -160,9 +160,10 @@ function RabbisTimeline2(props: ChildProps) {
                     </div>
                   )}
                   <div className="title mt-auto">
-                    <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6]">
-                      {item?.text}
-                    </h4>
+                    <h4
+                      className="text-[43px] leading-[0.7em] text-[#FBF4E6]"
+                      dangerouslySetInnerHTML={{ __html: item?.text }}
+                    ></h4>
                   </div>
                 </div>
               );

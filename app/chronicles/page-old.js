@@ -42,8 +42,6 @@ import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 import SingleImageSection from "../ui/SingleImageSection";
 import SlidingArrow from "../ui/SlidingArrow";
 import SmoothWrapper from "../ui/SmoothWrapper";
-import TitleSplitChars from "../ui/TitleSplitChars";
-import TitleSplitWords from "../ui/TitleSplitWords";
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -182,23 +180,6 @@ export default function ChroniclesHistory() {
     }
   }
 
-  // Intro Updating Function
-  // const introUpdating = contextSafe((selector, section, position, line, start) => {
-  //   // Active Timeline 1
-  //   if(selector === ".intro-1") {
-  //     completeTimeline(selector);
-  //   }
-  //   // Current Timeline
-  //   const offsetRight = getRightPosition(section);
-  //   if(offsetRight > start) {
-  //     if(selector !== ".intro-1") {
-  //       completeTimeline(selector);
-  //     }
-  //     const introPercent = Math.round(((position - offsetRight)/position)*100);
-  //     gsap.to(line, { width: `${introPercent}%` });
-  //   }
-  // });
-
   // Load Page 
   useGSAP(() => {
     document.fonts.ready.then(() => {
@@ -206,9 +187,12 @@ export default function ChroniclesHistory() {
     const userVisit = localStorage.getItem("hasVisited");
     if (userVisit === "true") {
       // Set Title
-      const headingTitle = TitleSplitChars('.first-intro .split-title');
+      const headingTitle = document.querySelector('.first-intro .split-title');
       // Subtitle 
-      const headingContent = TitleSplitWords('.first-intro .split-content');
+      const headingContent = document.querySelector('.first-intro .split-content');
+      // Page Timeline
+      gsap.set(headingTitle.querySelector("span"), {opacity: 0, yPercent: 100});
+      gsap.set(headingContent.querySelector("span"), {opacity: 0, yPercent: 100});
       // Page Timeline
       gsap.set(history.current, {opacity: 0, y: 50});
       // Timeline
@@ -236,30 +220,24 @@ export default function ChroniclesHistory() {
         ease: "easeInOut",
         duration: 1,
       }, "-=0.5")
-      .to(headingTitle, {
-        duration: 0.5,
+      .to(headingTitle.querySelector("span"), {
+        duration: 0.8,
         yPercent: 0,
         opacity: 1,
-        //rotationX: 180,
-        transformOrigin: "0% 50%",
-        ease: "slow.inOut",
-        stagger: 0.1
-      }, "-=0.5")
-      .to(headingContent, {
-        duration: 0.3,
+        ease: "easeInOut",
+      }, "-=0.4")
+      .to(headingContent.querySelector("span"), {
+        duration: 0.8,
         yPercent: 0,
         opacity: 1,
-        //rotationX: 180,
-        transformOrigin: "0% 50%",
-        ease: "slow.inOut",
-        stagger: 0.07
-      }, "-=0.5")
+        ease: "easeInOut",
+      }, "-=0.4")
     .to(history.current, {
       duration: 0.5,
       opacity: 1,
       y: 0,
-      ease: "back.easeIn",
-    }, "-=0.5");
+      ease: "easeInOut",
+    }, "-=0.4");
     }
   });
   }, [animationPlayed]);
@@ -301,6 +279,9 @@ export default function ChroniclesHistory() {
           end: "+="+ (window.innerHeight * 50),
           scrub: scurbScale,
           pin: true,
+          anticipatePin: 1,
+          //pinType: "fixed",
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
             // First Chapter
             const offsetRight = getRightPosition(".second-intro");
@@ -464,7 +445,6 @@ export default function ChroniclesHistory() {
       </SmoothWrapper>
       <HistoryTimeline wrapperRef={history} progressRef={progress} timelineData={TimelineData} />
       <SlidingArrow />
-      
     </div>
   );
 }
