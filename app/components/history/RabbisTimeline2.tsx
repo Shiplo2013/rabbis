@@ -88,6 +88,7 @@ function RabbisTimeline2(props: ChildProps) {
         bgImage={props.bgImage}
         overlayLeft={false}
         overlayLeftColor={""}
+        animatePosition={props.animWidthText}
       />
       <div className="section-row w-full h-full flex px-[10vw] py-[5vh] items-center justify-start relative z-30 gap-x-[8vw]">
         <div className="rabbis-title self-end">

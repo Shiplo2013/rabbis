@@ -25,6 +25,7 @@ export default function Introduction(props: ChildProps) {
           overlayClass={props.overlayClass}
           imagePosition={props.bgPosition}
           bgClass={props.bgClass}
+          animatePosition={0}
         />
       )}
       {props.bgOverlay !== "" && (
