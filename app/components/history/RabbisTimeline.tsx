@@ -1,5 +1,8 @@
 import ParallaxBackground from "@/app/ui/ParallaxBackground";
+import { useGSAP } from "@gsap/react";
+import parse from "html-react-parser";
 import Image from "next/image";
+import { useRef } from "react";
 import rabbisImage1 from "../../assets/images/rabbis-timeline1.jpg";
 import rabbisImage2 from "../../assets/images/rabbis-timeline2.jpg";
 import rabbisImage3 from "../../assets/images/rabbis-timeline3.jpg";
@@ -11,6 +14,10 @@ interface ChildProps {
   bgImage: any;
 }
 export default function RabbisTimeline(props: ChildProps) {
+  // Section Selector
+  const wrapper = useRef<HTMLDivElement>(null);
+
+  // Section Data
   const RabbisData = [
     {
       image: rabbisImage1,
@@ -29,8 +36,43 @@ export default function RabbisTimeline(props: ChildProps) {
       text: `שנת תרנ"ד:<br/>מינוי הגרא"ז מלצר`,
     },
   ];
+  // Section Animation
+  useGSAP(
+    () => {
+      document.fonts.ready.then(() => {
+        // Section text
+        // gsap.utils.toArray(
+        // );
+        // gsap.set(titleRef.current, { opacity: 1 });
+        // let splititle;
+        // SplitText.create(titleRef.current, {
+        //   type: "lines",
+        //   linesClass: "line direction-rtl",
+        //   autoSplit: true,
+        //   mask: "lines",
+        //   onSplit: (self) => {
+        //     splititle = gsap.from(self.lines, {
+        //       duration: 0.7,
+        //       yPercent: 100,
+        //       opacity: 0,
+        //       stagger: 0.05,
+        //       ease: "expo.out",
+        //       scrollTrigger: {
+        //         start: () => {
+        //           return window.innerWidth * props.animWidthText;
+        //         },
+        //       },
+        //     });
+        //     return splititle;
+        //   },
+        // });
+      });
+    },
+    { scope: wrapper },
+  );
   return (
     <section
+      ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
     >
@@ -38,6 +80,7 @@ export default function RabbisTimeline(props: ChildProps) {
         bgImage={props.bgImage}
         overlayLeft={false}
         overlayLeftColor={""}
+        animatePosition={props.animWidthText}
       />
       <div className="section-row w-full h-full flex px-[15.5vw] py-[5vh] items-center justify-center relative z-30">
         <div className="rabbis-timeline flex gap-x-[20vw]">
@@ -56,10 +99,9 @@ export default function RabbisTimeline(props: ChildProps) {
                 />
               </div>
               <div className="title mt-auto">
-                <h4
-                  className="text-[43px] leading-[0.7em] text-[#FBF4E6]"
-                  dangerouslySetInnerHTML={{ __html: item.text }}
-                ></h4>
+                <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6]">
+                  {parse(item.text)}
+                </h4>
               </div>
             </div>
           ))}

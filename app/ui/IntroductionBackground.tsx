@@ -1,29 +1,36 @@
 import Image from "next/image";
 import { useRef } from "react";
-import { useGSAP } from "./plugins";
+import { gsap, useGSAP } from "./plugins";
 
 interface ChildProps {
   bgImage: any;
   overlayClass: string;
   imagePosition: string;
   bgClass: string;
+  animatePosition: number;
 }
 
 export default function IntroductionBackground(props: ChildProps) {
-  const background = useRef(null);
+  const background = useRef<HTMLDivElement>(null);
   useGSAP(
     () => {
-      //   // Banner Background
-      //   gsap.to(background.current, {
-      //     x: "-20vw",
-      //     ease: "none",
-      //     scrollTrigger: {
-      //       trigger: background.current,
-      //       start: "left right",
-      //       end: "right left",
-      //       scrub: 2,
-      //     },
-      //   });
+      if (props.animatePosition !== 0) {
+        // Banner Background
+        gsap.set(background.current, { scale: 1.2, x: "20vw" });
+        gsap.to(background.current, {
+          x: "-20vw",
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * (props.animatePosition - 0.5);
+            },
+            end: () => {
+              return window.innerWidth * (props.animatePosition + 2);
+            },
+            scrub: 2,
+          },
+        });
+      }
     },
     { scope: background },
   );

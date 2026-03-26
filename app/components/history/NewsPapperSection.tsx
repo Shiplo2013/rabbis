@@ -18,7 +18,7 @@ export default function NewsPapperSection(props: ChildProps) {
   return (
     <section
       dir="rtl"
-      className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      className={`${props.extraClass} bg-black flex items-center relative z-20 overflow-hidden`}
     >
       {props.bgImage !== "" && (
         <IntroductionBackground
@@ -26,6 +26,7 @@ export default function NewsPapperSection(props: ChildProps) {
           overlayClass={"hidden"}
           imagePosition="bottom"
           bgClass=""
+          animatePosition={props.animWidthText}
         />
       )}
       <div

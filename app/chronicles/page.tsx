@@ -26,6 +26,7 @@ import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
 import ImageOnlySection from "../components/history/ImageOnlySection";
 import ImageOnlySection2 from "../components/history/ImageOnlySection2";
 import Introduction from "../components/history/Introduction";
+import Introduction2 from "../components/history/Introduction2";
 import LambOfferingSection from "../components/history/LambOfferingSection";
 import MarkOfTheRoad from "../components/history/MarkOfTheRoad";
 import MarkOfTheRoad2 from "../components/history/MarkOfTheRoad2";
@@ -357,7 +358,7 @@ export default function Contact() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 50,
+          end: "+=" + window.innerWidth * 37.75,
           scrub: scurbScale,
           pin: true,
           anticipatePin: 1,
@@ -481,6 +482,9 @@ export default function Contact() {
         x: () =>
           wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
         ease: "none",
+        // end: () => {
+        //     return wrapper.current.offsetWidth
+        // }
       });
     }
     // Return
@@ -526,15 +530,11 @@ export default function Contact() {
     });
   }, [pathname]);
   return (
-    <div id="page" className="relative overflow-hidden">
+    <div id="page" className="relative">
       <LoadingEffect animated={setAnimationPlayed} />
       <Header />
       <SmoothWrapper>
-        <main
-          id="page"
-          dir="ltr"
-          className="main opacity-0 relative overflow-hidden z-10"
-        >
+        <main id="page" dir="ltr" className="main opacity-0 relative z-10">
           <div
             ref={panel}
             id="panel-wrapper"
@@ -562,13 +562,13 @@ export default function Contact() {
                 }}
               />
               <ContentSection2
-                animWidthText={0.6}
+                animWidthText={0.4}
                 extraClass={
                   "min-w-[80vw] w-[80vw] h-screen panel-section will-change-transform"
                 }
               />
               <TitleSection
-                animWidthText={1.2}
+                animWidthText={0.9}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -576,33 +576,33 @@ export default function Contact() {
                 rightShape={true}
               />
               <RabbisPeriodSection
-                animWidthText={0.1}
+                animWidthText={1.7}
                 extraClass={
                   "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
                 }
               />
               <SingleImageSection
-                animWidthText={0.1}
+                animWidthText={2}
                 extraClass={
                   "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
                 }
                 image={HistoryImage1}
               />
               <MarkOfTheRoad
-                animWidthText={0.1}
+                animWidthText={2.9}
                 extraClass={
                   "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
                 }
               />
               <RabbisTimeline
-                animWidthText={0.1}
+                animWidthText={4.4}
                 extraClass={
                   "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
                 }
                 bgImage={timelineBG}
               />
               <HistoryQuoteSection
-                animWidthText={0.1}
+                animWidthText={6}
                 bgImage={""}
                 extraClass={
                   "min-w-[45vw] w-[45vw] h-screen panel-section will-change-transform"
@@ -610,7 +610,8 @@ export default function Contact() {
                 data={QuoteData}
                 boxClass="translate-x-[6vw]"
               />
-              <Introduction
+              <Introduction2
+                animWidthText={6.8}
                 animated={isAllAnimationComplete}
                 bgImage={IntroBG}
                 bgOverlay={""}
@@ -627,14 +628,14 @@ export default function Contact() {
                 }}
               />
               <NewsPapperSection
-                animWidthText={0.1}
+                animWidthText={7.5}
                 extraClass={
                   "min-w-[128vw] w-[128vw] h-screen panel-section will-change-transform"
                 }
                 bgImage={NewsSectionBG}
               />
               <TitleSection
-                animWidthText={0.1}
+                animWidthText={8.5}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -642,18 +643,18 @@ export default function Contact() {
                 rightShape={true}
               />
               <RabbisPeriodSection
-                animWidthText={0.1}
+                animWidthText={9.3}
                 extraClass={
                   "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
                 }
               />
               <MarkOfTheRoad2
-                animWidthText={0.1}
+                animWidthText={9.5}
                 extraClass={
                   "min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform"
                 }
               />
-              <Introduction
+              <Introduction2
                 animated={isAllAnimationComplete}
                 bgImage={IntroBG2}
                 data={IntroData3}
@@ -668,9 +669,10 @@ export default function Contact() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
+                animWidthText={12}
               />
               <ArrowSliderSection
-                animWidthText={0.1}
+                animWidthText={13}
                 extraClass={
                   "min-w-[65.8vw] w-[65.8vw] h-screen panel-section will-change-transform"
                 }
@@ -682,13 +684,13 @@ export default function Contact() {
                 sectionImage={sectionImage}
               />
               <EvidenceOfPeriod
-                animWidthText={0.1}
+                animWidthText={13.5}
                 extraClass={
                   "min-w-[93vw] w-[93vw] h-screen panel-section will-change-transform"
                 }
               />
               <TitleSection
-                animWidthText={0.1}
+                animWidthText={14}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -696,18 +698,18 @@ export default function Contact() {
                 rightShape={true}
               />
               <RabbisPeriodSection
-                animWidthText={0.1}
+                animWidthText={14.5}
                 extraClass={
                   "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
                 }
               />
               <MarkOfTheRoad3
-                animWidthText={0.1}
+                animWidthText={15.5}
                 extraClass={
                   "min-w-[285vw] w-[285vw] h-screen panel-section will-change-transform"
                 }
               />
-              <Introduction
+              <Introduction2
                 animated={isAllAnimationComplete}
                 bgImage={introBG3}
                 data={IntroData4}
@@ -722,14 +724,15 @@ export default function Contact() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
+                animWidthText={16.2}
               />
               <LambOfferingSection
-                animWidthText={0.1}
+                animWidthText={17}
                 extraClass={
                   "min-w-[146vw] w-[146vw] h-screen panel-section will-change-transform"
                 }
               />
-              <Introduction
+              <Introduction2
                 animated={isAllAnimationComplete}
                 bgImage={introBG5}
                 data={IntroData5}
@@ -744,15 +747,16 @@ export default function Contact() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
+                animWidthText={19}
               />
               <MoveToJerusalem
-                animWidthText={0.1}
+                animWidthText={20}
                 extraClass={
                   "min-w-[170vw] w-[170vw] h-screen panel-section will-change-transform"
                 }
               />
               <TitleSection
-                animWidthText={0.1}
+                animWidthText={21.5}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -760,20 +764,20 @@ export default function Contact() {
                 rightShape={false}
               />
               <RabbisPeriodSection
-                animWidthText={0.1}
+                animWidthText={22}
                 extraClass={
                   "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
                 }
               />
               <RabbisTimeline2
-                animWidthText={0.1}
+                animWidthText={23}
                 extraClass={
                   "min-w-[405vw] w-[405vw] h-screen panel-section will-change-transform"
                 }
                 bgImage={timelineBG}
               />
               <HistoryQuoteSection
-                animWidthText={0.1}
+                animWidthText={25}
                 bgImage={""}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
@@ -781,7 +785,7 @@ export default function Contact() {
                 data={QuoteData2}
                 boxClass="max-w-[40vw]"
               />
-              <Introduction
+              <Introduction2
                 animated={isAllAnimationComplete}
                 bgImage={introBG6}
                 data={IntroData6}
@@ -796,15 +800,16 @@ export default function Contact() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
+                animWidthText={25.5}
               />
               <OnlyTextSection
-                animWidthText={0.1}
+                animWidthText={26.5}
                 extraClass={
                   "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
                 }
               />
               <ArrowSliderSection
-                animWidthText={0.1}
+                animWidthText={27}
                 extraClass={
                   "min-w-[70vw] w-[70vw] h-screen panel-section will-change-transform"
                 }
@@ -816,19 +821,19 @@ export default function Contact() {
                 sectionImage={arrowSectionImage}
               />
               <ImageOnlySection
-                animWidthText={0.1}
+                animWidthText={27.5}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
               />
               <SingleVideoSection
-                animWidthText={0.1}
+                animWidthText={28}
                 extraClass={
                   "min-w-[26vw] w-[26vw] h-screen panel-section will-change-transform"
                 }
               />
               <TitleSection
-                animWidthText={0.1}
+                animWidthText={28.2}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -836,19 +841,19 @@ export default function Contact() {
                 rightShape={false}
               />
               <RabbisPeriodSection
-                animWidthText={0.1}
+                animWidthText={28.7}
                 extraClass={
                   "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
                 }
               />
               <RabbisTimeline3
-                animWidthText={0.1}
+                animWidthText={29.7}
                 extraClass={
                   "min-w-[125vw] w-[125vw] h-screen panel-section will-change-transform"
                 }
                 bgImage={timelineBG}
               />
-              <Introduction
+              <Introduction2
                 animated={isAllAnimationComplete}
                 bgImage={introBG7}
                 data={IntroData7}
@@ -863,15 +868,16 @@ export default function Contact() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
+                animWidthText={31}
               />
               <OnlyTextSection2
-                animWidthText={0.1}
+                animWidthText={31.4}
                 extraClass={
                   "min-w-[32.5vw] w-[32.5vw] h-screen panel-section will-change-transform"
                 }
               />
               <ImageOnlySection2
-                animWidthText={0.1}
+                animWidthText={31.8}
                 extraClass={
                   "min-w-[55.5vw] w-[55.5vw] h-screen panel-section will-change-transform"
                 }

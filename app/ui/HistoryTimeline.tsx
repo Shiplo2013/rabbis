@@ -9,7 +9,7 @@ export default function HistoryTimeline(props: ChildProps) {
   return (
     <div
       ref={props.wrapperRef}
-      className="history-timeline fixed bottom-[5vh] right-0 w-screen h-auto opacity-0 z-50"
+      className="history-timeline fixed bottom-[5vh] right-0 w-screen h-auto opacity-0 z-30"
     >
       <div className="timeline-wrapper w-[80%] mx-auto">
         <div className="timeline flex items-center justify-center gap-x-[4.2vw]">

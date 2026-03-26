@@ -1,12 +1,18 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import timelineBG from "../assets/images/history-bg.jpg";
+import HistoryImage1 from "../assets/images/single-image.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
+import MarkOfTheRoad from "../components/history/MarkOfTheRoad";
 import RabbisPeriodSection from "../components/history/RabbisPeriodSection";
+import RabbisTimeline from "../components/history/RabbisTimeline";
 import LoadingEffect from "../components/LoadingEffect";
 import HistoryTimeline from "../ui/HistoryTimeline";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../ui/plugins";
+import SingleImageSection from "../ui/SingleImageSection";
 import SlidingArrow from "../ui/SlidingArrow";
 import SmoothWrapper from "../ui/SmoothWrapper";
 
@@ -45,6 +51,11 @@ export default function Contact() {
     {
       title: `סלבודקא`,
       subtitle: `תרל"ז - תרע"ד`,
+    },
+  ];
+  const QuoteData = [
+    {
+      content: `<p><strong>שנת תרנ"ז</strong>: פיצול הישיבה עקב פולמוס המוסר - 'כנסת בית יצחק' ו'כנסת ישראל'</p><p><strong>שנת תרס"ג</strong>: התעוררות מחודשת של פולמוס המוסר</p>`,
     },
   ];
   // Router Path
@@ -164,56 +175,6 @@ export default function Contact() {
   const history = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
 
-  // Get Intro Right Position
-  function getRightPosition(selector: string) {
-    const intro = document.querySelector(selector);
-    if (!intro) return 0;
-    const introObj = intro.getBoundingClientRect();
-    const introRight = Math.floor(window.innerWidth - introObj.right);
-    return introRight;
-  }
-
-  // Complete Timeline Function
-  function completeTimeline(selector: string) {
-    // Timeline Complete
-    const intro = document.querySelector(`.history-timeline ${selector}`);
-    if (!intro) return 0;
-    const hasActiveClass = intro.classList.contains("complete");
-    if (!hasActiveClass) {
-      intro.classList.add("complete");
-    }
-  }
-
-  // Incomplete Timeline
-  function incompleteTimeline(selector: string) {
-    const intro = document.querySelector(`.history-timeline ${selector}`);
-    if (!intro) return 0;
-    const hasActiveClass = intro.classList.contains("complete");
-    if (hasActiveClass) {
-      intro.classList.remove("complete");
-    }
-  }
-
-  // Active Timeline
-  function activeTimeline(selector: string) {
-    const intro = document.querySelector(`.history-timeline ${selector}`);
-    if (!intro) return 0;
-    const hasActiveClass = intro.classList.contains("active");
-    if (!hasActiveClass) {
-      intro.classList.add("active");
-    }
-  }
-
-  // Inactive Timeline
-  function inActiveTimeline(selector: string) {
-    const intro = document.querySelector(`.history-timeline ${selector}`);
-    if (!intro) return 0;
-    const hasActiveClass = intro.classList.contains("active");
-    if (hasActiveClass) {
-      intro.classList.remove("active");
-    }
-  }
-
   // Page Section Animation
   useGSAP(() => {
     ScrollTrigger.normalizeScroll(true);
@@ -222,37 +183,6 @@ export default function Contact() {
       // Overflow body
       document.body.classList.add("overflow-x-hidden", "overscroll-none");
       const scurbScale = 2;
-      // Select Part 1 timeline
-      const intro2Right = getRightPosition(".second-intro");
-      // Select Part 2 timeline
-      const intro3Right = getRightPosition(".third-intro");
-      // Select Part 3 timeline
-      const intro4Right = getRightPosition(".fourth-intro");
-      // Select Part 4 timeline
-      const intro5Right = getRightPosition(".fifth-intro");
-      // Select Part 5 timeline
-      const intro6Right = getRightPosition(".sixth-intro");
-
-      // Intro Line 1
-      const introLine1 = document.querySelector(
-        `.history-timeline .intro-1 .progress-line .border-line`,
-      );
-      // Intro Line 2
-      const introLine2 = document.querySelector(
-        `.history-timeline .intro-2 .progress-line .border-line`,
-      );
-      // Intro Line 3
-      const introLine3 = document.querySelector(
-        `.history-timeline .intro-3 .progress-line .border-line`,
-      );
-      // Intro Line 4
-      const introLine4 = document.querySelector(
-        `.history-timeline .intro-4 .progress-line .border-line`,
-      );
-      // Intro Line 5
-      const introLine5 = document.querySelector(
-        `.history-timeline .intro-5 .progress-line .border-line`,
-      );
 
       // Vertical Section
       verticalSection = gsap.timeline({
@@ -265,118 +195,6 @@ export default function Contact() {
           anticipatePin: 1,
           //pinType: "fixed",
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            // First Chapter
-            const offsetRight = getRightPosition(".second-intro");
-            if (offsetRight > 0 && offsetRight < intro2Right) {
-              activeTimeline(".intro-1");
-              completeTimeline(".intro-1");
-
-              const introPercent = Math.round(
-                ((intro2Right - offsetRight) / intro2Right) * 100,
-              );
-              gsap.to(introLine1, {
-                width: `${introPercent}%`,
-                delay: 0,
-                duration: 0.1,
-              });
-            } else {
-              inActiveTimeline(".intro-1");
-            }
-            // Second Chapter
-            const offsetRight2 = getRightPosition(".third-intro");
-            if (offsetRight2 > 0 && offsetRight2 < intro3Right - intro2Right) {
-              const chapterWidth = intro3Right - intro2Right;
-              const currentPost = chapterWidth - offsetRight2;
-              activeTimeline(".intro-2");
-              completeTimeline(".intro-2");
-              const introPercent = Math.round(
-                (currentPost / chapterWidth) * 100,
-              );
-              gsap.to(introLine2, {
-                width: `${introPercent}%`,
-                delay: 0,
-                duration: 0.1,
-              });
-            } else {
-              inActiveTimeline(".intro-2");
-            }
-            // Third Chapter
-            const offsetRight3 = getRightPosition(".fourth-intro");
-            if (offsetRight3 > 0 && offsetRight3 < intro4Right - intro3Right) {
-              const chapterWidth = intro4Right - intro3Right;
-              const currentPost = chapterWidth - offsetRight3;
-              activeTimeline(".intro-3");
-              completeTimeline(".intro-3");
-              const introPercent = Math.round(
-                (currentPost / chapterWidth) * 100,
-              );
-              gsap.to(introLine3, {
-                width: `${introPercent}%`,
-                delay: 0,
-                duration: 0.1,
-              });
-            } else {
-              inActiveTimeline(".intro-3");
-            }
-            // Fourth Chapter
-            const offsetRight4 = getRightPosition(".fifth-intro");
-            if (offsetRight4 > 0 && offsetRight4 < intro5Right - intro4Right) {
-              const chapterWidth = intro5Right - intro4Right;
-              const currentPost = chapterWidth - offsetRight4;
-              activeTimeline(".intro-4");
-              completeTimeline(".intro-4");
-              const introPercent = Math.round(
-                (currentPost / chapterWidth) * 100,
-              );
-              gsap.to(introLine4, {
-                width: `${introPercent}%`,
-                delay: 0,
-                duration: 0.1,
-              });
-            } else {
-              inActiveTimeline(".intro-4");
-            }
-            // Fifth Chapter
-            const offsetRight5 = getRightPosition(".sixth-intro");
-            if (offsetRight5 > 0 && offsetRight5 < intro6Right - intro5Right) {
-              const chapterWidth = intro6Right - intro5Right;
-              const currentPost = chapterWidth - offsetRight5;
-              activeTimeline(".intro-5");
-              completeTimeline(".intro-5");
-              const introPercent = Math.round(
-                (currentPost / chapterWidth) * 100,
-              );
-              gsap.to(introLine5, {
-                width: `${introPercent}%`,
-                delay: 0,
-                duration: 0.1,
-              });
-            } else {
-              inActiveTimeline(".intro-5");
-            }
-            // Sixth Chapter
-            if (offsetRight5 < 0) {
-              completeTimeline(".intro-6");
-              activeTimeline(".intro-6");
-            } else {
-              inActiveTimeline(".intro-6");
-            }
-
-            if (self.progress > 0.99) {
-              gsap.to(history.current, {
-                display: "none",
-                duration: 0.1,
-                delay: 0,
-              });
-            } else {
-              gsap.to(history.current, {
-                display: "block",
-                duration: 0.1,
-                delay: 0,
-              });
-            }
-          },
         },
       });
       verticalSection.to(wrapper.current, {
@@ -459,7 +277,7 @@ export default function Contact() {
               id="section-wrapper"
               className={`section-wrapp flex flex-nowrap flex-row-reverse w-[600vw] h-screen`}
             >
-              <section className="h-screen w-[80vw] min-w-[80vw] flex items-center justify-center flex-col relative">
+              <section className="h-screen w-screen min-w-screen flex items-center justify-center flex-col relative">
                 <div className="w-full h-full flex items-center justify-center gap-x-[5vw] px-[10.4vw]">
                   <div className="text-[21px] w-1/2">
                     <div className="demoText">
@@ -505,6 +323,40 @@ export default function Contact() {
                   </div>
                 </div>
               </section>
+              <MarkOfTheRoad
+                animWidthText={0.4}
+                extraClass={
+                  "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
+                }
+              />
+              <HistoryQuoteSection
+                animWidthText={1.9}
+                bgImage={""}
+                extraClass={
+                  "min-w-[45vw] w-[45vw] h-screen panel-section will-change-transform"
+                }
+                data={QuoteData}
+                boxClass="translate-x-[6vw]"
+              />
+              <RabbisTimeline
+                animWidthText={2.4}
+                extraClass={
+                  "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
+                }
+                bgImage={timelineBG}
+              />
+              <RabbisPeriodSection
+                animWidthText={3.6}
+                extraClass={"min-w-screen w-screen h-screen"}
+              />
+              <SingleImageSection
+                animWidthText={0.8}
+                extraClass={
+                  "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
+                }
+                image={HistoryImage1}
+              />
+              <div className="h-screen w-screen flex items-center justify-center"></div>
               <div className="h-screen w-screen flex items-center justify-center flex-col relative">
                 <div className="w-screen h-screen flex items-center justify-center gap-x-[5vw] px-[10vw]">
                   <div className="text-[25px] w-1/2">
@@ -551,11 +403,6 @@ export default function Contact() {
                   </div>
                 </div>
               </div>
-              <RabbisPeriodSection
-                animWidthText={0.1}
-                extraClass={"min-w-screen w-screen h-screen"}
-              />
-              <div className="h-screen w-screen flex items-center justify-center"></div>
             </div>
           </div>
         </main>

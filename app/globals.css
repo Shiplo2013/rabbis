@@ -351,6 +351,8 @@ body {
   -ms-overflow-style: none;
   /* For Firefox */
   scrollbar-width: none;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale;
 }
 body::-webkit-scrollbar,
 html::-webkit-scrollbar {
