@@ -23,12 +23,13 @@ export default function LambOfferingSection(props: ChildProps) {
   return (
     <section
       dir="rtl"
-      className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      className={`${props.extraClass} bg-black flex items-center overflow-hidden relative z-20`}
     >
       <ParallaxBackground
         bgImage={contentBG}
         overlayLeft={false}
         overlayLeftColor={""}
+        animatePosition={props.animWidthText}
       />
       <div className="content-wrapper w-full h-full pr-[11.7vw] pl-[9.6vw] py-[7vh] relative z-30 flex items-center gap-x-[12vw]">
         <div className="section-image w-[50vw] self-end relative">

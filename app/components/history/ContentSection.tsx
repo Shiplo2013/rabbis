@@ -112,6 +112,7 @@ export default function ContentSection(props: ChildProps) {
         bgImage={contentBG}
         overlayLeft={false}
         overlayLeftColor={""}
+        animatePosition={props.animWidthText}
       />
       <div className="w-[80%] relative z-40 text-[21px] text-[#3D3B37] flex gap-x-[7.5vw] pl-[3vw]">
         <div className="content-right w-1/2">

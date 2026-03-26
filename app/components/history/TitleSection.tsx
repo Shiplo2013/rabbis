@@ -17,58 +17,59 @@ interface ChildProps {
 
 export default function TitleSection(props: ChildProps) {
   // Ref
-  const wrapper = useRef(null);
-  const introTitle = useRef(null);
-  const introImage = useRef(null);
+  const wrapper = useRef<HTMLDivElement>(null);
+  const introTitle = useRef<HTMLHeadingElement>(null);
+  const introImage = useRef<HTMLDivElement>(null);
   // Content
   const Title = `רבנים<br/> בתקופה<br/> זו`;
-  useGSAP(() => {
-    // Section Title 2
-    gsap.set(introImage.current, { x: 100 });
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: "#panel-wrapper",
-        start: () => {
-          return window.innerWidth * props.animWidthText;
-        },
-        end: () => "+=" + window.innerWidth * 1,
-        scrub: 1,
-      },
-    });
-    tl.to(introImage.current, {
-      x: -400,
-      ease: "easeIn",
-    });
-    document.fonts.ready.then(() => {
-      // Section Title 1
-      gsap.set(introTitle.current, { opacity: 1 });
-      let splititle;
-      SplitText.create(introTitle.current, {
-        type: "lines",
-        linesClass: "line direction-rtl",
-        autoSplit: true,
-        mask: "lines",
-        onSplit: (self) => {
-          splititle = gsap.from(self.lines, {
-            duration: 0.7,
-            yPercent: 100,
-            opacity: 0,
-            stagger: 0.05,
-            ease: "expo.out",
-            scrollTrigger: {
-              start: () => {
-                return window.innerWidth * (props.animWidthText + 0.4);
-              },
-            },
-          });
-          return splititle;
+  useGSAP(
+    () => {
+      // Section Title 2
+      gsap.set(introImage.current, { x: 100 });
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: "#panel-wrapper",
+          start: () => {
+            return window.innerWidth * (props.animWidthText - 0.2);
+          },
+          end: () => "+=" + window.innerWidth * 2,
+          scrub: 2,
         },
       });
-    });
-  }, []);
-  // useEffect(() => {
-  //   console.log();
-  // }, []);
+      tl.to(introImage.current, {
+        x: -300,
+        ease: "easeIn",
+      });
+      document.fonts.ready.then(() => {
+        // Section Title 1
+        gsap.set(introTitle.current, { opacity: 1 });
+        let splititle;
+        SplitText.create(introTitle.current, {
+          type: "lines",
+          linesClass: "line direction-rtl",
+          autoSplit: true,
+          mask: "lines",
+          onSplit: (self) => {
+            splititle = gsap.from(self.lines, {
+              duration: 0.7,
+              yPercent: 100,
+              opacity: 0,
+              stagger: 0.05,
+              ease: "expo.out",
+              scrollTrigger: {
+                start: () => {
+                  return window.innerWidth * (props.animWidthText + 0.4);
+                },
+              },
+            });
+            return splititle;
+          },
+        });
+      });
+    },
+    { scope: wrapper },
+  );
+
   return (
     <section
       ref={wrapper}

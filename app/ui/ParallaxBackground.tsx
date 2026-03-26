@@ -1,28 +1,35 @@
 import Image from "next/image";
 import { useRef } from "react";
-import { useGSAP } from "./plugins";
+import { gsap, useGSAP } from "./plugins";
 
 interface ChildProps {
   bgImage: any;
   overlayLeft: boolean;
   overlayLeftColor: string;
+  animatePosition: number;
 }
 
 export default function ParallaxBackground(props: ChildProps) {
-  const background = useRef(null);
+  const background = useRef<HTMLDivElement>(null);
   useGSAP(
     () => {
-      //   // Banner Background
-      //   gsap.to(background.current, {
-      //     x: "-20vw",
-      //     ease: "none",
-      //     scrollTrigger: {
-      //       trigger: background.current,
-      //       start: "left right",
-      //       end: "right left",
-      //       scrub: 2,
-      //     },
-      //   });
+      if (props.animatePosition !== 0) {
+        // Banner Background
+        gsap.set(background.current, { scale: 1.2, x: "30vw" });
+        gsap.to(background.current, {
+          x: "-20vw",
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * (props.animatePosition - 0.5);
+            },
+            end: () => {
+              return window.innerWidth * (props.animatePosition + 2);
+            },
+            scrub: 2,
+          },
+        });
+      }
     },
     { scope: background },
   );
