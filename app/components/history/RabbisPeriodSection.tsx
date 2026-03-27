@@ -1,6 +1,8 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import ParallaxBackground from "@/app/ui/ParallaxBackground";
 import RabbisSlider from "@/app/ui/RabbisSlider";
 import ThemeButton from "@/app/ui/ThemeButton";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import contentBG from "../../assets/images/history-section-bg.jpg";
 import { gsap, SplitText, useGSAP } from "../../ui/plugins";
@@ -13,6 +15,8 @@ interface ChildProps {
 }
 
 export default function RabbisPeriodSection(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
   // Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLDivElement>(null);
@@ -80,7 +84,9 @@ export default function RabbisPeriodSection(props: ChildProps) {
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * props.animWidthText;
+                  return (
+                    GetRightPosition(title.current) - window.innerWidth / 3
+                  );
                 },
               },
             });
@@ -95,7 +101,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
           ease: "back.out(1)",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText + 0.6);
+              return GetRightPosition(button.current) - window.innerWidth / 3;
             },
           },
         });
@@ -107,13 +113,13 @@ export default function RabbisPeriodSection(props: ChildProps) {
           ease: "back.out(1)",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText + 0.3);
+              return GetRightPosition(slider.current) - window.innerWidth / 3;
             },
           },
         });
       });
     },
-    { scope: wrapper },
+    { scope: wrapper, dependencies: [pathname] },
   );
 
   return (

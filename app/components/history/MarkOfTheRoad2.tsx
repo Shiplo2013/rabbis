@@ -1,13 +1,24 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
+import parse from "html-react-parser";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useRef } from "react";
 import historyImage1 from "../../assets/images/history-image1.jpg";
 import historyImage2 from "../../assets/images/history-image2.jpg";
 import historyImage3 from "../../assets/images/history-image3.jpg";
+import { gsap, SplitText, useGSAP } from "../../ui/plugins";
 
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
 }
 export default function MarkOfTheRoad2(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
+  // Section Selector
+  const wrapper = useRef<HTMLDivElement>(null);
+
+  // Section Data
   const sectionData = [
     {
       title: `שנת תרע"ד:<br/>בעיר מינסק שברוסיה הלבנה`,
@@ -22,8 +33,65 @@ export default function MarkOfTheRoad2(props: ChildProps) {
       image: historyImage3,
     },
   ];
+
+  // Section Aniamtion
+  useGSAP(
+    () => {
+      const items = wrapper.current?.querySelectorAll(".section-content");
+      items?.forEach((item) => {
+        const image = item.querySelector(".image");
+        const title = item.querySelector(".title>h4");
+        // Rubbis Image
+        gsap.set(image, {
+          y: 100,
+          opacity: 0,
+        });
+        gsap.to(image, {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "expo.out",
+          scrollTrigger: {
+            start: () => {
+              return GetRightPosition(image) - window.innerWidth / 3;
+            },
+          },
+        });
+        // Rubbis Title
+        document.fonts.ready.then(() => {
+          // Section Title 1
+          gsap.set(title, { opacity: 1 });
+          let splititle;
+          SplitText.create(title, {
+            type: "lines",
+            linesClass: "line direction-rtl",
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              splititle = gsap.from(self.lines, {
+                duration: 1,
+                yPercent: 100,
+                opacity: 0,
+                stagger: 0.05,
+                ease: "expo.out",
+                scrollTrigger: {
+                  start: () => {
+                    return GetRightPosition(title) - window.innerWidth / 3;
+                  },
+                },
+              });
+              return splititle;
+            },
+          });
+        });
+      });
+    },
+    { scope: wrapper, dependencies: [pathname] },
+  );
+
   return (
     <section
+      ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
     >
@@ -43,10 +111,9 @@ export default function MarkOfTheRoad2(props: ChildProps) {
               />
             </div>
             <div className="title w-[24vw]">
-              <h4
-                className="text-[43px] text-(--theme-color) leading-[0.7em]"
-                dangerouslySetInnerHTML={{ __html: item?.title }}
-              ></h4>
+              <h4 className="text-[43px] text-(--theme-color) leading-[0.7em]">
+                {parse(item?.title)}
+              </h4>
             </div>
           </div>
         ))}

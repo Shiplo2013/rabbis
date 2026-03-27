@@ -1,5 +1,7 @@
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
+import GetRightPosition from "./GetRightPosition";
 import { gsap, useGSAP } from "./plugins";
 
 interface ChildProps {
@@ -11,7 +13,11 @@ interface ChildProps {
 }
 
 export default function IntroductionBackground(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
+  // Selector
   const background = useRef<HTMLDivElement>(null);
+  // Seciton Animation
   useGSAP(
     () => {
       if (props.animatePosition !== 0) {
@@ -22,17 +28,21 @@ export default function IntroductionBackground(props: ChildProps) {
           ease: "none",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animatePosition - 0.5);
+              return (
+                GetRightPosition(background.current) - window.innerWidth / 3
+              );
             },
             end: () => {
-              return window.innerWidth * (props.animatePosition + 2);
+              return (
+                GetRightPosition(background.current) + window.innerWidth * 2
+              );
             },
             scrub: 2,
           },
         });
       }
     },
-    { scope: background },
+    { scope: background, dependencies: [pathname] },
   );
   return (
     <div

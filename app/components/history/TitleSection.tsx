@@ -1,5 +1,7 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import TitleImage from "../../assets/images/title-image.png";
 import rightShape from "../../assets/images/title-shape1.png";
@@ -16,6 +18,8 @@ interface ChildProps {
 }
 
 export default function TitleSection(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
   // Ref
   const wrapper = useRef<HTMLDivElement>(null);
   const introTitle = useRef<HTMLHeadingElement>(null);
@@ -30,7 +34,7 @@ export default function TitleSection(props: ChildProps) {
         scrollTrigger: {
           trigger: "#panel-wrapper",
           start: () => {
-            return window.innerWidth * (props.animWidthText - 0.2);
+            return GetRightPosition(introImage.current) - window.innerWidth;
           },
           end: () => "+=" + window.innerWidth * 2,
           scrub: 2,
@@ -51,14 +55,15 @@ export default function TitleSection(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splititle = gsap.from(self.lines, {
-              duration: 0.7,
-              yPercent: 100,
-              opacity: 0,
-              stagger: 0.05,
+              duration: 2,
+              yPercent: 120,
+              stagger: 0.025,
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * (props.animWidthText + 0.4);
+                  return (
+                    GetRightPosition(introTitle.current) - window.innerWidth / 2
+                  );
                 },
               },
             });
@@ -67,7 +72,7 @@ export default function TitleSection(props: ChildProps) {
         });
       });
     },
-    { scope: wrapper },
+    { scope: wrapper, dependencies: [pathname] },
   );
 
   return (

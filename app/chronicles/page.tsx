@@ -50,7 +50,7 @@ import SmoothWrapper from "../ui/SmoothWrapper";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-export default function Contact() {
+export default function Page() {
   // Rabbis Data
   const TimelineData = [
     {
@@ -495,40 +495,16 @@ export default function Contact() {
 
   useEffect(() => {
     window.onbeforeunload = function () {
-      window.scrollTo(0, 0);
+      gsap.to("#page", {
+        opacity: 0,
+        duration: 0.1,
+        onComplete: () => {
+          window.scrollTo(0, 0);
+        },
+      });
     };
   }, []);
 
-  useGSAP(() => {
-    document.fonts.ready.then(() => {
-      //   // Section Title 1
-      //   const splititle = TextSplitLines(".demoText");
-      //   gsap.to(splititle, {
-      //     yPercent: 0,
-      //     duration: 1,
-      //     ease: "power3",
-      //     stagger: 0.05,
-      //     scrollTrigger: {
-      //       start: () => {
-      //         return window.innerWidth * 2;
-      //       },
-      //     },
-      //   });
-      //   // Section Title 2
-      //   const splititle2 = TextSplitLines(".demoText2");
-      //   gsap.to(splititle2, {
-      //     yPercent: 0,
-      //     duration: 1,
-      //     ease: "power3",
-      //     stagger: 0.05,
-      //     scrollTrigger: {
-      //       start: () => {
-      //         return window.innerWidth * 2.5;
-      //       },
-      //     },
-      //   });
-    });
-  }, [pathname]);
   return (
     <div id="page" className="relative">
       <LoadingEffect animated={setAnimationPlayed} />
@@ -582,7 +558,7 @@ export default function Contact() {
                 }
               />
               <SingleImageSection
-                animWidthText={2}
+                animWidthText={2.6}
                 extraClass={
                   "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
                 }
@@ -727,7 +703,7 @@ export default function Contact() {
                 animWidthText={16.2}
               />
               <LambOfferingSection
-                animWidthText={17}
+                animWidthText={0}
                 extraClass={
                   "min-w-[146vw] w-[146vw] h-screen panel-section will-change-transform"
                 }

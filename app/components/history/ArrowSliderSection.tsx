@@ -1,6 +1,8 @@
 import CardSlider from "@/app/ui/CardSlider";
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { gsap, useGSAP } from "../../ui/plugins";
 
@@ -16,6 +18,8 @@ interface ChildProps {
 }
 
 export default function ArrowSliderSection(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -26,9 +30,8 @@ export default function ArrowSliderSection(props: ChildProps) {
       gsap.set(imageRef.current, { x: "30vw" });
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: "#panel-wrapper",
           start: () => {
-            return window.innerWidth * (props.animWidthText - 0.2);
+            return GetRightPosition(wrapper.current) - window.innerWidth / 3;
           },
           end: () => "+=" + window.innerWidth * 2,
           scrub: 2,
@@ -39,7 +42,7 @@ export default function ArrowSliderSection(props: ChildProps) {
         ease: "easeIn",
       });
     },
-    { scope: wrapper },
+    { scope: wrapper, dependencies: [pathname] },
   );
   return (
     <section

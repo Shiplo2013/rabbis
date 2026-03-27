@@ -103,7 +103,7 @@ export default function ContentSection2(props: ChildProps) {
         },
       });
     });
-  }, []);
+  }, [pathname]);
   return (
     <section
       className={`${props.extraClass} flex items-center justify-center flex-col relative`}

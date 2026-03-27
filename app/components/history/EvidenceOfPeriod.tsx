@@ -1,8 +1,15 @@
 import MinusIcon from "@/app/assets/icons/MinusIcon";
+import GetRightPosition from "@/app/ui/GetRightPosition";
+import parse from "html-react-parser";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useRef } from "react";
 import PlayIcon from "../../assets/icons/PlayIcon";
 import videoThumb from "../../assets/images/evidence-video-thumb.jpg";
 import evidanceBG from "../../assets/images/evidenceBG.png";
+import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
+
+gsap.registerPlugin(SplitText, ScrollTrigger);
 
 interface ChildProps {
   extraClass: string;
@@ -10,6 +17,12 @@ interface ChildProps {
 }
 
 export default function EvidenceOfPeriod(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
+  // Section Selector
+  const wrapper = useRef<HTMLDivElement>(null);
+
+  // Section Data
   const sectionData = {
     video: {
       image: videoThumb,
@@ -20,8 +33,67 @@ export default function EvidenceOfPeriod(props: ChildProps) {
       text2: `ואכן, בחודש אלול תרפ"ד, עלה מניין מבחורי הישיבה מדליטא אל אדמת הקודש, ופתחו פרק חדש ומפואר בתולדות הישיבה הק' – תקופת חברון.<br/>במהלך שנת תרפ"ה הצטרפו אל הישיבה בחברון מרנן הסבא מסלבודקא ורבי משה מרדכי אפשטיין שהעפילו לפסגות חדשות של הרבצת תורה ומוסר בין כפירי אריות חברים מקשיבים לקולם המוסיפים חיל בלימודם תוך שאיפה מתמדת לעלות עוד ועוד במעלות התורה והיראה`,
     },
   };
+
+  // Section animation
+  useGSAP(
+    () => {
+      // Selector
+      const video = wrapper.current?.querySelector(".video");
+      // Video Icon
+      if (video) {
+        gsap.set(video, {
+          yPercent: 100,
+          opacity: 0,
+        });
+        gsap.to(video, {
+          yPercent: 0,
+          opacity: 1,
+          ease: "expo.out",
+          scrollTrigger: {
+            start: () => {
+              return GetRightPosition(video) - window.innerWidth / 2;
+            },
+          },
+        });
+      }
+      // Text Aniamtions
+      const textContents = wrapper.current?.querySelectorAll(".content-text");
+      textContents?.forEach((item) => {
+        // Text Content
+        document.fonts.ready.then(() => {
+          // Section Title 1
+          gsap.set(item, { opacity: 1 });
+          let splititle;
+          SplitText.create(item, {
+            type: "lines",
+            linesClass: "line direction-rtl",
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              splititle = gsap.from(self.lines, {
+                duration: 1,
+                yPercent: 100,
+                opacity: 0,
+                stagger: 0.05,
+                ease: "expo.out",
+                scrollTrigger: {
+                  start: () => {
+                    return GetRightPosition(item) - window.innerWidth / 2;
+                  },
+                },
+              });
+              return splititle;
+            },
+          });
+        });
+      });
+    },
+    { scope: wrapper, dependencies: [pathname] },
+  );
+
   return (
     <section
+      ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
     >
@@ -65,20 +137,15 @@ export default function EvidenceOfPeriod(props: ChildProps) {
                 alt="Content Background"
               />
             </div>
-            <div className="flex gap-x-[6.66vw] relative z-30 text-[21px] leading-[1.4] text-[#000000]">
-              <div className="content-right w-[60%]">
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: sectionData?.content?.text1,
-                  }}
-                ></p>
+            <div
+              dir="ltr"
+              className="flex gap-x-[6.66vw] relative z-30 text-[21px] leading-[1.4] text-[#000000] text-right"
+            >
+              <div className="content-text content-left w-[40%]">
+                <p>{parse(sectionData?.content?.text2)}</p>
               </div>
-              <div className="content-left w-[40%]">
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: sectionData?.content?.text2,
-                  }}
-                ></p>
+              <div className="content-text content-right w-[60%]">
+                <p>{parse(sectionData?.content?.text1)}</p>
               </div>
             </div>
           </div>

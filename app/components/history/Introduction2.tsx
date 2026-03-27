@@ -1,6 +1,8 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { gsap, SplitText, useGSAP } from "../../ui/plugins";
 
@@ -21,6 +23,8 @@ interface ChildProps {
 }
 
 export default function Introduction2(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
@@ -29,6 +33,8 @@ export default function Introduction2(props: ChildProps) {
   useGSAP(
     () => {
       document.fonts.ready.then(() => {
+        // Selector
+        const textWrapper = wrapper.current?.querySelector(".section-wrapper");
         // Section Title
         gsap.set(title.current, { opacity: 1 });
         let splititle;
@@ -46,7 +52,7 @@ export default function Introduction2(props: ChildProps) {
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * props.animWidthText;
+                  return GetRightPosition(textWrapper) - window.innerWidth / 3;
                 },
               },
             });
@@ -63,15 +69,13 @@ export default function Introduction2(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splitSubtitle = gsap.from(self.lines, {
-              duration: 0.7,
-              yPercent: 100,
-              opacity: 0,
-              delay: 0.3,
-              stagger: 0.05,
+              duration: 2,
+              yPercent: 120,
+              stagger: 0.025,
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * props.animWidthText;
+                  return GetRightPosition(textWrapper) - window.innerWidth / 3;
                 },
               },
             });
@@ -80,7 +84,7 @@ export default function Introduction2(props: ChildProps) {
         });
       });
     },
-    { scope: wrapper },
+    { scope: wrapper, dependencies: [pathname] },
   );
   return (
     <section

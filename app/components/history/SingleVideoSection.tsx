@@ -1,7 +1,13 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import ThemeButton from "@/app/ui/ThemeButton";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useRef } from "react";
 import PlusIcon from "../../assets/icons/PlusIcon";
 import thumb from "../../assets/images/video-section.jpg";
+import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
+
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 interface ChildProps {
   extraClass: string;
@@ -9,8 +15,34 @@ interface ChildProps {
 }
 
 export default function SingleVideoSection(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
+  // Section Selector
+  const wrapper = useRef<HTMLDivElement>(null);
+  // Section Animation
+  useGSAP(
+    () => {
+      const video = wrapper.current?.querySelector(".video-wrapper");
+      if (video) {
+        gsap.set(video, {
+          translateY: "100%",
+        });
+        gsap.to(video, {
+          translateY: 0,
+          ease: "easeIn",
+          scrollTrigger: {
+            start: () => {
+              return GetRightPosition(wrapper.current) - window.innerWidth / 3;
+            },
+          },
+        });
+      }
+    },
+    { scope: wrapper, dependencies: [pathname] },
+  );
   return (
     <section
+      ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
     >
