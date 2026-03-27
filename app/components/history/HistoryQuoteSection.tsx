@@ -1,4 +1,6 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { gsap, SplitText, useGSAP } from "../../ui/plugins";
 
@@ -13,6 +15,8 @@ interface ChildProps {
 }
 
 export default function HistoryQuoteSection(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const quote = useRef<HTMLDivElement>(null);
@@ -21,7 +25,7 @@ export default function HistoryQuoteSection(props: ChildProps) {
     () => {
       document.fonts.ready.then(() => {
         // Section Text
-        gsap.set(quote.current, { opacity: 1, x: "-10vw" });
+        gsap.set(quote.current, { opacity: 1, x: "-5vw" });
         let splititle;
         SplitText.create(quote.current, {
           type: "lines",
@@ -37,7 +41,9 @@ export default function HistoryQuoteSection(props: ChildProps) {
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * (props.animWidthText + 0.2);
+                  return (
+                    GetRightPosition(wrapper.current) - window.innerWidth / 3
+                  );
                 },
               },
             });
@@ -47,9 +53,8 @@ export default function HistoryQuoteSection(props: ChildProps) {
         // Section Box
         const tl = gsap.timeline({
           scrollTrigger: {
-            trigger: "#panel-wrapper",
             start: () => {
-              return window.innerWidth * (props.animWidthText - 0.2);
+              return GetRightPosition(wrapper.current) - window.innerWidth / 3;
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -61,7 +66,7 @@ export default function HistoryQuoteSection(props: ChildProps) {
         });
       });
     },
-    { scope: wrapper },
+    { scope: wrapper, dependencies: [pathname] },
   );
   return (
     <section

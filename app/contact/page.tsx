@@ -2,15 +2,23 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import timelineBG from "../assets/images/history-bg.jpg";
+import NewsSectionBG from "../assets/images/new-section-bg2.jpg";
 import HistoryImage1 from "../assets/images/single-image.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import EvidenceOfPeriod from "../components/history/EvidenceOfPeriod";
 import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
+import LambOfferingSection from "../components/history/LambOfferingSection";
 import MarkOfTheRoad from "../components/history/MarkOfTheRoad";
+import MarkOfTheRoad2 from "../components/history/MarkOfTheRoad2";
+import MoveToJerusalem from "../components/history/MoveToJerusalem";
+import NewsPapperSection from "../components/history/NewsPapperSection";
+import OnlyTextSection from "../components/history/OnlyTextSection";
 import RabbisPeriodSection from "../components/history/RabbisPeriodSection";
 import RabbisTimeline from "../components/history/RabbisTimeline";
+import RabbisTimeline2 from "../components/history/RabbisTimeline2";
+import RabbisTimeline3 from "../components/history/RabbisTimeline3";
 import LoadingEffect from "../components/LoadingEffect";
-import HistoryTimeline from "../ui/HistoryTimeline";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../ui/plugins";
 import SingleImageSection from "../ui/SingleImageSection";
 import SlidingArrow from "../ui/SlidingArrow";
@@ -227,11 +235,10 @@ export default function Contact() {
           mask: "lines",
           onSplit: (self) => {
             splititle = gsap.from(self.lines, {
-              duration: 0.6,
+              duration: 0.3,
               yPercent: 100,
-              opacity: 0,
-              stagger: 0.1,
-              ease: "expo.out",
+              stagger: 0.03,
+              ease: "none",
             });
             return splititle;
           },
@@ -245,10 +252,9 @@ export default function Contact() {
           mask: "lines",
           onSplit: (self) => {
             splititle2 = gsap.from(self.lines, {
-              duration: 0.6,
+              duration: 3,
               yPercent: 100,
-              opacity: 0,
-              stagger: 0.1,
+              stagger: 0.025,
               ease: "expo.out",
             });
             return splititle2;
@@ -323,8 +329,67 @@ export default function Contact() {
                   </div>
                 </div>
               </section>
+              <RabbisTimeline3
+                animWidthText={29.7}
+                extraClass={
+                  "min-w-[125vw] w-[125vw] h-screen panel-section will-change-transform"
+                }
+                bgImage={timelineBG}
+              />
+              <OnlyTextSection
+                animWidthText={26.5}
+                extraClass={
+                  "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
+                }
+              />
+              <RabbisTimeline2
+                animWidthText={23}
+                extraClass={
+                  "min-w-[405vw] w-[405vw] h-screen panel-section will-change-transform"
+                }
+                bgImage={timelineBG}
+              />
+              <MoveToJerusalem
+                animWidthText={20}
+                extraClass={
+                  "min-w-[170vw] w-[170vw] h-screen panel-section will-change-transform"
+                }
+              />
+
+              <LambOfferingSection
+                animWidthText={1}
+                extraClass={
+                  "min-w-[146vw] w-[146vw] h-screen panel-section will-change-transform"
+                }
+              />
+              <EvidenceOfPeriod
+                animWidthText={13.5}
+                extraClass={
+                  "min-w-[93vw] w-[93vw] h-screen panel-section will-change-transform"
+                }
+              />
+              <MarkOfTheRoad2
+                animWidthText={9.5}
+                extraClass={
+                  "min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform"
+                }
+              />
+              <NewsPapperSection
+                animWidthText={0.5}
+                extraClass={
+                  "min-w-[128vw] w-[128vw] h-screen panel-section will-change-transform"
+                }
+                bgImage={NewsSectionBG}
+              />
+              <RabbisTimeline
+                animWidthText={1.5}
+                extraClass={
+                  "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
+                }
+                bgImage={timelineBG}
+              />
               <MarkOfTheRoad
-                animWidthText={0.4}
+                animWidthText={1.5}
                 extraClass={
                   "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
                 }
@@ -337,13 +402,6 @@ export default function Contact() {
                 }
                 data={QuoteData}
                 boxClass="translate-x-[6vw]"
-              />
-              <RabbisTimeline
-                animWidthText={2.4}
-                extraClass={
-                  "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
-                }
-                bgImage={timelineBG}
               />
               <RabbisPeriodSection
                 animWidthText={3.6}
@@ -408,11 +466,6 @@ export default function Contact() {
         </main>
         <Footer className={"relative z-20"} />
       </SmoothWrapper>
-      <HistoryTimeline
-        wrapperRef={history}
-        progressRef={progress}
-        timelineData={TimelineData}
-      />
       <SlidingArrow />
     </div>
   );

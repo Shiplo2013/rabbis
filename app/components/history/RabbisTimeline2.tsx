@@ -1,5 +1,10 @@
+"use client";
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import ParallaxBackground from "@/app/ui/ParallaxBackground";
+import parse from "html-react-parser";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useRef } from "react";
 import bookIcon from "../../assets/images/lamb-book-icon.png";
 import rabbisImage10 from "../../assets/images/rabbis-timeline10.jpg";
 import rabbisImage11 from "../../assets/images/rabbis-timeline11.jpg";
@@ -10,68 +15,9 @@ import rabbisImage6 from "../../assets/images/rabbis-timeline6.jpg";
 import rabbisImage7 from "../../assets/images/rabbis-timeline7.jpg";
 import rabbisImage8 from "../../assets/images/rabbis-timeline8.jpg";
 import rabbisImage9 from "../../assets/images/rabbis-timeline9.jpg";
-const RabbisData = [
-  {
-    type: "history",
-    image: rabbisImage5,
-    text: `שנת תר"ץ:<br/>מינוי רבי מאיר חדש כמשגיח`,
-    size: "portrait",
-  },
-  {
-    type: "history",
-    image: rabbisImage6,
-    text: `שנת תרצ"ד:<br/>פטירת רבי משה מרדכי אפשטיין`,
-    size: "portrait",
-  },
-  {
-    type: "history",
-    image: rabbisImage7,
-    text: `שנת תרצ"ד:<br/>מינוי רבי אהרן כהן ורבי משה חברוני לראשי ישיבה`,
-    size: "landscape",
-  },
-  {
-    type: "history",
-    image: rabbisImage8,
-    text: `שנת תרצ"ו:<br/>פטירת רבי  אריה יהודה לייב חסמן`,
-    size: "portrait",
-  },
-  {
-    type: "history",
-    image: rabbisImage9,
-    text: `שנת תרצ"ט:<br/> כניסה לבניין החדש`,
-    size: "landscape",
-  },
-  {
-    type: "history",
-    image: rabbisImage10,
-    text: `שנת תש"ז:<br/>מינוי רבי שמחה זיסל ברוידא ורבי אברהם יהודה פרבשטיין לרמי"ם`,
-    size: "landscape",
-  },
-  {
-    type: "history",
-    image: rabbisImage11,
-    text: `שנת תש"ח:<br/>הקמת סניף זמני לישיבה בראשות ראש הישיבה רבי אהרן כהן ב'היכל התלמוד' בתל אביב`,
-    size: "landscape",
-  },
-  {
-    type: "notification",
-    image: bookIcon,
-    text: `ירושלים מופגזת ונצורה - מכתב חיזוק מרבי יחזקאל סרנא`,
-    size: "small",
-  },
-  {
-    type: "history",
-    image: rabbisImage12,
-    text: `שנת תש"כ: <br/>מינוי הרב יצחק חברוני להנהלת הישיבה ולימים מונה לנשיא הישיבה.`,
-    size: "landscape",
-  },
-  {
-    type: "history",
-    image: rabbisImage13,
-    text: `שנת תשכ"ב:<br/>הנחת אבן הפינה לישיבה בגבעת מרדכי`,
-    size: "landscape",
-  },
-];
+import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
+
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 interface ChildProps {
   extraClass: string;
@@ -79,8 +25,208 @@ interface ChildProps {
   bgImage: any;
 }
 function RabbisTimeline2(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
+  // Section Selector
+  const wrapper = useRef<HTMLDivElement>(null);
+
+  // Section Data
+  const RabbisData = [
+    {
+      type: "history",
+      image: rabbisImage5,
+      text: `שנת תר"ץ:<br/>מינוי רבי מאיר חדש כמשגיח`,
+      size: "portrait",
+    },
+    {
+      type: "history",
+      image: rabbisImage6,
+      text: `שנת תרצ"ד:<br/>פטירת רבי משה מרדכי אפשטיין`,
+      size: "portrait",
+    },
+    {
+      type: "history",
+      image: rabbisImage7,
+      text: `שנת תרצ"ד:<br/>מינוי רבי אהרן כהן ורבי משה חברוני לראשי ישיבה`,
+      size: "landscape",
+    },
+    {
+      type: "history",
+      image: rabbisImage8,
+      text: `שנת תרצ"ו:<br/>פטירת רבי  אריה יהודה לייב חסמן`,
+      size: "portrait",
+    },
+    {
+      type: "history",
+      image: rabbisImage9,
+      text: `שנת תרצ"ט:<br/> כניסה לבניין החדש`,
+      size: "landscape",
+    },
+    {
+      type: "history",
+      image: rabbisImage10,
+      text: `שנת תש"ז:<br/>מינוי רבי שמחה זיסל ברוידא ורבי אברהם יהודה פרבשטיין לרמי"ם`,
+      size: "landscape",
+    },
+    {
+      type: "history",
+      image: rabbisImage11,
+      text: `שנת תש"ח:<br/>הקמת סניף זמני לישיבה בראשות ראש הישיבה רבי אהרן כהן ב'היכל התלמוד' בתל אביב`,
+      size: "landscape",
+    },
+    {
+      type: "notification",
+      image: bookIcon,
+      text: `ירושלים מופגזת ונצורה - מכתב חיזוק מרבי יחזקאל סרנא`,
+      size: "small",
+    },
+    {
+      type: "history",
+      image: rabbisImage12,
+      text: `שנת תש"כ: <br/>מינוי הרב יצחק חברוני להנהלת הישיבה ולימים מונה לנשיא הישיבה.`,
+      size: "landscape",
+    },
+    {
+      type: "history",
+      image: rabbisImage13,
+      text: `שנת תשכ"ב:<br/>הנחת אבן הפינה לישיבה בגבעת מרדכי`,
+      size: "landscape",
+    },
+  ];
+
+  // Section Animation
+  useGSAP(
+    () => {
+      // Selector
+      const secTitle = wrapper?.current?.querySelector(".rabbis-title>h2");
+      const sectionItems = wrapper?.current?.querySelectorAll(
+        ".rabbis-timeline>.timeline-content",
+      );
+      // Section Title
+      document.fonts.ready.then(() => {
+        // Section Title
+        if (secTitle) {
+          gsap.set(secTitle, { opacity: 1 });
+          let splititle;
+          SplitText.create(secTitle, {
+            type: "lines",
+            linesClass: "line direction-rtl",
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              splititle = gsap.from(self.lines, {
+                duration: 2,
+                yPercent: 120,
+                stagger: 0.025,
+                ease: "expo.out",
+                scrollTrigger: {
+                  start: () => {
+                    return GetRightPosition(secTitle) - window.innerWidth / 2;
+                  },
+                },
+              });
+              return splititle;
+            },
+          });
+        }
+      });
+
+      // Section Items
+      sectionItems?.forEach((item) => {
+        const image = item.querySelector(".image");
+        const title = item.querySelector(".title>h4");
+        if (item.classList.contains("notifiaction")) {
+          const notificationIcon = item?.querySelector(".notify-icon");
+          // Notification
+          gsap.set(item, {
+            y: 100,
+            opacity: 0,
+          });
+          gsap.to(item, {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "expo.out",
+            scrollTrigger: {
+              start: () => {
+                return GetRightPosition(item) - window.innerWidth / 3;
+              },
+            },
+          });
+          // Notification Icon
+          gsap.set(notificationIcon, {
+            y: 20,
+            x: -30,
+            rotate: -15,
+            opacity: 0,
+          });
+          gsap.to(notificationIcon, {
+            y: 0,
+            x: 0,
+            rotate: 0,
+            opacity: 1,
+            duration: 1,
+            delay: 0.5,
+            ease: "expo.out",
+            scrollTrigger: {
+              start: () => {
+                return GetRightPosition(image) - window.innerWidth / 3;
+              },
+            },
+          });
+        } else {
+          // Item Image
+          gsap.set(image, {
+            x: -100,
+            opacity: 0,
+          });
+          gsap.to(image, {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "expo.out",
+            scrollTrigger: {
+              start: () => {
+                return GetRightPosition(image) - window.innerWidth / 2;
+              },
+            },
+          });
+          // Rubbis Title
+          document.fonts.ready.then(() => {
+            // Section Title 1
+            gsap.set(title, { opacity: 1 });
+            let splititle;
+            SplitText.create(title, {
+              type: "lines",
+              linesClass: "line direction-rtl",
+              autoSplit: true,
+              mask: "lines",
+              onSplit: (self) => {
+                splititle = gsap.from(self.lines, {
+                  duration: 1,
+                  yPercent: 100,
+                  opacity: 0,
+                  stagger: 0.05,
+                  ease: "expo.out",
+                  scrollTrigger: {
+                    start: () => {
+                      return GetRightPosition(title) - window.innerWidth / 2;
+                    },
+                  },
+                });
+                return splititle;
+              },
+            });
+          });
+        }
+      });
+    },
+    { scope: wrapper, dependencies: [pathname] },
+  );
+
   return (
     <section
+      ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
     >
@@ -91,7 +237,7 @@ function RabbisTimeline2(props: ChildProps) {
         animatePosition={props.animWidthText}
       />
       <div className="section-row w-full h-full flex px-[10vw] py-[5vh] items-center justify-start relative z-30 gap-x-[8vw]">
-        <div className="rabbis-title self-end">
+        <div dir="ltr" className="rabbis-title self-end text-right">
           <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F]">
             ציוני
             <br />
@@ -105,7 +251,7 @@ function RabbisTimeline2(props: ChildProps) {
               return (
                 <div
                   key={index}
-                  className="notifiaction py-5 px-8 w-108 bg-[#5A7C4E] relative self-start pl-19 mx-auto z-40 mt-[14vh] -ml-[8vw] -mr-[12vw]"
+                  className="timeline-content notifiaction py-5 px-8 w-108 bg-[#5A7C4E] relative self-start pl-19 mx-auto z-40 mt-[14vh] -ml-[8vw] -mr-[12vw]"
                 >
                   <div className="notify-icon w-50.5 h-33.75 absolute top-0 left-0 -translate-x-1/2">
                     <Image
@@ -119,19 +265,16 @@ function RabbisTimeline2(props: ChildProps) {
                       alt={"Book Icon"}
                     />
                   </div>
-                  <p
-                    className="text-[20px] leading-[1.25em]"
-                    dangerouslySetInnerHTML={{
-                      __html: item?.text || "",
-                    }}
-                  ></p>
+                  <p className="text-[20px] leading-[1.25em] text-right">
+                    {parse(item?.text)}
+                  </p>
                 </div>
               );
             } else {
               return (
                 <div
                   key={index}
-                  className={`${item.size === "portrait" ? "w-64.5" : "w-111.5"} flex flex-col gap-y-[5.5vh]`}
+                  className={`timeline-content ${item.size === "portrait" ? "w-64.5" : "w-111.5"} flex flex-col gap-y-[5.5vh]`}
                 >
                   {item.size === "portrait" ? (
                     <div className="image w-64.5 h-76.25">
@@ -150,21 +293,20 @@ function RabbisTimeline2(props: ChildProps) {
                     <div className="image w-111.5 h-76.25">
                       <Image
                         className="w-full object-cover object-center h-full relative z-10"
-                        src={item?.image?.src || ""}
+                        src={item?.image?.src}
                         width="446"
                         height="305"
-                        blurDataURL={item?.image.blurDataURL || ""}
+                        blurDataURL={item?.image.blurDataURL}
                         placeholder={"blur"}
                         loading="lazy"
                         alt="Rabbis Image"
                       />
                     </div>
                   )}
-                  <div className="title mt-auto">
-                    <h4
-                      className="text-[43px] leading-[0.7em] text-[#FBF4E6]"
-                      dangerouslySetInnerHTML={{ __html: item?.text }}
-                    ></h4>
+                  <div dir="ltr" className="title mt-auto text-right">
+                    <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6]">
+                      {parse(item?.text)}
+                    </h4>
                   </div>
                 </div>
               );

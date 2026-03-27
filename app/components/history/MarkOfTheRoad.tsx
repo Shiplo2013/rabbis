@@ -1,5 +1,6 @@
 import parse from "html-react-parser";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import markImage1 from "../../assets/images/mark-image1.jpg";
 import markImage2 from "../../assets/images/mark-image2.jpg";
@@ -13,12 +14,16 @@ interface ChildProps {
   animWidthText: number;
 }
 export default function MarkOfTheRoad(props: ChildProps) {
+  // Navigation
+  const pathname = usePathname();
   // Selectors
   const wrapper = useRef<HTMLDivElement>(null);
-  const titleRef = useRef(null);
-  const imageMove = useRef(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const imageMove = useRef<HTMLDivElement>(null);
   const text1 = useRef<HTMLDivElement>(null);
   const text2 = useRef<HTMLDivElement>(null);
+  const image1 = useRef<HTMLImageElement>(null);
+  const image2 = useRef<HTMLImageElement>(null);
   //Section Data
   const title = `ציוני<br/>דרך`;
   const secTitle = `שנת תרל"ז:<br/>ייסוד כולל קובנה לאברכים`;
@@ -27,11 +32,10 @@ export default function MarkOfTheRoad(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
-      // Section Title 2
+      // Section Moving Image
       gsap.set(imageMove.current, { x: 200 });
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: "#panel-wrapper",
           start: () => {
             return window.innerWidth * props.animWidthText - 0.8;
           },
@@ -42,6 +46,32 @@ export default function MarkOfTheRoad(props: ChildProps) {
       tl.to(imageMove.current, {
         x: -200,
         ease: "easeIn",
+      });
+
+      // Section Image 1
+      gsap.set(image1.current, { y: 300, opacity: 0 });
+      gsap.to(image1.current, {
+        y: 0,
+        opacity: 1,
+        ease: "expo.out",
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * (props.animWidthText + 0.2);
+          },
+        },
+      });
+
+      // Section Image 1
+      gsap.set(image2.current, { y: 300, opacity: 0 });
+      gsap.to(image2.current, {
+        y: 0,
+        opacity: 1,
+        ease: "expo.out",
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * (props.animWidthText + 0.9);
+          },
+        },
       });
 
       document.fonts.ready.then(() => {
@@ -119,7 +149,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
         });
       });
     },
-    { scope: wrapper },
+    { scope: wrapper, dependencies: [pathname] },
   );
   return (
     <section
@@ -137,7 +167,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
           </h2>
         </div>
         <div className="section-content flex items-center gap-x-[2.6vw] w-48.5vw">
-          <div className="image w-110.5 h-111.5 relative">
+          <div ref={image1} className="image w-110.5 h-111.5 relative">
             <Image
               className="w-full object-cover object-center h-full"
               src={markImage1.src}
@@ -168,7 +198,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
           </div>
         </div>
         <div className="section-content flex items-center gap-x-[2.6vw] w-[49.2vw]">
-          <div className="image w-134.75 h-103.75">
+          <div ref={image2} className="image w-134.75 h-103.75">
             <Image
               className="w-full object-cover object-center h-full"
               src={markImage3.src}

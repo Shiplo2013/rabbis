@@ -45,7 +45,7 @@ export default function RabbisSlider(props: ChildProps) {
         {props?.data?.map((item, index) => {
           return (
             <SwiperSlide key={index}>
-              <div className="rabbis-wrapper relative min-w-140 flex flex-col items-center justify-center">
+              <div className="rabbis-wrapper relative min-w-140 flex flex-col items-center justify-center group">
                 <div className="rabbis-thumb w-91.75 h-93.5 relative z-10">
                   <Image
                     className="w-full object-cover object-center h-full"
@@ -75,7 +75,7 @@ export default function RabbisSlider(props: ChildProps) {
                     </h5>
                   </div>
                 </div>
-                <div className="text-[20px] text-[#D1A941] text-center absolute top-[27%] z-30">
+                <div className="text-[20px] text-[#D1A941] text-center absolute top-[27%] z-30 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <p>
                     מייסד וראש הישיבה. מראשי תנועת המוסר ידוע בכינויו הסבא
                     מסלבודקה.
