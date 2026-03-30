@@ -1,7 +1,10 @@
+import TextSplitLines from "@/app/ui/TextSplitLines";
+import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
+import { useRef } from "react";
 import Koddisha from "../../assets/images/kaddisha.jpg";
 import sectionImage from "../../assets/images/section-image2.jpg";
-import { gsap, SplitText, useGSAP } from "../../ui/plugins";
+import { gsap, useGSAP } from "../../ui/plugins";
 
 interface ChildProps {
   extraClass: string;
@@ -10,79 +13,100 @@ interface ChildProps {
 }
 
 export default function HomeSection2(props: ChildProps) {
-  function moveImage(e: { screenY: number; clientX: any; clientY: any }) {
-    const { clientX, clientY } = e;
-    const moveX = clientX - window.innerWidth / 2;
-    const moveY = clientY - window.innerHeight / 2;
+  // Selectors
+  const wrapper = useRef<HTMLElement>(null);
+  // Route
+  const pathname = usePathname();
 
-    // Apply movement to elements with parallax classes
-    gsap.to(".mouse-follower", {
-      x: moveX * 0.05, // Speed factor
-      y: moveY * 0.05,
-      ease: "power2.out",
-      duration: 0.5,
-    });
-    gsap.to(".over-title", {
-      x: moveX * 0.03, // Speed factor
-      y: moveY * 0.03,
-      ease: "power2.out",
-      duration: 0.5,
-    });
-  }
   useGSAP(() => {
-    gsap.set(".home-section2 .section-image", {
-      scale: 0.6,
-    });
-    // Section 2 Image
-    gsap.to(".home-section2 .section-image", {
-      scrollTrigger: {
-        start: () => {
-          return window.innerWidth * props.animWidthImage;
-        },
-        toggleActions: "restart pause resume reverse",
-      },
-      scale: 1,
-      duration: 0.6,
-      ease: "slow.inOut",
-    });
-    document.fonts.ready.then(() => {
-      let split;
-      const text = document.querySelectorAll(
-        ".home-section2 .section-content .text>p",
-      );
-      text.forEach((element) => {
-        SplitText.create(element, {
-          type: "words,lines",
-          linesClass: "line overflow-hidden",
-          autoSplit: true,
-          mask: "lines",
-          onSplit: (self) => {
-            split = gsap.from(self.lines, {
-              scrollTrigger: {
-                start: () => {
-                  return window.innerWidth * props.animWidthText;
-                },
-                toggleActions: "restart pause resume reverse",
-              },
-              duration: 2,
-              yPercent: 100,
-              opacity: 0,
-              stagger: 1,
-              delay: 0,
-              ease: "expo.out",
-            });
-            return split;
+    // Selectors
+    const sectionImage = wrapper.current?.querySelector(".section-image");
+    // Animations
+    if (sectionImage) {
+      gsap.set(sectionImage, {
+        scale: 0.6,
+      });
+      // Section 2 Image
+      gsap.to(sectionImage, {
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * props.animWidthImage;
           },
-        });
+          toggleActions: "restart pause resume reverse",
+        },
+        scale: 1,
+        duration: 0.6,
+        ease: "none",
+      });
+    }
+    document.fonts.ready.then(() => {
+      const text = wrapper.current?.querySelector(".section-content .text");
+      if (!text) return;
+      const textSplit = TextSplitLines(text);
+      gsap.set(text, {
+        perspective: 400,
+      });
+      gsap.set(textSplit, {
+        yPercent: 150,
+        opacity: 0,
+      });
+      gsap.to(textSplit, {
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * props.animWidthText;
+          },
+          toggleActions: "restart pause resume reverse",
+        },
+        yPercent: 0,
+        opacity: 1,
+        delay: -1,
+        stagger: 0.02,
+        ease: "expo.inOut",
+        duration: 3,
       });
     });
-  }, []);
+    // Parallax Effect
+    const bigTitle = wrapper.current?.querySelector(".over-title");
+    if (bigTitle) {
+      gsap.to(bigTitle, {
+        translateX: "-15vw",
+        ease: "none",
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * props.animWidthImage;
+          },
+          end: () => {
+            return "+=" + window.innerWidth * 2;
+          },
+          scrub: 2,
+        },
+      });
+    }
+    const overImage = wrapper.current?.querySelector(".mouse-follower");
+    if (overImage) {
+      gsap.to(overImage, {
+        translateX: "20vw",
+        ease: "none",
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * props.animWidthImage;
+          },
+          end: () => {
+            return "+=" + window.innerWidth * 2;
+          },
+          scrub: 2,
+        },
+      });
+    }
+  }, [pathname]);
+
   return (
     <section
+      ref={wrapper}
       dir="rtl"
-      onMouseMove={(e) => {
-        moveImage(e);
-      }}
+      // onMouseMove={(e) => {
+      //   moveImage(e);
+      // }}
       className={`${props.extraClass} home-section2 h-screen flex items-center`}
     >
       <div className="section-image h-screen w-[40vw]">
@@ -105,7 +129,7 @@ export default function HomeSection2(props: ChildProps) {
           <br />
           קדישא
         </h2>
-        <div className="mouse-follower absolute top-[20%] right-[8%]">
+        <div className="mouse-follower absolute top-[20%] right-[18%]">
           <Image
             className="relative z-10"
             src={Koddisha?.src}
@@ -118,7 +142,10 @@ export default function HomeSection2(props: ChildProps) {
           />
           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-30"></div>
         </div>
-        <div className="text text-[#EEECDD] text-[70px] leading-[0.8] w-4/5 relative z-40">
+        <div
+          dir="ltr"
+          className="text text-[#EEECDD] text-[70px] leading-[0.8] w-4/5 relative z-40 text-right"
+        >
           <p>
             הסבא מסלבודקא מחולל ומייסד הישיבה שהצמיח ברוממותו דורות של תלמידים
             נעלים, עיצב נפשות ברוח גדלות האדם ומאז ועד היום ניכרת השפעתו בכל בית

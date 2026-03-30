@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import ParallaxBackground from "@/app/ui/ParallaxBackground";
 import RabbisSlider from "@/app/ui/RabbisSlider";
 import ThemeButton from "@/app/ui/ThemeButton";
@@ -77,17 +76,17 @@ export default function RabbisPeriodSection(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splititle = gsap.from(self.lines, {
-              duration: 0.7,
+              duration: 3,
               yPercent: 100,
               opacity: 0,
-              stagger: 0.05,
-              ease: "expo.out",
+              delay: -1,
+              stagger: 0.02,
+              ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return (
-                    GetRightPosition(title.current) - window.innerWidth / 3
-                  );
+                  return window.innerWidth * props.animWidthText;
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
             return splititle;
@@ -97,24 +96,28 @@ export default function RabbisPeriodSection(props: ChildProps) {
         gsap.from(button.current, {
           yPercent: 100,
           opacity: 0,
-          duration: 0.7,
-          ease: "back.out(1)",
+          duration: 3,
+          delay: -1,
+          ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(button.current) - window.innerWidth / 3;
+              return window.innerWidth * (props.animWidthText + 0.4);
             },
+            toggleActions: "restart pause play reverse",
           },
         });
         // Section Slider
         gsap.from(slider.current, {
           yPercent: 50,
           opacity: 0,
-          duration: 0.7,
-          ease: "back.out(1)",
+          duration: 3,
+          delay: -1,
+          ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(slider.current) - window.innerWidth / 3;
+              return window.innerWidth * (props.animWidthText + 0.3);
             },
+            toggleActions: "restart pause play reverse",
           },
         });
       });

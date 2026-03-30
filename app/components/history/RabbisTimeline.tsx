@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import ParallaxBackground from "@/app/ui/ParallaxBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -47,7 +46,7 @@ export default function RabbisTimeline(props: ChildProps) {
     () => {
       // Current Rabbis Animatin
       const items = wrapper.current?.querySelectorAll(".current-rubbis");
-      items?.forEach((item) => {
+      items?.forEach((item, index) => {
         const image = item.querySelector(".image");
         const title = item.querySelector(".title>h4");
         // Rubbis Image
@@ -62,8 +61,9 @@ export default function RabbisTimeline(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(item) - window.innerWidth / 2;
+              return window.innerWidth * (props.animWidthText + index * 0.4);
             },
+            toggleActions: "restart pause play reverse",
           },
         });
         // Rubbis Title
@@ -85,8 +85,11 @@ export default function RabbisTimeline(props: ChildProps) {
                 ease: "expo.out",
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(item) - window.innerWidth / 2;
+                    return (
+                      window.innerWidth * (props.animWidthText + index * 0.4)
+                    );
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return splititle;

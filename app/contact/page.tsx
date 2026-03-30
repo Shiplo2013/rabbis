@@ -6,17 +6,14 @@ import NewsSectionBG from "../assets/images/new-section-bg2.jpg";
 import HistoryImage1 from "../assets/images/single-image.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import EvidenceOfPeriod from "../components/history/EvidenceOfPeriod";
 import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
-import LambOfferingSection from "../components/history/LambOfferingSection";
+import Introduction from "../components/history/Introduction";
 import MarkOfTheRoad from "../components/history/MarkOfTheRoad";
-import MarkOfTheRoad2 from "../components/history/MarkOfTheRoad2";
 import MoveToJerusalem from "../components/history/MoveToJerusalem";
 import NewsPapperSection from "../components/history/NewsPapperSection";
 import OnlyTextSection from "../components/history/OnlyTextSection";
 import RabbisPeriodSection from "../components/history/RabbisPeriodSection";
 import RabbisTimeline from "../components/history/RabbisTimeline";
-import RabbisTimeline2 from "../components/history/RabbisTimeline2";
 import RabbisTimeline3 from "../components/history/RabbisTimeline3";
 import LoadingEffect from "../components/LoadingEffect";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../ui/plugins";
@@ -80,11 +77,11 @@ export default function Contact() {
       if (userVisit === "true") {
         // Set Title
         const headingTitle = document.querySelector(
-          ".first-intro .split-title",
+          ".first-intro .intro-title",
         );
         // Subtitle
         const headingContent = document.querySelector(
-          ".first-intro .split-content",
+          ".first-intro .intro-content",
         );
         // Page Timeline
         const headingTitleSpan = headingTitle?.querySelector("span");
@@ -266,7 +263,7 @@ export default function Contact() {
   return (
     <div className="relative overflow-hidden">
       <LoadingEffect animated={setAnimationPlayed} />
-      <Header />
+      <Header animationStatus={false} />
       <SmoothWrapper>
         <main
           id="page"
@@ -281,8 +278,25 @@ export default function Contact() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[600vw] h-screen`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[600vw] h-screen will-change-transform`}
             >
+              <Introduction
+                animated={isAllAnimationComplete}
+                bgImage={""}
+                bgOverlay={""}
+                data={IntroData1}
+                extraClass={
+                  "first-intro panel-section will-change-transform min-w-screen w-screen"
+                }
+                panel={panel}
+                bgPosition=""
+                overlayClass="hidden"
+                bgClass=""
+                audioControl={function (): void {
+                  throw new Error("Function not implemented.");
+                }}
+                animationStatus={false}
+              />
               <section className="h-screen w-screen min-w-screen flex items-center justify-center flex-col relative">
                 <div className="w-full h-full flex items-center justify-center gap-x-[5vw] px-[10.4vw]">
                   <div className="text-[21px] w-1/2">
@@ -342,36 +356,10 @@ export default function Contact() {
                   "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
                 }
               />
-              <RabbisTimeline2
-                animWidthText={23}
-                extraClass={
-                  "min-w-[405vw] w-[405vw] h-screen panel-section will-change-transform"
-                }
-                bgImage={timelineBG}
-              />
               <MoveToJerusalem
                 animWidthText={20}
                 extraClass={
                   "min-w-[170vw] w-[170vw] h-screen panel-section will-change-transform"
-                }
-              />
-
-              <LambOfferingSection
-                animWidthText={1}
-                extraClass={
-                  "min-w-[146vw] w-[146vw] h-screen panel-section will-change-transform"
-                }
-              />
-              <EvidenceOfPeriod
-                animWidthText={13.5}
-                extraClass={
-                  "min-w-[93vw] w-[93vw] h-screen panel-section will-change-transform"
-                }
-              />
-              <MarkOfTheRoad2
-                animWidthText={9.5}
-                extraClass={
-                  "min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform"
                 }
               />
               <NewsPapperSection
@@ -414,53 +402,6 @@ export default function Contact() {
                 }
                 image={HistoryImage1}
               />
-              <div className="h-screen w-screen flex items-center justify-center"></div>
-              <div className="h-screen w-screen flex items-center justify-center flex-col relative">
-                <div className="w-screen h-screen flex items-center justify-center gap-x-[5vw] px-[10vw]">
-                  <div className="text-[25px] w-1/2">
-                    <div className="demoText">
-                      <p>
-                        There are many variations of passages of Lorem Ipsum
-                        available, but the majority have suffered alteration in
-                        some form, by injected humour, or randomised words which
-                        don't look even slightly believable. If you are going to
-                        use a passage of Lorem Ipsum, you need to be sure there
-                        isn't anything embarrassing hidden in the middle of
-                        text. All the Lorem Ipsum generators on the Internet
-                        tend to repeat predefined chunks as necessary, making
-                        this the first true generator on the Internet. It uses a
-                        dictionary of over 200 Latin words, combined with a
-                        handful of model sentence structures, to generate Lorem
-                        Ipsum which looks reasonable. The generated Lorem Ipsum
-                        is therefore always free from repetition, injected
-                        humour, or non-characteristic words etc.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="demoText2 text-[25px] w-1/2">
-                    <p>
-                      סלבודקא שימשה כמרכזה של תנועת המוסר, וממנה התפשטה השפעתה
-                      לרוב הישיבות ברחבי רוסיה ופולין. יסודותיה של התנועה נטועים
-                      עמוק בשיטת הנהגתו וברוחו הגדולה של רבי ישראל מסלנט זצ"ל.
-                    </p>
-                    <p>
-                      ראשיתו של מפעל אדירים זה בשנת תרל"ז (1877), עם ייסודו של
-                      'כולל אברכים' בקובנה. הכולל, אשר היוה חידוש בזמנו פעל
-                      בנשיאותו של רבי ישראל מסלנט, שימש כמסגרת תורנית לעילויים
-                      וגדולי תורה ברוח תנועת המוסר. בין פועליו הבולטים היה רבי
-                      נתן צבי פינקל, אברך צעיר ואיש חזון, שפעל במסגרת זו ללא
-                      לאות להגדיל תורה ולהאדירה. כעבור שלוש שנים, יזם רבי נתן
-                      צבי את הרחבת המוסד גם עבור בני הנעורים, ופנה להיוועץ בדבר
-                      עם רבי ישראל.
-                    </p>
-                    <p>
-                      בתשובתו, הורה לו רבי ישראל כי המטרה המרכזית שעליה יש
-                      להתמקד בהקמת הישיבה היא "לְהַחֲיוֹת רוּחַ שְׁפָלִים
-                      וּלְהַחֲיוֹת לֵב נִדְכָּאִים".
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </main>

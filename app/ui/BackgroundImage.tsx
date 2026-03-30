@@ -1,52 +1,42 @@
+import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
 import { useRef } from "react";
-import { gsap, useGSAP } from "./plugins";
+import GetRightPosition from "./GetRightPosition";
+import { gsap, ScrollTrigger, useGSAP } from "./plugins";
 
+gsap.registerPlugin(ScrollTrigger);
 interface ChildProps {
   animated: boolean;
   bgImage: any;
   panel: any;
+  overlayClass: string;
 }
 
 export default function BackgroundImage(props: ChildProps) {
+  // Select Background Element
   const background = useRef(null);
-  useGSAP(() => {
-    if (props.animated) {
-      gsap.to(".bg-overlay", {
-        translateY: "-100%",
-        duration: 1,
-        ease: "cubic-bezier(0.652, 0.05, 0, 1)",
-        delay: 0,
-      });
-      // Banner Image
-      gsap.set(background.current, { scale: 1.2, opacity: 0 });
-      gsap.to(background.current, {
-        scale: 1,
-        opacity: 1,
-        ease: "power.out",
-        duration: 1,
-        delay: 0,
-      });
-    }
-  }, [props.animated]);
+  // Route
+  const pathname = usePathname();
+  // GSAP Context for Animations
   useGSAP(
     () => {
       // Banner Background
+      gsap.set(background.current, { scale: 1.2 });
       gsap.to(background.current, {
-        x: () => {
-          return -(window.innerWidth * 1);
-        },
+        x: "-50vw",
         ease: "none",
         scrollTrigger: {
-          trigger: props.panel.current,
-          start: "top 0%",
+          start: () => {
+            return GetRightPosition(background.current);
+          },
+          end: () => {
+            return GetRightPosition(background.current) + window.innerWidth * 2;
+          },
           scrub: 2,
-          invalidateOnRefresh: false,
-          end: () => "+=" + window.innerWidth * 1.5,
         },
       });
     },
-    { scope: background },
+    { scope: background, dependencies: [pathname] },
   );
   return (
     <div
@@ -63,7 +53,9 @@ export default function BackgroundImage(props: ChildProps) {
         loading="lazy"
         alt="Section Background"
       />
-      <div className="bg-overlay absolute top-0 left-0 w-full h-full bg-black z-20"></div>
+      <div
+        className={`bg-overlay absolute top-0 left-0 w-full h-full bg-black z-20 ${props.overlayClass}`}
+      ></div>
     </div>
   );
 }

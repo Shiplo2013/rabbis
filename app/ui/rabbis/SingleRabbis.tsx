@@ -1,3 +1,4 @@
+import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,11 +9,11 @@ interface ChildProps {
 
 export default function SingleRabbis(props: ChildProps) {
   return (
-    <div className="single-rabbis min-w-84 w-84">
+    <div dir="ltr" className="single-rabbis min-w-84 w-84">
       <Link href="/">
-        <div className="rabbis-image w-full h-86 mb-8.5">
+        <div className="rabbis-image w-full h-86 mb-8.5 relative overflow-hidden">
           <Image
-            className="w-full object-cover object-center h-full"
+            className="w-full object-cover object-center h-full relative z-10"
             src={props?.image?.src}
             width="336"
             height="334"
@@ -21,9 +22,10 @@ export default function SingleRabbis(props: ChildProps) {
             loading="lazy"
             alt="Rabbis"
           />
+          <div className="rabbis-image-overlay absolute top-0 left-0 w-[calc(100%+10px)] h-full bg-black z-20 -ml-2.5"></div>
         </div>
         <div className="rabbis-text text-[28px] text-(--theme-color) leading-[0.9em]">
-          <p dangerouslySetInnerHTML={{ __html: props?.title }}></p>
+          <p>{parse(props?.title)}</p>
         </div>
       </Link>
     </div>

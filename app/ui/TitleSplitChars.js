@@ -10,8 +10,6 @@ export default function TitleSplitChars(item) {
       autoSplit: true,
     }),
     titleChars = title.chars;
-  gsap.set(item, { perspective: 400 });
-  gsap.set(titleChars, { yPercent: 100, opacity: 0 });
 
   return titleChars;
 }

@@ -1,7 +1,11 @@
+import BackgroundImage2 from "@/app/ui/BackgroundImage2";
+import TextSplitLines from "@/app/ui/TextSplitLines";
+import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
+import { useRef } from "react";
 import Juniper from "../../assets/images/juniper.jpg";
 import sectionBg from "../../assets/images/section-bg.jpg";
-import { gsap, SplitText, useGSAP } from "../../ui/plugins";
+import { gsap, useGSAP } from "../../ui/plugins";
 
 interface ChildProps {
   extraClass: string;
@@ -10,75 +14,95 @@ interface ChildProps {
 }
 
 export default function HomeSection3(props: ChildProps) {
-  function moveImage(e: { screenY: number; clientX: any; clientY: any }) {
-    const { clientX, clientY } = e;
-    const moveX = clientX - window.innerWidth / 2;
-    const moveY = clientY - window.innerHeight / 2;
+  // Selectors
+  const wrapper = useRef<HTMLElement>(null);
+  // Route
+  const pathname = usePathname();
 
-    gsap.to(".home-section3 .over-title", {
-      x: moveX * 0.05, // Speed factor
-      y: moveY * 0.05,
-      ease: "power2.out",
-      duration: 0.5,
-    });
-  }
+  // Section Animations
   useGSAP(() => {
-    gsap.set(".home-section3 .section-image", {
-      scale: 0.6,
-    });
-    // Section 2 Image
-    gsap.to(".home-section3 .section-image", {
-      scrollTrigger: {
-        start: () => {
-          return window.innerWidth * props.animWidthImage;
-        },
-        toggleActions: "restart pause resume reverse",
-      },
-      scale: 1,
-      duration: 0.6,
-      ease: "slow.inOut",
-    });
-    document.fonts.ready.then(() => {
-      let split;
-      const text = document.querySelectorAll(
-        ".home-section3 .section-content .text>p",
-      );
-      text.forEach((element) => {
-        SplitText.create(element, {
-          type: "words,lines",
-          linesClass: "line overflow-hidden",
-          autoSplit: true,
-          mask: "lines",
-          onSplit: (self) => {
-            split = gsap.from(self.lines, {
-              scrollTrigger: {
-                start: () => {
-                  return window.innerWidth * props.animWidthText;
-                },
-                toggleActions: "restart pause resume reverse",
-              },
-              duration: 2,
-              yPercent: 100,
-              opacity: 0,
-              stagger: 1,
-              delay: 0,
-              ease: "expo.out",
-            });
-            return split;
+    // Selectors
+    const sectionImage = wrapper.current?.querySelector(".section-image");
+    // Animations
+    if (sectionImage) {
+      gsap.set(sectionImage, {
+        scale: 0.6,
+      });
+      // Section 2 Image
+      gsap.to(sectionImage, {
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * props.animWidthImage;
           },
-        });
+          toggleActions: "restart pause play reverse",
+        },
+        scale: 1,
+        duration: 0.6,
+        ease: "none",
+      });
+    }
+    document.fonts.ready.then(() => {
+      const text = wrapper.current?.querySelector(".section-content .text");
+      if (!text) return;
+      const textSplit = TextSplitLines(text);
+      gsap.set(text, {
+        perspective: 400,
+      });
+      gsap.set(textSplit, {
+        yPercent: 150,
+        opacity: 0,
+      });
+      gsap.to(textSplit, {
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * props.animWidthText;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+        yPercent: 0,
+        opacity: 1,
+        delay: -1,
+        stagger: 0.02,
+        ease: "expo.inOut",
+        duration: 3,
       });
     });
-  }, []);
+    // Parallax Effect
+    const bigTitle = wrapper.current?.querySelector(
+      ".section-content .over-title",
+    );
+    if (bigTitle) {
+      gsap.to(bigTitle, {
+        translateX: "-20vw",
+        ease: "none",
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * props.animWidthImage;
+          },
+          end: () => {
+            return "+=" + window.innerWidth * 2;
+          },
+          scrub: 2,
+        },
+      });
+    }
+  }, [pathname]);
   return (
     <section
+      ref={wrapper}
       style={{ backgroundImage: `url(${sectionBg.src})` }}
       dir="rtl"
-      onMouseMove={(e) => {
-        moveImage(e);
-      }}
-      className={`${props.extraClass} home-section3 h-screen bg-no-repeat bg-center bg-cover flex items-center`}
+      // onMouseMove={(e) => {
+      //   moveImage(e);
+      // }}
+      className={`${props.extraClass} home-section3 h-screen bg-no-repeat bg-center bg-cover flex items-center overflow-hidden`}
     >
+      <BackgroundImage2
+        bgImage={sectionBg}
+        panel={wrapper}
+        start={props.animWidthImage}
+        end={0}
+      />
       <div
         className={`section-content w-full h-auto flex items-center justify-start pl-[5%] relative z-40`}
       >
@@ -100,7 +124,10 @@ export default function HomeSection3(props: ChildProps) {
             <br />
             רוח
           </h2>
-          <div className="text text-[55px] leading-[0.8] w-107.5 max-w-[70%] relative">
+          <div
+            dir="ltr"
+            className="text text-[55px] leading-[0.8] w-107.5 max-w-[70%] relative"
+          >
             <p className="mb-7.5">מרן רבי משה מרדכי אפשטיין זצוק"ל </p>
             <p className="font-bold">
               הנהיג את הישיבה במסירות נפש מופלאה בתקופות סוערות, והנחיל לתלמידיו

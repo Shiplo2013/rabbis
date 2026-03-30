@@ -14,7 +14,7 @@ import MainMenu from "../components/MainMenu";
 import { gsap, useGSAP } from "../ui/plugins";
 import ThemeButton from "../ui/ThemeButton";
 
-function Header() {
+function Header({ animationStatus }: { animationStatus: boolean }) {
   // Get Location
   const location = usePathname();
   // Menu Links
@@ -79,15 +79,16 @@ function Header() {
   }, [isMenuActive]);
   return (
     <>
-      <header className="fixed w-screen top-0 left-0 flex justify-between items-start z-40 pl-10">
-        <div className="header-right flex items-start pr-17 translate-x-full opacity-0">
+      <header className="fixed w-screen h-0 top-0 left-0 flex justify-between items-start z-40 pl-10">
+        <div className="header-right flex items-start pr-17 opacity-0">
           <div className="horizontal-menu bg-[#000000B2] border border-[#DBBD5C80] h-screen fixed top-0 right-0">
-            <div
+            <button
               onClick={() => setIsMenuActive(!isMenuActive)}
+              disabled={!animationStatus}
               className="hamburger-btn cursor-pointer w-14.5 h-14.5 flex justify-center items-center"
             >
               <HambergerIcon />
-            </div>
+            </button>
             <nav className="nav-menu absolute top-14.5 right-0 w-[calc(100vh-58px)] h-14.5 flex items-stretch justify-stretch origin-topright mr-14.5 -rotate-90">
               {links.map((link) => {
                 const isActive = location === link.href;
@@ -141,7 +142,7 @@ function Header() {
             />
           </div>
         </div>
-        <div className="header-left flex items-center gap-6 pt-7 pb-7 -translate-y-full opacity-0">
+        <div className="header-left flex items-center gap-6 pt-7 pb-7 opacity-0">
           <ThemeButton
             extraClass="py-3.5 px-5"
             bgColor="bg-[#BBA588]"

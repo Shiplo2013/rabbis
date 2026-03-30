@@ -22,15 +22,13 @@ export default function IntroductionBackground(props: ChildProps) {
     () => {
       if (props.animatePosition !== 0) {
         // Banner Background
-        gsap.set(background.current, { scale: 1.2, x: "20vw" });
+        gsap.set(background.current, { scale: 1.2, x: "10vw" });
         gsap.to(background.current, {
-          x: "-20vw",
+          x: "-30vw",
           ease: "none",
           scrollTrigger: {
             start: () => {
-              return (
-                GetRightPosition(background.current) - window.innerWidth / 3
-              );
+              return GetRightPosition(background.current);
             },
             end: () => {
               return (

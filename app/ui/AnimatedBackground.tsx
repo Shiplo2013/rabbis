@@ -7,12 +7,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface ChildProps {
   bgImage: any;
-  start: number;
-  end: number;
-  panel: any;
+  animWidth: number;
 }
 
-export default function BackgroundImage2(props: ChildProps) {
+export default function AnimatedBackground(props: ChildProps) {
   // Selectors
   const background = useRef(null);
 
@@ -29,7 +27,7 @@ export default function BackgroundImage2(props: ChildProps) {
         ease: "none",
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.start;
+            return window.innerWidth * (props.animWidth - 0.2);
           },
           end: () => {
             return "+=" + window.innerWidth * 2;
@@ -43,10 +41,10 @@ export default function BackgroundImage2(props: ChildProps) {
   return (
     <div
       ref={background}
-      className={`banner-background absolute top-0 left-0 w-full h-full bg-black z-10 transition-none`}
+      className={`background-wrapper absolute top-0 left-0 w-full h-full bg-black z-10 transition-none`}
     >
       <Image
-        className="bg-image w-full object-cover object-center h-full"
+        className="background-image w-full object-cover object-center h-full"
         src={props?.bgImage?.src}
         width="1920"
         height="1080"
@@ -55,6 +53,7 @@ export default function BackgroundImage2(props: ChildProps) {
         loading="lazy"
         alt="Section Background"
       />
+      <div className="background-overlay absolute top-0 left-0 w-full h-full bg-black opacity-60 z-20"></div>
     </div>
   );
 }

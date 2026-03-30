@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -32,9 +31,8 @@ export default function TitleSection(props: ChildProps) {
       gsap.set(introImage.current, { x: 100 });
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: "#panel-wrapper",
           start: () => {
-            return GetRightPosition(introImage.current) - window.innerWidth;
+            return window.innerWidth * props.animWidthText;
           },
           end: () => "+=" + window.innerWidth * 2,
           scrub: 2,
@@ -55,16 +53,17 @@ export default function TitleSection(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splititle = gsap.from(self.lines, {
-              duration: 2,
               yPercent: 120,
-              stagger: 0.025,
-              ease: "expo.out",
+              stagger: 0.02,
+              ease: "expo.inOut",
+              duration: 3,
+              delay: -1,
+              opacity: 0,
               scrollTrigger: {
                 start: () => {
-                  return (
-                    GetRightPosition(introTitle.current) - window.innerWidth / 2
-                  );
+                  return window.innerWidth * (props.animWidthText + 0.3);
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
             return splititle;

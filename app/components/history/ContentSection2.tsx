@@ -40,15 +40,17 @@ export default function ContentSection2(props: ChildProps) {
         mask: "lines",
         onSplit: (self) => {
           splititle = gsap.from(self.lines, {
-            duration: 0.7,
+            duration: 3,
             yPercent: 100,
             opacity: 0,
-            stagger: 0.05,
-            ease: "expo.out",
+            delay: -1,
+            stagger: 0.02,
+            ease: "expo.inOut",
             scrollTrigger: {
               start: () => {
                 return window.innerWidth * props.animWidthText;
               },
+              toggleActions: "restart pause play reverse",
             },
           });
           return splititle;
@@ -64,15 +66,17 @@ export default function ContentSection2(props: ChildProps) {
         mask: "lines",
         onSplit: (self) => {
           spContent1 = gsap.from(self.lines, {
-            duration: 0.6,
+            duration: 3,
             yPercent: 100,
             opacity: 0,
-            stagger: 0.05,
-            ease: "expo.out",
+            delay: -1,
+            stagger: 0.02,
+            ease: "expo.inOut",
             scrollTrigger: {
               start: () => {
                 return window.innerWidth * props.animWidthText;
               },
+              toggleActions: "restart pause play reverse",
             },
           });
           return spContent1;
@@ -88,15 +92,17 @@ export default function ContentSection2(props: ChildProps) {
         mask: "lines",
         onSplit: (self) => {
           spContent2 = gsap.from(self.lines, {
-            duration: 0.6,
+            duration: 3,
             yPercent: 100,
             opacity: 0,
-            stagger: 0.05,
-            ease: "expo.out",
+            delay: -1,
+            stagger: 0.02,
+            ease: "expo.inOut",
             scrollTrigger: {
               start: () => {
-                return window.innerWidth * (props.animWidthText + 0.4);
+                return window.innerWidth * (props.animWidthText + 0.2);
               },
+              toggleActions: "restart pause play reverse",
             },
           });
           return spContent2;

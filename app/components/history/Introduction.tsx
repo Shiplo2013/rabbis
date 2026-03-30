@@ -1,9 +1,12 @@
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
+import parse from "html-react-parser";
 import Image from "next/image";
+import { useRef } from "react";
 
 interface ChildProps {
   extraClass: string;
   animated: boolean;
+  animationStatus: boolean;
   audioControl: () => void;
   panel: any;
   bgImage: any;
@@ -15,18 +18,41 @@ interface ChildProps {
 }
 
 export default function Introduction(props: ChildProps) {
+  // Section Selector
+  const wrapper = useRef<HTMLDivElement>(null);
+  const backgorund = wrapper.current?.querySelector(".intro-background");
+  const bgMask = wrapper.current?.querySelector(".intro-bg-mask");
+
+  // // Animation
+  // useGSAP(() => {
+  //   if (props.animationStatus) {
+  //     if (bgMask) {
+  //       gsap.to(
+  //         bgMask,
+  //         {
+  //           translateY: "-100%",
+  //           duration: 1,
+  //           ease: "power2.inOut",
+  //         } );
+  //     }
+  //   }
+  // }, [props.animationStatus]);
   return (
     <section
+      ref={wrapper}
       className={`${props.extraClass} overflow-hidden relative h-screen bg-black`}
     >
       {props.bgImage !== "" && (
-        <IntroductionBackground
-          bgImage={props.bgImage}
-          overlayClass={props.overlayClass}
-          imagePosition={props.bgPosition}
-          bgClass={props.bgClass}
-          animatePosition={0}
-        />
+        <div className="intro-background absolute top-0 left-0 w-full h-full z-10">
+          <IntroductionBackground
+            bgImage={props.bgImage}
+            overlayClass={props.overlayClass}
+            imagePosition={props.bgPosition}
+            bgClass={props.bgClass}
+            animatePosition={1}
+          />
+          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30"></div>
+        </div>
       )}
       {props.bgOverlay !== "" && (
         <div className="absolute top-0 left-0 w-full h-full z-20">
@@ -44,17 +70,11 @@ export default function Introduction(props: ChildProps) {
       )}
       <div dir="rtl" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-center">
-          <h1 className="split-title text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 flex justify-center">
-            <span
-              className="block text"
-              dangerouslySetInnerHTML={{ __html: props.data[0].title }}
-            ></span>
+          <h1 className="intro-title text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 flex justify-center">
+            <span className="block text">{parse(props.data[0].title)}</span>
           </h1>
-          <h4 className="split-content overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30">
-            <span
-              className="block text"
-              dangerouslySetInnerHTML={{ __html: props.data[0].subtitle }}
-            ></span>
+          <h4 className="intro-content overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30">
+            <span className="block text">{parse(props.data[0].subtitle)}</span>
           </h4>
         </div>
       </div>

@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
-import GetRightPosition from "./GetRightPosition";
 import { gsap, useGSAP } from "./plugins";
 
 interface ChildProps {
@@ -28,12 +27,10 @@ export default function ParallaxBackground(props: ChildProps) {
           ease: "none",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(background.current) - window.innerWidth;
+              return window.innerWidth * (props.animatePosition - 0.5);
             },
             end: () => {
-              return (
-                GetRightPosition(background.current) + window.innerWidth * 2
-              );
+              return "+=" + window.innerWidth * 2;
             },
             scrub: 2,
           },
