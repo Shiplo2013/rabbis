@@ -47,10 +47,19 @@ import { gsap, ScrollTrigger, SplitText, useGSAP } from "../ui/plugins";
 import SingleImageSection from "../ui/SingleImageSection";
 import SlidingArrow from "../ui/SlidingArrow";
 import SmoothWrapper from "../ui/SmoothWrapper";
+import TextSplitLines from "../ui/TextSplitLines";
+import TitleSplitChars from "../ui/TitleSplitChars";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
 export default function Page() {
+  // Page Selectors
+  const main = useRef<HTMLDivElement>(null);
+  const page = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const wrapper = useRef<HTMLDivElement>(null);
+  const history = useRef<HTMLDivElement>(null);
+  const progress = useRef<HTMLDivElement>(null);
   // Rabbis Data
   const TimelineData = [
     {
@@ -151,6 +160,9 @@ export default function Page() {
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+  // Vertical Section
+  const [verticalSection, setVerticalSection] =
+    useState<gsap.core.Timeline | null>(null);
 
   // Load Page
   useGSAP(() => {
@@ -159,30 +171,30 @@ export default function Page() {
       const userVisit = localStorage.getItem("hasVisited");
       if (userVisit === "true") {
         // Set Title
-        const headingTitle = document.querySelector(
-          ".first-intro .split-title",
+        const headingTitle = page.current?.querySelector(
+          ".first-intro .intro-title",
         );
         // Subtitle
-        const headingContent = document.querySelector(
-          ".first-intro .split-content",
+        const headingContent = page.current?.querySelector(
+          ".first-intro .intro-content",
+        );
+        // Subtitle
+        const introBackground = page.current?.querySelector(
+          ".intro-background .intro-bg-mask",
         );
         // Page Timeline
         const headingTitleSpan = headingTitle?.querySelector("span");
         const headingContentSpan = headingContent?.querySelector("span");
+        const timeline = history.current?.querySelector(".timeline");
+        let splitTitle, splitContent;
         if (headingTitleSpan) {
-          gsap.set(headingTitleSpan, {
-            opacity: 0,
-            yPercent: 100,
-          });
+          splitTitle = TitleSplitChars(headingTitleSpan);
         }
         if (headingContentSpan) {
-          gsap.set(headingContentSpan, {
-            opacity: 0,
-            yPercent: 100,
-          });
+          splitContent = TextSplitLines(headingContentSpan);
         }
-        if (history.current) {
-          gsap.set(history.current, { opacity: 0, y: 50 });
+        if (timeline) {
+          gsap.set(history.current, { opacity: 1 });
         }
         // Timeline
         const tl = gsap.timeline({
@@ -191,77 +203,85 @@ export default function Page() {
             setIsAllAnimationComplete(true);
           },
         });
-        tl.to("#page", {
+        tl.to(main.current, {
           opacity: 1,
-          ease: "easeInOut",
-          duration: 1,
+          ease: "none",
+          duration: 0.5,
+          delay: 0,
+        });
+        tl.to(page.current, {
+          opacity: 1,
+          ease: "none",
+          duration: 0,
           delay: 0,
         })
-          .to(
-            ".header-left",
-            {
-              opacity: 1,
-              y: 0,
-              ease: "easeInOut",
-              duration: 1,
-            },
-            "-=1",
-          )
+          .to(".header-left", {
+            opacity: 1,
+            ease: "none",
+            duration: 1,
+          })
           .to(
             ".header-right",
             {
               opacity: 1,
-              x: 0,
-              ease: "easeInOut",
+              ease: "none",
               duration: 1,
             },
             "-=1",
           );
-        if (headingTitleSpan) {
-          tl.to(
-            headingTitleSpan,
+        if (headingTitleSpan && splitTitle) {
+          tl.from(
+            splitTitle,
             {
-              duration: 0.8,
-              yPercent: 0,
-              opacity: 1,
-              ease: "easeInOut",
+              duration: 3,
+              delay: 0,
+              yPercent: 150,
+              stagger: 0.05,
+              ease: "expo.inOut",
             },
-            "-=0.4",
+            "-=1.5",
           );
         }
-        if (headingContentSpan) {
-          tl.to(
-            headingContentSpan,
+        if (headingContentSpan && splitContent) {
+          tl.from(
+            splitContent,
             {
-              duration: 0.8,
-              yPercent: 0,
-              opacity: 1,
-              ease: "easeInOut",
+              duration: 3,
+              delay: 0,
+              yPercent: 120,
+              stagger: 0.03,
+              ease: "expo.inOut",
             },
-            "-=0.4",
+            "-=2.5",
           );
         }
-        if (history.current) {
-          tl.to(
-            history.current,
+        if (timeline) {
+          tl.from(
+            timeline,
             {
-              duration: 0.5,
-              opacity: 1,
-              y: 0,
-              ease: "easeInOut",
+              yPercent: 100,
+              delay: 0,
+              duration: 3,
+              ease: "expo.inOut",
             },
-            "-=0.4",
+            "-=3",
+          );
+        }
+        if (introBackground) {
+          tl.to(
+            introBackground,
+            {
+              translateY: "-100%",
+              delay: 0,
+              duration: 3,
+              ease: "expo.inOut",
+            },
+            "-=2",
           );
         }
       }
     });
   }, [animationPlayed]);
-
-  // Container width
-  const panel = useRef<HTMLDivElement>(null);
-  const wrapper = useRef<HTMLDivElement>(null);
-  const history = useRef<HTMLDivElement>(null);
-  const progress = useRef<HTMLDivElement>(null);
 
   // Get Intro Right Position
   function getRightPosition(selector: string) {
@@ -316,7 +336,7 @@ export default function Page() {
   // Page Section Animation
   useGSAP(() => {
     ScrollTrigger.normalizeScroll(true);
-    let verticalSection = null;
+    let timeline = null;
     if (typeof window !== "undefined" && panel) {
       // Overflow body
       document.body.classList.add("overflow-x-hidden", "overscroll-none");
@@ -354,7 +374,7 @@ export default function Page() {
       );
 
       // Vertical Section
-      verticalSection = gsap.timeline({
+      timeline = gsap.timeline({
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
@@ -478,7 +498,7 @@ export default function Page() {
           },
         },
       });
-      verticalSection.to(wrapper.current, {
+      timeline.to(wrapper.current, {
         x: () =>
           wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
         ease: "none",
@@ -486,6 +506,7 @@ export default function Page() {
         //     return wrapper.current.offsetWidth
         // }
       });
+      setVerticalSection(timeline);
     }
     // Return
     return () => {
@@ -493,11 +514,31 @@ export default function Page() {
     };
   }, [pathname]);
 
+  // Set Body Overflow Hidden
   useEffect(() => {
+    if (isAllAnimationComplete) {
+      // Body Overflow Hidden
+      document.body.classList.remove("overflow-hidden");
+      document.body.classList.add("overflow-x-hidden", "overscroll-none");
+      verticalSection?.pause();
+    } else {
+      verticalSection?.resume();
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isAllAnimationComplete]);
+
+  useEffect(() => {
+    document.body.classList.add("overflow-hidden");
     window.onbeforeunload = function () {
-      gsap.to("#page", {
+      gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,
+      });
+      gsap.to(page.current, {
+        opacity: 0,
+        duration: 0,
         onComplete: () => {
           window.scrollTo(0, 0);
         },
@@ -506,11 +547,16 @@ export default function Page() {
   }, []);
 
   return (
-    <div id="page" className="relative">
+    <div ref={main} id="page" className="relative">
       <LoadingEffect animated={setAnimationPlayed} />
-      <Header />
+      <Header animationStatus={isAllAnimationComplete} />
       <SmoothWrapper>
-        <main id="page" dir="ltr" className="main opacity-0 relative z-10">
+        <main
+          ref={page}
+          id="page"
+          dir="ltr"
+          className="main opacity-0 relative z-10"
+        >
           <div
             ref={panel}
             id="panel-wrapper"
@@ -519,11 +565,12 @@ export default function Page() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[3775vw] h-screen`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[3775vw] h-screen will-change-transform`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
-                bgImage={""}
+                animationStatus={isAllAnimationComplete}
+                bgImage={introBG7}
                 bgOverlay={""}
                 data={IntroData1}
                 extraClass={
@@ -531,7 +578,7 @@ export default function Page() {
                 }
                 panel={panel}
                 bgPosition=""
-                overlayClass="hidden"
+                overlayClass="bg-[#000000] opacity-40"
                 bgClass=""
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
@@ -552,7 +599,7 @@ export default function Page() {
                 rightShape={true}
               />
               <RabbisPeriodSection
-                animWidthText={1.7}
+                animWidthText={1.8}
                 extraClass={
                   "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
                 }
@@ -571,7 +618,7 @@ export default function Page() {
                 }
               />
               <RabbisTimeline
-                animWidthText={4.4}
+                animWidthText={4.6}
                 extraClass={
                   "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
                 }

@@ -10,7 +10,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #000000;
     --foreground: #ededed;
   }
 }
@@ -340,6 +340,11 @@
       .direction-rtl {
         direction: rtl;
       }
+      .direction-rtl2 {
+        direction: rtl;
+        padding-top: 20px;
+        margin-top: -12px;
+      }
     }
     #panel-wrapper {
       #section-wrapper {
@@ -355,7 +360,7 @@
   }
 }
 body {
-  background: var(--background);
+  background: #000000;
   color: var(--foreground);
   font-family:
     Arial, Helvetica, sans-serif; /* For Internet Explorer and Edge */

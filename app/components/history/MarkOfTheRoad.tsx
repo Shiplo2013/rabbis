@@ -53,11 +53,14 @@ export default function MarkOfTheRoad(props: ChildProps) {
       gsap.to(image1.current, {
         y: 0,
         opacity: 1,
-        ease: "expo.out",
+        duration: 3,
+        delay: -1,
+        ease: "expo.inOut",
         scrollTrigger: {
           start: () => {
             return window.innerWidth * (props.animWidthText + 0.2);
           },
+          toggleActions: "restart pause play reverse",
         },
       });
 
@@ -66,11 +69,14 @@ export default function MarkOfTheRoad(props: ChildProps) {
       gsap.to(image2.current, {
         y: 0,
         opacity: 1,
-        ease: "expo.out",
+        duration: 3,
+        delay: -1,
+        ease: "expo.inOut",
         scrollTrigger: {
           start: () => {
             return window.innerWidth * (props.animWidthText + 0.9);
           },
+          toggleActions: "restart pause play reverse",
         },
       });
 
@@ -85,15 +91,17 @@ export default function MarkOfTheRoad(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splititle = gsap.from(self.lines, {
-              duration: 0.7,
+              duration: 3,
               yPercent: 100,
               opacity: 0,
-              stagger: 0.05,
-              ease: "expo.out",
+              delay: -1,
+              stagger: 0.02,
+              ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
                   return window.innerWidth * props.animWidthText;
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
             return splititle;
@@ -109,15 +117,17 @@ export default function MarkOfTheRoad(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splitext1 = gsap.from(self.lines, {
-              duration: 0.7,
+              duration: 1,
               yPercent: 100,
               opacity: 0,
-              stagger: 0.05,
-              ease: "expo.out",
+              delay: 0,
+              stagger: 0.02,
+              ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
                   return window.innerWidth * (props.animWidthText + 0.7);
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
             return splitext1;
@@ -133,15 +143,17 @@ export default function MarkOfTheRoad(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splitext2 = gsap.from(self.lines, {
-              duration: 0.7,
+              duration: 1,
               yPercent: 100,
               opacity: 0,
-              stagger: 0.05,
-              ease: "expo.out",
+              delay: 0,
+              stagger: 0.02,
+              ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
                   return window.innerWidth * (props.animWidthText + 1.3);
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
             return splitext2;

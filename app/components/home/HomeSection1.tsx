@@ -1,9 +1,11 @@
 "use client";
+import BackgroundImage2 from "@/app/ui/BackgroundImage2";
+import { usePathname } from "next/navigation";
+import { useRef } from "react";
 import SimpleBar from "simplebar-react";
 import ArrowLeft from "../../assets/icons/ArrowLeft";
 import WishIcon from "../../assets/icons/WishIcon";
 import sectionBg from "../../assets/images/section-image.jpg";
-import BackgroundImage2 from "../../ui/BackgroundImage2";
 import CardSlider from "../../ui/CardSlider";
 import PostItem from "../../ui/PostItem";
 import ThemeButton from "../../ui/ThemeButton";
@@ -17,6 +19,10 @@ interface ChildProps {
 }
 
 export default function HomeSection1(props: ChildProps) {
+  // Selectors
+  const wrapper = useRef<HTMLElement>(null);
+  // Route
+  const pathname = usePathname();
   // Slider Data
   const SliderData = [
     {
@@ -25,57 +31,64 @@ export default function HomeSection1(props: ChildProps) {
     },
   ];
   useGSAP(() => {
+    // Selectors
+    const homePost = wrapper.current?.querySelector("#home-post");
+    const cyclePreview = wrapper.current?.querySelector("#cycle-preview");
     // HomeSection1
-    gsap.set("#home-post", { yPercent: 100, opacity: 0 });
-    gsap.set("#cycle-preview", { yPercent: 100, opacity: 0 });
-    gsap.to("#home-post", {
+    if (!homePost || !cyclePreview) return;
+    gsap.set(homePost, { yPercent: 100, opacity: 0 });
+    gsap.to(homePost, {
       scrollTrigger: {
         start: () => {
           return window.innerWidth * props.animWidthPost;
         },
+        toggleActions: "restart pause play reverse",
       },
-      duration: 0.5,
+      duration: 1.5,
       yPercent: 0,
       opacity: 1,
-      //rotationX: 180,
-      transformOrigin: "0% 50%",
-      ease: "slow.inOut",
+      delay: 0,
+      stagger: 0.02,
+      ease: "expo.inOut",
     });
-    gsap.to("#cycle-preview", {
+    gsap.set(cyclePreview, { yPercent: 100, opacity: 0 });
+    gsap.to(cyclePreview, {
       scrollTrigger: {
         start: () => {
           return window.innerWidth * props.animWidthSlider;
         },
+        toggleActions: "restart pause play reverse",
       },
-      duration: 0.6,
+      duration: 1.5,
       yPercent: 0,
       opacity: 1,
-      //rotationX: 180,
-      transformOrigin: "0% 50%",
-      ease: "slow.inOut",
+      delay: 0,
+      stagger: 0.02,
+      ease: "expo.inOut",
     });
-  }, []);
+  }, [pathname]);
   return (
     <section
+      ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} h-screen bg-no-repeat bg-center bg-cover flex items-center overflow-hidden relative`}
     >
       <BackgroundImage2
         bgImage={sectionBg}
-        start={0}
-        end={1.5}
         panel={props.panel}
+        start={props.animWidthPost}
+        end={0}
       />
       <div className="section-content relative z-30 w-full h-full">
         <div
           id="cycle-preview"
-          className="cycle-preview absolute left-[15%] top-1/6"
+          className="cycle-preview absolute left-[15%] top-1/6 transition-none"
         >
           <CardSlider SlideData={SliderData} />
         </div>
         <div
           id="home-post"
-          className="post-wrapper absolute right-0 bottom-0 flex items-end gap-9"
+          className="post-wrapper absolute right-0 bottom-0 flex items-end gap-9 transition-none"
         >
           <div className="post-grid bg-[#F1EADA] text-[#C3A13F] p-11 max-h-100 relative">
             <button className="absolute top-5 left-5 w-4 cursor-pointer">

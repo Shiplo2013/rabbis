@@ -28,19 +28,21 @@ export default function SingleImageSection(props: ChildProps) {
           start: () => {
             return window.innerWidth * props.animWidthText;
           },
+          toggleActions: "restart pause play reverse",
         },
       });
       tl.to(overlay.current, {
         translateY: "-100%",
         transformOrigin: "top",
-        duration: 0.3,
+        duration: 0.5,
         delay: 0,
+        ease: "eseInOut",
       });
       tl.to(image.current, {
         scale: 1,
         ease: "easeIn",
         duration: 0.5,
-        delay: 0.3,
+        delay: 0,
       });
     },
     { scope: wrapper, dependencies: [pathname] },
