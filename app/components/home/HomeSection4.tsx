@@ -52,6 +52,7 @@ export default function HomeSection4(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} home-section4 h-screen bg-no-repeat bg-center bg-cover flex items-center relative overflow-hidden`}
+      data-scroll-section={props.animWidth}
     >
       <AnimatedBackground bgImage={sectionBg} animWidth={props.animWidth} />
       <div

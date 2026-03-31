@@ -73,7 +73,7 @@ export default function HomeSection3(props: ChildProps) {
     );
     if (bigTitle) {
       gsap.to(bigTitle, {
-        translateX: "-20vw",
+        translateX: "-15vw",
         ease: "none",
         scrollTrigger: {
           start: () => {
@@ -96,6 +96,7 @@ export default function HomeSection3(props: ChildProps) {
       //   moveImage(e);
       // }}
       className={`${props.extraClass} home-section3 h-screen bg-no-repeat bg-center bg-cover flex items-center overflow-hidden`}
+      data-scroll-section={props.animWidthText}
     >
       <BackgroundImage2
         bgImage={sectionBg}

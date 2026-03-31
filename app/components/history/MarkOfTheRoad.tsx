@@ -53,8 +53,8 @@ export default function MarkOfTheRoad(props: ChildProps) {
       gsap.to(image1.current, {
         y: 0,
         opacity: 1,
-        duration: 3,
-        delay: -1,
+        duration: 2,
+        delay: -0.5,
         ease: "expo.inOut",
         scrollTrigger: {
           start: () => {
@@ -64,13 +64,13 @@ export default function MarkOfTheRoad(props: ChildProps) {
         },
       });
 
-      // Section Image 1
+      // Section Image 2
       gsap.set(image2.current, { y: 300, opacity: 0 });
       gsap.to(image2.current, {
         y: 0,
         opacity: 1,
-        duration: 3,
-        delay: -1,
+        duration: 2,
+        delay: -0.5,
         ease: "expo.inOut",
         scrollTrigger: {
           start: () => {
@@ -91,10 +91,10 @@ export default function MarkOfTheRoad(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splititle = gsap.from(self.lines, {
-              duration: 3,
+              duration: 2,
               yPercent: 100,
               opacity: 0,
-              delay: -1,
+              delay: -0.5,
               stagger: 0.02,
               ease: "expo.inOut",
               scrollTrigger: {
@@ -125,7 +125,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * (props.animWidthText + 0.7);
+                  return window.innerWidth * (props.animWidthText + 0.5);
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -151,7 +151,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * (props.animWidthText + 1.3);
+                  return window.innerWidth * (props.animWidthText + 1.1);
                 },
                 toggleActions: "restart pause play reverse",
               },

@@ -79,6 +79,7 @@ export default function TitleSection(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      data-scroll-section={props.animWidthText}
     >
       {props.leftShape && (
         <div className="absolute top-0 right-full w-[13vw] h-full -mr-2 select-none pointer-events-none">

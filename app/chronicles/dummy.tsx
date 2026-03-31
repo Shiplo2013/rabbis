@@ -716,7 +716,7 @@ export default function Page() {
                 }
               />
               <TitleSection
-                animWidthText={14.7}
+                animWidthText={15.1}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -782,7 +782,7 @@ export default function Page() {
                 }
               />
               <TitleSection
-                animWidthText={24.1}
+                animWidthText={24.2}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -796,7 +796,7 @@ export default function Page() {
                 }
               />
               <RabbisTimeline2
-                animWidthText={25.7}
+                animWidthText={25.8}
                 extraClass={
                   "min-w-[405vw] w-[405vw] h-screen panel-section will-change-transform"
                 }
@@ -826,7 +826,7 @@ export default function Page() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
-                animWidthText={30.8}
+                animWidthText={30.3}
               />
               <OnlyTextSection
                 animWidthText={31.3}
@@ -835,7 +835,7 @@ export default function Page() {
                 }
               />
               <ArrowSliderSection
-                animWidthText={32}
+                animWidthText={31.62}
                 extraClass={
                   "min-w-[70vw] w-[70vw] h-screen panel-section will-change-transform"
                 }
@@ -843,7 +843,7 @@ export default function Page() {
                 bgClass=""
                 bgPosition="center"
                 overlayClass="hidden"
-                SlideData={SliderData2}
+                SlideData={SliderData}
                 sectionImage={arrowSectionImage}
               />
               <ImageOnlySection
@@ -859,7 +859,7 @@ export default function Page() {
                 }
               />
               <TitleSection
-                animWidthText={33}
+                animWidthText={33.06}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -867,13 +867,13 @@ export default function Page() {
                 rightShape={false}
               />
               <RabbisPeriodSection
-                animWidthText={33.8}
+                animWidthText={33.5}
                 extraClass={
                   "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
                 }
               />
               <RabbisTimeline3
-                animWidthText={34.7}
+                animWidthText={34.4}
                 extraClass={
                   "min-w-[125vw] w-[125vw] h-screen panel-section will-change-transform"
                 }
@@ -894,7 +894,7 @@ export default function Page() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
-                animWidthText={36}
+                animWidthText={35.6}
               />
               <OnlyTextSection2
                 animWidthText={36.6}
@@ -903,7 +903,7 @@ export default function Page() {
                 }
               />
               <ImageOnlySection2
-                animWidthText={37.2}
+                animWidthText={36.9}
                 extraClass={
                   "min-w-[55.5vw] w-[55.5vw] h-screen panel-section will-change-transform"
                 }

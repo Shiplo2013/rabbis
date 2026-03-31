@@ -51,12 +51,13 @@ export default function LambOfferingSection(props: ChildProps) {
         });
         gsap.to(notification, {
           opacity: 1,
-          duration: 1,
-          ease: "expo.out",
+          duration: 1.5,
+          ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
               return GetRightPosition(notification) - window.innerWidth / 3;
             },
+            toggleActions: "restart pause play reverse",
           },
         });
         // Notification Icon
@@ -71,13 +72,14 @@ export default function LambOfferingSection(props: ChildProps) {
           x: 0,
           rotate: 0,
           opacity: 1,
-          duration: 1,
+          duration: 1.5,
           delay: 0.5,
-          ease: "expo.out",
+          ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
               return GetRightPosition(notification) - window.innerWidth / 3;
             },
+            toggleActions: "restart pause play reverse",
           },
         });
       }
@@ -163,15 +165,16 @@ export default function LambOfferingSection(props: ChildProps) {
             onSplit: (self) => {
               splititle = gsap.from(self.lines, {
                 duration: 2,
-                yPercent: 120,
+                yPercent: 150,
                 stagger: 0.025,
-                ease: "expo.out",
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
                     return (
                       GetRightPosition(sectionTitle) - window.innerWidth / 2
                     );
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return splititle;
@@ -190,15 +193,16 @@ export default function LambOfferingSection(props: ChildProps) {
             onSplit: (self) => {
               splititle = gsap.from(self.lines, {
                 duration: 2,
-                yPercent: 120,
+                yPercent: 150,
                 stagger: 0.025,
-                ease: "expo.out",
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
                     return (
                       GetRightPosition(sectionText1) - window.innerWidth / 2
                     );
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return splititle;
@@ -217,15 +221,16 @@ export default function LambOfferingSection(props: ChildProps) {
             onSplit: (self) => {
               splititle = gsap.from(self.lines, {
                 duration: 2,
-                yPercent: 120,
+                yPercent: 150,
                 stagger: 0.025,
-                ease: "expo.out",
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
                     return (
                       GetRightPosition(sectionText2) - window.innerWidth / 2
                     );
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return splititle;
@@ -241,6 +246,7 @@ export default function LambOfferingSection(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center overflow-hidden relative z-20`}
+      data-scroll-section={props.animWidthText}
     >
       <ParallaxBackground
         bgImage={contentBG}

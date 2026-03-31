@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -45,13 +44,12 @@ export default function OnlyTextSection2(props: ChildProps) {
                 duration: 2,
                 yPercent: 120,
                 stagger: 0.025,
-                ease: "expo.out",
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      GetRightPosition(wrapper.current) - window.innerWidth / 2
-                    );
+                    return window.innerWidth * props.animWidthText;
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return text;
@@ -64,11 +62,13 @@ export default function OnlyTextSection2(props: ChildProps) {
   );
   return (
     <section
-      dir="rtl"
+      ref={wrapper}
+      dir="ltr"
       className={`${props.extraClass} bg-[#CD5E41] flex items-center relative z-20`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="section-wrapper w-full h-full pr-[7vw] pl-[5.7vw] py-[6.5vh] justify-center flex flex-col">
-        <div className="small-text text-[#FBF4E6] text-[21px] leading-[1.4em] flex flex-col gap-y-6">
+        <div className="small-text text-[#FBF4E6] text-[21px] leading-[1.4em] text-right">
           {parse(textData[0].text)}
         </div>
       </div>

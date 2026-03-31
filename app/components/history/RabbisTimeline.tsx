@@ -61,7 +61,7 @@ export default function RabbisTimeline(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText + index * 0.4);
+              return window.innerWidth * (props.animWidthText + index * 0.35);
             },
             toggleActions: "restart pause play reverse",
           },
@@ -81,12 +81,13 @@ export default function RabbisTimeline(props: ChildProps) {
                 duration: 1,
                 yPercent: 100,
                 opacity: 0,
+                delay: 0.1,
                 stagger: 0.05,
                 ease: "expo.out",
                 scrollTrigger: {
                   start: () => {
                     return (
-                      window.innerWidth * (props.animWidthText + index * 0.4)
+                      window.innerWidth * (props.animWidthText + index * 0.35)
                     );
                   },
                   toggleActions: "restart pause play reverse",

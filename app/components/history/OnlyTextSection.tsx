@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -46,14 +45,14 @@ export default function OnlyTextSection(props: ChildProps) {
               text = gsap.from(self.lines, {
                 duration: 2,
                 yPercent: 120,
-                stagger: 0.025,
-                ease: "expo.out",
+                stagger: 0.01,
+                delay: -0.5,
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      GetRightPosition(wrapper.current) - window.innerWidth / 2
-                    );
+                    return window.innerWidth * props.animWidthText;
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return text;
@@ -73,15 +72,14 @@ export default function OnlyTextSection(props: ChildProps) {
               bitText = gsap.from(self.lines, {
                 duration: 2,
                 yPercent: 120,
-                delay: 0.5,
-                stagger: 0.025,
-                ease: "expo.out",
+                delay: 0,
+                stagger: 0.01,
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      GetRightPosition(wrapper.current) - window.innerWidth / 2
-                    );
+                    return window.innerWidth * props.animWidthText;
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return bitText;
@@ -98,6 +96,7 @@ export default function OnlyTextSection(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-[#5A7C4E] flex items-center relative z-20`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="section-wrapper w-full h-full pr-[7vw] pl-[5.7vw] py-[6.5vh] justify-end flex flex-col">
         <div

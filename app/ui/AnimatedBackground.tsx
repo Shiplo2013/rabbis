@@ -23,14 +23,14 @@ export default function AnimatedBackground(props: ChildProps) {
       // Banner Background
       gsap.set(background.current, { scale: 1.4, x: "20vw" });
       gsap.to(background.current, {
-        x: "-30vw",
+        x: "-20vw",
         ease: "none",
         scrollTrigger: {
           start: () => {
             return window.innerWidth * (props.animWidth - 0.2);
           },
           end: () => {
-            return "+=" + window.innerWidth * 2;
+            return "+=" + window.innerWidth * 1.2;
           },
           scrub: 2,
         },

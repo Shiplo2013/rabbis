@@ -15,6 +15,7 @@ import OnlyTextSection from "../components/history/OnlyTextSection";
 import RabbisPeriodSection from "../components/history/RabbisPeriodSection";
 import RabbisTimeline from "../components/history/RabbisTimeline";
 import RabbisTimeline3 from "../components/history/RabbisTimeline3";
+import SingleVideoSection from "../components/history/SingleVideoSection";
 import LoadingEffect from "../components/LoadingEffect";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../ui/plugins";
 import SingleImageSection from "../ui/SingleImageSection";
@@ -296,6 +297,12 @@ export default function Contact() {
                   throw new Error("Function not implemented.");
                 }}
                 animationStatus={false}
+              />
+              <SingleVideoSection
+                animWidthText={0.6}
+                extraClass={
+                  "min-w-[26vw] w-[26vw] h-screen panel-section will-change-transform"
+                }
               />
               <section className="h-screen w-screen min-w-screen flex items-center justify-center flex-col relative">
                 <div className="w-full h-full flex items-center justify-center gap-x-[5vw] px-[10.4vw]">

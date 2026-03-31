@@ -49,12 +49,13 @@ export default function MarkOfTheRoad2(props: ChildProps) {
         gsap.to(image, {
           y: 0,
           opacity: 1,
-          duration: 1,
-          ease: "expo.out",
+          duration: 1.5,
+          ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
               return GetRightPosition(image) - window.innerWidth / 3;
             },
+            toggleActions: "restart pause play reverse",
           },
         });
         // Rubbis Title
@@ -69,15 +70,17 @@ export default function MarkOfTheRoad2(props: ChildProps) {
             mask: "lines",
             onSplit: (self) => {
               splititle = gsap.from(self.lines, {
-                duration: 1,
+                duration: 2,
                 yPercent: 100,
                 opacity: 0,
-                stagger: 0.05,
-                ease: "expo.out",
+                delay: -0.5,
+                stagger: 0.02,
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(title) - window.innerWidth / 3;
+                    return GetRightPosition(title) - window.innerWidth / 2;
                   },
+                  toggleActions: "restart pause resume reverse",
                 },
               });
               return splititle;

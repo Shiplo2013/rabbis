@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -41,10 +40,9 @@ export default function HistoryQuoteSection(props: ChildProps) {
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return (
-                    GetRightPosition(wrapper.current) - window.innerWidth / 3
-                  );
+                  return window.innerWidth * props.animWidthText;
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
             return splititle;
@@ -54,15 +52,15 @@ export default function HistoryQuoteSection(props: ChildProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(wrapper.current) - window.innerWidth / 3;
+              return window.innerWidth * (props.animWidthText - 0.5);
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
           },
         });
         tl.to(quote.current, {
-          x: "10vw",
-          ease: "easeIn",
+          x: "20vw",
+          ease: "none",
         });
       });
     },
