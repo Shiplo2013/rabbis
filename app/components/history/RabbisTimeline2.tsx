@@ -1,5 +1,4 @@
 "use client";
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import ParallaxBackground from "@/app/ui/ParallaxBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -118,11 +117,13 @@ function RabbisTimeline2(props: ChildProps) {
                 duration: 2,
                 yPercent: 120,
                 stagger: 0.025,
-                ease: "expo.out",
+                delay: -0.5,
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(secTitle) - window.innerWidth / 2;
+                    return window.innerWidth * props.animWidthText;
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return splititle;
@@ -132,9 +133,10 @@ function RabbisTimeline2(props: ChildProps) {
       });
 
       // Section Items
-      sectionItems?.forEach((item) => {
+      sectionItems?.forEach((item, index) => {
         const image = item.querySelector(".image");
         const title = item.querySelector(".title>h4");
+        const animationPoint = props.animWidthText + 0.3 + index * 0.4;
         if (item.classList.contains("notifiaction")) {
           const notificationIcon = item?.querySelector(".notify-icon");
           // Notification
@@ -149,8 +151,9 @@ function RabbisTimeline2(props: ChildProps) {
             ease: "expo.out",
             scrollTrigger: {
               start: () => {
-                return GetRightPosition(item) - window.innerWidth / 3;
+                return window.innerWidth * animationPoint;
               },
+              toggleActions: "restart pause play reverse",
             },
           });
           // Notification Icon
@@ -170,8 +173,9 @@ function RabbisTimeline2(props: ChildProps) {
             ease: "expo.out",
             scrollTrigger: {
               start: () => {
-                return GetRightPosition(image) - window.innerWidth / 3;
+                return window.innerWidth * animationPoint;
               },
+              toggleActions: "restart pause play reverse",
             },
           });
         } else {
@@ -187,8 +191,9 @@ function RabbisTimeline2(props: ChildProps) {
             ease: "expo.out",
             scrollTrigger: {
               start: () => {
-                return GetRightPosition(image) - window.innerWidth / 2;
+                return window.innerWidth * animationPoint;
               },
+              toggleActions: "restart pause play reverse",
             },
           });
           // Rubbis Title
@@ -210,8 +215,9 @@ function RabbisTimeline2(props: ChildProps) {
                   ease: "expo.out",
                   scrollTrigger: {
                     start: () => {
-                      return GetRightPosition(title) - window.innerWidth / 2;
+                      return window.innerWidth * animationPoint;
                     },
+                    toggleActions: "restart pause play reverse",
                   },
                 });
                 return splititle;
@@ -229,6 +235,7 @@ function RabbisTimeline2(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
+      data-scroll-section={props.animWidthText}
     >
       <ParallaxBackground
         bgImage={props.bgImage}

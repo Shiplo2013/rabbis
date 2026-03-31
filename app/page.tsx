@@ -261,7 +261,7 @@ export default function Home() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerHeight * 6,
+          end: "+=" + window.innerWidth * 6,
           scrub: scurbScale,
           pin: true,
         },
@@ -273,7 +273,7 @@ export default function Home() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerHeight * 6 - 500),
+          end: "+=" + (window.innerWidth * 6 - 500),
           scrub: scurbScale,
         },
       });
@@ -382,35 +382,35 @@ export default function Home() {
                 panel={panel}
               />
               <IntroSection
-                animWidthText={0.2}
+                animWidthText={0.4}
                 extraClass={
                   "panel-section will-change-transform min-w-[50vw] w-[50vw]"
                 }
               />
               <HomeSection1
-                animWidthPost={0.6}
-                animWidthSlider={0.7}
+                animWidthPost={1}
+                animWidthSlider={1.4}
                 extraClass={
                   "panel-section will-change-transform min-w-[70vw] w-[70vw]"
                 }
                 panel={panel}
               />
               <HomeSection2
-                animWidthImage={1.1}
-                animWidthText={1.3}
+                animWidthImage={2.2}
+                animWidthText={2.7}
                 extraClass={
                   "panel-section will-change-transform min-w-screen w-screen bg-black"
                 }
               />
               <HomeSection3
-                animWidthImage={1.7}
-                animWidthText={1.9}
+                animWidthImage={3.6}
+                animWidthText={3.9}
                 extraClass={
                   "panel-section will-change-transform min-w-[90vw] w-[90vw]"
                 }
               />
               <HomeSection4
-                animWidth={2.5}
+                animWidth={5}
                 extraClass={
                   "panel-section will-change-transform min-w-screen w-screen"
                 }

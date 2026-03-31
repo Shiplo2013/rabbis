@@ -46,13 +46,15 @@ export default function EvidenceOfPeriod(props: ChildProps) {
           opacity: 0,
         });
         gsap.to(video, {
+          duration: 1.5,
           yPercent: 0,
           opacity: 1,
-          ease: "expo.out",
+          ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
               return GetRightPosition(video) - window.innerWidth / 2;
             },
+            toggleActions: "restart pause play reverse",
           },
         });
       }
@@ -71,15 +73,17 @@ export default function EvidenceOfPeriod(props: ChildProps) {
             mask: "lines",
             onSplit: (self) => {
               splititle = gsap.from(self.lines, {
-                duration: 1,
+                duration: 2,
                 yPercent: 100,
                 opacity: 0,
                 stagger: 0.05,
-                ease: "expo.out",
+                delay: -0.5,
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
                     return GetRightPosition(item) - window.innerWidth / 2;
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return splititle;

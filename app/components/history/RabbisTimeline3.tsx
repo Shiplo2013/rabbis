@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -56,11 +55,13 @@ export default function RabbisTimeline3(props: ChildProps) {
                 duration: 2,
                 yPercent: 120,
                 stagger: 0.025,
-                ease: "expo.out",
+                delay: -0.5,
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(secTitle) - window.innerWidth / 2;
+                    return window.innerWidth * props.animWidthText;
                   },
+                  toggleActions: "restart pause resume reverse",
                 },
               });
               return splititle;
@@ -70,9 +71,10 @@ export default function RabbisTimeline3(props: ChildProps) {
       });
       // Current Rabbis Animatin
       const items = wrapper.current?.querySelectorAll(".current-rubbis");
-      items?.forEach((item) => {
+      items?.forEach((item, index) => {
         const image = item.querySelector(".image");
         const title = item.querySelector(".title>h4");
+        const animationPoint = props.animWidthText + 0.3 + index * 0.3;
         // Rubbis Image
         gsap.set(image, {
           x: -100,
@@ -85,8 +87,9 @@ export default function RabbisTimeline3(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(item) - window.innerWidth / 2;
+              return window.innerWidth * animationPoint;
             },
+            toggleActions: "restart pause resume reverse",
           },
         });
         // Rubbis Title
@@ -105,11 +108,12 @@ export default function RabbisTimeline3(props: ChildProps) {
                 yPercent: 100,
                 opacity: 0,
                 stagger: 0.05,
-                ease: "expo.out",
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(item) - window.innerWidth / 2;
+                    return window.innerWidth * animationPoint;
                   },
+                  toggleActions: "restart pause resume reverse",
                 },
               });
               return splititle;
@@ -125,6 +129,7 @@ export default function RabbisTimeline3(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="section-row w-full h-full flex px-[15.5vw] py-[5vh] items-center justify-center relative z-30 gap-x-[8vw]">
         <div className="rabbis-title self-end">

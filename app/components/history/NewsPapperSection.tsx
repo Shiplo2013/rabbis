@@ -1,5 +1,5 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
+import TextSplitLines from "@/app/ui/TextSplitLines";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -36,9 +36,10 @@ export default function NewsPapperSection(props: ChildProps) {
       const image1 = wrapper.current?.querySelector(".image1");
       const image2 = wrapper.current?.querySelector(".image2");
       const image3 = wrapper.current?.querySelector(".image3");
-      const imageContainer = wrapper.current?.querySelector(
-        ".news-section-right",
-      );
+      const content1 = wrapper.current?.querySelector(".content-text1");
+      const content2 = wrapper.current?.querySelector(".content-text2");
+      const content3 = wrapper.current?.querySelector(".content-text3");
+      const content4 = wrapper.current?.querySelector(".content-text4");
       if (image1) {
         gsap.set(image1, {
           x: -150,
@@ -62,7 +63,7 @@ export default function NewsPapperSection(props: ChildProps) {
           ease: "easeIn",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageContainer) - window.innerWidth * 0.8;
+              return window.innerWidth * (props.animWidthText - 0.5);
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -75,7 +76,7 @@ export default function NewsPapperSection(props: ChildProps) {
           ease: "easeIn",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageContainer) - window.innerWidth * 0.8;
+              return window.innerWidth * (props.animWidthText - 0.5);
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -89,7 +90,7 @@ export default function NewsPapperSection(props: ChildProps) {
           ease: "easeIn",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageContainer) - window.innerWidth * 0.8;
+              return window.innerWidth * (props.animWidthText - 0.5);
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -97,35 +98,107 @@ export default function NewsPapperSection(props: ChildProps) {
         });
       }
       // Text Aniamtions
-      const textContents = wrapper.current?.querySelectorAll(".content-text");
-      textContents?.forEach((item) => {
-        // Text Content
-        document.fonts.ready.then(() => {
-          // Section Title 1
-          gsap.set(item, { opacity: 1 });
-          let splititle;
-          SplitText.create(item, {
-            type: "lines",
-            linesClass: "line direction-rtl",
-            autoSplit: true,
-            mask: "lines",
-            onSplit: (self) => {
-              splititle = gsap.from(self.lines, {
-                duration: 1,
-                yPercent: 100,
-                opacity: 0,
-                stagger: 0.05,
-                ease: "expo.out",
-                scrollTrigger: {
-                  start: () => {
-                    return GetRightPosition(item) - window.innerWidth / 2;
-                  },
-                },
-              });
-              return splititle;
-            },
+      document.fonts.ready.then(() => {
+        // Section content 1
+        if (content1) {
+          const content1Split = TextSplitLines(content1);
+          gsap.set(content1, {
+            perspective: 400,
           });
-        });
+          gsap.set(content1Split, {
+            yPercent: 150,
+            opacity: 0,
+          });
+          gsap.to(content1Split, {
+            scrollTrigger: {
+              start: () => {
+                return window.innerWidth * props.animWidthText;
+              },
+              toggleActions: "restart pause resume reverse",
+            },
+            yPercent: 0,
+            opacity: 1,
+            delay: -1,
+            stagger: 0.02,
+            ease: "expo.inOut",
+            duration: 3,
+          });
+        }
+        // Section content 2
+        if (content2) {
+          const content2Split = TextSplitLines(content2);
+          gsap.set(content2, {
+            perspective: 400,
+          });
+          gsap.set(content2Split, {
+            yPercent: 150,
+            opacity: 0,
+          });
+          gsap.to(content2Split, {
+            scrollTrigger: {
+              start: () => {
+                return window.innerWidth * (props.animWidthText + 0.2);
+              },
+              toggleActions: "restart pause resume reverse",
+            },
+            yPercent: 0,
+            opacity: 1,
+            delay: -1,
+            stagger: 0.02,
+            ease: "expo.inOut",
+            duration: 3,
+          });
+        }
+        // Section content 3
+        if (content3) {
+          const content3Split = TextSplitLines(content3);
+          gsap.set(content3, {
+            perspective: 400,
+          });
+          gsap.set(content3Split, {
+            yPercent: 150,
+            opacity: 0,
+          });
+          gsap.to(content3Split, {
+            scrollTrigger: {
+              start: () => {
+                return window.innerWidth * (props.animWidthText + 0.6);
+              },
+              toggleActions: "restart pause resume reverse",
+            },
+            yPercent: 0,
+            opacity: 1,
+            delay: -1,
+            stagger: 0.02,
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        // Section content 4
+        if (content4) {
+          const content4Split = TextSplitLines(content4);
+          gsap.set(content4, {
+            perspective: 400,
+          });
+          gsap.set(content4Split, {
+            yPercent: 150,
+            opacity: 0,
+          });
+          gsap.to(content4Split, {
+            scrollTrigger: {
+              start: () => {
+                return window.innerWidth * (props.animWidthText + 0.6);
+              },
+              toggleActions: "restart pause resume reverse",
+            },
+            yPercent: 0,
+            opacity: 1,
+            delay: -0.5,
+            stagger: 0.02,
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
       });
     },
     { scope: wrapper, dependencies: [pathname] },
@@ -193,10 +266,10 @@ export default function NewsPapperSection(props: ChildProps) {
             className="news-section-text flex gap-x-[6.4vw] text-right"
           >
             <div className="section-text w-1/2">
-              <div className="content-text">{parse(text1)}</div>
+              <div className="content-text2">{parse(text1)}</div>
             </div>
             <div className="section-text w-1/2">
-              <div className="content-text">{parse(text2)}</div>
+              <div className="content-text1">{parse(text2)}</div>
             </div>
           </div>
         </div>
@@ -204,8 +277,8 @@ export default function NewsPapperSection(props: ChildProps) {
           dir="ltr"
           className="news-section-left w-[30%] flex flex-col gap-y-8 text-right"
         >
-          <div className="content-text">{parse(smallText)}</div>
-          <div className="content-text text-[28px] leading-[1em]">
+          <div className="content-text3">{parse(smallText)}</div>
+          <div className="content-text4 text-[28px] leading-[1em]">
             {parse(bigText)}
           </div>
         </div>

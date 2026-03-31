@@ -1,5 +1,4 @@
 import CardSlider from "@/app/ui/CardSlider";
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -23,15 +22,33 @@ export default function ArrowSliderSection(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const cardSlider = useRef<HTMLDivElement>(null);
   // Section Animation
   useGSAP(
     () => {
       // Section Image
       gsap.set(imageRef.current, { x: "30vw" });
+      gsap.set(cardSlider.current, { y: "10vh", opacity: 0 });
+
+      // Slider Anim
+      gsap.to(cardSlider.current, {
+        y: 0,
+        opacity: 1,
+        duration: 1.5,
+        ease: "expo.inOut",
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * props.animWidthText;
+          },
+          toggleActions: "restart pause resume reverse",
+        },
+      });
+
+      // Image Move
       const tl = gsap.timeline({
         scrollTrigger: {
           start: () => {
-            return GetRightPosition(wrapper.current) - window.innerWidth / 3;
+            return window.innerWidth * (props.animWidthText - 0.5);
           },
           end: () => "+=" + window.innerWidth * 2,
           scrub: 2,
@@ -49,6 +66,7 @@ export default function ArrowSliderSection(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`bg-black flex items-center relative z-30 ${props.extraClass}`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-10">
         <IntroductionBackground
@@ -60,7 +78,7 @@ export default function ArrowSliderSection(props: ChildProps) {
         />
       </div>
       <div className="section-wrapper w-full h-full relative z-30">
-        <div className="absolute left-[8vw] top-[10vh]">
+        <div ref={cardSlider} className="absolute left-[8vw] top-[10vh]">
           <CardSlider SlideData={props.SlideData} />
         </div>
         <div

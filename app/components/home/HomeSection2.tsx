@@ -85,7 +85,7 @@ export default function HomeSection2(props: ChildProps) {
     const overImage = wrapper.current?.querySelector(".mouse-follower");
     if (overImage) {
       gsap.to(overImage, {
-        translateX: "20vw",
+        translateX: "10vw",
         ease: "none",
         scrollTrigger: {
           start: () => {
@@ -108,6 +108,7 @@ export default function HomeSection2(props: ChildProps) {
       //   moveImage(e);
       // }}
       className={`${props.extraClass} home-section2 h-screen flex items-center`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="section-image h-screen w-[40vw]">
         <Image
@@ -129,7 +130,7 @@ export default function HomeSection2(props: ChildProps) {
           <br />
           קדישא
         </h2>
-        <div className="mouse-follower absolute top-[20%] right-[18%]">
+        <div className="mouse-follower absolute top-[20%] right-[20%]">
           <Image
             className="relative z-10"
             src={Koddisha?.src}

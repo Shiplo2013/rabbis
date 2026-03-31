@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -22,11 +21,11 @@ export default function ImageOnlySection(props: ChildProps) {
     () => {
       const image = wrapper.current?.querySelector(".image1");
       if (image) {
-        gsap.set(image, { x: "30vw" });
+        gsap.set(image, { x: "17vw" });
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(image) - window.innerWidth / 3;
+              return window.innerWidth * props.animWidthText;
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -46,6 +45,7 @@ export default function ImageOnlySection(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="section-wrapper w-full h-full py-[6vh] px-[6.8vw] flex items-end justify-end">
         <div className="image1 w-121 h-80.5 relative z-30">

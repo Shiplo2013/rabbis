@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -33,27 +32,26 @@ export default function Introduction2(props: ChildProps) {
   useGSAP(
     () => {
       document.fonts.ready.then(() => {
-        // Selector
-        const textWrapper = wrapper.current?.querySelector(".section-wrapper");
         // Section Title
         gsap.set(title.current, { opacity: 1 });
         let splititle;
         SplitText.create(title.current, {
           type: "lines",
-          linesClass: "line direction-rtl",
+          linesClass: "line direction-rtl2",
           autoSplit: true,
           mask: "lines",
           onSplit: (self) => {
             splititle = gsap.from(self.lines, {
-              duration: 0.7,
+              duration: 2,
               yPercent: 100,
               opacity: 0,
               stagger: 0.05,
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return GetRightPosition(textWrapper) - window.innerWidth / 3;
+                  return window.innerWidth * props.animWidthText;
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
             return splititle;
@@ -75,8 +73,9 @@ export default function Introduction2(props: ChildProps) {
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return GetRightPosition(textWrapper) - window.innerWidth / 3;
+                  return window.innerWidth * props.animWidthText;
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
             return splitSubtitle;
@@ -90,6 +89,7 @@ export default function Introduction2(props: ChildProps) {
     <section
       ref={wrapper}
       className={`${props.extraClass} overflow-hidden relative h-screen bg-black`}
+      data-scroll-section={props.animWidthText}
     >
       {props.bgImage !== "" && (
         <IntroductionBackground

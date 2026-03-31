@@ -66,14 +66,16 @@ export default function MarkOfTheRoad3(props: ChildProps) {
             mask: "lines",
             onSplit: (self) => {
               maintitleSplit = gsap.from(self.lines, {
-                duration: 3,
-                yPercent: 120,
+                duration: 2,
+                yPercent: 150,
                 stagger: 0.025,
-                ease: "expo.out",
+                delay: -0.5,
+                ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
                     return GetRightPosition(mainTitle) - window.innerWidth / 2;
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return maintitleSplit;
@@ -97,12 +99,14 @@ export default function MarkOfTheRoad3(props: ChildProps) {
             gsap.to(notification, {
               y: 0,
               opacity: 1,
-              duration: 1,
-              ease: "expo.out",
+              duration: 1.5,
+              ease: "easeIn",
+              delay: 0.5,
               scrollTrigger: {
                 start: () => {
                   return GetRightPosition(image) - window.innerWidth / 3;
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
             // Notification Icon
@@ -117,13 +121,14 @@ export default function MarkOfTheRoad3(props: ChildProps) {
               x: 0,
               rotate: 0,
               opacity: 1,
-              duration: 1,
-              delay: 0.5,
-              ease: "expo.out",
+              duration: 1.5,
+              delay: 1,
+              ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
                   return GetRightPosition(image) - window.innerWidth / 3;
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
           }
@@ -136,12 +141,13 @@ export default function MarkOfTheRoad3(props: ChildProps) {
             gsap.to(image, {
               y: 0,
               opacity: 1,
-              duration: 1,
-              ease: "expo.out",
+              duration: 1.5,
+              ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
                   return GetRightPosition(image) - window.innerWidth / 2;
                 },
+                toggleActions: "restart pause play reverse",
               },
             });
           }
@@ -156,14 +162,16 @@ export default function MarkOfTheRoad3(props: ChildProps) {
               mask: "lines",
               onSplit: (self) => {
                 splititle = gsap.from(self.lines, {
-                  duration: 3,
-                  yPercent: 120,
+                  duration: 2,
+                  yPercent: 150,
                   stagger: 0.025,
-                  ease: "expo.out",
+                  delay: -1,
+                  ease: "expo.inOut",
                   scrollTrigger: {
                     start: () => {
                       return GetRightPosition(title) - window.innerWidth / 3;
                     },
+                    toggleActions: "restart pause play reverse",
                   },
                 });
                 return splititle;
@@ -181,6 +189,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="section-row w-full h-full flex px-[6.3vw] py-[9vh]">
         <div

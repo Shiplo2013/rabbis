@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import ThemeButton from "@/app/ui/ThemeButton";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -45,8 +44,9 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(image1) - window.innerWidth;
+              return window.innerWidth * (props.animWidthText - 0.5);
             },
+            toggleActions: "restart pause play reverse",
           },
         });
         gsap.to(image1, {
@@ -55,7 +55,7 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(image1) - window.innerWidth;
+              return window.innerWidth * (props.animWidthText - 0.5);
             },
             end: () => "+=" + window.innerWidth * 2.5,
             scrub: 2,
@@ -71,7 +71,7 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(button) - window.innerWidth;
+              return window.innerWidth * (props.animWidthText - 0.5);
             },
             end: () => "+=" + window.innerWidth * 3,
             scrub: 2,
@@ -92,8 +92,9 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(image2) - window.innerWidth;
+              return window.innerWidth * (props.animWidthText + 0.2);
             },
+            toggleActions: "restart pause play reverse",
           },
         });
         gsap.to(image2, {
@@ -102,7 +103,7 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(image2) - window.innerWidth;
+              return window.innerWidth * (props.animWidthText + 0.2);
             },
             end: () => "+=" + window.innerWidth * 2.5,
             scrub: 2,
@@ -128,8 +129,9 @@ export default function MoveToJerusalem(props: ChildProps) {
                 ease: "expo.out",
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(text) - window.innerWidth / 2;
+                    return window.innerWidth * (props.animWidthText + 1);
                   },
+                  toggleActions: "restart pause play reverse",
                 },
               });
               return splititle;
@@ -146,10 +148,11 @@ export default function MoveToJerusalem(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="widget-wrapper w-full h-full flex items-center">
         <div className="content-wrapper flex pr-[35vw] items-center">
-          <div className="image1 ml-11 relative">
+          <div className="image1 ml-11 relative will-change-transform">
             <div className="relative h-143.5 w-188.75">
               <Image
                 className="w-full object-cover object-center h-full"
@@ -162,7 +165,7 @@ export default function MoveToJerusalem(props: ChildProps) {
                 alt="Image 1"
               />
             </div>
-            <div className="period-button absolute bottom-0 right-0 -mr-[20vw] -mb-11 group">
+            <div className="period-button absolute bottom-0 right-0 -mr-[10vw] -mb-11 group will-change-transform">
               <ThemeButton
                 extraClass="w-38.25 h-38.25 flex item-center justify-center border-[4px] border-[#D1A941] text-[33px] leading-[0.8em] p-6 text-center font-bold -rotate-[9.97deg] group-hover:rotate-0 transition-all duration-500"
                 bgColor="bg-[#ffffff]"
@@ -173,7 +176,7 @@ export default function MoveToJerusalem(props: ChildProps) {
               />
             </div>
           </div>
-          <div className="image2 ml-[9.1vw]">
+          <div className="image2 ml-[9.1vw] will-change-transform">
             <div className="relative h-140 w-236.5">
               <Image
                 className="w-full object-cover object-center h-full"

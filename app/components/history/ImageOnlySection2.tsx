@@ -1,4 +1,3 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -30,8 +29,10 @@ export default function ImageOnlySection2(props: ChildProps) {
           ease: "easeIn",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(wrapper.current) - window.innerWidth / 3;
+              return window.innerWidth * (props.animWidthText - 0.5);
             },
+            end: () => "+=" + window.innerWidth * 1,
+            scrub: 2,
           },
         });
       }

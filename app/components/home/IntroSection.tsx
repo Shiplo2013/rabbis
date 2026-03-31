@@ -51,6 +51,7 @@ export default function IntroSection(props: ChildProps) {
     <section
       ref={wrapper}
       className={`${props.extraClass} bg-black flex items-center`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="w-full pr-[32%] pt-[10%] pb-[10%] pl-[23%]">
         <h2 className="intro-title text-[135px] text-[#CD5E41] leading-[0.7em] text-right">

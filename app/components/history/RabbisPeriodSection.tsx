@@ -76,10 +76,10 @@ export default function RabbisPeriodSection(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splititle = gsap.from(self.lines, {
-              duration: 3,
+              duration: 2,
               yPercent: 100,
               opacity: 0,
-              delay: -1,
+              delay: -0.5,
               stagger: 0.02,
               ease: "expo.inOut",
               scrollTrigger: {
@@ -92,30 +92,30 @@ export default function RabbisPeriodSection(props: ChildProps) {
             return splititle;
           },
         });
-        // Section Button
-        gsap.from(button.current, {
-          yPercent: 100,
-          opacity: 0,
-          duration: 3,
-          delay: -1,
-          ease: "expo.inOut",
-          scrollTrigger: {
-            start: () => {
-              return window.innerWidth * (props.animWidthText + 0.4);
-            },
-            toggleActions: "restart pause play reverse",
-          },
-        });
         // Section Slider
         gsap.from(slider.current, {
           yPercent: 50,
           opacity: 0,
-          duration: 3,
-          delay: -1,
+          duration: 2,
+          delay: -0.5,
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
               return window.innerWidth * (props.animWidthText + 0.3);
+            },
+            toggleActions: "restart pause play reverse",
+          },
+        });
+        // Section Button
+        gsap.from(button.current, {
+          yPercent: 100,
+          opacity: 0,
+          duration: 2,
+          delay: -0.5,
+          ease: "expo.inOut",
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * (props.animWidthText + 0.4);
             },
             toggleActions: "restart pause play reverse",
           },
@@ -130,6 +130,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
+      data-scroll-section={props.animWidthText}
     >
       <ParallaxBackground
         bgImage={contentBG}
