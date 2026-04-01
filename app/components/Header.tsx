@@ -21,9 +21,9 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
   const links = [
     { href: "/contact", name: "הווייתה", icon: false },
     { href: "/chronicles", name: "דברי הימים", icon: false },
-    { href: "/about", name: "מזקנים אתבונן", icon: false },
+    { href: "/communities", name: "מזקנים אתבונן", icon: false },
     { href: "/yeshiva-rabbis", name: "רבני הישיבה", icon: false },
-    { href: "", name: "מועדים וזמנים", icon: false },
+    { href: "/about", name: "מועדים וזמנים", icon: false },
     { href: "", name: "כנסת הבוגרים", icon: false },
     { href: "/donation", name: "לתרומות", icon: true },
   ];
@@ -144,7 +144,7 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
         </div>
         <div className="header-left flex items-center gap-6 pt-7 pb-7 opacity-0">
           <ThemeButton
-            extraClass="py-3.5 px-5"
+            extraClass="py-2 px-5"
             bgColor="bg-[#BBA588]"
             textColor="text-[#000000]"
             hoverBgColor="bg-[#000000]"
@@ -153,7 +153,7 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
             svgIconClass={""}
           />
           <ThemeButton
-            extraClass="py-3.5 px-5"
+            extraClass="py-2 px-5"
             bgColor="bg-[#5a7c4e]"
             textColor="text-[#000000]"
             hoverBgColor="bg-[#ac832e]"

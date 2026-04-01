@@ -345,6 +345,11 @@
         padding-top: 20px;
         margin-top: -12px;
       }
+      .direction-rtl3 {
+        direction: rtl;
+        padding-top: 50px;
+        margin-top: -50px;
+      }
     }
     #panel-wrapper {
       #section-wrapper {

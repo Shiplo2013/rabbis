@@ -10,6 +10,11 @@ export const metadata: Metadata = {
 const customFont = localFont({
   src: [
     {
+      path: "../app/assets/fonts/LavaPro_HLThin.woff2",
+      weight: "100",
+      style: "normal",
+    },
+    {
       path: "../app/assets/fonts/LavaPro_HL-Regular.woff2",
       weight: "400",
       style: "normal",

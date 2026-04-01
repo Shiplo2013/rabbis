@@ -148,7 +148,7 @@ function Footer(props: ChildProps) {
   return (
     <footer
       ref={footerRef}
-      className={`w-full h-auto flex items-center justify-end ${props.className} opacity-0 bg-[#F5F0EB]`}
+      className={`w-full h-auto flex items-center justify-end ${props.className} opacity-0 bg-[#F5F0EB] will-change-transform`}
     >
       <div className="footer-wrapper w-[calc(100%-100px)] -mt-25 bg-amber-50 flex items-center justify-center text-black pt-30 pb-25">
         <div className="w-[80%] max-w-282.5">
