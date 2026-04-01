@@ -339,16 +339,19 @@
     section {
       .direction-rtl {
         direction: rtl;
+        will-change: transform;
       }
       .direction-rtl2 {
         direction: rtl;
         padding-top: 20px;
         margin-top: -12px;
+        will-change: transform;
       }
       .direction-rtl3 {
         direction: rtl;
         padding-top: 50px;
         margin-top: -50px;
+        will-change: transform;
       }
     }
     #panel-wrapper {
@@ -359,6 +362,35 @@
           -moz-transform: translate3d(0, 0, 0) translateZ(0);
           -ms-transform: translate3d(0, 0, 0) translateZ(0);
           -o-transform: translate3d(0, 0, 0) translateZ(0);
+        }
+      }
+    }
+    .sheet-scrollbar-wrapper {
+      .simplebar-scrollable-y {
+        .simplebar-track.simplebar-vertical {
+          width: 5px !important;
+          z-index: 10;
+          &&:after {
+            content: "";
+            display: block;
+            width: 1px;
+            height: 100%;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            background: #cd5e41;
+            margin-left: -1px;
+          }
+          .simplebar-scrollbar {
+            cursor: pointer;
+            background: #cd5e41;
+            z-index: 20;
+
+            &&:before {
+              background-color: #cd5e41 !important;
+              opacity: 1 !important;
+            }
+          }
         }
       }
     }
