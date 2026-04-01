@@ -24,7 +24,9 @@ import {
   useGSAP,
 } from "./ui/plugins";
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText);
+}
 
 export default function Home() {
   // Selector
@@ -51,6 +53,9 @@ export default function Home() {
       // Set localStorage variable
       const userVisit = localStorage.getItem("hasVisited");
       if (userVisit === "true") {
+        // Selectors
+        const headerLeft = main.current?.querySelector(".header-left");
+        const headerRight = main.current?.querySelector(".header-right");
         // Banner Title 1
         const bannerTitle1 = main.current?.querySelector(
           ".home-banner .banner-title1",
@@ -134,25 +139,32 @@ export default function Home() {
             setIsAllAnimationComplete(true);
           },
         });
-        tl.to(main.current, {
-          opacity: 1,
-          ease: "none",
-          duration: 0.5,
-          delay: 0,
-        })
-          .to(page.current, {
+        if (main.current) {
+          tl.to(main.current, {
+            opacity: 1,
+            ease: "none",
+            duration: 0.5,
+            delay: 0,
+          });
+        }
+        if (page.current) {
+          tl.to(page.current, {
             opacity: 1,
             ease: "none",
             duration: 0,
             delay: 0,
-          })
-          .to(".header-left", {
+          });
+        }
+        if (headerLeft) {
+          tl.to(headerLeft, {
             opacity: 1,
             ease: "none",
             duration: 1,
-          })
-          .to(
-            ".header-right",
+          });
+        }
+        if (headerRight) {
+          tl.to(
+            headerRight,
             {
               opacity: 1,
               ease: "none",
@@ -160,6 +172,7 @@ export default function Home() {
             },
             "-=1",
           );
+        }
         if (bannerTitle1 && splitTitle1) {
           tl.to(
             splitTitle1,

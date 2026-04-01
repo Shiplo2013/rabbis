@@ -50,7 +50,9 @@ import SmoothWrapper from "../ui/SmoothWrapper";
 import TextSplitLines from "../ui/TextSplitLines";
 import TitleSplitChars from "../ui/TitleSplitChars";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(SplitText, ScrollTrigger);
+}
 
 export default function Page() {
   // Page Selectors
@@ -185,7 +187,7 @@ export default function Page() {
         // Page Timeline
         const headingTitleSpan = headingTitle?.querySelector("span");
         const headingContentSpan = headingContent?.querySelector("span");
-        const timeline = history.current?.querySelector(".timeline");
+        const timelineRef = history.current?.querySelector(".timeline");
         let splitTitle, splitContent;
         if (headingTitleSpan) {
           splitTitle = TitleSplitChars(headingTitleSpan);
@@ -193,8 +195,9 @@ export default function Page() {
         if (headingContentSpan) {
           splitContent = TextSplitLines(headingContentSpan);
         }
-        if (timeline) {
+        if (timelineRef) {
           gsap.set(history.current, { opacity: 1 });
+          gsap.set(timelineRef, { yPercent: 100 });
         }
         // Timeline
         const tl = gsap.timeline({
@@ -255,11 +258,11 @@ export default function Page() {
             "-=2.5",
           );
         }
-        if (timeline) {
-          tl.from(
-            timeline,
+        if (timelineRef) {
+          tl.to(
+            timelineRef,
             {
-              yPercent: 100,
+              yPercent: 0,
               delay: 0,
               duration: 3,
               ease: "expo.inOut",

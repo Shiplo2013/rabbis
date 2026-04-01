@@ -22,7 +22,9 @@ import SingleImageSection from "../ui/SingleImageSection";
 import SlidingArrow from "../ui/SlidingArrow";
 import SmoothWrapper from "../ui/SmoothWrapper";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(SplitText, ScrollTrigger);
+}
 
 export default function Contact() {
   // Rabbis Data
@@ -241,7 +243,7 @@ export default function Contact() {
             return splititle;
           },
         });
-        // Section Title 1
+        // Section Title 2
         let splititle2;
         SplitText.create(".demoText2", {
           type: "lines",

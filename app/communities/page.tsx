@@ -1,85 +1,79 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import Rabbis1 from "../assets/images/rabbis1.jpg";
-import Rabbis2 from "../assets/images/rabbis2.jpg";
-import Rabbis3 from "../assets/images/rabbis3.jpg";
-import Rabbis4 from "../assets/images/rabbis4.jpg";
-import Rabbis5 from "../assets/images/rabbis5.jpg";
-import Rabbis6 from "../assets/images/rabbis6.jpg";
-import Rabbis7 from "../assets/images/rabbis7.jpg";
-import Rabbis8 from "../assets/images/rabbis8.jpg";
+import PostImage1 from "../assets/images/community-post1.jpg";
+import PostImage2 from "../assets/images/community-post2.jpg";
+import PostImage3 from "../assets/images/community-post3.jpg";
+import PostImage4 from "../assets/images/community-post4.jpg";
+import PostImage5 from "../assets/images/community-post5.jpg";
+import IntroBG from "../assets/images/intro-bg-10.jpg";
 import Wave from "../assets/images/wave.svg";
+import CommunitesPostCat from "../components/communites/CommunitiesPostCat";
+import Introduction from "../components/communites/Introduction";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LoadingEffect from "../components/LoadingEffect";
 import GetRightPosition from "../ui/GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
-import RabbisSection from "../ui/rabbis/RabbisSection";
 import SmoothWrapper from "../ui/SmoothWrapper";
 import TextSplitLines from "../ui/TextSplitLines";
+import TitleSplitChars from "../ui/TitleSplitChars";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function Rabbis() {
+export default function Communities() {
   // Router Path
   const pathname = usePathname();
+  // Page Data
+  const IntroData1 = [
+    {
+      title: `סלבודקא`,
+      content: `תלמידי ישיבת חברון, לאורך כל תולדותיה, המשיכו לשמר את הקשר העמוק ואת דיבוק החברים גם לאחר נישואיהם. קהילות וכוללים ומסגרות שונות שבהם מאוגדים הבוגרים ממשיכים לטפח בקרבם את רוחה הגדולה של הישיבה`,
+    },
+  ];
   // Rabbis Data
-  const RabbisSection1 = [
+  const CommunitesPostCat1 = [
     {
-      sectionTitle: "ראשי הישיבה",
+      sectionTitle: `פתח תקווה`,
       sectionContent: [
         {
-          title: `מרן ראש הישיבה<br/> הגאון רבי פרבשטיין משה<br/> מרדכי שליט״א`,
-          image: Rabbis1,
+          title: `חברון שירת ריבה`,
+          content: `שכונת יוצאי חברון-גני הדר`,
+          image: PostImage1,
         },
         {
-          title: `מרן ראש הישיבההגאון רבי שלמה כץ שליט"א`,
-          image: Rabbis2,
+          title: `חברון היכל יחזקאל`,
+          content: `מרכז העיר`,
+          image: PostImage2,
         },
         {
-          title: `מרן ראש הישיבההגאון רבי יוסף חברוני שליט"א`,
-          image: Rabbis3,
+          title: `חברון צעירים`,
+          content: `שכונת הדר גנים`,
+          image: PostImage3,
         },
       ],
     },
   ];
-  const RabbisSection2 = [
+  const CommunitesPostCat2 = [
     {
-      sectionTitle: "מנהל רוחני",
+      sectionTitle: `בני ברק`,
       sectionContent: [
         {
-          title: `מרן המשגיחהגאון רבי חיים יצחק קפלן שליט"א`,
-          image: Rabbis4,
-        },
-      ],
-    },
-  ];
-  const RabbisSection3 = [
-    {
-      sectionTitle: "רמים",
-      sectionContent: [
-        {
-          title: `הגאון רבי אברהם לויסון שליט"א`,
-          image: Rabbis5,
+          title: `בית הכנסת הגדול בני ברק`,
+          content: `חניכי ישיבת חברון`,
+          image: PostImage4,
         },
         {
-          title: `הגאון רבי איתן יפהן שליט"א`,
-          image: Rabbis5,
+          title: `מרכז העיר`,
+          content: `חברון סמטת האר"י`,
+          image: PostImage5,
         },
         {
-          title: `הגאון רבי חיים אהרון רלבג שליט"א`,
-          image: Rabbis6,
-        },
-        {
-          title: `הגאון רבי  נחום  בר חיים שליט"א`,
-          image: Rabbis7,
-        },
-        {
-          title: `הגאון רבי חנוך הרטמן שליט"א`,
-          image: Rabbis8,
+          title: `חברון מהרש"ל`,
+          content: `מרכז העיר`,
+          image: PostImage5,
         },
       ],
     },
@@ -103,6 +97,7 @@ export default function Rabbis() {
   // Page Section Animation
   useGSAP(() => {
     if (typeof window !== "undefined" && panel) {
+      setPageContentAnimation();
       // Overflow body
       const scurbScale = 2;
 
@@ -111,7 +106,7 @@ export default function Rabbis() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerHeight * 3,
+          end: "+=" + window.innerWidth * 3,
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -139,7 +134,7 @@ export default function Rabbis() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerHeight * 3 - 500),
+          end: "+=" + (window.innerWidth * 3 - 500),
           scrub: scurbScale,
         },
       });
@@ -162,6 +157,39 @@ export default function Rabbis() {
     rabbisContent?.forEach((section) => {
       section.classList.add("opacity-0");
     });
+    // Banner Button
+    const introTitle = main.current?.querySelector(".first-intro .intro-title");
+    // Banner Button
+    const introContent = main.current?.querySelector(
+      ".first-intro .intro-content",
+    );
+    const bannerBackgroundOverlay = main.current?.querySelector(
+      ".first-intro .intro-background .intro-bg-mask",
+    );
+    // Split Title 1
+    let splitTitle;
+    if (introTitle) {
+      splitTitle = TitleSplitChars(introTitle);
+      gsap.set(introTitle, {
+        perspective: 400,
+      });
+      gsap.set(splitTitle, {
+        yPercent: 150,
+        opacity: 0,
+      });
+    }
+    // Split Title 2
+    let splitContent;
+    if (introContent) {
+      splitContent = TextSplitLines(introContent);
+      gsap.set(introContent, {
+        perspective: 400,
+      });
+      gsap.set(splitContent, {
+        yPercent: 150,
+        opacity: 0,
+      });
+    }
     // Set localStorage variable
     const userVisit = localStorage.getItem("hasVisited");
     if (userVisit === "true") {
@@ -170,7 +198,6 @@ export default function Rabbis() {
         onComplete: () => {
           // Set Animation Played to true
           setIsAllAnimationComplete(true);
-          setPageContentAnimation();
           rabbisContent?.forEach((section) => {
             section.classList.add("opacity-100");
           });
@@ -181,6 +208,7 @@ export default function Rabbis() {
           opacity: 1,
           ease: "none",
           duration: 0.5,
+          delay: 0,
         });
       }
       if (headerLeft) {
@@ -207,9 +235,63 @@ export default function Rabbis() {
           {
             opacity: 1,
             ease: "none",
-            duration: 0,
+            duration: 1,
           },
           "-=1",
+        );
+      }
+      if (introTitle && splitTitle) {
+        tl.to(
+          splitTitle,
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 3,
+            delay: 0,
+            stagger: 0.05,
+            ease: "expo.inOut",
+          },
+          "-=1.5",
+        );
+      }
+      if (introContent && splitContent) {
+        tl.to(
+          splitContent,
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 3,
+            delay: 0,
+            stagger: 0.05,
+            ease: "expo.inOut",
+          },
+          "-=2.5",
+        );
+      }
+      // Wave Line Animation
+      if (waveMask.current) {
+        tl.to(
+          waveMask.current,
+          {
+            translateY: 0,
+            opacity: 1,
+            ease: "expo.inOut",
+            duration: 3,
+            delay: 0,
+          },
+          "-=2.5",
+        );
+      }
+      if (bannerBackgroundOverlay) {
+        tl.to(
+          bannerBackgroundOverlay,
+          {
+            translateY: "-100%",
+            delay: 0,
+            duration: 3,
+            ease: "expo.inOut",
+          },
+          "-=2.5",
         );
       }
     }
@@ -218,14 +300,16 @@ export default function Rabbis() {
   // Set Page Content Animation
   const setPageContentAnimation = () => {
     // Page Content Animation
-    const rabbisContent = main.current?.querySelectorAll(".rabbis-section");
+    const rabbisContent = main.current?.querySelectorAll(
+      ".community-cat-section",
+    );
     document.fonts.ready.then(() => {
       if (rabbisContent) {
         rabbisContent.forEach((section) => {
-          const sectionTitle = section.querySelector(
-            ".rabbis-section-title h2",
+          const sectionTitle = section.querySelector(".community-cat-title h2");
+          const sectionItems = section.querySelectorAll(
+            ".single-community-post",
           );
-          const sectionItems = section.querySelectorAll(".single-rabbis");
           if (sectionTitle) {
             const splitTitle = TextSplitLines(sectionTitle);
             gsap.set(splitTitle, {
@@ -244,24 +328,29 @@ export default function Rabbis() {
               duration: 1.5,
               scrollTrigger: {
                 start: () => {
-                  return GetRightPosition(section) - window.innerWidth;
+                  return GetRightPosition(section) - window.innerWidth * 0.5;
                 },
+                toggleActions: "restart pause resume reverse",
               },
             });
           }
           if (sectionItems) {
             sectionItems.forEach((item) => {
-              const rabbisText = item.querySelector(".rabbis-text");
-              const rabbisOverlay = item.querySelector(".rabbis-image-overlay");
-              const rabbisTextSplit = TextSplitLines(rabbisText);
-              gsap.set(rabbisText, {
+              const postTitle = item.querySelector(".post-text .post-title");
+              const postExcerpt = item.querySelector(
+                ".post-text .post-excerpt",
+              );
+              const postOverlay = item.querySelector(".post-image-overlay");
+              // Post Title
+              const postExcerptSplit = TextSplitLines(postExcerpt);
+              gsap.set(postExcerpt, {
                 perspective: 400,
               });
-              gsap.set(rabbisTextSplit, {
+              gsap.set(postExcerptSplit, {
                 yPercent: 150,
                 opacity: 0,
               });
-              gsap.to(rabbisTextSplit, {
+              gsap.to(postExcerptSplit, {
                 yPercent: 0,
                 opacity: 1,
                 delay: 0,
@@ -270,19 +359,45 @@ export default function Rabbis() {
                 duration: 1.5,
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(item) - window.innerWidth;
+                    return GetRightPosition(item) - window.innerWidth * 0.5;
                   },
+                  toggleActions: "restart pause resume reverse",
                 },
               });
-              gsap.to(rabbisOverlay, {
+              // Post Title
+              const postTitleSplit = TextSplitLines(postTitle);
+              gsap.set(postTitle, {
+                perspective: 400,
+              });
+              gsap.set(postTitleSplit, {
+                yPercent: 150,
+                opacity: 0,
+              });
+              gsap.to(postTitleSplit, {
+                yPercent: 0,
+                opacity: 1,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+                duration: 1.5,
+                scrollTrigger: {
+                  start: () => {
+                    return GetRightPosition(item) - window.innerWidth * 0.5;
+                  },
+                  toggleActions: "restart pause resume reverse",
+                },
+              });
+              // Image Overlay
+              gsap.to(postOverlay, {
                 yPercent: -100,
                 ease: "expo.inOut",
                 duration: 1.5,
                 delay: 0,
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(item) - window.innerWidth;
+                    return GetRightPosition(item) - window.innerWidth * 0.5;
                   },
+                  toggleActions: "restart pause resume reverse",
                 },
               });
             });
@@ -290,15 +405,6 @@ export default function Rabbis() {
         });
       }
     });
-    // Wave Line Animation
-    if (waveMask.current) {
-      gsap.to(waveMask.current, {
-        translateY: 0,
-        opacity: 1,
-        ease: "expo.inOut",
-        duration: 3,
-      });
-    }
   };
 
   // Set Body Overflow Hidden
@@ -352,31 +458,41 @@ export default function Rabbis() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[400vw] h-screen items-center will-change-transform`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[500vw] h-screen items-center will-change-transform`}
             >
+              <Introduction
+                animated={isAllAnimationComplete}
+                animationStatus={isAllAnimationComplete}
+                bgImage={IntroBG}
+                bgOverlay={""}
+                data={IntroData1}
+                extraClass={
+                  "first-intro panel-section will-change-transform min-w-screen w-screen"
+                }
+                panel={panel}
+                bgPosition=""
+                overlayClass="bg-[#000000] opacity-0"
+                bgClass=""
+                audioControl={function (): void {
+                  throw new Error("Function not implemented.");
+                }}
+              />
               <section
                 className={`min-w-[15vw] will-change-transform`}
               ></section>
-              <RabbisSection
-                rabbisContent={RabbisSection1}
+              <CommunitesPostCat
+                postsContent={CommunitesPostCat1}
                 className={"will-change-transform rabbis-section-1"}
               />
               <section
-                className={`min-w-[10vw] will-change-transform`}
+                className={`min-w-[20vw] will-change-transform`}
               ></section>
-              <RabbisSection
-                rabbisContent={RabbisSection2}
+              <CommunitesPostCat
+                postsContent={CommunitesPostCat2}
                 className={"will-change-transform rabbis-section-2"}
               />
               <section
                 className={`min-w-[10vw] will-change-transform`}
-              ></section>
-              <RabbisSection
-                rabbisContent={RabbisSection3}
-                className={"will-change-transform rabbis-section-3"}
-              />
-              <section
-                className={`min-w-[15vw] will-change-transform`}
               ></section>
             </div>
           </div>

@@ -9,7 +9,7 @@ interface ChildProps {
 
 export default function SingleRabbis(props: ChildProps) {
   return (
-    <div dir="ltr" className="single-rabbis min-w-84 w-84">
+    <div dir="ltr" className="single-rabbis min-w-84 w-84 backface-hidden">
       <Link href="/">
         <div className="rabbis-image w-full h-86 mb-8.5 relative overflow-hidden">
           <Image
