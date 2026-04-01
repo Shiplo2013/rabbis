@@ -149,268 +149,272 @@ export default function Communities() {
   }, [pathname]);
 
   // Load Page
-  useEffect(() => {
-    if (typeof window !== "undefined" && panel) {
-      document.fonts.ready.then(() => {
-        // Selectors
-        const headerLeft = main.current?.querySelector(".header-left");
-        const headerRight = main.current?.querySelector(".header-right");
-        const rabbisContent = main.current?.querySelectorAll(".rabbis-section");
-        rabbisContent?.forEach((section) => {
-          section.classList.add("opacity-0");
-        });
-        // Banner Button
-        const introTitle = main.current?.querySelector(
-          ".first-intro .intro-title",
-        );
-        // Banner Button
-        const introContent = main.current?.querySelector(
-          ".first-intro .intro-content",
-        );
-        const bannerBackgroundOverlay = main.current?.querySelector(
-          ".first-intro .intro-background .intro-bg-mask",
-        );
-        // Split Title 1
-        let splitTitle;
-        if (introTitle) {
-          splitTitle = BigTitleSplitLines(introTitle);
-          gsap.set(introTitle, {
-            perspective: 400,
+  useGSAP(
+    () => {
+      if (typeof window !== "undefined" && panel) {
+        document.fonts.ready.then(() => {
+          // Selectors
+          const headerLeft = main.current?.querySelector(".header-left");
+          const headerRight = main.current?.querySelector(".header-right");
+          const rabbisContent =
+            main.current?.querySelectorAll(".rabbis-section");
+          rabbisContent?.forEach((section) => {
+            section.classList.add("opacity-0");
           });
-          gsap.set(splitTitle, {
-            yPercent: 150,
-            opacity: 0,
-          });
-        }
-        // Split Title 2
-        let splitContent;
-        if (introContent) {
-          splitContent = TextSplitLines(introContent);
-          gsap.set(introContent, {
-            perspective: 400,
-          });
-          gsap.set(splitContent, {
-            yPercent: 150,
-            opacity: 0,
-          });
-        }
-        // Set localStorage variable
-        const userVisit = localStorage.getItem("hasVisited");
-        if (userVisit === "true") {
-          // Timeline
-          const tl = gsap.timeline({
-            onComplete: () => {
-              // Set Animation Played to true
-              setIsAllAnimationComplete(true);
-              rabbisContent?.forEach((section) => {
-                section.classList.add("opacity-100");
-              });
-            },
-          });
-          if (main.current) {
-            tl.to(main.current, {
-              opacity: 1,
-              ease: "none",
-              duration: 0.5,
-              delay: 0,
-            });
-          }
-          if (headerLeft) {
-            tl.to(headerLeft, {
-              opacity: 1,
-              ease: "none",
-              duration: 1,
-            });
-          }
-          if (headerRight) {
-            tl.to(
-              headerRight,
-              {
-                opacity: 1,
-                ease: "none",
-                duration: 1,
-              },
-              "-=1",
-            );
-          }
-          if (page.current) {
-            tl.to(
-              page.current,
-              {
-                opacity: 1,
-                ease: "none",
-                duration: 1,
-              },
-              "-=1",
-            );
-          }
-          if (introTitle && splitTitle) {
-            tl.to(
-              splitTitle,
-              {
-                yPercent: 0,
-                opacity: 1,
-                duration: 3,
-                delay: 0,
-                stagger: 0.05,
-                ease: "expo.inOut",
-              },
-              "-=1.5",
-            );
-          }
-          if (introContent && splitContent) {
-            tl.to(
-              splitContent,
-              {
-                yPercent: 0,
-                opacity: 1,
-                duration: 3,
-                delay: 0,
-                stagger: 0.05,
-                ease: "expo.inOut",
-              },
-              "-=2.5",
-            );
-          }
-          // Wave Line Animation
-          if (waveMask.current) {
-            tl.to(
-              waveMask.current,
-              {
-                translateY: 0,
-                opacity: 1,
-                ease: "expo.inOut",
-                duration: 3,
-                delay: 0,
-              },
-              "-=2.5",
-            );
-          }
-          if (bannerBackgroundOverlay) {
-            tl.to(
-              bannerBackgroundOverlay,
-              {
-                translateY: "-100%",
-                delay: 0,
-                duration: 3,
-                ease: "expo.inOut",
-              },
-              "-=2.5",
-            );
-          }
-        }
-      });
-    }
-  }, [animationPlayed]);
-
-  // Set Page Content Animation
-  const setPageContentAnimation = () => {
-    // Page Content Animation
-    const rabbisContent = main.current?.querySelectorAll(
-      ".community-cat-section",
-    );
-    document.fonts.ready.then(() => {
-      if (rabbisContent) {
-        rabbisContent.forEach((section) => {
-          const sectionTitle = section.querySelector(".community-cat-title h2");
-          const sectionItems = section.querySelectorAll(
-            ".single-community-post",
+          // Banner Button
+          const introTitle = main.current?.querySelector(
+            ".first-intro .intro-title",
           );
-          if (sectionTitle) {
-            const splitTitle = TextSplitLines(sectionTitle);
-            gsap.set(splitTitle, {
+          // Banner Button
+          const introContent = main.current?.querySelector(
+            ".first-intro .intro-content",
+          );
+          const bannerBackgroundOverlay = main.current?.querySelector(
+            ".first-intro .intro-background .intro-bg-mask",
+          );
+          // Split Title 1
+          let splitTitle;
+          if (introTitle) {
+            splitTitle = BigTitleSplitLines(introTitle);
+            gsap.set(introTitle, {
               perspective: 400,
             });
             gsap.set(splitTitle, {
               yPercent: 150,
               opacity: 0,
             });
-            gsap.to(splitTitle, {
-              yPercent: 0,
-              opacity: 1,
-              delay: 0,
-              stagger: 0.05,
-              ease: "expo.inOut",
-              duration: 1.5,
-              scrollTrigger: {
-                start: () => {
-                  return GetRightPosition(section) - window.innerWidth * 0.5;
-                },
-                toggleActions: "restart pause resume reverse",
-              },
+          }
+          // Split Title 2
+          let splitContent;
+          if (introContent) {
+            splitContent = TextSplitLines(introContent);
+            gsap.set(introContent, {
+              perspective: 400,
+            });
+            gsap.set(splitContent, {
+              yPercent: 150,
+              opacity: 0,
             });
           }
-          if (sectionItems) {
-            sectionItems.forEach((item) => {
-              const postTitle = item.querySelector(".post-text .post-title");
-              const postExcerpt = item.querySelector(
-                ".post-text .post-excerpt",
-              );
-              const postOverlay = item.querySelector(".post-image-overlay");
-              // Post Title
-              const postExcerptSplit = TextSplitLines(postExcerpt);
-              gsap.set(postExcerpt, {
-                perspective: 400,
-              });
-              gsap.set(postExcerptSplit, {
-                yPercent: 150,
-                opacity: 0,
-              });
-              gsap.to(postExcerptSplit, {
-                yPercent: 0,
-                opacity: 1,
-                delay: 0,
-                stagger: 0.05,
-                ease: "expo.inOut",
-                duration: 1.5,
-                scrollTrigger: {
-                  start: () => {
-                    return GetRightPosition(item) - window.innerWidth * 0.5;
-                  },
-                  toggleActions: "restart pause resume reverse",
-                },
-              });
-              // Post Title
-              const postTitleSplit = TextSplitLines(postTitle);
-              gsap.set(postTitle, {
-                perspective: 400,
-              });
-              gsap.set(postTitleSplit, {
-                yPercent: 150,
-                opacity: 0,
-              });
-              gsap.to(postTitleSplit, {
-                yPercent: 0,
-                opacity: 1,
-                delay: 0,
-                stagger: 0.05,
-                ease: "expo.inOut",
-                duration: 1.5,
-                scrollTrigger: {
-                  start: () => {
-                    return GetRightPosition(item) - window.innerWidth * 0.5;
-                  },
-                  toggleActions: "restart pause resume reverse",
-                },
-              });
-              // Image Overlay
-              gsap.to(postOverlay, {
-                yPercent: -100,
-                ease: "expo.inOut",
-                duration: 1.5,
-                delay: 0,
-                scrollTrigger: {
-                  start: () => {
-                    return GetRightPosition(item) - window.innerWidth * 0.5;
-                  },
-                  toggleActions: "restart pause resume reverse",
-                },
-              });
+          // Set localStorage variable
+          const userVisit = localStorage.getItem("hasVisited");
+          if (userVisit === "true") {
+            // Timeline
+            const tl = gsap.timeline({
+              onComplete: () => {
+                // Set Animation Played to true
+                setIsAllAnimationComplete(true);
+                rabbisContent?.forEach((section) => {
+                  section.classList.add("opacity-100");
+                });
+              },
             });
+            if (main.current) {
+              tl.to(main.current, {
+                opacity: 1,
+                ease: "none",
+                duration: 0.5,
+                delay: 0,
+              });
+            }
+            if (headerLeft) {
+              tl.to(headerLeft, {
+                opacity: 1,
+                ease: "none",
+                duration: 1,
+              });
+            }
+            if (headerRight) {
+              tl.to(
+                headerRight,
+                {
+                  opacity: 1,
+                  ease: "none",
+                  duration: 1,
+                },
+                "-=1",
+              );
+            }
+            if (page.current) {
+              tl.to(
+                page.current,
+                {
+                  opacity: 1,
+                  ease: "none",
+                  duration: 1,
+                },
+                "-=1",
+              );
+            }
+            if (introTitle && splitTitle) {
+              tl.to(
+                splitTitle,
+                {
+                  yPercent: 0,
+                  opacity: 1,
+                  duration: 3,
+                  delay: 0,
+                  stagger: 0.05,
+                  ease: "expo.inOut",
+                },
+                "-=1.5",
+              );
+            }
+            if (introContent && splitContent) {
+              tl.to(
+                splitContent,
+                {
+                  yPercent: 0,
+                  opacity: 1,
+                  duration: 3,
+                  delay: 0,
+                  stagger: 0.05,
+                  ease: "expo.inOut",
+                },
+                "-=2.5",
+              );
+            }
+            // Wave Line Animation
+            if (waveMask.current) {
+              tl.to(
+                waveMask.current,
+                {
+                  translateY: 0,
+                  opacity: 1,
+                  ease: "expo.inOut",
+                  duration: 3,
+                  delay: 0,
+                },
+                "-=2.5",
+              );
+            }
+            if (bannerBackgroundOverlay) {
+              tl.to(
+                bannerBackgroundOverlay,
+                {
+                  translateY: "-100%",
+                  delay: 0,
+                  duration: 3,
+                  ease: "expo.inOut",
+                },
+                "-=2.5",
+              );
+            }
           }
         });
       }
-    });
+    },
+    { scope: main, dependencies: [animationPlayed, pathname] },
+  );
+
+  // Set Page Content Animation
+  const setPageContentAnimation = () => {
+    // Page Content Animation
+    const sheetContent = main.current?.querySelectorAll(
+      ".sheet-content .sheet-item",
+    );
+    const subscribeForm = main.current?.querySelector(
+      ".sheet-content .subscribe-form",
+    );
+    const sheetReadmore = main.current?.querySelector(".sheet-readmore");
+    const sidebar = main.current?.querySelector(
+      ".sheet-sidebar .sheet-sidebar-wrapper",
+    );
+
+    // Animations
+    if (sidebar) {
+      gsap.from(sidebar, {
+        xPercent: 100,
+        opacity: 0,
+        ease: "expo.inOut",
+        duration: 3,
+        delay: -1,
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * 0.3;
+          },
+          //toggleActions: "restart pause resume reverse",
+        },
+      });
+    }
+    // Contents
+    if (sheetContent) {
+      sheetContent.forEach((section) => {
+        const imageOverlay = section.querySelector(".sheet-image-overlay");
+        const sheetButtons = section.querySelectorAll(".sheet-icons");
+        // Image Overlay
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            start: () => {
+              return GetRightPosition(section) - window.innerWidth * 0.5;
+            },
+            //toggleActions: "restart pause resume reverse",
+          },
+        });
+        if (imageOverlay) {
+          tl.to(imageOverlay, {
+            yPercent: -100,
+            ease: "expo.inOut",
+            duration: 1.5,
+            delay: 0,
+          });
+        }
+        // Sheets Buttons
+        if (sheetButtons) {
+          tl.from(
+            sheetButtons,
+            {
+              yPercent: 100,
+              opacity: 0,
+              ease: "expo.inOut",
+              duration: 1.5,
+              delay: 0,
+            },
+            "-=1",
+          );
+        }
+      });
+    }
+    // Subscribe From
+    if (subscribeForm) {
+      gsap.set(subscribeForm, {
+        yPercent: 100,
+        opacity: 0,
+      });
+      gsap.to(subscribeForm, {
+        yPercent: 0,
+        opacity: 1,
+        ease: "expo.inOut",
+        duration: 2,
+        delay: 0,
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * 1.4;
+          },
+          toggleActions: "restart pause resume reverse",
+        },
+      });
+    }
+    // ReadMore Button
+    if (sheetReadmore) {
+      gsap.set(sheetReadmore, {
+        yPercent: 100,
+        opacity: 0,
+      });
+      gsap.to(sheetReadmore, {
+        yPercent: 0,
+        opacity: 1,
+        ease: "expo.inOut",
+        duration: 1,
+        delay: 0,
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * 2.6;
+          },
+          //toggleActions: "restart pause resume reverse",
+        },
+      });
+    }
   };
 
   // Set Body Overflow Hidden
@@ -428,7 +432,7 @@ export default function Communities() {
     };
   }, [isAllAnimationComplete]);
 
-  useEffect(() => {
+  useGSAP(() => {
     document.body.classList.add("overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
@@ -484,7 +488,7 @@ export default function Communities() {
                 }}
               />
               <SheetContentSection
-                extraClass="min-w-[220vw] w-[220vw] panel-section will-change-transform py-[5vw] px-[6.25vw]"
+                extraClass="min-w-[190vw] w-[190vw] panel-section will-change-transform py-[5vw] px-[6.25vw]"
                 animWidthText={1}
               />
             </div>

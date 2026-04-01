@@ -7,9 +7,9 @@ import ThemeButton2 from "./ThemeButton2";
 export default function SheetContentItem() {
   return (
     <div className="sheet-item will-change-transform">
-      <div className="sheet-image">
+      <div className="sheet-image backface-hidden overflow-hidden relative">
         <Image
-          className="w-full object-cover object-center h-full relative z-10"
+          className="w-full object-cover object-center h-full relative z-10 will-change-transform"
           src={sheetImg?.src}
           width="337"
           height="476"
@@ -18,6 +18,7 @@ export default function SheetContentItem() {
           loading="lazy"
           alt="Rabbis"
         />
+        <div className="sheet-image-overlay absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform backface-hidden"></div>
       </div>
       <div className="sheet-icons flex justify-center mt-4.5 gap-x-4">
         <ThemeButton2
