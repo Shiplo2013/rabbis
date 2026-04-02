@@ -1,36 +1,37 @@
 "use client";
-import SheetContentSection from "@/app/components/sheets/SheetContentSection";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import PostImage1 from "../../assets/images/community-post1.jpg";
-import PostImage2 from "../../assets/images/community-post2.jpg";
-import PostImage3 from "../../assets/images/community-post3.jpg";
-import PostImage4 from "../../assets/images/community-post4.jpg";
-import PostImage5 from "../../assets/images/community-post5.jpg";
-import IntroBG from "../../assets/images/intro-bg-10.jpg";
-import Wave from "../../assets/images/wave.svg";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import LoadingEffect from "../../components/LoadingEffect";
-import Introduction from "../../components/sheets/Introduction";
-import GetRightPosition from "../../ui/GetRightPosition";
-import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
-import SmoothWrapper from "../../ui/SmoothWrapper";
-import TextSplitLines from "../../ui/TextSplitLines";
+import PostImage1 from "../assets/images/community-post1.jpg";
+import PostImage2 from "../assets/images/community-post2.jpg";
+import PostImage3 from "../assets/images/community-post3.jpg";
+import PostImage4 from "../assets/images/community-post4.jpg";
+import PostImage5 from "../assets/images/community-post5.jpg";
+import IntroBG from "../assets/images/intro-bg-10.jpg";
+import Wave from "../assets/images/wave.svg";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+
+import CustomsContentSection from "../components/knesset/CustomsContentSection";
+import Introduction from "../components/knesset/Introduction";
+import LoadingEffect from "../components/LoadingEffect";
+import GetRightPosition from "../ui/GetRightPosition";
+import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
+import SmoothWrapper from "../ui/SmoothWrapper";
+import TextSplitLines from "../ui/TextSplitLines";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function Communities() {
+export default function Page() {
   // Router Path
   const pathname = usePathname();
   // Page Data
   const IntroData1 = [
     {
-      title: `בטאון<br/> כנסת ישראל`,
-      content: `לורם איפסום דולור סיט אמט, קונסקטורר אדיפיסינג אלית הועניב היושבב שערש שמחויט - שלושע ותלברו חשלו שעותלשך וחאית נובש ערששף.`,
+      title: `כנסת המנהגים`,
+      content: `הישיבה הקדושה משמרת בקרבה מסורות ומנהגים הלכתיים הנהוגים בה מימי סלבודקא ועד היום הזה. במדור זה קובצו מנהגים ייחודיים לישיבה ומסורותיה ההלכתיות, אשר עברו מדור לדור ונשתמרו בקפידה, כעדות חיה לרוחה, לדרכה ולנאמנותה ליסודות שנקבעו מראשיתה בהרר קודש.`,
     },
   ];
   // Rabbis Data
@@ -311,7 +312,7 @@ export default function Communities() {
   const setPageContentAnimation = () => {
     // Page Content Animation
     const sheetContent = main.current?.querySelectorAll(
-      ".sheet-content .sheet-item",
+      ".sheet-content .custom-content-item",
     );
     const subscribeForm = main.current?.querySelector(
       ".sheet-content .subscribe-form",
@@ -333,63 +334,46 @@ export default function Communities() {
           start: () => {
             return window.innerWidth * 0.3;
           },
-          //toggleActions: "restart pause resume reverse",
+          toggleActions: "restart pause resume reverse",
         },
       });
     }
     // Contents
     if (sheetContent) {
-      sheetContent.forEach((section) => {
-        const imageOverlay = section.querySelector(".sheet-image-overlay");
-        const sheetButtons = section.querySelectorAll(".sheet-icons");
-        // Image Overlay
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            start: () => {
-              return GetRightPosition(section) - window.innerWidth * 0.5;
-            },
-            //toggleActions: "restart pause resume reverse",
-          },
-        });
-        if (imageOverlay) {
-          tl.to(imageOverlay, {
-            yPercent: -100,
-            ease: "expo.inOut",
+      sheetContent.forEach((section, index) => {
+        // Custom Content Item
+        if (section) {
+          gsap.from(section, {
+            xPercent: -50,
+            opacity: 0,
+            ease: "slow(0.1,1,false)",
             duration: 1.5,
             delay: 0,
-          });
-        }
-        // Sheets Buttons
-        if (sheetButtons) {
-          tl.from(
-            sheetButtons,
-            {
-              yPercent: 100,
-              opacity: 0,
-              ease: "expo.inOut",
-              duration: 1.5,
-              delay: 0,
+            scrollTrigger: {
+              start: () => {
+                return GetRightPosition(section) - window.innerWidth * 0.5;
+              },
+              toggleActions: "restart pause resume reverse",
             },
-            "-=1",
-          );
+          });
         }
       });
     }
     // Subscribe From
     if (subscribeForm) {
       gsap.set(subscribeForm, {
-        yPercent: 100,
+        xPercent: -50,
         opacity: 0,
       });
       gsap.to(subscribeForm, {
-        yPercent: 0,
+        xPercent: 0,
         opacity: 1,
-        ease: "expo.inOut",
+        ease: "slow(0.1,1,false)",
         duration: 2,
         delay: 0,
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * 1.4;
+            return window.innerWidth * 1.5;
           },
           toggleActions: "restart pause resume reverse",
         },
@@ -398,20 +382,20 @@ export default function Communities() {
     // ReadMore Button
     if (sheetReadmore) {
       gsap.set(sheetReadmore, {
-        yPercent: 100,
+        xPercent: -50,
         opacity: 0,
       });
       gsap.to(sheetReadmore, {
-        yPercent: 0,
+        xPercent: 0,
         opacity: 1,
         ease: "expo.inOut",
         duration: 1,
         delay: 0,
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * 2.6;
+            return window.innerWidth * 2.5;
           },
-          //toggleActions: "restart pause resume reverse",
+          toggleActions: "restart pause resume reverse",
         },
       });
     }
@@ -487,7 +471,7 @@ export default function Communities() {
                   throw new Error("Function not implemented.");
                 }}
               />
-              <SheetContentSection
+              <CustomsContentSection
                 extraClass="min-w-[190vw] w-[190vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
                 animWidthText={1}
               />
@@ -509,7 +493,7 @@ export default function Communities() {
         >
           <div
             ref={progress}
-            className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#0a0a0a] z-10"
+            className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#F5F0EB] z-10"
           ></div>
         </div>
       </div>
