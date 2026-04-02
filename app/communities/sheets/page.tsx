@@ -488,7 +488,7 @@ export default function Communities() {
                 }}
               />
               <SheetContentSection
-                extraClass="min-w-[190vw] w-[190vw] panel-section will-change-transform py-[5vw] px-[6.25vw]"
+                extraClass="min-w-[190vw] w-[190vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
                 animWidthText={1}
               />
             </div>

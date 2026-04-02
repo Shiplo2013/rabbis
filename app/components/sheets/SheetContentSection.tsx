@@ -60,7 +60,7 @@ export default function SheetContentSection(props: ChildProps) {
         <div className="sheet-content flex items-center gap-x-[3.2vw] will-change-transform">
           <SheetContentItem />
           <SheetContentItem />
-          <div className="subscribe-form bg-[#C3A13F] text-white px-[2.5vw] py-[3.7vh] w-[26.35vw]">
+          <div className="subscribe-form bg-[#C3A13F] text-white px-[2.5vw] py-[3.7vh] w-[26.35vw] will-change-transform">
             <h2 className="text-[38px] leading-[0.8em]">
               קבלו ישירות למייל מאמרים חדשים, גיליונות תורניים ועדכוני תוכן מן
               הישיבה.
