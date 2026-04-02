@@ -1,219 +1,424 @@
 "use client";
+import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import PostImage1 from "../assets/images/community-post1.jpg";
+import PostImage2 from "../assets/images/community-post2.jpg";
+import PostImage3 from "../assets/images/community-post3.jpg";
+import PostImage4 from "../assets/images/community-post4.jpg";
+import PostImage5 from "../assets/images/community-post5.jpg";
+import IntroBG from "../assets/images/intro-bg-10.jpg";
+import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import Introduction from "../components/history/Introduction";
-import SingleVideoSection from "../components/history/SingleVideoSection";
+
+import CustomsContentSection from "../components/knesset/CustomsContentSection";
+import Introduction from "../components/knesset/Introduction";
 import LoadingEffect from "../components/LoadingEffect";
-import { gsap, ScrollTrigger, SplitText, useGSAP } from "../ui/plugins";
-import SlidingArrow from "../ui/SlidingArrow";
+import GetRightPosition from "../ui/GetRightPosition";
+import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 import SmoothWrapper from "../ui/SmoothWrapper";
+import TextSplitLines from "../ui/TextSplitLines";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(SplitText, ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function EndOfHistory() {
-  // Rabbis Data
-  const TimelineData = [
-    {
-      id: 1,
-      title: `תרל"ז - תרע"ד`,
-    },
-    {
-      id: 2,
-      title: `תרע"ד - תרפ"ד`,
-    },
-    {
-      id: 3,
-      title: `תרפ"ד - תרפ"ט`,
-    },
-    {
-      id: 4,
-      title: `תרפ"ט - תשל"ו`,
-    },
-    {
-      id: 5,
-      title: `תשל״ו - תשנ״ז`,
-    },
-    {
-      id: 6,
-      title: `תשנ"ז - הווה`,
-    },
-  ];
+export default function Page() {
+  // Router Path
+  const pathname = usePathname();
   // Page Data
   const IntroData1 = [
     {
-      title: `סלבודקא`,
-      subtitle: `תרל"ז - תרע"ד`,
+      title: `כנסת המנהגים`,
+      content: `הישיבה הקדושה משמרת בקרבה מסורות ומנהגים הלכתיים הנהוגים בה מימי סלבודקא ועד היום הזה. במדור זה קובצו מנהגים ייחודיים לישיבה ומסורותיה ההלכתיות, אשר עברו מדור לדור ונשתמרו בקפידה, כעדות חיה לרוחה, לדרכה ולנאמנותה ליסודות שנקבעו מראשיתה בהרר קודש.`,
     },
   ];
-  const QuoteData = [
+  // Rabbis Data
+  const CommunitesPostCat1 = [
     {
-      content: `<p><strong>שנת תרנ"ז</strong>: פיצול הישיבה עקב פולמוס המוסר - 'כנסת בית יצחק' ו'כנסת ישראל'</p><p><strong>שנת תרס"ג</strong>: התעוררות מחודשת של פולמוס המוסר</p>`,
+      sectionTitle: `פתח תקווה`,
+      sectionContent: [
+        {
+          title: `חברון שירת ריבה`,
+          content: `שכונת יוצאי חברון-גני הדר`,
+          image: PostImage1,
+        },
+        {
+          title: `חברון היכל יחזקאל`,
+          content: `מרכז העיר`,
+          image: PostImage2,
+        },
+        {
+          title: `חברון צעירים`,
+          content: `שכונת הדר גנים`,
+          image: PostImage3,
+        },
+      ],
     },
   ];
-  // Router Path
-  const pathname = usePathname();
+  const CommunitesPostCat2 = [
+    {
+      sectionTitle: `בני ברק`,
+      sectionContent: [
+        {
+          title: `בית הכנסת הגדול בני ברק`,
+          content: `חניכי ישיבת חברון`,
+          image: PostImage4,
+        },
+        {
+          title: `מרכז העיר`,
+          content: `חברון סמטת האר"י`,
+          image: PostImage5,
+        },
+        {
+          title: `חברון מהרש"ל`,
+          content: `מרכז העיר`,
+          image: PostImage5,
+        },
+      ],
+    },
+  ];
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+  // Vertical Section
+  const [verticalSection, setVerticalSection] =
+    useState<gsap.core.Timeline | null>(null);
 
-  // Load Page
-  useGSAP(() => {
-    document.fonts.ready.then(() => {
-      // Set localStorage variable
-      const userVisit = localStorage.getItem("hasVisited");
-      if (userVisit === "true") {
-        // Set Title
-        const headingTitle = document.querySelector(
-          ".first-intro .intro-title",
-        );
-        // Subtitle
-        const headingContent = document.querySelector(
-          ".first-intro .intro-content",
-        );
-        // Page Timeline
-        const headingTitleSpan = headingTitle?.querySelector("span");
-        const headingContentSpan = headingContent?.querySelector("span");
-        if (headingTitleSpan) {
-          gsap.set(headingTitleSpan, {
-            opacity: 0,
-            yPercent: 100,
-          });
-        }
-        if (headingContentSpan) {
-          gsap.set(headingContentSpan, {
-            opacity: 0,
-            yPercent: 100,
-          });
-        }
-        if (history.current) {
-          gsap.set(history.current, { opacity: 0, y: 50 });
-        }
-        // Timeline
-        const tl = gsap.timeline({
-          onComplete: () => {
-            // Set Animation Played to true
-            setIsAllAnimationComplete(true);
-          },
-        });
-        tl.to("#page", {
-          opacity: 1,
-          ease: "easeInOut",
-          duration: 1,
-          delay: 0,
-        })
-          .to(
-            ".header-left",
-            {
-              opacity: 1,
-              y: 0,
-              ease: "easeInOut",
-              duration: 1,
-            },
-            "-=1",
-          )
-          .to(
-            ".header-right",
-            {
-              opacity: 1,
-              x: 0,
-              ease: "easeInOut",
-              duration: 1,
-            },
-            "-=1",
-          );
-        if (headingTitleSpan) {
-          tl.to(
-            headingTitleSpan,
-            {
-              duration: 0.8,
-              yPercent: 0,
-              opacity: 1,
-              ease: "easeInOut",
-            },
-            "-=0.4",
-          );
-        }
-        if (headingContentSpan) {
-          tl.to(
-            headingContentSpan,
-            {
-              duration: 0.8,
-              yPercent: 0,
-              opacity: 1,
-              ease: "easeInOut",
-            },
-            "-=0.4",
-          );
-        }
-        if (history.current) {
-          tl.to(
-            history.current,
-            {
-              duration: 0.5,
-              opacity: 1,
-              y: 0,
-              ease: "easeInOut",
-            },
-            "-=0.4",
-          );
-        }
-      }
-    });
-  }, [animationPlayed]);
-
-  // Container width
+  // Page Refs
   const main = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
-  const history = useRef<HTMLDivElement>(null);
+  const waveLine = useRef<HTMLDivElement>(null);
+  const waveMask = useRef<HTMLDivElement>(null);
+  const progress = useRef<HTMLDivElement>(null);
 
   // Page Section Animation
   useGSAP(() => {
-    ScrollTrigger.normalizeScroll(true);
-    let verticalSection = null;
     if (typeof window !== "undefined" && panel) {
+      setPageContentAnimation();
       // Overflow body
-      document.body.classList.add("overflow-x-hidden", "overscroll-none");
       const scurbScale = 2;
 
       // Vertical Section
-      verticalSection = gsap.timeline({
+      const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 6,
+          end: "+=" + window.innerWidth * 3,
           scrub: scurbScale,
           pin: true,
-          anticipatePin: 1,
-          //pinType: "fixed",
-          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            gsap.to(progress.current, { width: `${100 * self.progress}%` });
+            if (self.progress > 0.97) {
+              gsap.to(waveLine.current, {
+                opacity: 0,
+                duration: 0.1,
+                delay: 0,
+              });
+            } else {
+              gsap.to(waveLine.current, {
+                opacity: 1,
+                duration: 0.1,
+                delay: 0,
+              });
+            }
+          },
         },
       });
-      verticalSection.to(wrapper.current, {
+      timeline.to(wrapper.current, {
         x: () =>
           wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
         ease: "none",
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 6 - 500),
+          end: "+=" + (window.innerWidth * 3 - 500),
           scrub: scurbScale,
         },
       });
+      setVerticalSection(timeline);
     }
     // Return
     return () => {
-      verticalSection?.kill();
+      if (verticalSection) {
+        verticalSection.kill();
+      }
     };
   }, [pathname]);
 
+  // Load Page
+  useGSAP(
+    () => {
+      if (typeof window !== "undefined" && panel) {
+        document.fonts.ready.then(() => {
+          // Selectors
+          const headerLeft = main.current?.querySelector(".header-left");
+          const headerRight = main.current?.querySelector(".header-right");
+          const rabbisContent =
+            main.current?.querySelectorAll(".rabbis-section");
+          rabbisContent?.forEach((section) => {
+            section.classList.add("opacity-0");
+          });
+          // Banner Button
+          const introTitle = main.current?.querySelector(
+            ".first-intro .intro-title",
+          );
+          // Banner Button
+          const introContent = main.current?.querySelector(
+            ".first-intro .intro-content",
+          );
+          const bannerBackgroundOverlay = main.current?.querySelector(
+            ".first-intro .intro-background .intro-bg-mask",
+          );
+          // Split Title 1
+          let splitTitle;
+          if (introTitle) {
+            splitTitle = BigTitleSplitLines(introTitle);
+            gsap.set(introTitle, {
+              perspective: 400,
+            });
+            gsap.set(splitTitle, {
+              yPercent: 150,
+              opacity: 0,
+            });
+          }
+          // Split Title 2
+          let splitContent;
+          if (introContent) {
+            splitContent = TextSplitLines(introContent);
+            gsap.set(introContent, {
+              perspective: 400,
+            });
+            gsap.set(splitContent, {
+              yPercent: 150,
+              opacity: 0,
+            });
+          }
+          // Set localStorage variable
+          const userVisit = localStorage.getItem("hasVisited");
+          if (userVisit === "true") {
+            // Timeline
+            const tl = gsap.timeline({
+              onComplete: () => {
+                // Set Animation Played to true
+                setIsAllAnimationComplete(true);
+                rabbisContent?.forEach((section) => {
+                  section.classList.add("opacity-100");
+                });
+              },
+            });
+            if (main.current) {
+              tl.to(main.current, {
+                opacity: 1,
+                ease: "none",
+                duration: 0.5,
+                delay: 0,
+              });
+            }
+            if (headerLeft) {
+              tl.to(headerLeft, {
+                opacity: 1,
+                ease: "none",
+                duration: 1,
+              });
+            }
+            if (headerRight) {
+              tl.to(
+                headerRight,
+                {
+                  opacity: 1,
+                  ease: "none",
+                  duration: 1,
+                },
+                "-=1",
+              );
+            }
+            if (page.current) {
+              tl.to(
+                page.current,
+                {
+                  opacity: 1,
+                  ease: "none",
+                  duration: 1,
+                },
+                "-=1",
+              );
+            }
+            if (introTitle && splitTitle) {
+              tl.to(
+                splitTitle,
+                {
+                  yPercent: 0,
+                  opacity: 1,
+                  duration: 3,
+                  delay: 0,
+                  stagger: 0.05,
+                  ease: "expo.inOut",
+                },
+                "-=1.5",
+              );
+            }
+            if (introContent && splitContent) {
+              tl.to(
+                splitContent,
+                {
+                  yPercent: 0,
+                  opacity: 1,
+                  duration: 3,
+                  delay: 0,
+                  stagger: 0.05,
+                  ease: "expo.inOut",
+                },
+                "-=2.5",
+              );
+            }
+            // Wave Line Animation
+            if (waveMask.current) {
+              tl.to(
+                waveMask.current,
+                {
+                  translateY: 0,
+                  opacity: 1,
+                  ease: "expo.inOut",
+                  duration: 3,
+                  delay: 0,
+                },
+                "-=2.5",
+              );
+            }
+            if (bannerBackgroundOverlay) {
+              tl.to(
+                bannerBackgroundOverlay,
+                {
+                  translateY: "-100%",
+                  delay: 0,
+                  duration: 3,
+                  ease: "expo.inOut",
+                },
+                "-=2.5",
+              );
+            }
+          }
+        });
+      }
+    },
+    { scope: main, dependencies: [animationPlayed, pathname] },
+  );
+
+  // Set Page Content Animation
+  const setPageContentAnimation = () => {
+    // Page Content Animation
+    const sheetContent = main.current?.querySelectorAll(
+      ".sheet-content .custom-content-item",
+    );
+    const subscribeForm = main.current?.querySelector(
+      ".sheet-content .subscribe-form",
+    );
+    const sheetReadmore = main.current?.querySelector(".sheet-readmore");
+    const sidebar = main.current?.querySelector(
+      ".sheet-sidebar .sheet-sidebar-wrapper",
+    );
+
+    // Animations
+    if (sidebar) {
+      gsap.from(sidebar, {
+        xPercent: 100,
+        opacity: 0,
+        ease: "expo.inOut",
+        duration: 3,
+        delay: -1,
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * 0.3;
+          },
+          toggleActions: "restart pause resume reverse",
+        },
+      });
+    }
+    // Contents
+    if (sheetContent) {
+      sheetContent.forEach((section, index) => {
+        // Custom Content Item
+        if (section) {
+          gsap.from(section, {
+            xPercent: -50,
+            opacity: 0,
+            ease: "slow(0.1,1,false)",
+            duration: 1.5,
+            delay: 0,
+            scrollTrigger: {
+              start: () => {
+                return GetRightPosition(section) - window.innerWidth * 0.5;
+              },
+              toggleActions: "restart pause resume reverse",
+            },
+          });
+        }
+      });
+    }
+    // Subscribe From
+    if (subscribeForm) {
+      gsap.set(subscribeForm, {
+        xPercent: -50,
+        opacity: 0,
+      });
+      gsap.to(subscribeForm, {
+        xPercent: 0,
+        opacity: 1,
+        ease: "slow(0.1,1,false)",
+        duration: 2,
+        delay: 0,
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * 1.5;
+          },
+          toggleActions: "restart pause resume reverse",
+        },
+      });
+    }
+    // ReadMore Button
+    if (sheetReadmore) {
+      gsap.set(sheetReadmore, {
+        xPercent: -50,
+        opacity: 0,
+      });
+      gsap.to(sheetReadmore, {
+        xPercent: 0,
+        opacity: 1,
+        ease: "expo.inOut",
+        duration: 1,
+        delay: 0,
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * 2.5;
+          },
+          toggleActions: "restart pause resume reverse",
+        },
+      });
+    }
+  };
+
+  // Set Body Overflow Hidden
   useEffect(() => {
+    if (isAllAnimationComplete) {
+      // Body Overflow Hidden
+      document.body.classList.remove("overflow-hidden");
+      document.body.classList.add("overflow-x-hidden", "overscroll-none");
+      verticalSection?.pause();
+    } else {
+      verticalSection?.resume();
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isAllAnimationComplete]);
+
+  useGSAP(() => {
     document.body.classList.add("overflow-hidden");
+    // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
       gsap.to(main.current, {
         opacity: 0,
@@ -228,57 +433,16 @@ export default function EndOfHistory() {
       });
     };
   }, []);
-
-  useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
-      document.fonts.ready.then(() => {
-        // // Section Title 1
-        // let splititle;
-        // SplitText.create(".demoText", {
-        //   type: "lines",
-        //   linesClass: "line",
-        //   autoSplit: true,
-        //   mask: "lines",
-        //   onSplit: (self) => {
-        //     splititle = gsap.from(self.lines, {
-        //       duration: 0.3,
-        //       yPercent: 100,
-        //       stagger: 0.03,
-        //       ease: "none",
-        //     });
-        //     return splititle;
-        //   },
-        // });
-        // // Section Title 1
-        // let splititle2;
-        // SplitText.create(".demoText2", {
-        //   type: "lines",
-        //   linesClass: "line",
-        //   autoSplit: true,
-        //   mask: "lines",
-        //   onSplit: (self) => {
-        //     splititle2 = gsap.from(self.lines, {
-        //       duration: 3,
-        //       yPercent: 100,
-        //       stagger: 0.025,
-        //       ease: "expo.out",
-        //     });
-        //     return splititle2;
-        //   },
-        // });
-      });
-    }
-  }, [pathname]);
   return (
-    <div ref={main} className="relative overflow-hidden">
+    <div ref={main} id="main" className="relative">
       <LoadingEffect animated={setAnimationPlayed} />
-      <Header animationStatus={false} />
+      <Header animationStatus={isAllAnimationComplete} />
       <SmoothWrapper>
         <main
           ref={page}
           id="page"
           dir="ltr"
-          className="main opacity-0 relative overflow-hidden z-10"
+          className="main relative overflow-hidden z-10 opacity-0"
         >
           <div
             ref={panel}
@@ -288,11 +452,12 @@ export default function EndOfHistory() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[600vw] h-screen will-change-transform`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[320vw] h-screen items-center will-change-transform`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
-                bgImage={""}
+                animationStatus={isAllAnimationComplete}
+                bgImage={IntroBG}
                 bgOverlay={""}
                 data={IntroData1}
                 extraClass={
@@ -300,25 +465,38 @@ export default function EndOfHistory() {
                 }
                 panel={panel}
                 bgPosition=""
-                overlayClass="hidden"
+                overlayClass="bg-[#000000] opacity-0"
                 bgClass=""
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
-                animationStatus={false}
               />
-              <SingleVideoSection
-                animWidthText={0.6}
-                extraClass={
-                  "min-w-[26vw] w-[26vw] h-screen panel-section will-change-transform"
-                }
+              <CustomsContentSection
+                extraClass="min-w-[190vw] w-[190vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
+                animWidthText={1}
               />
             </div>
           </div>
         </main>
         <Footer className={"relative z-20"} />
       </SmoothWrapper>
-      <SlidingArrow />
+      <div
+        ref={waveLine}
+        className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
+      >
+        <div
+          ref={waveMask}
+          style={{
+            maskImage: `url(${Wave.src})`,
+          }}
+          className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+        >
+          <div
+            ref={progress}
+            className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#F5F0EB] z-10"
+          ></div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -75,7 +75,7 @@ export default function Sidebar() {
             type="submit"
             className="bg-[#C3A13F] w-14.5 h-full flex items-center justify-center rounded-full absolute top-0 left-0 cursor-pointer hover:bg-[#ce9d09]"
           >
-            <ArrowLeftBottom />
+            <ArrowLeftBottom extraClass={""} />
           </button>
         </div>
       </div>
