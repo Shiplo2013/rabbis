@@ -1,5 +1,5 @@
 import parse from "html-react-parser";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import ViewIcon2 from "../assets/icons/ViewIcon2";
@@ -9,8 +9,7 @@ interface ChildProps {
   key: number;
   data: {
     title: string;
-    content: string;
-    image: StaticImageData;
+    image: any;
     link: string;
   };
 }
@@ -34,40 +33,42 @@ export default function SingleCyclePicture(props: ChildProps) {
             alt="Graduates"
           />
           <div className="cycle-content-wrapper absolute top-0 left-0 z-10 w-full h-full overflow-hidden">
-            <div className="picture-image absolute top-5 left-5 right-5 bottom-5 z-10 w-auto h-auto">
-              <Image
-                className="w-full object-cover object-center h-full relative z-10 will-change-transform"
-                src={props.data.image?.src}
-                width="855"
-                height="547"
-                blurDataURL={props.data.image?.blurDataURL}
-                placeholder={"blur"}
-                loading="lazy"
-                alt="Graduates"
-              />
-            </div>
-            <div
-              className={`picture-content absolute top-5 left-5 bottom-5 right-5 bg-[#1A1A1A] w-full h-full z-30 text-[45px] leading-[1.2em] text-[#656158] px-[8vw] py-[12vh] ${viewContent ? "opacity-100 visible" : "opacity-0 hidden"}`}
-            >
-              <p>{parse(props.data.content)}</p>
-              <Link
-                href={"/"}
-                className="border-b border-[#D1A941] hover:border-[#ffffff] hover:text-white transition-all duration-300"
+            {props.data.image ? (
+              <div className="picture-image absolute top-5 left-5 right-5 bottom-5 z-10 w-auto h-auto">
+                <Image
+                  className="w-full object-cover object-center h-full relative z-10 will-change-transform"
+                  src={props.data.image?.src}
+                  width="855"
+                  height="547"
+                  blurDataURL={props.data.image?.blurDataURL}
+                  placeholder={"blur"}
+                  loading="lazy"
+                  alt="Graduates"
+                />
+              </div>
+            ) : (
+              <div
+                className={`picture-content absolute top-5 left-5 bottom-5 right-5 bg-[#1A1A1A] w-full h-full z-30 text-[45px] leading-[1.2em] text-[#656158] px-[8vw] py-[12vh]`}
               >
-                לחץ כאן
-              </Link>
-            </div>
+                <p>
+                  יש לך את תמונת המחזור של ועד ק״ל?
+                  <br />
+                  נשמח שתיצור איתנו קשר
+                </p>
+                <Link
+                  href={"/"}
+                  className="border-b border-[#D1A941] hover:border-[#ffffff] hover:text-white transition-all duration-300"
+                >
+                  לחץ כאן
+                </Link>
+              </div>
+            )}
           </div>
 
           <div
-            className={`picture-view absolute top-0 left-0 w-full h-full flex items-center justify-center z-40 bg-[#00000080] transition-all duration-500 opacity-0 invisible ${!viewContent && "group-hover:opacity-100 group-hover:visible"}`}
+            className={`picture-view absolute top-0 left-0 w-full h-full flex items-center justify-center z-40 bg-[#00000080] transition-all duration-500 opacity-0 invisible group-hover:opacity-100 group-hover:visible`}
           >
-            <button
-              onClick={() => {
-                setViewContent(!viewContent);
-              }}
-              className="w-30 h-30 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
-            >
+            <button className="w-30 h-30 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer">
               <ViewIcon2 />
             </button>
           </div>

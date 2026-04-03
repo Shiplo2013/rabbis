@@ -34,20 +34,17 @@ export default function Page() {
   const PicturesContent = [
     {
       title: `ועד ק״ל`,
-      content: `יש לך את תמונת המחזור של ועד ק״ל?<br/>נשמח שתיצור איתנו קשר`,
       image: PicturesImage,
       link: "/",
     },
     {
       title: `ועד ק״ל`,
-      content: `יש לך את תמונת המחזור של ועד ק״ל?<br/>נשמח שתיצור איתנו קשר`,
       image: PicturesImage,
       link: "/",
     },
     {
       title: `ועד ק״ל`,
-      content: `יש לך את תמונת המחזור של ועד ק״ל?<br/>נשמח שתיצור איתנו קשר`,
-      image: PicturesImage,
+      image: "",
       link: "/",
     },
   ];
