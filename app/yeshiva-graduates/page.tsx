@@ -19,7 +19,7 @@ import SmoothWrapper from "../ui/SmoothWrapper";
 import TextSplitLines from "../ui/TextSplitLines";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
 export default function Page() {
@@ -305,7 +305,6 @@ export default function Page() {
                   const image2 = introImages?.querySelector(".image2");
                   const image3 = introImages?.querySelector(".image3");
                   gsap.to(image1, {
-                    x: "3vw",
                     rotate: "1.52deg",
                     delay: 0,
                     duration: 2,
@@ -318,7 +317,6 @@ export default function Page() {
                     ease: "expo.inOut",
                   });
                   gsap.to(image3, {
-                    x: "-3vw",
                     y: "5vh",
                     rotate: "-6.2deg",
                     delay: 0,
@@ -357,7 +355,7 @@ export default function Page() {
         ease: "none",
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * -0.3;
+            return 0;
           },
           end: () => {
             return "+=" + window.innerWidth * 1.5;
@@ -371,7 +369,7 @@ export default function Page() {
         ease: "none",
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * -0.3;
+            return 0;
           },
           end: () => {
             return "+=" + window.innerWidth * 1.5;
@@ -380,12 +378,12 @@ export default function Page() {
         },
       });
       gsap.to(image3, {
-        x: "-15vw",
+        x: "7vw",
         delay: 0,
         ease: "none",
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * -0.3;
+            return 0;
           },
           end: () => {
             return "+=" + window.innerWidth * 1.5;
@@ -424,7 +422,7 @@ export default function Page() {
       gsap.to(sheetReadmore, {
         xPercent: 0,
         opacity: 1,
-        ease: "expo.inOut",
+        ease: "slow(0.1,1,false)",
         duration: 2,
         delay: 0,
         scrollTrigger: {

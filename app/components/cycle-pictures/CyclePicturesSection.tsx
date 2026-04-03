@@ -1,14 +1,12 @@
 import SearchIcon from "@/app/assets/icons/SearchIcon";
 import GetHebrewYear from "@/app/ui/GetHebrewYear";
 import SingleCyclePicture from "@/app/ui/SingleCyclePicture";
-import { StaticImageData } from "next/image";
 import { useEffect, useRef } from "react";
 import SimpleBar from "simplebar-react";
 
 interface SingleCyclePictureData {
   title: string;
-  content: string;
-  image: StaticImageData;
+  image: any;
   link: string;
 }
 
