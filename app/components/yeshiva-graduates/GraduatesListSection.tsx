@@ -39,28 +39,32 @@ export default function GraduateListSection(props: ChildProps) {
   // Section Animation
   const handleMouseOver = contextSafe((e: any) => {
     const index = e.target.getAttribute("data-index");
-    const image = pageImage.current?.querySelector(`.page-${index}`);
-    if (image) {
-      gsap.to(image, {
-        opacity: 1,
-        marginTop: 0,
-        duration: 0.5,
-        ease: "expo.inOut",
-        delay: 0,
-      });
+    if (index) {
+      const image = pageImage.current?.querySelector(`.page-${index}`);
+      if (image) {
+        gsap.to(image, {
+          opacity: 1,
+          marginTop: 0,
+          duration: 0.5,
+          ease: "expo.inOut",
+          delay: 0,
+        });
+      }
     }
   });
   const handleMouseOut = contextSafe((e: any) => {
     const index = e.target.getAttribute("data-index");
-    const image = pageImage.current?.querySelector(`.page-${index}`);
-    if (image) {
-      gsap.to(image, {
-        opacity: 0,
-        marginTop: "100vh",
-        duration: 0,
-        ease: "expo.inOut",
-        delay: 0,
-      });
+    if (index) {
+      const image = pageImage.current?.querySelector(`.page-${index}`);
+      if (image) {
+        gsap.to(image, {
+          opacity: 0,
+          marginTop: "100vh",
+          duration: 0,
+          ease: "expo.inOut",
+          delay: 0,
+        });
+      }
     }
   });
   return (

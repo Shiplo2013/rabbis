@@ -2,15 +2,15 @@
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import PicturesImage from "../assets/images/cycle-image1.jpg";
 import IntroBG from "../assets/images/intro-bg-10.jpg";
 import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
-import ConferenceContentSection from "../components/alumni-conference/ConferenceContentSection";
-import Introduction from "../components/cycle-pictures/Introduction";
+import PostImage1 from "../assets/images/zatzel-graduate1.jpg";
 import LoadingEffect from "../components/LoadingEffect";
+import Introduction from "../components/zatzel/Introduction";
+import ZatzelContentSection from "../components/zatzel/ZatzelContentSection";
 import GetRightPosition from "../ui/GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 import SmoothWrapper from "../ui/SmoothWrapper";
@@ -26,29 +26,61 @@ export default function Page() {
   // Page Data
   const IntroData1 = [
     {
-      title: `כנס<br/>הבוגרים`,
-      content: "",
+      title: `זכרון להולכים`,
+      content: `במשך מאה וחמישים שנות ממלכת התורה, כנסת ישראל לדורותיה, הצמיחה הישיבה דורות של תלמידים אשר האירו את העולם בתורתם, בחכמתם ובמעשיהם הטובים. במדור זה נציב נר זיכרון לדמויות בוגרי הישיבה אשר הלכו לעולמם, למען תהיה דמותם חקוקה בליבנו. זכרם יעמוד לנגד עינינו כעמוד אש וענן, להאיר לנו את הדרך, להדריך את צעדינו ולהמשיך ולהנחיל את מורשת התורה לדורות הבאים.`,
     },
   ];
   // Pictures Data
-  const PicturesContent = [
+  const PostContent = [
     {
-      title: `ועד ק״ל`,
-      content: `יש לך את תמונת המחזור של ועד ק״ל?<br/>נשמח שתיצור איתנו קשר`,
-      image: PicturesImage,
-      link: "/",
+      catTitle: `מחזור תרע״ד`,
+      catPosts: [
+        {
+          title: `שנת פטירה: כ"ו בסיוון ה'תשע"א`,
+          content: `מרן הגאון רבי מיכל יהודה ליפקוביץ זצ״ל`,
+          image: PostImage1,
+        },
+        {
+          title: `שנת פטירה: כ"ו בסיוון ה'תשע"א`,
+          content: `מרן הגאון רבי מיכל יהודה ליפקוביץ זצ״ל`,
+          image: PostImage1,
+        },
+        {
+          title: `שנת פטירה: כ"ו בסיוון ה'תשע"א`,
+          content: `מרן הגאון רבי מיכל יהודה ליפקוביץ זצ״ל`,
+          image: PostImage1,
+        },
+        {
+          title: `שנת פטירה: כ"ו בסיוון ה'תשע"א`,
+          content: `מרן הגאון רבי מיכל יהודה ליפקוביץ זצ״ל`,
+          image: PostImage1,
+        },
+      ],
     },
     {
-      title: `ועד ק״ל`,
-      content: `יש לך את תמונת המחזור של ועד ק״ל?<br/>נשמח שתיצור איתנו קשר`,
-      image: PicturesImage,
-      link: "/",
-    },
-    {
-      title: `ועד ק״ל`,
-      content: `יש לך את תמונת המחזור של ועד ק״ל?<br/>נשמח שתיצור איתנו קשר`,
-      image: PicturesImage,
-      link: "/",
+      catTitle: `מחזור תרע״ד`,
+      catPosts: [
+        {
+          title: `שנת פטירה: כ"ו בסיוון ה'תשע"א`,
+          content: `מרן הגאון רבי מיכל יהודה ליפקוביץ זצ״ל`,
+          image: PostImage1,
+        },
+        {
+          title: `שנת פטירה: כ"ו בסיוון ה'תשע"א`,
+          content: `מרן הגאון רבי מיכל יהודה ליפקוביץ זצ״ל`,
+          image: PostImage1,
+        },
+        {
+          title: `שנת פטירה: כ"ו בסיוון ה'תשע"א`,
+          content: `מרן הגאון רבי מיכל יהודה ליפקוביץ זצ״ל`,
+          image: PostImage1,
+        },
+        {
+          title: `שנת פטירה: כ"ו בסיוון ה'תשע"א`,
+          content: `מרן הגאון רבי מיכל יהודה ליפקוביץ זצ״ל`,
+          image: PostImage1,
+        },
+      ],
     },
   ];
   // Animation State
@@ -79,7 +111,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 6.5,
+          end: "+=" + window.innerWidth * 3.6,
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -107,7 +139,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 6.5 - 500),
+          end: "+=" + (window.innerWidth * 3.6 - 500),
           scrub: scurbScale,
         },
       });
@@ -129,11 +161,6 @@ export default function Page() {
           // Selectors
           const headerLeft = main.current?.querySelector(".header-left");
           const headerRight = main.current?.querySelector(".header-right");
-          const rabbisContent =
-            main.current?.querySelectorAll(".rabbis-section");
-          rabbisContent?.forEach((section) => {
-            section.classList.add("opacity-0");
-          });
           // Banner Button
           const introTitle = main.current?.querySelector(
             ".first-intro .intro-title",
@@ -177,9 +204,6 @@ export default function Page() {
               onComplete: () => {
                 // Set Animation Played to true
                 setIsAllAnimationComplete(true);
-                rabbisContent?.forEach((section) => {
-                  section.classList.add("opacity-100");
-                });
               },
             });
             if (main.current) {
@@ -282,100 +306,149 @@ export default function Page() {
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
-    if (typeof window !== "undefined" && panel) {
-      // Page Content Animation
-      const conferenceRef = main.current?.querySelector(".conference-content");
-      const conferenceContent = conferenceRef?.querySelectorAll(
-        ".conference-content-wrapper>p",
-      );
-      const GalleryImages = main.current?.querySelectorAll(
-        ".conference-gallery .single-gallery",
-      );
+    // Page Content Animation
+    const sheetReadmore = main.current?.querySelector(".sheet-readmore");
+    const sidebar = main.current?.querySelector(
+      ".sheet-sidebar .sheet-sidebar-wrapper",
+    );
 
-      // Animations
-      if (conferenceRef) {
-        gsap.from(conferenceRef, {
-          xPercent: -50,
-          opacity: 0,
-          ease: "slow(0.1,1,false)",
-          duration: 1.5,
-          delay: 0,
-          scrollTrigger: {
-            start: () => {
-              return window.innerWidth * 0.3;
-            },
-            toggleActions: "restart pause resume reverse",
+    // Animations
+    if (sidebar) {
+      gsap.from(sidebar, {
+        xPercent: 100,
+        opacity: 0,
+        ease: "expo.inOut",
+        duration: 3,
+        delay: -1,
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * 0.3;
           },
-        });
-      }
-      // Text
-      document.fonts.ready.then(() => {
-        // Section Content
-        let splitContent;
-        if (conferenceContent) {
-          splitContent = BigTitleSplitLines(conferenceContent);
-          gsap.set(conferenceContent, {
-            perspective: 400,
-          });
-          gsap.set(splitContent, {
-            yPercent: 150,
-            opacity: 0,
-          });
-          gsap.to(splitContent, {
-            yPercent: 0,
-            opacity: 1,
-            duration: 3,
-            delay: -1,
-            stagger: 0.025,
-            ease: "expo.inOut",
-            scrollTrigger: {
-              start: () => {
-                return window.innerWidth * 0.3;
-              },
-              toggleActions: "restart pause resume reverse",
-            },
-          });
-        }
+          toggleActions: "restart pause resume reverse",
+        },
       });
-      // Contents
-      if (GalleryImages) {
-        GalleryImages.forEach((item, index) => {
-          // Custom Content Item
-          if (item) {
-            gsap.from(item, {
+    }
+    // Contents
+    const zatzelContent = main.current?.querySelectorAll(".zatzel-cat-section");
+    document.fonts.ready.then(() => {
+      if (zatzelContent) {
+        zatzelContent.forEach((section) => {
+          const sectionTitle = section.querySelector(".zatzel-cat-title h2");
+          const sectionItems = section.querySelectorAll(".single-zatzel-post");
+          if (sectionTitle) {
+            const splitTitle = TextSplitLines(sectionTitle);
+            gsap.set(splitTitle, {
+              perspective: 400,
+            });
+            gsap.set(splitTitle, {
+              yPercent: 150,
               opacity: 0,
-              ease: "slow(0.1,1,false)",
-              duration: 1.5,
+            });
+            gsap.to(splitTitle, {
+              yPercent: 0,
+              opacity: 1,
               delay: 0,
+              stagger: 0.05,
+              ease: "expo.inOut",
+              duration: 1.5,
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth + index * 0.5;
+                  return GetRightPosition(section) - window.innerWidth * 0.5;
                 },
                 toggleActions: "restart pause resume reverse",
               },
             });
-            // Item BG Animation
-            const image = item.querySelector(".single-gallery-image");
-            if (image) {
-              // Banner Background
-              gsap.set(image, { scale: 1.2, x: "15vw" });
-              gsap.to(image, {
-                x: "-10vw",
-                ease: "none",
+          }
+          if (sectionItems) {
+            sectionItems.forEach((item) => {
+              const postTitle = item.querySelector(".post-text .post-title");
+              const postExcerpt = item.querySelector(
+                ".post-text .post-excerpt",
+              );
+              const postOverlay = item.querySelector(".post-image-overlay");
+              // Post Title
+              const postExcerptSplit = TextSplitLines(postExcerpt);
+              gsap.set(postExcerpt, {
+                perspective: 400,
+              });
+              gsap.set(postExcerptSplit, {
+                yPercent: 150,
+                opacity: 0,
+              });
+              gsap.to(postExcerptSplit, {
+                yPercent: 0,
+                opacity: 1,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+                duration: 1.5,
                 scrollTrigger: {
                   start: () => {
                     return GetRightPosition(item) - window.innerWidth * 0.5;
                   },
-                  end: () => {
-                    return "+=" + window.innerWidth * 2.5;
-                  },
-                  scrub: 2,
+                  toggleActions: "restart pause resume reverse",
                 },
               });
-            }
+              // Post Title
+              const postTitleSplit = TextSplitLines(postTitle);
+              gsap.set(postTitle, {
+                perspective: 400,
+              });
+              gsap.set(postTitleSplit, {
+                yPercent: 150,
+                opacity: 0,
+              });
+              gsap.to(postTitleSplit, {
+                yPercent: 0,
+                opacity: 1,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+                duration: 1.5,
+                scrollTrigger: {
+                  start: () => {
+                    return GetRightPosition(item) - window.innerWidth * 0.5;
+                  },
+                  toggleActions: "restart pause resume reverse",
+                },
+              });
+              // Image Overlay
+              gsap.to(postOverlay, {
+                yPercent: -100,
+                ease: "expo.inOut",
+                duration: 1.5,
+                delay: 0,
+                scrollTrigger: {
+                  start: () => {
+                    return GetRightPosition(item) - window.innerWidth * 0.5;
+                  },
+                  toggleActions: "restart pause resume reverse",
+                },
+              });
+            });
           }
         });
       }
+    });
+    // ReadMore Button
+    if (sheetReadmore) {
+      gsap.set(sheetReadmore, {
+        xPercent: -50,
+        opacity: 0,
+      });
+      gsap.to(sheetReadmore, {
+        xPercent: 0,
+        opacity: 1,
+        ease: "expo.inOut",
+        duration: 1,
+        delay: 0,
+        scrollTrigger: {
+          start: () => {
+            return GetRightPosition(sheetReadmore) - window.innerWidth * 0.4;
+          },
+          toggleActions: "restart pause resume reverse",
+        },
+      });
     }
   };
 
@@ -430,7 +503,7 @@ export default function Page() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[550vw] h-screen items-center will-change-transform`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[360vw] h-screen items-center will-change-transform`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
@@ -449,10 +522,10 @@ export default function Page() {
                   throw new Error("Function not implemented.");
                 }}
               />
-              <ConferenceContentSection
-                extraClass="min-w-[440vw] w-[440vw] h-screen panel-section will-change-transform py-[5vw] px-[9.25vw]"
+              <ZatzelContentSection
+                extraClass="min-w-[260vw] w-[260vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
                 animWidthText={1}
-                sectionData={PicturesContent}
+                sectionData={PostContent}
               />
             </div>
           </div>
