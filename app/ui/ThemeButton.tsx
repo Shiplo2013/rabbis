@@ -17,7 +17,7 @@ interface ChildProps {
 
 export default function ThemeButton(props: ChildProps) {
   return (
-    <div className="theme-button">
+    <div className="theme-button will-change-transform">
       <Link
         className={`group flex items-center ${props?.icon !== undefined ? "pl-18" : ""} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[28px]"} ${props?.extraClass}`}
         href={props.buttonLink ? props.buttonLink : "/"}
