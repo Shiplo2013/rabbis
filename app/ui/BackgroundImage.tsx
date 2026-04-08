@@ -4,6 +4,10 @@ import { useRef } from "react";
 import GetRightPosition from "./GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "./plugins";
 
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
+
 gsap.registerPlugin(ScrollTrigger);
 interface ChildProps {
   animated: boolean;

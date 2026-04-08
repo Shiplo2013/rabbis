@@ -1,7 +1,11 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
-import { gsap, useGSAP } from "./plugins";
+import { gsap, ScrollTrigger, useGSAP } from "./plugins";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 interface ChildProps {
   bgImage: any;
@@ -19,7 +23,7 @@ export default function IntroductionBackground(props: ChildProps) {
   // Seciton Animation
   useGSAP(
     () => {
-      if (props.animatePosition !== 0) {
+      if (props.animatePosition > 0) {
         // Banner Background
         gsap.set(background.current, { scale: 1.2, x: "10vw" });
         gsap.to(background.current, {
