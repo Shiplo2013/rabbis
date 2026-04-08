@@ -7,7 +7,9 @@ import PixelIcon3 from "../assets/icons/PixelIcon3";
 import PixelIcon4 from "../assets/icons/PixelIcon4";
 import { gsap, useGSAP } from "../ui/plugins";
 
-gsap.registerPlugin(useGSAP);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

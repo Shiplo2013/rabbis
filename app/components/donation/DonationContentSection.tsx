@@ -7,7 +7,9 @@ import { StaticImageData } from "next/image";
 import bgImage from "../../assets/images/donation-content-bg.jpg";
 import { gsap, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(useGSAP);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

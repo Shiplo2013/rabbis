@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -15,7 +16,7 @@ interface ChildProps {
   animatePosition: number;
 }
 
-export default function BigSectionBackground(props: ChildProps) {
+export default function VerticalBackgroundImage(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Selector
@@ -23,20 +24,18 @@ export default function BigSectionBackground(props: ChildProps) {
   // Seciton Animation
   useGSAP(
     () => {
-      if (props.animatePosition !== 0) {
+      if (props.animatePosition > 0) {
         // Banner Background
-        gsap.set(background.current, { scale: 1.2, x: "30vw" });
+        gsap.set(background.current, { scale: 1.2 });
         gsap.to(background.current, {
-          x: "-30vw",
+          y: "20vw",
           ease: "none",
+          delay: 0,
           scrollTrigger: {
-            start: () => {
-              return window.innerWidth * (props.animatePosition - 0.5);
-            },
-            end: () => {
-              return "+=" + window.innerWidth * 3.2;
-            },
-            scrub: 2,
+            trigger: ".introduction-background",
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.5,
           },
         });
       }
