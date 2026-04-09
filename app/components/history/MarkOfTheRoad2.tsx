@@ -6,7 +6,11 @@ import { useRef } from "react";
 import historyImage1 from "../../assets/images/history-image1.jpg";
 import historyImage2 from "../../assets/images/history-image2.jpg";
 import historyImage3 from "../../assets/images/history-image3.jpg";
-import { gsap, SplitText, useGSAP } from "../../ui/plugins";
+import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(SplitText, ScrollTrigger, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;
@@ -110,6 +114,9 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                 src={item?.image?.src}
                 width={"640"}
                 height={"413"}
+                blurDataURL={item?.image?.blurDataURL}
+                placeholder={"blur"}
+                loading="lazy"
                 alt={"Section Image"}
               />
             </div>

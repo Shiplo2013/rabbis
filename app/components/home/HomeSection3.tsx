@@ -5,7 +5,11 @@ import Image from "next/image";
 import { useRef } from "react";
 import Juniper from "../../assets/images/juniper.jpg";
 import sectionBg from "../../assets/images/section-bg.jpg";
-import { gsap, useGSAP } from "../../ui/plugins";
+import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

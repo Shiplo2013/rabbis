@@ -34,7 +34,7 @@ import {
 import SlidingArrow from "../ui/SlidingArrow";
 import SmoothWrapper from "../ui/SmoothWrapper";
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText, useGSAP);
 
 export default function About() {
   const IntroData1 = [

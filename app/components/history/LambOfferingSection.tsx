@@ -11,7 +11,9 @@ import LambImage3 from "../../assets/images/lamb-image3.jpg";
 import contentBG from "../../assets/images/lamb-offering-bg.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

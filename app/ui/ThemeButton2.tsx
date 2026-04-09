@@ -15,9 +15,9 @@ interface ChildProps {
 
 export default function ThemeButton2(props: ChildProps) {
   return (
-    <div className="theme-button">
+    <div className="theme-button overflow-hidden">
       <div
-        className={`group flex items-center ${props?.icon !== undefined ? "pl-18" : ""} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[28px]"} ${props?.extraClass}`}
+        className={`group flex items-center ${props?.icon !== undefined ? "pl-18" : ""} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[28px]"} ${props?.extraClass} backface-hidden`}
       >
         {props?.text && (
           <span className={`text block relative z-30 ${props?.hoverTextColor}`}>
@@ -38,7 +38,7 @@ export default function ThemeButton2(props: ChildProps) {
           </div>
         )}
         <span
-          className={`btn-bg absolute z-10 left-0 top-0 w-full h-full will-change-transform ${props?.hoverBgColor}`}
+          className={`btn-bg absolute z-10 left-0 top-0 w-full h-full will-change-transform ${props?.hoverBgColor} backface-hidden`}
         ></span>
       </div>
     </div>

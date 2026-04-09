@@ -9,7 +9,9 @@ import image2 from "../../assets/images/news-section-image2.jpg";
 import image3 from "../../assets/images/news-section-image3.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

@@ -7,7 +7,9 @@ import mtjImage1 from "../../assets/images/move-to-jerusalem1.jpg";
 import mtjImage2 from "../../assets/images/move-to-jerusalem2.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

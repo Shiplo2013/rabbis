@@ -23,20 +23,6 @@ export default function Introduction(props: ChildProps) {
   const backgorund = wrapper.current?.querySelector(".intro-background");
   const bgMask = wrapper.current?.querySelector(".intro-bg-mask");
 
-  // // Animation
-  // useGSAP(() => {
-  //   if (props.animationStatus) {
-  //     if (bgMask) {
-  //       gsap.to(
-  //         bgMask,
-  //         {
-  //           translateY: "-100%",
-  //           duration: 1,
-  //           ease: "power2.inOut",
-  //         } );
-  //     }
-  //   }
-  // }, [props.animationStatus]);
   return (
     <section
       ref={wrapper}

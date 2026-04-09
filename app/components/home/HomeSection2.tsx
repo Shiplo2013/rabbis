@@ -4,7 +4,11 @@ import Image from "next/image";
 import { useRef } from "react";
 import Koddisha from "../../assets/images/kaddisha.jpg";
 import sectionImage from "../../assets/images/section-image2.jpg";
-import { gsap, useGSAP } from "../../ui/plugins";
+import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

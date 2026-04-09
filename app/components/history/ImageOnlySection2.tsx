@@ -4,7 +4,9 @@ import { useRef } from "react";
 import Image1 from "../../assets/images/single-image2.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;
@@ -25,13 +27,13 @@ export default function ImageOnlySection2(props: ChildProps) {
           x: "-10vw",
         });
         gsap.to(image, {
-          x: "9vw",
+          x: "15vw",
           ease: "easeIn",
           scrollTrigger: {
             start: () => {
               return window.innerWidth * (props.animWidthText - 0.5);
             },
-            end: () => "+=" + window.innerWidth * 1,
+            end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
           },
         });

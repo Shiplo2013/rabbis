@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 interface ChildProps {
   extraClass: string;
@@ -65,7 +65,6 @@ export default function SingleImageSection(props: ChildProps) {
             placeholder={"blur"}
             loading="lazy"
             alt="Image Background"
-            //onLoad={(image) => image.classList.remove("opacity-0")}
           />
         </div>
         <div

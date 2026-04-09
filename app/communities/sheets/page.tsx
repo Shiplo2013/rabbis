@@ -20,7 +20,7 @@ import SmoothWrapper from "../../ui/SmoothWrapper";
 import TextSplitLines from "../../ui/TextSplitLines";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
 export default function Communities() {
