@@ -2,9 +2,9 @@ import ThemeButton2 from "@/app/ui/ThemeButton2";
 import VideoPlayer from "@/app/ui/VideoPlayer";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
-import PlusIcon from "../../assets/icons/PlusIcon";
-import thumb from "../../assets/images/video-section.jpg";
-import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
+import PlusIcon from "../assets/icons/PlusIcon";
+import thumb from "../assets/images/video-thumb.jpg";
+import { gsap, ScrollTrigger, SplitText, useGSAP } from "../ui/plugins";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -15,7 +15,7 @@ interface ChildProps {
   animWidthText: number;
 }
 
-export default function SingleVideoSection(props: ChildProps) {
+export default function VideoItem(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
@@ -42,9 +42,9 @@ export default function SingleVideoSection(props: ChildProps) {
           delay: -0.5,
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * props.animWidthText;
+              return window.innerWidth * (props.animWidthText + 1.4);
             },
-            toggleActions: "restart pause play reverse",
+            toggleActions: "restart pause resume reverse",
           },
         });
       }
@@ -60,6 +60,8 @@ export default function SingleVideoSection(props: ChildProps) {
   const handleButtonClick = () => {
     if (videoElement) {
       if (videoElement.paused) {
+        wrapper.current?.classList.add("z-50");
+        wrapper.current?.classList.remove("z-20");
         if (videoOverlay) {
           gsap.to(videoWrap.current, {
             duration: 0.5,
@@ -123,14 +125,16 @@ export default function SingleVideoSection(props: ChildProps) {
             });
           }
         }
+        wrapper.current?.classList.remove("z-50");
+        wrapper.current?.classList.add("z-20");
       }
     }
   };
   return (
-    <section
+    <div
       ref={wrapper}
       dir="rtl"
-      className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      className={`${props.extraClass} bg-black flex items-center h-screen relative z-20`}
       data-scroll-section={props.animWidthText}
     >
       <div className="video-wrapper w-full h-full relative">
@@ -158,6 +162,6 @@ export default function SingleVideoSection(props: ChildProps) {
         </div>
         <div className="section-overlay absolute top-0 left-0 w-full h-full bg-black z-40 will-change-transform"></div>
       </div>
-    </section>
+    </div>
   );
 }

@@ -3,6 +3,10 @@ import BackgroundImage from "../../ui/BackgroundImage";
 import { gsap, useGSAP } from "../../ui/plugins";
 import ScrollButton from "../../ui/ScrollButton";
 
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP);
+}
+
 interface ChildProps {
   extraClass: string;
   animated: boolean;

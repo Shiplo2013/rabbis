@@ -5,7 +5,9 @@ import sectionBg from "../../assets/images/section-bg2.jpg";
 import AnimatedBackground from "../../ui/AnimatedBackground";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

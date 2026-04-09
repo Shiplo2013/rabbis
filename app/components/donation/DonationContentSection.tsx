@@ -5,11 +5,6 @@ import ThemeButton from "@/app/ui/ThemeButton";
 import parse from "html-react-parser";
 import { StaticImageData } from "next/image";
 import bgImage from "../../assets/images/donation-content-bg.jpg";
-import { gsap, useGSAP } from "../../ui/plugins";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(useGSAP);
-}
 
 interface ChildProps {
   extraClass: string;

@@ -5,9 +5,11 @@ import { useRef } from "react";
 import markImage1 from "../../assets/images/mark-image1.jpg";
 import markImage2 from "../../assets/images/mark-image2.jpg";
 import markImage3 from "../../assets/images/mark-image3.jpg";
-import { gsap, SplitText, useGSAP } from "../../ui/plugins";
+import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(SplitText);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(SplitText, ScrollTrigger, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;
@@ -185,6 +187,9 @@ export default function MarkOfTheRoad(props: ChildProps) {
               src={markImage1.src}
               width={"442"}
               height={"446"}
+              blurDataURL={markImage1?.blurDataURL}
+              placeholder={"blur"}
+              loading="lazy"
               alt={"Section Image"}
             />
             <div
@@ -196,6 +201,9 @@ export default function MarkOfTheRoad(props: ChildProps) {
                 src={markImage2.src}
                 width={"329"}
                 height={"340"}
+                blurDataURL={markImage2?.blurDataURL}
+                placeholder={"blur"}
+                loading="lazy"
                 alt={"Section Image"}
               />
             </div>
@@ -216,6 +224,9 @@ export default function MarkOfTheRoad(props: ChildProps) {
               src={markImage3.src}
               width={"539"}
               height={"415"}
+              blurDataURL={markImage3?.blurDataURL}
+              placeholder={"blur"}
+              loading="lazy"
               alt={"Section Image"}
             />
           </div>

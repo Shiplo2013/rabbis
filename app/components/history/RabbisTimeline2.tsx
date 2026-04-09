@@ -16,7 +16,9 @@ import rabbisImage8 from "../../assets/images/rabbis-timeline8.jpg";
 import rabbisImage9 from "../../assets/images/rabbis-timeline9.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

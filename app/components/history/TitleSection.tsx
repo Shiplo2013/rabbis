@@ -7,7 +7,9 @@ import rightShape from "../../assets/images/title-shape1.png";
 import leftShape from "../../assets/images/title-shape2.png";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

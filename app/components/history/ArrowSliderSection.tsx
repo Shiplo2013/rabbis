@@ -3,7 +3,11 @@ import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
-import { gsap, useGSAP } from "../../ui/plugins";
+import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

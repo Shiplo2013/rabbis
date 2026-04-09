@@ -3,7 +3,9 @@ import { usePathname } from "next/dist/client/components/navigation";
 import { useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

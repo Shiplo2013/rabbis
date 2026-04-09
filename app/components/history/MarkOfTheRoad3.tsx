@@ -11,7 +11,10 @@ import markImage4 from "../../assets/images/markofroad3-image4.jpg";
 import notifyIcon from "../../assets/images/notify-icon.png";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
+
 interface ChildProps {
   extraClass: string;
   animWidthText: number;

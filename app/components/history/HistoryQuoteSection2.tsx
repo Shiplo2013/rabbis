@@ -1,3 +1,4 @@
+import BackgroundImage2 from "@/app/ui/BackgroundImage2";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -15,7 +16,7 @@ interface ChildProps {
   data: { content: string }[];
 }
 
-export default function HistoryQuoteSection(props: ChildProps) {
+export default function HistoryQuoteSection2(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
@@ -72,16 +73,24 @@ export default function HistoryQuoteSection(props: ChildProps) {
     <section
       ref={wrapper}
       dir="rtl"
-      className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      className={`${props.extraClass} bg-black flex items-center h-screen relative z-20`}
       data-scroll-section={props.animWidthText}
     >
+      <div className="quote-background w-full h-full absolute top-0 left-0 z-10 overflow-hidden">
+        <BackgroundImage2
+          bgImage={props.bgImage}
+          start={props.animWidthText}
+          end={0}
+          panel={""}
+        />
+      </div>
       <div
         className={`section-row w-full h-full flex px-[2vw] py-[5vh] items-center justify-center relative z-30`}
       >
         <div
           ref={quote}
           dir="ltr"
-          className={`bg-[#E2D7C3] w-full text-[#000000] text-[45px] leading-[0.8em] px-[5vw] py-[5vh] flex flex-col min-h-[46.8vh] justify-center  text-right ${props.boxClass}`}
+          className={`bg-[#E2D7C3] w-[29.3vw] text-[#000000] text-[45px] leading-[0.8em] px-[5vw] py-[5vh] flex flex-col min-h-53.5 justify-center ml-[40vw] text-right ${props.boxClass}`}
         >
           {parse(props?.data[0]?.content)}
         </div>

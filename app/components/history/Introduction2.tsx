@@ -3,9 +3,11 @@ import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
-import { gsap, SplitText, useGSAP } from "../../ui/plugins";
+import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(SplitText);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
 
 interface ChildProps {
   animWidthText: number;

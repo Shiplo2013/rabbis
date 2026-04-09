@@ -12,7 +12,15 @@ import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
-import CustomsContentSection from "../components/knesset/CustomsContentSection";
+import OnlyImage from "../assets/images/only-image.jpg";
+import OnlyImage2 from "../assets/images/only-image2.jpg";
+import QuoteSectionBG from "../assets/images/quote-section-bg.jpg";
+import HistoryQuoteSection2 from "../components/history/HistoryQuoteSection2";
+import ImageWithTextSection from "../components/history/ImageWithTextSection";
+import MarkOfTheRoad4 from "../components/history/MarkOfTheRoad4";
+import OnlyImageSection from "../components/history/OnlyImageSection";
+import OnlyParallaxImageSection from "../components/history/OnlyParallaxImageSection";
+import RabbisTimeline4 from "../components/history/RabbisTimeline4";
 import Introduction from "../components/knesset/Introduction";
 import LoadingEffect from "../components/LoadingEffect";
 import GetRightPosition from "../ui/GetRightPosition";
@@ -21,7 +29,7 @@ import SmoothWrapper from "../ui/SmoothWrapper";
 import TextSplitLines from "../ui/TextSplitLines";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
 export default function Page() {
@@ -79,6 +87,11 @@ export default function Page() {
       ],
     },
   ];
+  const QuoteData3 = [
+    {
+      content: `<p><strong>שנת תשפ"ב</strong><br/> הרחבת בית המדרש</p>`,
+    },
+  ];
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -107,7 +120,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 3,
+          end: "+=" + window.innerWidth * 6,
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -135,7 +148,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 3 - 500),
+          end: "+=" + (window.innerWidth * 6 - 500),
           scrub: scurbScale,
         },
       });
@@ -452,7 +465,7 @@ export default function Page() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[320vw] h-screen items-center will-change-transform`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[600vw] h-screen items-center will-change-transform`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
@@ -471,9 +484,46 @@ export default function Page() {
                   throw new Error("Function not implemented.");
                 }}
               />
-              <CustomsContentSection
-                extraClass="min-w-[190vw] w-[190vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
-                animWidthText={1}
+              <OnlyParallaxImageSection
+                extraClass={
+                  "panel-section will-change-transform min-w-[61.8vw] w-[61.8vw]"
+                }
+                image={OnlyImage}
+                animWidthText={0}
+              />
+              <MarkOfTheRoad4
+                animWidthText={1.5}
+                extraClass={
+                  "min-w-[130vw] w-[130vw] h-screen panel-section will-change-transform"
+                }
+              />
+              <ImageWithTextSection
+                extraClass={
+                  "min-w-[137vw] w-[137vw] h-screen panel-section will-change-transform"
+                }
+                animWidthText={3}
+              />
+              <OnlyImageSection
+                extraClass={
+                  "panel-section will-change-transform min-w-[35.8vw] w-[35.8vw]"
+                }
+                image={OnlyImage2}
+                animWidthText={3.8}
+              />
+              <HistoryQuoteSection2
+                extraClass={
+                  "panel-section will-change-transform min-w-[75vw] w-[75vw]"
+                }
+                animWidthText={4.5}
+                bgImage={QuoteSectionBG}
+                boxClass={""}
+                data={QuoteData3}
+              />
+              <RabbisTimeline4
+                extraClass={
+                  "panel-section will-change-transform min-w-[210vw] w-[210vw]"
+                }
+                animWidthText={0.5}
               />
             </div>
           </div>

@@ -1,5 +1,5 @@
+import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import ThemeButton from "@/app/ui/ThemeButton";
-import VerticalBackgroundImage from "@/app/ui/VerticalBackgroundImage";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { useRef } from "react";
@@ -36,7 +36,7 @@ export default function Introduction(props: ChildProps) {
     >
       {props.bgImage !== "" && (
         <div className="intro-background absolute top-0 left-0 w-full h-full z-10">
-          <VerticalBackgroundImage
+          <IntroductionBackground
             bgImage={props.bgImage}
             overlayClass={props.overlayClass}
             imagePosition={props.bgPosition}

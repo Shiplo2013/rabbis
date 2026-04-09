@@ -16,6 +16,9 @@ import IntroBGoverlay from "../assets/images/intro-bg2.png";
 import introBG3 from "../assets/images/intro-bg3.jpg";
 import IntroBG from "../assets/images/introduction-bg.jpg";
 import NewsSectionBG from "../assets/images/new-section-bg2.jpg";
+import OnlyImage from "../assets/images/only-image.jpg";
+import OnlyImage2 from "../assets/images/only-image2.jpg";
+import QuoteSectionBG from "../assets/images/quote-section-bg.jpg";
 import HistoryImage1 from "../assets/images/single-image.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -23,22 +26,28 @@ import ArrowSliderSection from "../components/history/ArrowSliderSection";
 import ContentSection2 from "../components/history/ContentSection2";
 import EvidenceOfPeriod from "../components/history/EvidenceOfPeriod";
 import HistoryQuoteSection from "../components/history/HistoryQuoteSection";
+import HistoryQuoteSection2 from "../components/history/HistoryQuoteSection2";
 import ImageOnlySection from "../components/history/ImageOnlySection";
 import ImageOnlySection2 from "../components/history/ImageOnlySection2";
+import ImageWithTextSection from "../components/history/ImageWithTextSection";
 import Introduction from "../components/history/Introduction";
 import Introduction2 from "../components/history/Introduction2";
 import LambOfferingSection from "../components/history/LambOfferingSection";
 import MarkOfTheRoad from "../components/history/MarkOfTheRoad";
 import MarkOfTheRoad2 from "../components/history/MarkOfTheRoad2";
 import MarkOfTheRoad3 from "../components/history/MarkOfTheRoad3";
+import MarkOfTheRoad4 from "../components/history/MarkOfTheRoad4";
 import MoveToJerusalem from "../components/history/MoveToJerusalem";
 import NewsPapperSection from "../components/history/NewsPapperSection";
+import OnlyImageSection from "../components/history/OnlyImageSection";
+import OnlyParallaxImageSection from "../components/history/OnlyParallaxImageSection";
 import OnlyTextSection from "../components/history/OnlyTextSection";
 import OnlyTextSection2 from "../components/history/OnlyTextSection2";
 import RabbisPeriodSection from "../components/history/RabbisPeriodSection";
 import RabbisTimeline from "../components/history/RabbisTimeline";
 import RabbisTimeline2 from "../components/history/RabbisTimeline2";
 import RabbisTimeline3 from "../components/history/RabbisTimeline3";
+import RabbisTimeline4 from "../components/history/RabbisTimeline4";
 import SingleVideoSection from "../components/history/SingleVideoSection";
 import TitleSection from "../components/history/TitleSection";
 import LoadingEffect from "../components/LoadingEffect";
@@ -140,6 +149,11 @@ export default function Page() {
   const QuoteData2 = [
     {
       content: `<p><strong>שנת תשכ"ז:</strong> מינוי רבי רפאל אהרן יפהן לר"מ</p><p><strong>שנת תשכ"ח:</strong> רבי מרדכי חברוני לר"מ</p>`,
+    },
+  ];
+  const QuoteData3 = [
+    {
+      content: `<p><strong>שנת תשפ"ב</strong><br/> הרחבת בית המדרש</p>`,
     },
   ];
 
@@ -381,7 +395,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 37.75,
+          end: "+=" + window.innerWidth * 44.24,
           scrub: scurbScale,
           pin: true,
           anticipatePin: 1,
@@ -508,7 +522,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 37.75 - 500),
+          end: "+=" + (window.innerWidth * 44.24 - 500),
           scrub: scurbScale,
         },
       });
@@ -571,7 +585,7 @@ export default function Page() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[3775vw] h-screen will-change-transform`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[4424.6vw] h-screen will-change-transform`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
@@ -906,10 +920,51 @@ export default function Page() {
                 }
               />
               <ImageOnlySection2
-                animWidthText={37.2}
+                animWidthText={37.5}
                 extraClass={
                   "min-w-[55.5vw] w-[55.5vw] h-screen panel-section will-change-transform"
                 }
+              />
+              <RabbisTimeline4
+                extraClass={
+                  "panel-section will-change-transform min-w-[210vw] w-[210vw]"
+                }
+                animWidthText={38}
+              />
+              <OnlyParallaxImageSection
+                extraClass={
+                  "panel-section will-change-transform min-w-[61.8vw] w-[61.8vw]"
+                }
+                image={OnlyImage}
+                animWidthText={39.5}
+              />
+              <MarkOfTheRoad4
+                animWidthText={40.5}
+                extraClass={
+                  "min-w-[130vw] w-[130vw] h-screen panel-section will-change-transform"
+                }
+              />
+              <ImageWithTextSection
+                extraClass={
+                  "min-w-[137vw] w-[137vw] h-screen panel-section will-change-transform"
+                }
+                animWidthText={42}
+              />
+              <OnlyImageSection
+                extraClass={
+                  "panel-section will-change-transform min-w-[35.8vw] w-[35.8vw]"
+                }
+                image={OnlyImage2}
+                animWidthText={42.8}
+              />
+              <HistoryQuoteSection2
+                extraClass={
+                  "panel-section will-change-transform min-w-[75vw] w-[75vw]"
+                }
+                animWidthText={43.5}
+                bgImage={QuoteSectionBG}
+                boxClass={""}
+                data={QuoteData3}
               />
             </div>
           </div>

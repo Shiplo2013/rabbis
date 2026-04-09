@@ -7,7 +7,9 @@ import rabbisImage2 from "../../assets/images/rabbis-timeline15.jpg";
 import rabbisImage3 from "../../assets/images/rabbis-timeline16.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

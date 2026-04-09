@@ -9,7 +9,11 @@ import sectionBg from "../../assets/images/section-image.jpg";
 import CardSlider from "../../ui/CardSlider";
 import PostItem from "../../ui/PostItem";
 import ThemeButton from "../../ui/ThemeButton";
-import { gsap, useGSAP } from "../../ui/plugins";
+import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

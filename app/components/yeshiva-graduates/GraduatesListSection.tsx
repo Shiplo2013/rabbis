@@ -6,7 +6,9 @@ import image1 from "../../assets/images/graduates-banner-image1.png";
 import image2 from "../../assets/images/graduates-banner-image2.png";
 import { gsap, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(useGSAP);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;

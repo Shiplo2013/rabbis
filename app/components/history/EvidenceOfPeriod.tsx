@@ -9,7 +9,9 @@ import videoThumb from "../../assets/images/evidence-video-thumb.jpg";
 import evidanceBG from "../../assets/images/evidenceBG.png";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+}
 
 interface ChildProps {
   extraClass: string;
