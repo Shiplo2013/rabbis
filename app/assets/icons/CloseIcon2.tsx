@@ -1,4 +1,4 @@
-export default function CloseIcon(props: { className?: string }) {
+export default function CloseIcon2(props: { className?: string }) {
   return (
     <svg
       className={props.className}
@@ -10,12 +10,12 @@ export default function CloseIcon(props: { className?: string }) {
     >
       <path
         d="M0.566406 0.56543L24.5664 24.5654"
-        stroke="#C3A13F"
+        stroke="#F4EDDD"
         strokeWidth="1.6"
       />
       <path
         d="M24.5664 0.56543L0.566406 24.5654"
-        stroke="#C3A13F"
+        stroke="#F4EDDD"
         strokeWidth="1.6"
       />
     </svg>

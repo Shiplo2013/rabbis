@@ -394,6 +394,37 @@
         }
       }
     }
+    .music-cat-wrapper {
+      .simplebar-scrollable-y {
+        .simplebar-track.simplebar-vertical {
+          width: 5px !important;
+          z-index: 10;
+          right: auto !important;
+          left: 0;
+          &&:after {
+            content: "";
+            display: block;
+            width: 1px;
+            height: 100%;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            background: #c3a13f;
+            margin-left: 0px;
+          }
+          .simplebar-scrollbar {
+            cursor: pointer;
+            background: #c3a13f;
+            z-index: 20;
+
+            &&:before {
+              background-color: #c3a13f !important;
+              opacity: 1 !important;
+            }
+          }
+        }
+      }
+    }
   }
 }
 body {
