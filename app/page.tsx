@@ -25,7 +25,7 @@ import {
 } from "./ui/plugins";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText);
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText, useGSAP);
 }
 
 export default function Home() {

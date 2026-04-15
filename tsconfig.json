@@ -36,7 +36,8 @@
     "app/ui/SubMenuItem.tsx",
     "app/yeshiva-rabbis/page.tsx",
     "app/chronicles/page-old.js",
-    "app/ui/TitleSplitChars.js"
+    "app/ui/TitleSplitChars.js",
+    "app/ui/AudioPlayer2.js"
   ],
   "exclude": ["node_modules"]
 }

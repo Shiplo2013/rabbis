@@ -12,7 +12,7 @@ import AudioPlayer2 from "@/app/ui/AudioPlayer2";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
 import AlbumImage from "../../assets/images/album-image.jpg";
 import PlayerBG from "../../assets/images/mirros-bg.jpg";
@@ -30,28 +30,15 @@ interface ChildProps {
   data: string;
 }
 
-// Format seconds → "m:ss"
-function formatTime(seconds: number): string {
-  if (isNaN(seconds) || seconds < 0) return "0:00";
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
 export default function MirrorAudioPlayer(props: ChildProps) {
-  // Refs
+  // Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const audio = useRef<HTMLAudioElement>(null);
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
+  const playerControls = useRef<HTMLDivElement>(null);
   const animationCleanupRef = useRef<(() => void) | null>(null);
-  const isDraggingRef = useRef(false);
-  const isInfinityActiveRef = useRef(false);
-  const shouldAutoPlayRef = useRef(false);
   const pathname = usePathname();
-
-  // State
-  const sectionData = useMemo(() => JSON.parse(props.data), [props.data]);
+  // Get Section Data
+  const [sectionData, setSectionData] = useState(JSON.parse(props.data));
   const [activeTab, setActiveTab] = useState(0);
   const [activeMusic, setActiveMusic] = useState({
     tabIndex: 0,
@@ -60,14 +47,10 @@ export default function MirrorAudioPlayer(props: ChildProps) {
     link: `${sectionData.tabs[0].musics[0].link}`,
   });
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isInfinityActive, setIsInfinityActive] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [musicDurations, setMusicDurations] = useState<Record<string, string>>(
-    {},
-  );
+  const [playerDuration, setPlayerDuration] = useState("0:00");
+  const [playerCurrentTime, setPlayerCurrentTime] = useState("0:00");
 
-  // ─── Animation helpers ────────────────────────────────────────────
+  // Music Playing animate funciton
   function scaleYPathRandomly(
     path: SVGPathElement,
     minScale = 0.05,
@@ -79,28 +62,32 @@ export default function MirrorAudioPlayer(props: ChildProps) {
       gsap.to(path, {
         scaleY: gsap.utils.random(minScale, maxScale),
         duration: gsap.utils.random(minDuration, maxDuration),
-        ease: "sine.inOut",
+        ease: "easeInOut",
         transformOrigin: "50% 50%",
-        onComplete: run,
+        onComplete: run, // repeat forever with a new random value each cycle
       });
     };
-    run();
-    return () => gsap.killTweensOf(path);
-  }
 
+    run();
+
+    return () => gsap.killTweensOf(path); // cleanup
+  }
   const startAnimation = (currentMusic: Element | null) => {
     const paths = Array.from(
       currentMusic?.querySelectorAll(".music-play>svg>g>path") || [],
     ) as SVGPathElement[];
+
     const cleanups = paths.map((p) => scaleYPathRandomly(p));
+
     return () => cleanups.forEach((fn) => fn());
   };
-
+  // Stop animation
   const stopAnimation = () => {
     if (animationCleanupRef.current) {
       animationCleanupRef.current();
       animationCleanupRef.current = null;
     }
+    // Reset all paths to original scale
     const paths = Array.from(
       wrapper?.current?.querySelectorAll(".music-play>svg>g>path") || [],
     ) as SVGPathElement[];
@@ -108,199 +95,70 @@ export default function MirrorAudioPlayer(props: ChildProps) {
       gsap.to(p, {
         scaleY: 0,
         duration: 0.3,
-        ease: "sine.inOut",
+        ease: "easeInOut",
         transformOrigin: "50% 50%",
       }),
     );
   };
 
-  // ─── Progress bar ─────────────────────────────────────────────────
-  const updateProgressBar = (percent: number) => {
-    if (progressRef.current) {
-      progressRef.current.style.width = `${Math.min(100, Math.max(0, percent))}%`;
-    }
-  };
-
-  // ─── Seek helpers ─────────────────────────────────────────────────
-  const seekTo = (clientX: number) => {
-    if (!timelineRef.current || !audio.current || !audio.current.duration)
-      return;
-    const rect = timelineRef.current.getBoundingClientRect();
-    // RTL layout: progress grows right → left
-    const ratio = 1 - (clientX - rect.left) / rect.width;
-    const clamped = Math.min(1, Math.max(0, ratio));
-    const newTime = clamped * audio.current.duration;
-    audio.current.currentTime = newTime;
-    setCurrentTime(newTime);
-    updateProgressBar(clamped * 100);
-  };
-
-  const handleTimelineMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    isDraggingRef.current = true;
-    seekTo(e.clientX);
-  };
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      if (isDraggingRef.current) seekTo(e.clientX);
-    };
-    const onUp = () => {
-      isDraggingRef.current = false;
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-  }, []);
-
-  useEffect(() => {
-    isInfinityActiveRef.current = isInfinityActive;
-  }, [isInfinityActive]);
-
-  // ─── Play / Pause ─────────────────────────────────────────────────
+  // Handle play/pause click
   const handlePlayPause = () => {
     if (isPlaying) {
-      shouldAutoPlayRef.current = false;
       audio.current?.pause();
       stopAnimation();
     } else {
-      shouldAutoPlayRef.current = true;
       audio.current?.play();
-      const activeEl = wrapper?.current?.querySelector(
-        ".single-music.active-music",
-      );
-      if (activeEl) {
-        animationCleanupRef.current = startAnimation(activeEl);
+      if (wrapper?.current?.querySelector(".single-music.active-music")) {
+        animationCleanupRef.current = startAnimation(
+          wrapper?.current?.querySelector(".single-music.active-music"),
+        );
       }
     }
-    setIsPlaying((prev) => !prev);
+    setIsPlaying(!isPlaying);
   };
-
-  // ─── Close popup ─────────────────────────────────────────────────
-  const handleClosePopup = () => {
-    if (audio.current) {
-      shouldAutoPlayRef.current = false;
-      audio.current.pause();
-      stopAnimation();
-      setIsPlaying(false);
-    }
-  };
-
-  // ─── Skip ±10s ────────────────────────────────────────────────────
-  const handleBackward = () => {
-    if (audio.current) {
-      audio.current.currentTime = Math.max(0, audio.current.currentTime - 10);
-    }
-  };
-
-  const handleForward = () => {
-    if (audio.current) {
-      audio.current.currentTime = Math.min(
-        audio.current.duration || 0,
-        audio.current.currentTime + 10,
-      );
-    }
-  };
-  // Play Group music
-  const playNextMusicInActiveGroup = () => {
-    const currentTabIndex = activeMusic.tabIndex;
-    const currentTabMusics = sectionData.tabs[currentTabIndex]?.musics || [];
-
-    if (!currentTabMusics.length) return;
-
-    const nextIndex = (activeMusic.musicIndex + 1) % currentTabMusics.length;
-    const nextMusic = currentTabMusics[nextIndex];
-
-    setActiveTab(currentTabIndex);
-    setActiveMusic({
-      tabIndex: currentTabIndex,
-      musicIndex: nextIndex,
-      title: nextMusic.title,
-      link: nextMusic.link,
-    });
-  };
-  // Infinity toggle
-  const handleInfinityToggle = () => {
-    setIsInfinityActive((prev) => !prev);
-  };
-  // ─── Audio events ─────────────────────────────────────────────────
+  // Effect On Active Music Change
   useEffect(() => {
-    const el = audio.current;
-    if (!el) return;
+    if (audio?.current) {
+      audio.current.load();
+      // On audio load, get the duration and set it to the duration element
+      audio?.current.addEventListener("load", () => {
+        // Selector
+        const musicTitle =
+          playerControls?.current?.querySelector(".music-info .title");
 
-    el.load();
-    setCurrentTime(0);
-    setDuration(0);
-    updateProgressBar(0);
+        // Calculate and log the duration of the audio in minutes and seconds
+        const duration = audio?.current?.duration
+          ? (audio.current.duration / 60).toFixed(2)
+          : "0:00";
+        console.log("Audio duration:", duration);
 
-    const onLoadedMetadata = () => {
-      setDuration(el.duration);
-      // Cache individual music duration for the list
-      setMusicDurations((prev) => ({
-        ...prev,
-        [activeMusic.link]: formatTime(el.duration),
-      }));
-    };
-
-    const onTimeUpdate = () => {
-      if (isDraggingRef.current) return;
-      const ct = el.currentTime;
-      const dur = el.duration || 1;
-      setCurrentTime(ct);
-      updateProgressBar((ct / dur) * 100);
-    };
-
-    const onEnded = () => {
-      setIsPlaying(false);
-      stopAnimation();
-      setCurrentTime(0);
-      updateProgressBar(0);
-      if (isInfinityActiveRef.current) {
-        shouldAutoPlayRef.current = true;
-        playNextMusicInActiveGroup();
-        return;
-      }
-      shouldAutoPlayRef.current = false;
-    };
-
-    const onPlay = () => {
-      setIsPlaying(true);
-      const activeEl = wrapper?.current?.querySelector(
-        ".single-music.active-music",
-      );
-      if (activeEl && !animationCleanupRef.current) {
-        animationCleanupRef.current = startAnimation(activeEl);
-      }
-    };
-
-    el.addEventListener("loadedmetadata", onLoadedMetadata);
-    el.addEventListener("timeupdate", onTimeUpdate);
-    el.addEventListener("ended", onEnded);
-    el.addEventListener("play", onPlay);
-
-    return () => {
-      el.removeEventListener("loadedmetadata", onLoadedMetadata);
-      el.removeEventListener("timeupdate", onTimeUpdate);
-      el.removeEventListener("ended", onEnded);
-      el.removeEventListener("play", onPlay);
-    };
-  }, [activeMusic]);
-
-  // Reset when song changes
-  useEffect(() => {
-    stopAnimation();
-    setCurrentTime(0);
-    setDuration(0);
-    updateProgressBar(0);
-    audio.current?.load();
-    if (shouldAutoPlayRef.current) {
-      audio.current?.play();
+        // Frontend display of duration
+        setPlayerDuration(duration.replace(".", ":"));
+        // Update Title
+        if (musicTitle) {
+          musicTitle.innerHTML = activeMusic.title;
+        }
+      });
+      // After Loaded Metadata, play the audio
+      audio?.current.addEventListener("loadedmetadata", () => {
+        if (audio.current) {
+          audio.current.muted = false;
+          setIsPlaying(true);
+        }
+      });
+      // Audio Playing Animation
+      audio?.current.addEventListener("playing", () => {
+        const currentMusic = wrapper?.current?.querySelector(
+          ".single-music.active-music",
+        );
+        console.log(audio?.current?.currentTime);
+        // if (currentMusic) {
+        //   animationCleanupRef.current = startAnimation(currentMusic);
+        // }
+      });
     }
   }, [activeMusic]);
-
-  // ─── GSAP popup ───────────────────────────────────────────────────
+  // Use GSAP
   useGSAP(
     () => {
       const playerPopup = wrapper?.current;
@@ -308,6 +166,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
       if (props.audioPopup) {
         document.body.classList.add("overflow-hidden");
         const popupOpen = gsap.timeline();
+        //console.log(playerPopup);
         if (playerPopup) {
           popupOpen.to(playerPopup, {
             opacity: 1,
@@ -349,20 +208,12 @@ export default function MirrorAudioPlayer(props: ChildProps) {
           });
         }
       }
-      // Cleanup on unmount
-      return () => {
-        document.body.classList.remove("overflow-hidden");
-        if (playerBG) {
-          gsap.set(playerBG, { clearProps: "all" });
-        }
-        if (playerPopup) {
-          gsap.set(playerPopup, { clearProps: "all" });
-        }
-      };
     },
-    { scope: wrapper, dependencies: [pathname, props.audioPopup] },
+    {
+      scope: wrapper,
+      dependencies: [pathname, props.audioPopup],
+    },
   );
-
   return (
     <section
       ref={wrapper}
@@ -370,9 +221,10 @@ export default function MirrorAudioPlayer(props: ChildProps) {
       id="audio-player"
       className={`${props.extraClass} h-screen fixed top-0 left-0 bg-black flex items-center z-999 overflow-hidden opacity-0 invisible`}
     >
-      {/* ── Background ── */}
       <div
-        style={{ clipPath: "inset(100% 0% 0% 0%)" }}
+        style={{
+          clipPath: "inset(100% 0% 0% 0%)",
+        }}
         className="player-bg absolute top-0 left-0 w-full h-full z-10 overflow-hidden bg-[#22291B]"
       >
         <Image
@@ -386,23 +238,16 @@ export default function MirrorAudioPlayer(props: ChildProps) {
           alt="Section Background"
         />
       </div>
-
       <div className="player-wrapper w-full h-full relative z-40 py-[10vh] px-[5vw]">
-        {/* ── Close button ── */}
         <button
-          onClick={() => {
-            props.setAudioPopup(false);
-            handleClosePopup();
-          }}
+          onClick={() => props.setAudioPopup(false)}
           className="absolute top-4 left-4 cursor-pointer"
         >
           <CloseIcon2 className="w-5 h-auto" />
         </button>
-
         <div className="player-content flex items-start w-full h-full gap-x-[4.4vw]">
           <div className="player-widgets w-92.5 min-w-92.5">
             <div className="album-widget w-full h-full px-3.5 py-4.5 pb-8 bg-linear-to-b from-[#ffffff15] to-[#ffffff08] backdrop-blur-lg rounded-3xl drop-shadow-[0_21px_70px_0_rgba(0,0,0,0.55)]">
-              {/* Album thumb */}
               <div className="album-thumb w-full h-83.5 rounded-[20] overflow-hidden relative">
                 <div className="thumb w-full h-full relative">
                   <Image
@@ -415,7 +260,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                     loading="lazy"
                     alt="Turntable"
                   />
-                  <div className="overlay absolute top-0 left-0 w-full h-full bg-linear-to-b from-[rgba(0,0,0,0.1)] to-[rgba(0,0,0,0.72)]"></div>
+                  <div className="overlay absolute top-0 left-0 w-full h-full bg-linear-to-b from-[rgba(0,0,0,0.1) to-[rgba(0,0,0,0.72)]"></div>
                 </div>
                 <div className="album-info absolute right-0 bottom-0 px-3.5 py-3 flex flex-col gap-y-2">
                   <h4 className="text-[#F4EDDD] text-[18px] leading-[120%]">
@@ -426,8 +271,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                   </p>
                 </div>
               </div>
-
-              {/* Folder count */}
               <div className="album-result-count mt-7">
                 <p className="flex items-center justify-between text-[#ffffff] text-[11px] leading-[100%]">
                   תיקיות ראשיות
@@ -436,8 +279,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                   </span>
                 </p>
               </div>
-
-              {/* Folder buttons */}
               <div className="album-result mt-3 flex flex-col gap-y-2">
                 <button className="text-[#F4EDDD] text-[18px] leading-[100%] bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.10)] rounded-2xl text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300">
                   סליחות
@@ -449,14 +290,12 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                   יום כיפור
                 </button>
               </div>
-
-              {/* Search */}
               <div className="album-search mt-7.5 flex items-center gap-x-2">
                 <input
                   className="w-full text-[#F4EDDD] text-[18px] leading-[100%] bg-[rgba(255,255,255,0.40)] border border-[rgba(255,255,255,0.10)] rounded-full text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] focus:outline-0 transition-all duration-300"
                   type="text"
                   id="search"
-                  name="search"
+                  name={"search"}
                 />
                 <button className="fill-[#F4EDDD] min-w-11 w-11 h-11 text-[#ffffff] text-[10px] leading-[100%] bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.12)] p-3 flex items-center justify-center rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer focus:outline-0 transition-all duration-300">
                   <SearchIcon2 />
@@ -473,16 +312,14 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                 {sectionData.text}
               </div>
             </div>
-
             <div className="player-content-tabs flex flex-col gap-y-5">
-              {/* Tab headers */}
               <div className="tab-head flex gap-x-6">
                 {sectionData.tabs?.map(
                   (
                     item: {
                       tabTitle: string;
                       text: string;
-                      musics: { title: string; link: string }[];
+                      musics: { title: string; link: string };
                     },
                     index: number,
                   ) => (
@@ -500,8 +337,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                   ),
                 )}
               </div>
-
-              {/* Tab content */}
               <div className="tab-content-wrapper">
                 {sectionData.tabs[activeTab] && (
                   <div data-index={activeTab} className="tab-content">
@@ -514,8 +349,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                         קרא עוד...
                       </Link>
                     </div>
-
-                    {/* Music list */}
                     <div className="tab-music-list mt-7.5">
                       <SimpleBar
                         style={{
@@ -531,53 +364,36 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                             (
                               music: { title: string; link: string },
                               index: number,
-                            ) => {
-                              const isActive =
-                                activeMusic.musicIndex === index &&
-                                activeMusic.tabIndex === activeTab;
-                              return (
-                                <div
-                                  key={index}
-                                  onClick={() => {
-                                    if (isActive) return;
-                                    shouldAutoPlayRef.current = true;
-                                    setActiveMusic({
-                                      ...activeMusic,
-                                      tabIndex: activeTab,
-                                      musicIndex: index,
-                                      title: music.title,
-                                      link: music.link,
-                                    });
-                                  }}
-                                  className={`single-music flex items-center justify-between ${isActive ? "bg-[rgba(0,0,0,0.8)] active-music" : "bg-[rgba(0,0,0,0.4)]"} py-4 px-5 rounded-full relative cursor-pointer hover:bg-[rgba(0,0,0,0.8)] transition-all duration-300`}
-                                >
-                                  <div className="title flex items-center gap-x-8">
-                                    <PlayIcon2 />
-                                    <h5 className="text-[24px] leading-[1.2em]">
-                                      {music.title}
-                                    </h5>
-                                  </div>
-
-                                  {/* Playing animation icon */}
-                                  <div
-                                    className={`music-play absolute top-1/2 left-1/2 -translate-1/2 ${isActive ? "opacity-100" : "opacity-0"}`}
-                                  >
-                                    <PlayingIcon />
-                                  </div>
-
-                                  {/* Duration — shows real time once loaded, otherwise cached */}
-                                  <div className="duration text-[21px] leading-[100%] text-[#FBF4E6]">
-                                    <p>
-                                      {isActive
-                                        ? formatTime(duration) ||
-                                          musicDurations[music.link] ||
-                                          "0:00"
-                                        : musicDurations[music.link] || "0:00"}
-                                    </p>
-                                  </div>
+                            ) => (
+                              <div
+                                key={index}
+                                onClick={() => {
+                                  setActiveMusic({
+                                    ...activeMusic,
+                                    tabIndex: activeTab,
+                                    musicIndex: index,
+                                    title: music.title,
+                                    link: music.link,
+                                  });
+                                }}
+                                className={`single-music flex items-center justify-between ${activeMusic.musicIndex === index && activeMusic.tabIndex === activeTab ? "bg-[rgba(0,0,0,0.8)] active-music" : "bg-[rgba(0,0,0,0.4)]"} py-4 px-5 rounded-full relative cursor-pointer hover:bg-[rgba(0,0,0,0.8)] transition-all duration-300`}
+                              >
+                                <div className="title flex items-center gap-x-8">
+                                  <PlayIcon2 />
+                                  <h5 className="text-[24px] leading-[1.2em]">
+                                    {music.title}
+                                  </h5>
                                 </div>
-                              );
-                            },
+                                <div
+                                  className={`music-play absolute top-1/2 left-1/2 -translate-1/2 ${activeMusic.musicIndex === index && activeMusic.tabIndex === activeTab ? "opacity-100" : "opacity-0"}`}
+                                >
+                                  <PlayingIcon />
+                                </div>
+                                <div className="duration text-[21px] leading-[100%] text-[#FBF4E6]">
+                                  <p>5:25</p>
+                                </div>
+                              </div>
+                            ),
                           )}
                         </div>
                       </SimpleBar>
@@ -589,7 +405,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
           </div>
           <div className="audio-player absolute left-[5vw] right-[5vw] bottom-[3vh] bg-[rgba(0,0,0,0.5)] h-22 backdrop-blur-lg rounded-full border border-[rgba(255,255,255,0.08)]">
             <div className="audio-player-wrapper w-full h-full flex items-center justify-between p-3.75">
-              {/* Music info */}
               <div className="music-info flex items-center gap-x-4">
                 <div className="thumb w-11 h-11 border border-[rgba(255,255,255,0.1)] rounded-[14px] overflow-hidden">
                   <Image
@@ -607,66 +422,33 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                   {activeMusic.title}
                 </div>
               </div>
-
-              {/* Controls */}
-              <div className="music-player-controls flex items-center flex-row-reverse gap-x-5">
-                {/* Total duration */}
-                <div className="duration text-[16px] text-[rgba(255,255,255,0.62)] min-w-10 text-center tabular-nums">
-                  {formatTime(duration)}
+              <div
+                ref={playerControls}
+                className="music-player-controls flex items-center flex-row-reverse gap-x-5"
+              >
+                <div className="duration text-[16px] text-[rgba(255,255,255,0.62)]">
+                  0:00
                 </div>
-
-                {/* ── Timeline ── */}
-                <div
-                  ref={timelineRef}
-                  onMouseDown={handleTimelineMouseDown}
-                  className="player-timeline w-[38.4vw] h-2 border border-[#FFFFFF14] rounded-full relative cursor-pointer group select-none"
-                >
-                  {/* Filled progress */}
-                  <div
-                    ref={progressRef}
-                    className="timeline absolute top-0 right-0 h-full w-0 bg-linear-to-l from-[#D1A941] to-[#E2C15A] rounded-full pointer-events-none transition-none"
-                  />
-                  {/* Scrubber thumb */}
-                  <div
-                    className="scrubber-thumb absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-[#C3A13F] rounded-full shadow-[0_0_6px_rgba(195,161,63,0.8)] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                    style={{
-                      right: progressRef.current
-                        ? `calc(${progressRef.current.style.width} - 7px)`
-                        : "-7px",
-                    }}
-                  />
+                <div className="player-timeline w-[38.4vw] h-2 border border-[#FFFFFF14] rounded-full relative">
+                  <div className="timeline absolute top-0 right-0 h-full w-0 bg-linear-to-l from-[#D1A941] to-[#E2C15A] rounded-full"></div>
                 </div>
-
-                {/* Current time */}
-                <div className="current-time text-[16px] text-[rgba(255,255,255,0.62)] min-w-10 text-center tabular-nums">
-                  {formatTime(currentTime)}
+                <div className="current-time text-[16px] text-[rgba(255,255,255,0.62)]">
+                  0:00
                 </div>
-
-                {/* Buttons */}
                 <div className="controls flex gap-x-2.5 items-center flex-row-reverse">
-                  <div
-                    onClick={handleBackward}
-                    className="backward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300"
-                  >
+                  <div className="backward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300">
                     <BackwardIcon />
                   </div>
                   <div
-                    onClick={handlePlayPause}
+                    onClick={() => handlePlayPause()}
                     className={`play cursor-pointer bg-[#C3A13F] border border-[#FFFFFF1A] w-10.5 h-10.5 rounded-full flex items-center justify-center pt-3.5 pr-3 pb-3.5 ${isPlaying ? "pl-3.5" : "pl-4"} hover:bg-[#eacb70] transition-colors duration-300`}
                   >
                     {isPlaying ? <PauseIcon /> : <PlayIcon3 />}
                   </div>
-                  <div
-                    onClick={handleForward}
-                    className="forward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300"
-                  >
+                  <div className="forward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300">
                     <ForwardIcon />
                   </div>
-                  <div
-                    onClick={() => handleInfinityToggle()}
-                    aria-pressed={isInfinityActive}
-                    className={`infinity cursor-pointer border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300 ${isInfinityActive ? "bg-[#C3A13F]" : "bg-[#FFFFFF0A]"}`}
-                  >
+                  <div className="infinity cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300">
                     <ReplayIcon />
                   </div>
                 </div>
@@ -675,7 +457,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
           </div>
         </div>
       </div>
-
       <AudioPlayer2 audioRef={audio} src={activeMusic.link} />
     </section>
   );

@@ -2,12 +2,12 @@
 import parse from "html-react-parser";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
-import { Key, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import TerribleBG from "../../assets/images/terrible-bg.jpg";
-import { gsap, useGSAP } from "../../ui/plugins";
+import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(useGSAP);
+  gsap.registerPlugin(useGSAP, ScrollTrigger);
 }
 
 interface ChildProps {
@@ -20,24 +20,57 @@ interface ChildProps {
 export default function TerribleDaysSection(props: ChildProps) {
   // Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const background = useRef<HTMLDivElement>(null);
 
-  // Use Context
-  const { contextSafe } = useGSAP({ scope: wrapper });
-
-  const [pageData, setPageData] = useState(JSON.parse(props.data));
+  const pageData = useMemo(() => JSON.parse(props.data), [props.data]);
+  const parsedMusicTitle = useMemo(
+    () => parse(pageData?.musics?.title || ""),
+    [pageData?.musics?.title],
+  );
+  const parsedContentText1 = useMemo(
+    () => parse(pageData?.content?.text1 || ""),
+    [pageData?.content?.text1],
+  );
+  const parsedContentText2 = useMemo(
+    () => parse(pageData?.content?.text2 || ""),
+    [pageData?.content?.text2],
+  );
 
   // Album click
   const handleAlbumClick = () => {
     props.setAudioPopup(true);
   };
 
+  // Animations
+  useGSAP(
+    () => {
+      // Banner Background
+      gsap.set(background.current, { scale: 1.2, x: "20vw" });
+      gsap.to(background.current, {
+        x: "-50vw",
+        ease: "none",
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * props.animWidthText;
+          },
+          end: () => {
+            return "+=" + window.innerWidth * 3;
+          },
+          scrub: 2,
+        },
+      });
+    },
+    { scope: wrapper },
+  );
+
   return (
     <section
       ref={wrapper}
       dir="rtl"
-      className={`${props.extraClass} h-screen bg-[#FAE7C8] flex items-center relative z-20`}
+      className={`${props.extraClass} h-screen bg-[#FAE7C8] flex items-center relative z-20 overflow-hidden`}
     >
       <div
+        ref={background}
         style={{
           backgroundImage: `url(${TerribleBG.src})`,
         }}
@@ -57,11 +90,14 @@ export default function TerribleDaysSection(props: ChildProps) {
               alt="Turntable"
             />
           </div>
-          <div className="intro-wrapper max-w-150 text-center flex flex-col gap-y-[3.6vh] relative z-30">
-            <h2 className="text-[128px] leading-[80%]">
+          <div
+            dir="ltr"
+            className="intro-wrapper max-w-150 text-center flex flex-col gap-y-[3.6vh] relative z-30"
+          >
+            <h2 className="title text-[128px] leading-[80%] overflow-hidden">
               {pageData?.intro.title}
             </h2>
-            <h5 className="text-[35px] leading-[90%]">
+            <h5 className="subtitle text-[35px] leading-[90%] overflow-hidden">
               {pageData?.intro.text}
             </h5>
           </div>
@@ -80,16 +116,19 @@ export default function TerribleDaysSection(props: ChildProps) {
         </div>
         <div className="terrible-content w-[77vw] h-full flex items-center justify-center relative p-[8vh_5vw]">
           <div className="content-wrapper relative flex gap-x-[4.6vw]">
-            <div className="content-right w-1/2">
-              <h3 className="text-[35px] leading-[85%]">
+            <div dir="ltr" className="content-right w-1/2">
+              <h3 className="title text-[35px] leading-[85%] text-right">
                 {pageData?.content?.title}
               </h3>
               <div className="text text-[21px] leading-[150%]">
-                {parse(pageData?.content?.text1)}
+                {parsedContentText1}
               </div>
             </div>
-            <div className="content-left w-1/2 text-[21px] leading-[150%]">
-              <div className="text">{parse(pageData?.content?.text2)}</div>
+            <div
+              dir="ltr"
+              className="content-left w-1/2 text-[21px] leading-[150%] text-right"
+            >
+              <div className="text">{parsedContentText2}</div>
               <Link className="text-black font-bold mt-2 block" href={"/"}>
                 קרא עוד...
               </Link>
@@ -111,12 +150,15 @@ export default function TerribleDaysSection(props: ChildProps) {
         <div className="terrible-musics w-[60vw] mr-[10vw] h-full flex flex-col items-center justify-start gap-y-[17.65vh] relative p-[15vh_5vw]">
           <div className="music-title w-full">
             <h2 className="text-[#344128] text-[101px] leading-[76%]">
-              {parse(pageData?.musics?.title)}
+              {parsedMusicTitle}
             </h2>
           </div>
           <div className="music-albums flex gap-x-[3.85vw] my-auto w-full">
             {pageData?.musics?.albums?.map(
-              (item: { title: string; icon: StaticImageData }, index: Key) => (
+              (
+                item: { title: string; icon: StaticImageData },
+                index: number,
+              ) => (
                 <div
                   key={index}
                   onClick={handleAlbumClick}
