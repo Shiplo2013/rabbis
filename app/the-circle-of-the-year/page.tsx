@@ -23,6 +23,7 @@ import MusicCategoryList from "../components/music/MusicCategoryList";
 import TerribleDaysSection from "../components/music/TerribleDaysSection";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 import SmoothWrapper from "../ui/SmoothWrapper";
+import TextSplitLines from "../ui/TextSplitLines";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -253,9 +254,7 @@ export default function Page() {
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
-  // Vertical Section
-  const [verticalSection, setVerticalSection] =
-    useState<gsap.core.Timeline | null>(null);
+  const [updateProgress, setUpdateProgress] = useState(0);
 
   // Audio Player
   const [audioPopup, setAudioPopup] = useState(false);
@@ -269,13 +268,15 @@ export default function Page() {
   const waveMask = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
   const hoverImage = useRef<HTMLDivElement>(null);
+  const verticalSectionRef = useRef<gsap.core.Timeline | null>(null);
 
   // Page Section Animation
   useGSAP(() => {
     if (typeof window !== "undefined" && panel) {
-      setPageContentAnimation();
+      const cleanupPageContentAnimation = setPageContentAnimation();
       // Overflow body
       const scurbScale = 2;
+      let waveVisible = true;
 
       // Vertical Section
       const timeline = gsap.timeline({
@@ -285,21 +286,10 @@ export default function Page() {
           end: "+=" + window.innerWidth * 6,
           scrub: scurbScale,
           pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
-            gsap.to(progress.current, { width: `${100 * self.progress}%` });
-            if (self.progress > 0.97) {
-              gsap.to(waveLine.current, {
-                opacity: 0,
-                duration: 0.1,
-                delay: 0,
-              });
-            } else {
-              gsap.to(waveLine.current, {
-                opacity: 1,
-                duration: 0.1,
-                delay: 0,
-              });
-            }
+            setUpdateProgress(self.progress);
           },
         },
       });
@@ -312,17 +302,41 @@ export default function Page() {
           start: panel.current?.offsetTop,
           end: "+=" + (window.innerWidth * 6 - window.innerWidth * 2.5),
           scrub: scurbScale,
+          invalidateOnRefresh: true,
         },
       });
-      setVerticalSection(timeline);
+      verticalSectionRef.current = timeline;
+      ScrollTrigger.refresh();
+
+      return () => {
+        cleanupPageContentAnimation?.();
+        verticalSectionRef.current?.kill();
+        verticalSectionRef.current = null;
+      };
     }
-    // Return
-    return () => {
-      if (verticalSection) {
-        verticalSection.kill();
-      }
-    };
   }, [pathname]);
+
+  // Progress Bar Animation
+  useGSAP(
+    () => {
+      if (waveLine.current && waveMask.current) {
+        let waveVisible = true;
+        if (progress.current) {
+          gsap.set(progress.current, {
+            width: `${100 * updateProgress}%`,
+          });
+        }
+        const shouldShowWave = updateProgress <= 0.97;
+        if (waveLine.current && waveVisible !== shouldShowWave) {
+          waveVisible = shouldShowWave;
+          gsap.set(waveLine.current, {
+            opacity: shouldShowWave ? 1 : 0,
+          });
+        }
+      }
+    },
+    { scope: progress, dependencies: [updateProgress] },
+  );
 
   // Load Page
   useGSAP(
@@ -341,9 +355,6 @@ export default function Page() {
           );
           const turntableHead = main.current?.querySelector(
             ".first-intro .turntable .head",
-          );
-          const bannerBackgroundOverlay = main.current?.querySelector(
-            ".first-intro .intro-background .intro-bg-mask",
           );
           // Split Title 1
           let splitTitle;
@@ -460,7 +471,33 @@ export default function Page() {
   // Set Page Content Animation
   const setPageContentAnimation = () => {
     // Page Content Animation
-    const turnTable = main.current?.querySelectorAll(".first-intro .turntable");
+    const turnTable = main.current?.querySelector(".first-intro .turntable");
+    const musicCatList = main.current?.querySelector(".music-cat-wrapper");
+    const introTitle2 = main.current?.querySelector(".terrible-intro .title");
+    const introSubtitle = main.current?.querySelector(
+      ".terrible-intro .subtitle",
+    );
+    const floatImage1 = main.current?.querySelector(
+      ".terrible-intro .float-image1",
+    );
+    const floatImage2 = main.current?.querySelector(
+      ".terrible-intro .float-image2",
+    );
+    const contentTitle = main.current?.querySelector(
+      ".terrible-content .content-right .title",
+    );
+    const contentText = main.current?.querySelector(
+      ".terrible-content .content-right .text",
+    );
+    const contentText2 = main.current?.querySelector(
+      ".terrible-content .content-left .text",
+    );
+    const contentLink = main.current?.querySelector(
+      ".terrible-content .content-left a",
+    );
+    const contentFloatImage = main.current?.querySelector(
+      ".terrible-content .content-left .float-image",
+    );
 
     // Animations
     if (turnTable) {
@@ -478,6 +515,230 @@ export default function Page() {
         },
       });
     }
+    // Animations
+    if (musicCatList) {
+      gsap.set(musicCatList, {
+        xPercent: -100,
+        opacity: 0,
+      });
+      gsap.to(musicCatList, {
+        xPercent: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "easeInOut",
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 0.4;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+      });
+    }
+    // Intro Animation
+    if (floatImage1 && floatImage2) {
+      gsap.set([floatImage1, floatImage2], {
+        yPercent: 100,
+        opacity: 0,
+      });
+      gsap.to([floatImage1, floatImage2], {
+        yPercent: 0,
+        opacity: 1,
+        ease: "expo.inOut",
+        duration: 1.5,
+        stagger: 0.2,
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 1.3;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+      });
+    }
+    if (introTitle2) {
+      const splitIntroTitle2 = TextSplitLines(introTitle2);
+      gsap.set(introTitle2, {
+        perspective: 400,
+      });
+      gsap.set(splitIntroTitle2, {
+        yPercent: 150,
+        opacity: 0,
+      });
+      gsap.to(splitIntroTitle2, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 3,
+        delay: 0,
+        stagger: 0.05,
+        ease: "expo.inOut",
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 1.3;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+      });
+    }
+    // Subtitle Animation
+    if (introSubtitle) {
+      const splitSubtitle = TextSplitLines(introSubtitle);
+      gsap.set(introSubtitle, {
+        perspective: 400,
+      });
+      gsap.set(splitSubtitle, {
+        yPercent: 150,
+        opacity: 0,
+      });
+      gsap.to(splitSubtitle, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 3,
+        delay: 0,
+        stagger: 0.05,
+        ease: "expo.inOut",
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 1.3;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+      });
+    }
+    if (floatImage1) {
+      gsap.to(floatImage1, {
+        x: "10vw",
+        ease: "none",
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 1.2;
+          },
+          end: () => {
+            return "+=" + window.innerWidth * 2.2;
+          },
+          scrub: 2,
+        },
+      });
+    }
+    if (floatImage2) {
+      gsap.to(floatImage2, {
+        x: "-10vw",
+        ease: "none",
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 1.3;
+          },
+          end: () => {
+            return "+=" + window.innerWidth * 2.3;
+          },
+          scrub: 2,
+        },
+      });
+    }
+
+    //Content Animation
+    if (contentTitle) {
+      const splitContentTitle = TextSplitLines(contentTitle);
+      gsap.set(contentTitle, {
+        perspective: 400,
+      });
+      gsap.set(splitContentTitle, {
+        yPercent: 150,
+        opacity: 0,
+      });
+      gsap.to(splitContentTitle, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 3,
+        delay: 0,
+        stagger: 0.05,
+        ease: "expo.inOut",
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 2.2;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+      });
+    }
+    if (contentText) {
+      const splitContentText = TextSplitLines(contentText);
+      gsap.set(contentText, {
+        perspective: 400,
+      });
+      gsap.set(splitContentText, {
+        yPercent: 150,
+        opacity: 0,
+      });
+      gsap.to(splitContentText, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 3,
+        delay: 0,
+        stagger: 0.05,
+        ease: "expo.inOut",
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 2.2;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+      });
+    }
+    if (contentText2) {
+      const splitContentText2 = TextSplitLines(contentText2);
+      gsap.set(contentText2, {
+        perspective: 400,
+      });
+      gsap.set(splitContentText2, {
+        yPercent: 150,
+        opacity: 0,
+      });
+      gsap.to(splitContentText2, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 3,
+        delay: 0,
+        stagger: 0.05,
+        ease: "expo.inOut",
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 2.3;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+      });
+    }
+    if (contentLink) {
+      gsap.set(contentLink, {
+        opacity: 0,
+      });
+      gsap.to(contentLink, {
+        opacity: 1,
+        duration: 1,
+        ease: "expo.inOut",
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 2.2;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+      });
+    }
+    if (contentFloatImage) {
+      gsap.to(contentFloatImage, {
+        x: "-10vw",
+        ease: "none",
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 2.3;
+          },
+          end: () => {
+            return "+=" + window.innerWidth * 3.3;
+          },
+          scrub: 2,
+        },
+      });
+    }
+
     // Hover Image Effect
     if (hoverImage.current) {
       const images = hoverImage.current.querySelectorAll(".image-wrapper");
@@ -500,7 +761,7 @@ export default function Page() {
         duration: 0.5,
         ease: "power2.out",
       });
-      window.addEventListener("mousemove", (e) => {
+      const handleMouseMove = (e: MouseEvent) => {
         let prevMouse = { x: 0, y: 0 };
         prevMouse.x = mouse.x;
         prevMouse.y = mouse.y;
@@ -511,8 +772,15 @@ export default function Page() {
         xTo(e.clientX);
         yTo(e.clientY);
         rotateTo(rotation);
-      });
+      };
+      window.addEventListener("mousemove", handleMouseMove);
+
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+      };
     }
+
+    return undefined;
   };
 
   // Set Body Overflow Hidden
@@ -521,9 +789,9 @@ export default function Page() {
       // Body Overflow Hidden
       document.body.classList.remove("overflow-hidden");
       document.body.classList.add("overflow-x-hidden", "overscroll-none");
-      verticalSection?.pause();
+      verticalSectionRef.current?.pause();
     } else {
-      verticalSection?.resume();
+      verticalSectionRef.current?.resume();
     }
     return () => {
       document.body.style.overflow = "auto";
@@ -583,7 +851,7 @@ export default function Page() {
               />
               <TerribleDaysSection
                 extraClass="terrieble-content panel-section will-change-transform min-w-[222vw] w-[222vw]"
-                animWidthText={0}
+                animWidthText={0.5}
                 data={JSON.stringify(TerribleData)}
                 setAudioPopup={setAudioPopup}
               />

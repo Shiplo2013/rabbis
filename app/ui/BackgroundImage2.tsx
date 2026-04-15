@@ -16,7 +16,7 @@ interface ChildProps {
 
 export default function BackgroundImage2(props: ChildProps) {
   // Selectors
-  const background = useRef(null);
+  const background = useRef<HTMLDivElement>(null);
 
   // Routers
   const pathname = usePathname();

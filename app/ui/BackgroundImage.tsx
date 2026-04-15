@@ -18,7 +18,7 @@ interface ChildProps {
 
 export default function BackgroundImage(props: ChildProps) {
   // Select Background Element
-  const background = useRef(null);
+  const background = useRef<HTMLDivElement>(null);
   // Route
   const pathname = usePathname();
   // GSAP Context for Animations
