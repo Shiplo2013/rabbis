@@ -58,9 +58,9 @@ export default function RabbisSlider(props: ChildProps) {
                     loading="lazy"
                   />
                 </div>
-                <div className="rabbis-content w-full flex flex-col items-center justify-center gap-y-5 relative z-20 -mt-8">
+                <div className="rabbis-content w-full flex flex-col items-center justify-center gap-y-5 relative z-20 -mt-6.5">
                   <ThemeButton
-                    extraClass="rounded-none px-5.5 py-3 max-w-35"
+                    extraClass="rounded-none px-5.5 py-2 max-w-37"
                     text="הרחב קריאה"
                     bgColor="bg-[#D1A941]"
                     textColor="text-[#000000]"

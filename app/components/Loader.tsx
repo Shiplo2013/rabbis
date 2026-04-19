@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { gsap, useGSAP } from "../ui/plugins";
 
 if (typeof window !== "undefined") {
@@ -8,8 +8,6 @@ if (typeof window !== "undefined") {
 export default function Loader(props: { animated: (value: boolean) => void }) {
   // Selectors
   const wrapper = useRef<HTMLDivElement>(null);
-  // State
-  const [animComplete, setAnimComplete] = useState(false);
 
   // GSAP Animation
   useGSAP(() => {

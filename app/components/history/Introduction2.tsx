@@ -33,57 +33,63 @@ export default function Introduction2(props: ChildProps) {
   // Section animation
   useGSAP(
     () => {
-      document.fonts.ready.then(() => {
-        // Section Title
-        gsap.set(title.current, { opacity: 1 });
-        let splititle;
-        SplitText.create(title.current, {
-          type: "lines",
-          linesClass: "line direction-rtl2",
-          autoSplit: true,
-          mask: "lines",
-          onSplit: (self) => {
-            splititle = gsap.from(self.lines, {
-              duration: 2,
-              yPercent: 100,
-              opacity: 0,
-              stagger: 0.05,
-              ease: "expo.out",
-              scrollTrigger: {
-                start: () => {
-                  return window.innerWidth * props.animWidthText;
-                },
-                toggleActions: "restart pause play reverse",
+      if (typeof window !== "undefined" && wrapper.current) {
+        document.fonts.ready.then(() => {
+          // Section Title
+          if (title.current) {
+            gsap.set(title.current, { opacity: 1 });
+            let splititle;
+            SplitText.create(title.current, {
+              type: "lines",
+              linesClass: "line direction-rtl2",
+              autoSplit: true,
+              mask: "lines",
+              onSplit: (self) => {
+                splititle = gsap.from(self.lines, {
+                  duration: 2,
+                  yPercent: 100,
+                  opacity: 0,
+                  stagger: 0.05,
+                  ease: "expo.out",
+                  scrollTrigger: {
+                    start: () => {
+                      return window.innerWidth * props.animWidthText;
+                    },
+                    toggleActions: "restart pause play reverse",
+                  },
+                });
+                return splititle;
               },
             });
-            return splititle;
-          },
-        });
-        // Section Subtitle
-        gsap.set(subtitle.current, { opacity: 1 });
-        let splitSubtitle;
-        SplitText.create(subtitle.current, {
-          type: "lines",
-          linesClass: "line direction-rtl",
-          autoSplit: true,
-          mask: "lines",
-          onSplit: (self) => {
-            splitSubtitle = gsap.from(self.lines, {
-              duration: 2,
-              yPercent: 120,
-              stagger: 0.025,
-              ease: "expo.out",
-              scrollTrigger: {
-                start: () => {
-                  return window.innerWidth * props.animWidthText;
-                },
-                toggleActions: "restart pause play reverse",
+          }
+          // Section Subtitle
+          if (subtitle.current) {
+            gsap.set(subtitle.current, { opacity: 1 });
+            let splitSubtitle;
+            SplitText.create(subtitle.current, {
+              type: "lines",
+              linesClass: "line direction-rtl",
+              autoSplit: true,
+              mask: "lines",
+              onSplit: (self) => {
+                splitSubtitle = gsap.from(self.lines, {
+                  duration: 2,
+                  yPercent: 120,
+                  stagger: 0.025,
+                  ease: "expo.out",
+                  scrollTrigger: {
+                    start: () => {
+                      return window.innerWidth * props.animWidthText;
+                    },
+                    toggleActions: "restart pause play reverse",
+                  },
+                });
+                return splitSubtitle;
               },
             });
-            return splitSubtitle;
-          },
+          }
         });
-      });
+      }
     },
     { scope: wrapper, dependencies: [pathname] },
   );
