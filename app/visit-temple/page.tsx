@@ -22,7 +22,7 @@ import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 import SmoothWrapper from "../ui/SmoothWrapper";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
 export default function Rabbis() {
@@ -194,7 +194,7 @@ export default function Rabbis() {
           }
           // Set localStorage variable
           const userVisit = localStorage.getItem("hasVisited");
-          if (userVisit === "true") {
+          if (userVisit === "true" && animationPlayed) {
             // Timeline
             const tl = gsap.timeline({
               onComplete: () => {
