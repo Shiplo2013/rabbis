@@ -36,14 +36,16 @@ export default function HomeSection4(props: ChildProps) {
       gsap.to(textSplit, {
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidth;
+            return window.innerWidth * (props.animWidth - 0.7);
           },
-          toggleActions: "restart pause play reverse",
+          end: () => {
+            return "+=" + window.innerWidth * 2;
+          },
+          scrub: 2,
         },
         yPercent: 0,
         opacity: 1,
-        delay: -1,
-        stagger: 0.02,
+        delay: 0,
         ease: "expo.inOut",
         duration: 3,
       });
@@ -60,7 +62,10 @@ export default function HomeSection4(props: ChildProps) {
       <div
         className={`section-content w-full h-auto flex items-center justify-center p-[5%] relative z-40`}
       >
-        <div className="text text-[44px] leading-[0.9] text-[#EEECDD] font-medium w-[80%]">
+        <div
+          dir="ltr"
+          className="text text-[35px] leading-[0.9] text-[#EEECDD] font-medium w-[60%]"
+        >
           <p>
             מיום היווסדה נושאת הישיבה הקדושה את רוח הרוממות והגדלות שנטעו
             מייסדיה.

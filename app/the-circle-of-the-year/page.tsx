@@ -473,7 +473,7 @@ export default function Page() {
     // Page Content Animation
     const turnTable = main.current?.querySelector(".first-intro .turntable");
     const musicCatList = main.current?.querySelector(".music-cat-wrapper");
-    const introTitle2 = main.current?.querySelector(".terrible-intro .title");
+    const introTitle2 = main.current?.querySelector(".terrible-intro h2.title");
     const introSubtitle = main.current?.querySelector(
       ".terrible-intro .subtitle",
     );

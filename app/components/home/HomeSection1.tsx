@@ -25,12 +25,14 @@ interface ChildProps {
 export default function HomeSection1(props: ChildProps) {
   // Selectors
   const wrapper = useRef<HTMLElement>(null);
+  const CTAbutton = useRef<HTMLDivElement>(null);
+  const isSlideOut = useRef(false);
   // Route
   const pathname = usePathname();
   // Slider Data
   const SliderData = [
     {
-      text1: `כאשר שאל מרן הסבא מסלבודקא את רבי ישראל סלנטר: מהי המטרה העיקרית שאתה רואה בייסוד מוסד קדוש זה?ענה לו רבי ישראל: <strong>"להחיות רוח שפלים ולהחיות לב נדכאים"</strong>`,
+      text1: `כאשר שאל מרן הסבא מסלבודקא את רבי ישראל סלנטר: מהי המטרה העיקרית שאתה רואה בייסוד מוסד קדוש זה?<br/>ענה לו רבי ישראל: <strong>"להחיות רוח שפלים ולהחיות לב נדכאים"</strong>`,
       text2: `להרים רוחם של המבקשים לגדול, לטעת בעמקי הלב כוחות חיים חדשים. וכך הניח רבי ישראל את היסוד: ישיבה איננה רק מקום לימוד, אלא בית היוצר לנשמות; מקום שבו מעוררים את השפל לרוממות, ואת הנדכא, לחיים של גדלות האדם.`,
     },
   ];
@@ -40,8 +42,9 @@ export default function HomeSection1(props: ChildProps) {
     const cyclePreview = wrapper.current?.querySelector("#cycle-preview");
     // HomeSection1
     if (!homePost || !cyclePreview) return;
-    gsap.set(homePost, { yPercent: 100, opacity: 0 });
-    gsap.to(homePost, {
+    gsap.set(CTAbutton.current, { yPercent: 100, opacity: 0 });
+    gsap.set(homePost, { xPercent: 82 });
+    gsap.to(CTAbutton.current, {
       scrollTrigger: {
         start: () => {
           return window.innerWidth * props.animWidthPost;
@@ -52,9 +55,32 @@ export default function HomeSection1(props: ChildProps) {
       yPercent: 0,
       opacity: 1,
       delay: 0,
-      stagger: 0.02,
       ease: "expo.inOut",
     });
+    // On Button Click
+    CTAbutton.current?.addEventListener("click", () => {
+      if (isSlideOut.current) {
+        // Slide in from right
+        gsap.to(homePost, {
+          duration: 1.5,
+          xPercent: 82,
+          delay: 0,
+          ease: "expo.inOut",
+        });
+        isSlideOut.current = false;
+      } else {
+        // Slide out to left
+        gsap.to(homePost, {
+          duration: 1.5,
+          xPercent: 0,
+          delay: 0,
+          ease: "expo.inOut",
+        });
+        isSlideOut.current = true;
+      }
+    });
+
+    // CyclePreview
     gsap.set(cyclePreview, { yPercent: 100, opacity: 0 });
     gsap.to(cyclePreview, {
       scrollTrigger: {
@@ -135,7 +161,7 @@ export default function HomeSection1(props: ChildProps) {
               </SimpleBar>
             </div>
           </div>
-          <div className="wish-icon py-5">
+          <div ref={CTAbutton} className="wish-icon py-5">
             <ThemeButton
               extraClass="w-13 h-13 flex item-center justify-center"
               bgColor="bg-[#ffffff]"

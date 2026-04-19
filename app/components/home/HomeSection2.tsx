@@ -57,14 +57,16 @@ export default function HomeSection2(props: ChildProps) {
       gsap.to(textSplit, {
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthText;
+            return window.innerWidth * (props.animWidthText - 0.7);
           },
-          toggleActions: "restart pause resume reverse",
+          end: () => {
+            return "+=" + window.innerWidth * 2;
+          },
+          scrub: 2,
         },
         yPercent: 0,
         opacity: 1,
-        delay: -1,
-        stagger: 0.02,
+        delay: 0,
         ease: "expo.inOut",
         duration: 3,
       });

@@ -19,7 +19,7 @@ export default function ThemeButton(props: ChildProps) {
   return (
     <div className="theme-button will-change-transform">
       <Link
-        className={`group flex items-center ${props?.icon !== undefined ? "pl-18" : ""} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[28px]"} ${props?.extraClass}`}
+        className={`group flex items-center gap-x-2 overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[22px]"} ${props?.extraClass}`}
         href={props.buttonLink ? props.buttonLink : "/"}
       >
         {props?.text && (
@@ -29,10 +29,10 @@ export default function ThemeButton(props: ChildProps) {
         )}
         {props?.icon ? (
           <Image
-            className="w-auto h-auto block absolute z-30 left-5 top-1/2 -translate-y-1/2 black-white"
+            className="w-auto h-auto block z-30 black-white"
             src={props?.icon?.src}
-            width={"40"}
-            height={"30"}
+            width={32}
+            height={24}
             alt="Button"
           />
         ) : (

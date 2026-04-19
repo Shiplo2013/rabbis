@@ -1,16 +1,41 @@
-import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 
 interface ChildProps {
   extraClass: string;
-  data: { poster: any; link: string }[];
+  data: string | VideoSource[];
 }
 
-export default function SingleVideoSection(props: ChildProps) {
-  // Navigation
-  const pathname = usePathname();
+interface VideoSource {
+  poster?: string | { src?: string };
+  link?: string;
+}
+
+export default function VideoPlayer(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const videoData = useMemo<VideoSource[]>(() => {
+    if (Array.isArray(props.data)) {
+      return props.data;
+    }
+
+    try {
+      const parsedData = JSON.parse(props.data);
+      return Array.isArray(parsedData) ? parsedData : [];
+    } catch {
+      return [];
+    }
+  }, [props.data]);
+
+  const firstVideo = videoData[0];
+  const poster =
+    typeof firstVideo?.poster === "string"
+      ? firstVideo.poster
+      : firstVideo?.poster?.src || "";
+  const link = firstVideo?.link || "";
+
+  if (!link) {
+    return null;
+  }
 
   return (
     <div
@@ -20,10 +45,10 @@ export default function SingleVideoSection(props: ChildProps) {
     >
       <video
         width="100%"
-        poster={props.data[0].poster.src}
+        poster={poster}
         className="w-full h-full object-cover object-center"
       >
-        <source src={props.data[0].link} type="video/mp4" />
+        <source src={link} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
     </div>
