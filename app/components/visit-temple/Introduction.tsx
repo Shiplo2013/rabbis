@@ -1,7 +1,7 @@
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ChildProps {
   extraClass: string;
@@ -14,12 +14,18 @@ interface ChildProps {
   overlayClass: string;
   bgPosition: string;
   bgClass: string;
-  data: { title: string; content: string }[];
+  data: string;
 }
 
 export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const [pageData, setPageData] = useState(JSON.parse(props.data));
+
+  // Console
+  useEffect(() => {
+    console.log(pageData[0].image);
+  }, [pageData]);
   return (
     <section
       ref={wrapper}
@@ -52,13 +58,25 @@ export default function Introduction(props: ChildProps) {
         </div>
       )}
       <div dir="ltr" className="flex items-center w-full h-full relative z-30">
-        <div className="intro-wrapper text-right flex flex-col items-center gap-x-[3.75vw] w-full px-[5vw]">
-          <h1 className="intro-title text-[208px] text-[#AC832E] leading-[0.6em] overflow-hidden relative z-20 py-7.5 font-bold will-change-transform">
-            {parse(props.data[0].title)}
+        <div className="section-wrapper text-right flex justify-center flex-row-reverse items-center gap-x-[3.75vw]">
+          <h1
+            dir="rtl"
+            className="intro-title text-[320px] text-[#AC832E] font-bold leading-[0.7em] overflow-hidden relative z-20 py-13"
+          >
+            {parse(pageData[0].title)}
           </h1>
-          <h4 className="intro-content overflow-hidden text-[28px] leading-[1em] text-[#FBF4E6] mt-3 relative z-30 max-w-158.5">
-            {parse(props.data[0].content)}
-          </h4>
+          <div className="intro-image absolute right-[14.5vw] top-[16vh] w-[17.70vw] h-[63.5vh] z-10 will-change-transform">
+            <Image
+              className="w-full h-full object-cover"
+              src={pageData[0].image?.src}
+              width={`393`}
+              height={`590`}
+              alt="Introduction Image"
+              blurDataURL={pageData[0].image?.blurDataURL}
+              placeholder={"blur"}
+              loading="lazy"
+            />
+          </div>
         </div>
       </div>
     </section>

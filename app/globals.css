@@ -46,17 +46,18 @@
     transform-origin: top right;
   }
   nav.nav-menu {
-    > a {
-      font-size: 18px;
-      line-height: 1em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
+    > .menu-item {
       flex-grow: 1;
 
+      > a {
+        font-size: 18px;
+        line-height: 1em;
+      }
+
       &&:not(:last-child) {
-        border-right: 1px solid #dbbd5c80;
+        > a {
+          border-right: 1px solid #dbbd5c80;
+        }
       }
     }
   }

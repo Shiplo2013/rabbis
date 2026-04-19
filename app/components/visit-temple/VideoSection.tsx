@@ -2,9 +2,8 @@ import ThemeButton2 from "@/app/ui/ThemeButton2";
 import VideoPlayer from "@/app/ui/VideoPlayer";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
-import PlusIcon from "../assets/icons/PlusIcon";
-import thumb from "../assets/images/video-thumb.jpg";
-import { gsap, ScrollTrigger, SplitText, useGSAP } from "../ui/plugins";
+import PlusIcon from "../../assets/icons/PlusIcon";
+import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -13,23 +12,17 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  data: string;
 }
 
-export default function VideoItem(props: ChildProps) {
+export default function VideoSection(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const videoWrap = useRef<HTMLDivElement>(null);
   const videoButton = useRef<HTMLDivElement>(null);
-  // Data
-  const video = "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
-  const videoData = [
-    {
-      poster: thumb,
-      link: video,
-    },
-  ];
+
   // Section Animation
   useGSAP(
     () => {
@@ -42,7 +35,7 @@ export default function VideoItem(props: ChildProps) {
           delay: -0.5,
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText + 1.4);
+              return window.innerWidth * props.animWidthText;
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -139,13 +132,10 @@ export default function VideoItem(props: ChildProps) {
     >
       <div className="video-wrapper w-full h-full relative">
         <div ref={videoWrap} className="video h-full w-full relative z-10">
-          <VideoPlayer
-            extraClass="w-full h-full"
-            data={JSON.stringify(videoData)}
-          />
+          <VideoPlayer extraClass="w-full h-full" data={props.data} />
           <div
             onClick={handleButtonClick}
-            className="video-overlay absolute top-0 left-0 w-full h-full bg-black z-40 opacity-40 cursor-pointer"
+            className="video-overlay absolute top-0 left-0 w-full h-full bg-[#766565] z-40 opacity-57 cursor-pointer"
           ></div>
         </div>
         <div

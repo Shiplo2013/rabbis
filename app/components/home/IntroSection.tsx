@@ -36,14 +36,16 @@ export default function IntroSection(props: ChildProps) {
       gsap.to(splitTitle, {
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthText;
+            return window.innerWidth * (props.animWidthText - 0.7);
           },
-          toggleActions: "restart pause play reverse",
+          end: () => {
+            return "+=" + window.innerWidth * 2;
+          },
+          scrub: 2,
         },
         yPercent: 0,
         opacity: 1,
-        delay: -1,
-        stagger: 0.02,
+        delay: 0,
         ease: "expo.inOut",
         duration: 3,
       });
@@ -55,8 +57,8 @@ export default function IntroSection(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="w-full pr-[32%] pt-[10%] pb-[10%] pl-[23%]">
-        <h2 className="intro-title text-[135px] text-[#CD5E41] leading-[0.7em] text-right">
+      <div className="w-full h-full p-[10%] pr-[20%] flex items-center justify-center">
+        <h2 className="intro-title text-[135px] text-[#CD5E41] leading-[0.7em] text-right max-w-108">
           להחיות רוח שפלים ולהחיות לב נדכאים
         </h2>
       </div>

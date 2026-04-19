@@ -10,9 +10,9 @@ import StartIcon from "../assets/icons/StarIcon";
 import donationIcon from "../assets/images/donation-icon.svg";
 import buttonIcon2 from "../assets/images/header-button-icon.png";
 import logo from "../assets/images/logo.png";
-import MainMenu from "../components/MainMenu";
 import { gsap, useGSAP } from "../ui/plugins";
 import ThemeButton from "../ui/ThemeButton";
+import MainMenu from "./MainMenu";
 
 function Header({ animationStatus }: { animationStatus: boolean }) {
   // Get Location
@@ -24,7 +24,26 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
     { href: "/communities", name: "מזקנים אתבונן", icon: false },
     { href: "/yeshiva-rabbis", name: "רבני הישיבה", icon: false },
     { href: "/about", name: "מועדים וזמנים", icon: false },
-    { href: "", name: "כנסת הבוגרים", icon: false },
+    {
+      href: "/",
+      name: "כנסת הבוגרים",
+      icon: false,
+      submenus: {
+        menu1: [
+          { id: 1, name: `בוגרי הישיבה`, link: "/" },
+          { id: 2, name: `ראיונות - עדויות`, link: "/" },
+          { id: 3, name: `קהילות`, link: "/" },
+          { id: 4, name: `גליונות - ביטאון`, link: "/" },
+          { id: 5, name: `בוגרים זצ״ל`, link: "/" },
+          { id: 6, name: `כנס הבוגרים`, link: "/" },
+          { id: 7, name: `תמונות מחזור`, link: "/" },
+        ],
+        menu2: [
+          { id: 1, name: `כנסת המנהגים`, link: "/" },
+          { id: 2, name: `עד שבחברון - חדשות`, link: "/" },
+        ],
+      },
+    },
     { href: "/donation", name: "לתרומות", icon: true },
   ];
 
@@ -42,10 +61,6 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
       scale: 0,
       rotate: 360,
     });
-    gsap.set(".menu-background", {
-      width: 0,
-      height: 0,
-    });
     gsap.set(".menu-right, .menu-left, .bottom-menu, .bottom-search", {
       yPercent: 100,
       opacity: 0,
@@ -59,20 +74,33 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
         delay: 0,
       })
       .to(".menu-background", {
-        width: "100vw",
-        height: "100vh",
-        ease: "easeInOut",
-        duration: 0.5,
+        clipPath: "circle(150% at 100% 0%)",
+        ease: "expo.inOut",
+        duration: 2,
+        delay: 0,
       })
-      .to(".menu-right, .menu-left, .bottom-menu, .bottom-search", {
-        yPercent: 0,
-        opacity: 1,
-        stagger: 0.1,
-      })
-      .to(".menu-close", {
-        scale: 1,
-        rotate: 0,
-      });
+      .to(
+        ".menu-right, .menu-left, .bottom-menu, .bottom-search",
+        {
+          yPercent: 0,
+          ease: "expo.inOut",
+          duration: 1.5,
+          opacity: 1,
+          delay: 0,
+        },
+        "-=1.5",
+      )
+      .to(
+        ".menu-close",
+        {
+          scale: 1,
+          ease: "expo.inOut",
+          duration: 1.5,
+          rotate: 0,
+          delay: 0,
+        },
+        "-=1.5",
+      );
   }, []);
   useGSAP(() => {
     isMenuActive ? menuTimeline.play() : menuTimeline.reverse();
@@ -90,43 +118,89 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
               <HambergerIcon />
             </button>
             <nav className="nav-menu absolute top-14.5 right-0 w-[calc(100vh-58px)] h-14.5 flex items-stretch justify-stretch origin-topright mr-14.5 -rotate-90">
-              {links.map((link) => {
+              {links.map((link, index) => {
                 const isActive = location === link.href;
+                const haveSubmenu =
+                  link.submenus && link.submenus.menu1.length > 0;
                 return (
-                  <Link
-                    key={link.name}
-                    className={
-                      link.icon
-                        ? "gap-4 bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-all"
-                        : "group text-[#E2D7C3]"
-                    }
-                    href={link.href}
+                  <div
+                    key={index}
+                    className="menu-item group/parent flex items-center justify-center relative"
                   >
-                    {!link.icon && (
-                      <span
-                        className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-all duration-300`}
-                      ></span>
+                    <Link
+                      key={link.name}
+                      className={`${
+                        link.icon
+                          ? "gap-4 bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-all"
+                          : "text-[#E2D7C3]"
+                      } w-full h-full flex items-center justify-center`}
+                      href={link.href}
+                    >
+                      {!link.icon && (
+                        <span
+                          className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-all duration-300`}
+                        ></span>
+                      )}
+                      {link.icon ? (
+                        <>
+                          <Image
+                            className="w-auto h-auto rotate-90"
+                            src={donationIcon.src}
+                            width={13}
+                            height={23}
+                            loading="lazy"
+                            //blurDataURL={donationIcon?.blurDataURL}
+                            //placeholder="blur"
+                            alt="לתרומות"
+                          />
+                          <span>לתרומות</span>
+                        </>
+                      ) : (
+                        <span
+                          className={`flex justify-center items-center w-full h-full  transition-all origin-center border border-[#000000B2] ${haveSubmenu ? "submenu" : "group-hover/parent:border-[#DBBD5C80] group-hover/parent:bg-[#000000B2] group-hover/parent:rotate-90 group-hover/parent:-mt-[50%]"}`}
+                        >
+                          {link.name}
+                        </span>
+                      )}
+                    </Link>
+                    {haveSubmenu && (
+                      <div className="submenu-content absolute bottom-full  -mb-13 pr-10 transition-all duration-500 min-w-48 rotate-90 opacity-0 -translate-x-full invisible origin-topcenter group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0">
+                        <div className="menu-head bg-[#000000B2] border border-[#DBBD5C80] px-4 py-3 mb-1.5 text-[#E2D7C3] text-[15.55px] leading[70%]">
+                          {link.name}
+                        </div>
+                        <div className="submenu-items bg-[#000000B2] border border-[#DBBD5C80] flex flex-col">
+                          <div className="menu1 flex flex-col gap-y-2 p-3 border-b border-[#C3A13F]">
+                            {link.submenus.menu1.map((item) => (
+                              <Link
+                                key={item.id}
+                                className="submenu-item group text-[#E2D7C3] text-[15px] hover:text-[#C3A13F] relative transition-all duration-300"
+                                href={item.link}
+                              >
+                                <span>{item.name}</span>
+                                <span
+                                  className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5`}
+                                ></span>
+                              </Link>
+                            ))}
+                          </div>
+                          <div className="menu2 p-3 flex flex-col gap-y-2">
+                            {link.submenus.menu2.map((item) => (
+                              <Link
+                                key={item.id}
+                                className="submenu-item group/child text-[#E2D7C3] text-[15px] hover:text-[#C3A13F] relative transition-all duration-300"
+                                href={item.link}
+                              >
+                                <span>{item.name}</span>
+                                <span
+                                  className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover/child:opacity-100 group-hover/child:w-1.5`}
+                                ></span>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     )}
-                    {link.icon ? (
-                      <>
-                        <Image
-                          className="w-auto h-auto rotate-90"
-                          src={donationIcon.src}
-                          width={13}
-                          height={23}
-                          loading="lazy"
-                          //blurDataURL={donationIcon?.blurDataURL}
-                          //placeholder="blur"
-                          alt="לתרומות"
-                        />
-                        <span>לתרומות</span>
-                      </>
-                    ) : (
-                      <span className="flex justify-center items-center w-full h-full group-hover:bg-[#000000B2] transition-all origin-center group-hover:rotate-90 group-hover:-mt-[50%] border border-[#000000B2] group-hover:border-[#DBBD5C80]">
-                        {link.name}
-                      </span>
-                    )}
-                  </Link>
+                  </div>
                 );
               })}
             </nav>
