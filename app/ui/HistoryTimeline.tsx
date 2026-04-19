@@ -1,4 +1,5 @@
-import { Ref } from "react";
+"use client";
+import { MouseEvent, Ref, useEffect, useState } from "react";
 
 interface ChildProps {
   wrapperRef: Ref<HTMLDivElement>;
@@ -6,6 +7,57 @@ interface ChildProps {
   timelineData: { id: number; title: string }[];
 }
 export default function HistoryTimeline(props: ChildProps) {
+  const [introData, setIntroData] = useState<Record<string, number>>({});
+
+  // Get Intro Right Position
+  function getRightPosition(selector: string) {
+    const intro = document.querySelector(selector);
+    if (!intro) return 0;
+    const introObj = intro.getBoundingClientRect();
+    const introRight = Math.floor(window.innerWidth - introObj.right);
+    return introRight;
+  }
+
+  function buildIntroData() {
+    return {
+      "1": getRightPosition(".first-intro"),
+      "2": getRightPosition(".second-intro") + window.innerWidth * 0.12,
+      "3": getRightPosition(".third-intro") + window.innerWidth * 0.215,
+      "4": getRightPosition(".fourth-intro") + window.innerWidth * 0.37,
+      "5": getRightPosition(".fifth-intro") + window.innerWidth * 0.51,
+      "6": getRightPosition(".sixth-intro") + window.innerWidth * 0.6,
+    };
+  }
+  useEffect(() => {
+    const updateIntroData = () => {
+      setIntroData(buildIntroData());
+    };
+
+    if (document.readyState === "complete") {
+      updateIntroData();
+    } else {
+      window.addEventListener("load", updateIntroData, { once: true });
+    }
+
+    window.addEventListener("resize", updateIntroData);
+
+    return () => {
+      window.removeEventListener("load", updateIntroData);
+      window.removeEventListener("resize", updateIntroData);
+    };
+  }, []);
+
+  const handleStepClick = (e: MouseEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    const id = target.getAttribute("data-id");
+
+    if (id && introData[id] !== undefined) {
+      window.scrollTo({
+        top: introData[id],
+        behavior: "smooth",
+      });
+    }
+  };
   return (
     <div
       ref={props.wrapperRef}
@@ -17,7 +69,8 @@ export default function HistoryTimeline(props: ChildProps) {
             const isLastChild = index === props?.timelineData?.length - 1;
             return (
               <div
-                className={`flex flex-col gap-y-5 items-center relative w-36 pb-10 pt-2 timeline-step intro-${index + 1}`}
+                onClick={handleStepClick}
+                className={`flex flex-col gap-y-5 items-center relative w-36 pb-10 pt-2 cursor-pointer timeline-step intro-${index + 1}`}
                 key={index}
                 data-id={item.id}
               >

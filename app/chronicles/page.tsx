@@ -71,6 +71,8 @@ export default function Page() {
   const wrapper = useRef<HTMLDivElement>(null);
   const history = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
+  const isHistoryHidden = useRef(false);
+  const isHeaderLeftHidden = useRef(false);
   // Rabbis Data
   const TimelineData = [
     {
@@ -183,6 +185,9 @@ export default function Page() {
   // Load Page
   useGSAP(() => {
     document.fonts.ready.then(() => {
+      // Selectors
+      const headerLeft = main.current?.querySelector(".header-left");
+      const headerRight = main.current?.querySelector(".header-right");
       // Set Title
       const headingTitle = page.current?.querySelector(
         ".first-intro .intro-title",
@@ -198,13 +203,43 @@ export default function Page() {
       let splitTitle, splitContent;
       if (headingTitleSpan) {
         splitTitle = TitleSplitChars(headingTitleSpan);
+        gsap.set(headingTitleSpan, {
+          perspective: 400,
+        });
+        gsap.set(splitTitle, {
+          yPercent: 150,
+          opacity: 0,
+        });
       }
       if (headingContentSpan) {
         splitContent = TextSplitLines(headingContentSpan);
+        gsap.set(headingContentSpan, {
+          perspective: 400,
+        });
+        gsap.set(splitContent, {
+          yPercent: 150,
+          opacity: 0,
+        });
       }
       if (timelineRef) {
         gsap.set(history.current, { opacity: 1 });
         gsap.set(timelineRef, { yPercent: 100 });
+      }
+      // Set Page and Main opacity to 1
+      if (main.current && page.current) {
+        gsap.set([main.current, page.current], {
+          opacity: 1,
+          ease: "none",
+          duration: 0.5,
+          delay: 0,
+        });
+      }
+      if (headerLeft && headerRight) {
+        gsap.set([headerLeft, headerRight], {
+          opacity: 1,
+          ease: "none",
+          duration: 1,
+        });
       }
       // Set localStorage variable
       const userVisit = localStorage.getItem("hasVisited");
@@ -216,52 +251,54 @@ export default function Page() {
             setIsAllAnimationComplete(true);
           },
         });
-        tl.to(main.current, {
-          opacity: 1,
-          ease: "none",
-          duration: 0.5,
-          delay: 0,
-        });
-        tl.to(page.current, {
-          opacity: 1,
-          ease: "none",
-          duration: 0,
-          delay: 0,
-        })
-          .to(".header-left", {
-            opacity: 1,
-            ease: "none",
-            duration: 1,
-          })
-          .to(
-            ".header-right",
+        // tl.to(main.current, {
+        //   opacity: 1,
+        //   ease: "none",
+        //   duration: 0.5,
+        //   delay: 0,
+        // });
+        // tl.to(page.current, {
+        //   opacity: 1,
+        //   ease: "none",
+        //   duration: 0,
+        //   delay: 0,
+        // })
+        //   .to(".header-left", {
+        //     opacity: 1,
+        //     ease: "none",
+        //     duration: 1,
+        //   })
+        //   .to(
+        //     ".header-right",
+        //     {
+        //       opacity: 1,
+        //       ease: "none",
+        //       duration: 1,
+        //     },
+        //     "-=1",
+        //   );
+        if (headingTitleSpan && splitTitle) {
+          tl.to(
+            splitTitle,
             {
+              yPercent: 0,
               opacity: 1,
-              ease: "none",
-              duration: 1,
+              duration: 3,
+              delay: 0,
+              stagger: 0.03,
+              ease: "expo.inOut",
             },
             "-=1",
           );
-        if (headingTitleSpan && splitTitle) {
-          tl.from(
-            splitTitle,
-            {
-              duration: 3,
-              delay: 0,
-              yPercent: 150,
-              stagger: 0.05,
-              ease: "expo.inOut",
-            },
-            "-=1.5",
-          );
         }
         if (headingContentSpan && splitContent) {
-          tl.from(
+          tl.to(
             splitContent,
             {
+              yPercent: 0,
+              opacity: 1,
               duration: 3,
               delay: 0,
-              yPercent: 120,
               stagger: 0.03,
               ease: "expo.inOut",
             },
@@ -328,8 +365,12 @@ export default function Page() {
     const headerLeft = main.current?.querySelector(".header-left");
     if (!headerLeft) return;
 
+    const shouldHide = window.scrollY > 200;
+    if (shouldHide === isHeaderLeftHidden.current) return;
+    isHeaderLeftHidden.current = shouldHide;
+
     gsap.to(headerLeft, {
-      autoAlpha: window.scrollY > 200 ? 0 : 1,
+      autoAlpha: shouldHide ? 0 : 1,
       duration: 0.3,
       ease: "power2.out",
       overwrite: "auto",
@@ -407,10 +448,8 @@ export default function Page() {
               const introPercent = Math.round(
                 ((intro2Right - offsetRight) / intro2Right) * 100,
               );
-              gsap.to(introLine1, {
+              gsap.set(introLine1, {
                 width: `${introPercent}%`,
-                delay: 0,
-                duration: 0.1,
               });
             } else {
               inActiveTimeline(".intro-1");
@@ -425,10 +464,8 @@ export default function Page() {
               const introPercent = Math.round(
                 (currentPost / chapterWidth) * 100,
               );
-              gsap.to(introLine2, {
+              gsap.set(introLine2, {
                 width: `${introPercent}%`,
-                delay: 0,
-                duration: 0.1,
               });
             } else {
               inActiveTimeline(".intro-2");
@@ -443,10 +480,8 @@ export default function Page() {
               const introPercent = Math.round(
                 (currentPost / chapterWidth) * 100,
               );
-              gsap.to(introLine3, {
+              gsap.set(introLine3, {
                 width: `${introPercent}%`,
-                delay: 0,
-                duration: 0.1,
               });
             } else {
               inActiveTimeline(".intro-3");
@@ -461,10 +496,8 @@ export default function Page() {
               const introPercent = Math.round(
                 (currentPost / chapterWidth) * 100,
               );
-              gsap.to(introLine4, {
+              gsap.set(introLine4, {
                 width: `${introPercent}%`,
-                delay: 0,
-                duration: 0.1,
               });
             } else {
               inActiveTimeline(".intro-4");
@@ -479,10 +512,8 @@ export default function Page() {
               const introPercent = Math.round(
                 (currentPost / chapterWidth) * 100,
               );
-              gsap.to(introLine5, {
+              gsap.set(introLine5, {
                 width: `${introPercent}%`,
-                delay: 0,
-                duration: 0.1,
               });
             } else {
               inActiveTimeline(".intro-5");
@@ -495,17 +526,15 @@ export default function Page() {
               inActiveTimeline(".intro-6");
             }
 
-            if (self.progress > 0.99) {
-              gsap.to(history.current, {
-                display: "none",
-                duration: 0.1,
-                delay: 0,
-              });
-            } else {
-              gsap.to(history.current, {
-                display: "block",
-                duration: 0.1,
-                delay: 0,
+            const shouldHideHistory = self.progress > 0.99;
+            if (
+              history.current &&
+              shouldHideHistory !== isHistoryHidden.current
+            ) {
+              isHistoryHidden.current = shouldHideHistory;
+              gsap.set(history.current, {
+                autoAlpha: shouldHideHistory ? 0 : 1,
+                pointerEvents: shouldHideHistory ? "none" : "auto",
               });
             }
           },
