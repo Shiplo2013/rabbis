@@ -50,88 +50,104 @@ export default function Home() {
   // Load Page
   useGSAP(() => {
     document.fonts.ready.then(() => {
+      // Selectors
+      const headerLeft = main.current?.querySelector(".header-left");
+      const headerRight = main.current?.querySelector(".header-right");
+      // Banner Title 1
+      const bannerTitle1 = main.current?.querySelector(
+        ".home-banner .banner-title1",
+      );
+      // Banner Title 2
+      const bannerTitle2 = main.current?.querySelector(
+        ".home-banner .banner-title2",
+      );
+      // Banner Title 3
+      const bannerTitle3 = main.current?.querySelector(
+        ".home-banner .banner-title3",
+      );
+      // Banner Content
+      const bannerContent = main.current?.querySelector(
+        ".home-banner .banner-content",
+      );
+      // Banner Background Overlay
+      const bannerBackgroundOverlay = main.current?.querySelector(
+        ".home-banner .banner-background-wrapper .banner-bg-mask",
+      );
+      // Banner Button
+      const bannerButton = main.current?.querySelector(
+        ".home-banner .banner-button",
+      );
+      // Banner Button
+      if (bannerButton) {
+        gsap.set(bannerButton, { opacity: 0, y: 20 });
+      }
+      // Split Title 1
+      let splitTitle1;
+      if (bannerTitle1) {
+        splitTitle1 = TextSplitLines(bannerTitle1);
+        gsap.set(bannerTitle1, {
+          perspective: 400,
+        });
+        gsap.set(splitTitle1, {
+          yPercent: 150,
+          opacity: 0,
+        });
+      }
+      // Split Title 2
+      let splitTitle2;
+      if (bannerTitle2) {
+        splitTitle2 = TitleSplitChars(bannerTitle2);
+        gsap.set(bannerTitle2, {
+          perspective: 400,
+        });
+        gsap.set(splitTitle2, {
+          yPercent: 150,
+          opacity: 0,
+        });
+      }
+      // Split Title 3
+      let splitTitle3;
+      if (bannerTitle3) {
+        splitTitle3 = TextSplitLines(bannerTitle3);
+        gsap.set(bannerTitle3, {
+          perspective: 400,
+        });
+        gsap.set(splitTitle3, {
+          yPercent: 150,
+          opacity: 0,
+        });
+      }
+      // Split Content
+      let splitContent;
+      if (bannerContent) {
+        splitContent = TextSplitLines(bannerContent);
+        gsap.set(bannerContent, {
+          perspective: 400,
+        });
+        gsap.set(splitContent, {
+          yPercent: 150,
+          opacity: 0,
+        });
+      }
+      // Set Page and Main opacity to 1
+      if (main.current && page.current) {
+        gsap.set([main.current, page.current], {
+          opacity: 1,
+          ease: "none",
+          duration: 0.5,
+          delay: 0,
+        });
+      }
+      if (headerLeft && headerRight) {
+        gsap.set([headerLeft, headerRight], {
+          opacity: 1,
+          ease: "none",
+          duration: 1,
+        });
+      }
       // Set localStorage variable
       const userVisit = localStorage.getItem("hasVisited");
-      if (userVisit === "true") {
-        // Selectors
-        const headerLeft = main.current?.querySelector(".header-left");
-        const headerRight = main.current?.querySelector(".header-right");
-        // Banner Title 1
-        const bannerTitle1 = main.current?.querySelector(
-          ".home-banner .banner-title1",
-        );
-        // Banner Title 2
-        const bannerTitle2 = main.current?.querySelector(
-          ".home-banner .banner-title2",
-        );
-        // Banner Title 3
-        const bannerTitle3 = main.current?.querySelector(
-          ".home-banner .banner-title3",
-        );
-        // Banner Content
-        const bannerContent = main.current?.querySelector(
-          ".home-banner .banner-content",
-        );
-        // Banner Background Overlay
-        const bannerBackgroundOverlay = main.current?.querySelector(
-          ".home-banner .banner-background-wrapper .banner-bg-mask",
-        );
-        // Banner Button
-        const bannerButton = main.current?.querySelector(
-          ".home-banner .banner-button",
-        );
-        // Banner Button
-        if (bannerButton) {
-          gsap.set(bannerButton, { opacity: 0, y: 20 });
-        }
-        // Split Title 1
-        let splitTitle1;
-        if (bannerTitle1) {
-          splitTitle1 = TextSplitLines(bannerTitle1);
-          gsap.set(bannerTitle1, {
-            perspective: 400,
-          });
-          gsap.set(splitTitle1, {
-            yPercent: 150,
-            opacity: 0,
-          });
-        }
-        // Split Title 2
-        let splitTitle2;
-        if (bannerTitle2) {
-          splitTitle2 = TitleSplitChars(bannerTitle2);
-          gsap.set(bannerTitle2, {
-            perspective: 400,
-          });
-          gsap.set(splitTitle2, {
-            yPercent: 150,
-            opacity: 0,
-          });
-        }
-        // Split Title 3
-        let splitTitle3;
-        if (bannerTitle3) {
-          splitTitle3 = TextSplitLines(bannerTitle3);
-          gsap.set(bannerTitle3, {
-            perspective: 400,
-          });
-          gsap.set(splitTitle3, {
-            yPercent: 150,
-            opacity: 0,
-          });
-        }
-        // Split Content
-        let splitContent;
-        if (bannerContent) {
-          splitContent = TextSplitLines(bannerContent);
-          gsap.set(bannerContent, {
-            perspective: 400,
-          });
-          gsap.set(splitContent, {
-            yPercent: 150,
-            opacity: 0,
-          });
-        }
+      if (userVisit === "true" && animationPlayed) {
         // Timeline
         const tl = gsap.timeline({
           onComplete: () => {
@@ -139,40 +155,40 @@ export default function Home() {
             setIsAllAnimationComplete(true);
           },
         });
-        if (main.current) {
-          tl.to(main.current, {
-            opacity: 1,
-            ease: "none",
-            duration: 0.5,
-            delay: 0,
-          });
-        }
-        if (page.current) {
-          tl.to(page.current, {
-            opacity: 1,
-            ease: "none",
-            duration: 0,
-            delay: 0,
-          });
-        }
-        if (headerLeft) {
-          tl.to(headerLeft, {
-            opacity: 1,
-            ease: "none",
-            duration: 1,
-          });
-        }
-        if (headerRight) {
-          tl.to(
-            headerRight,
-            {
-              opacity: 1,
-              ease: "none",
-              duration: 1,
-            },
-            "-=1",
-          );
-        }
+        // if (main.current) {
+        //   tl.to(main.current, {
+        //     opacity: 1,
+        //     ease: "none",
+        //     duration: 0.5,
+        //     delay: 0,
+        //   });
+        // }
+        // if (page.current) {
+        //   tl.to(page.current, {
+        //     opacity: 1,
+        //     ease: "none",
+        //     duration: 0,
+        //     delay: 0,
+        //   });
+        // }
+        // if (headerLeft) {
+        //   tl.to(headerLeft, {
+        //     opacity: 1,
+        //     ease: "none",
+        //     duration: 1,
+        //   });
+        // }
+        // if (headerRight) {
+        //   tl.to(
+        //     headerRight,
+        //     {
+        //       opacity: 1,
+        //       ease: "none",
+        //       duration: 1,
+        //     },
+        //     "-=1",
+        //   );
+        // }
         if (bannerTitle1 && splitTitle1) {
           tl.to(
             splitTitle1,

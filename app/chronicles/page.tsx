@@ -183,36 +183,32 @@ export default function Page() {
   // Load Page
   useGSAP(() => {
     document.fonts.ready.then(() => {
+      // Set Title
+      const headingTitle = page.current?.querySelector(
+        ".first-intro .intro-title",
+      );
+      // Subtitle
+      const headingContent = page.current?.querySelector(
+        ".first-intro .intro-content",
+      );
+      // Page Timeline
+      const headingTitleSpan = headingTitle?.querySelector("span");
+      const headingContentSpan = headingContent?.querySelector("span");
+      const timelineRef = history.current?.querySelector(".timeline");
+      let splitTitle, splitContent;
+      if (headingTitleSpan) {
+        splitTitle = TitleSplitChars(headingTitleSpan);
+      }
+      if (headingContentSpan) {
+        splitContent = TextSplitLines(headingContentSpan);
+      }
+      if (timelineRef) {
+        gsap.set(history.current, { opacity: 1 });
+        gsap.set(timelineRef, { yPercent: 100 });
+      }
       // Set localStorage variable
       const userVisit = localStorage.getItem("hasVisited");
-      if (userVisit === "true") {
-        // Set Title
-        const headingTitle = page.current?.querySelector(
-          ".first-intro .intro-title",
-        );
-        // Subtitle
-        const headingContent = page.current?.querySelector(
-          ".first-intro .intro-content",
-        );
-        // Subtitle
-        const introBackground = page.current?.querySelector(
-          ".intro-background .intro-bg-mask",
-        );
-        // Page Timeline
-        const headingTitleSpan = headingTitle?.querySelector("span");
-        const headingContentSpan = headingContent?.querySelector("span");
-        const timelineRef = history.current?.querySelector(".timeline");
-        let splitTitle, splitContent;
-        if (headingTitleSpan) {
-          splitTitle = TitleSplitChars(headingTitleSpan);
-        }
-        if (headingContentSpan) {
-          splitContent = TextSplitLines(headingContentSpan);
-        }
-        if (timelineRef) {
-          gsap.set(history.current, { opacity: 1 });
-          gsap.set(timelineRef, { yPercent: 100 });
-        }
+      if (userVisit === "true" && animationPlayed) {
         // Timeline
         const tl = gsap.timeline({
           onComplete: () => {
@@ -284,18 +280,6 @@ export default function Page() {
             "-=3",
           );
         }
-        if (introBackground) {
-          tl.to(
-            introBackground,
-            {
-              translateY: "-100%",
-              delay: 0,
-              duration: 3,
-              ease: "expo.inOut",
-            },
-            "-=2",
-          );
-        }
       }
     });
   }, [animationPlayed]);
@@ -338,6 +322,18 @@ export default function Page() {
     if (!hasActiveClass) {
       intro.classList.add("active");
     }
+  }
+
+  function toggleHeaderLeftOnScroll() {
+    const headerLeft = main.current?.querySelector(".header-left");
+    if (!headerLeft) return;
+
+    gsap.to(headerLeft, {
+      autoAlpha: window.scrollY > 200 ? 0 : 1,
+      duration: 0.3,
+      ease: "power2.out",
+      overwrite: "auto",
+    });
   }
 
   // Inactive Timeline
@@ -549,6 +545,21 @@ export default function Page() {
     };
   }, [isAllAnimationComplete]);
 
+  // Header Left Toggle on Scroll
+  useEffect(() => {
+    if (!isAllAnimationComplete) return;
+
+    toggleHeaderLeftOnScroll();
+    window.addEventListener("scroll", toggleHeaderLeftOnScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", toggleHeaderLeftOnScroll);
+    };
+  }, [isAllAnimationComplete]);
+
+  // Default Effect
   useEffect(() => {
     document.body.classList.add("overflow-hidden");
     window.onbeforeunload = function () {
@@ -590,7 +601,7 @@ export default function Page() {
               <Introduction
                 animated={isAllAnimationComplete}
                 animationStatus={isAllAnimationComplete}
-                bgImage={introBG7}
+                bgImage={""}
                 bgOverlay={""}
                 data={IntroData1}
                 extraClass={

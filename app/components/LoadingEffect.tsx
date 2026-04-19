@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Loader from "./Loader";
 import Loading from "./Loading";
 
 function LoadingEffect(props: { animated: (value: boolean) => void }) {
@@ -19,8 +20,9 @@ function LoadingEffect(props: { animated: (value: boolean) => void }) {
   // loadin is true
   if (isFirstVisit) {
     return <Loading animated={props.animated} />;
+  } else {
+    return <Loader animated={props.animated} />;
   }
-  return <></>;
 }
 
 export default LoadingEffect;

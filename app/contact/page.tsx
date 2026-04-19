@@ -11,7 +11,7 @@ import SmoothWrapper from "../ui/SmoothWrapper";
 import TextSplitLines from "../ui/TextSplitLines";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(SplitText, ScrollTrigger);
+  gsap.registerPlugin(SplitText, ScrollTrigger, useGSAP);
 }
 
 export default function Contact() {
@@ -56,7 +56,7 @@ export default function Contact() {
           let splitTitle;
           if (contactHeading) {
             splitTitle = TextSplitLines(contactHeading);
-            gsap.set(TextSplitLines, {
+            gsap.set(contactHeading, {
               perspective: 400,
             });
             gsap.set(splitTitle, {
@@ -67,7 +67,7 @@ export default function Contact() {
 
           // Set localStorage variable
           const userVisit = localStorage.getItem("hasVisited");
-          if (userVisit === "true") {
+          if (userVisit === "true" && animationPlayed) {
             // Timeline
             const tl = gsap.timeline({
               onComplete: () => {
