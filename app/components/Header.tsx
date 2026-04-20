@@ -24,6 +24,8 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
       name: "הישיבה ומוסדותתיה",
       icon: false,
       submenus: {
+        head: false,
+        class: "-mb-2",
         menu1: [
           { id: 1, name: `לבקר בהיכלו`, link: "#" },
           { id: 2, name: `מוסדות הישיבה`, link: "#" },
@@ -39,6 +41,8 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
       name: "כנסת הבוגרים",
       icon: false,
       submenus: {
+        head: true,
+        class: "-mb-8",
         menu1: [
           { id: 1, name: `בוגרי הישיבה`, link: "#" },
           { id: 2, name: `ראיונות - עדויות`, link: "#" },
@@ -174,27 +178,50 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
                       )}
                     </Link>
                     {haveSubmenu && (
-                      <div className="submenu-content absolute bottom-full -mb-8 pr-10 transition-all duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible origin-topcenter group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0">
-                        <div className="menu-head bg-[#000000B2] border border-[#DBBD5C80] px-4 py-3 mb-1.5 text-[#E2D7C3] text-[15.55px] leading[70%]">
-                          <Link href={"/yeshiva-graduates"}>{link.name}</Link>
-                        </div>
-                        <div className="submenu-items bg-[#000000B2] border border-[#DBBD5C80] flex flex-col">
+                      <div
+                        className={`submenu-content absolute bottom-full pr-10 transition-all duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible origin-topcenter group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0 ${link.submenus.class}`}
+                      >
+                        {link.submenus.head && (
+                          <div className="menu-head bg-[#000000B2] border border-[#DBBD5C80] px-4 py-3 mb-1.5 text-[#E2D7C3] text-[15.55px] leading[70%]">
+                            <Link href={"/yeshiva-graduates"}>{link.name}</Link>
+                          </div>
+                        )}
+                        <div
+                          className={`submenu-items ${link.submenus.head && "border border-[#DBBD5C80] bg-[#000000B2] "} flex flex-col`}
+                        >
                           {link.submenus.menu1 && (
                             <div
-                              className={`menu1 flex flex-col gap-y-2 p-3 ${link.submenus.menu2 && "border-b"} border-[#C3A13F]`}
+                              className={`menu1 flex flex-col gap-y-2 ${link.submenus.head && "p-3"} ${link.submenus.menu2 && "border-b"} border-[#C3A13F]`}
                             >
-                              {link.submenus.menu1.map((item) => (
-                                <Link
-                                  key={item.id}
-                                  className="submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-all duration-300"
-                                  href={item.link}
-                                >
-                                  <span>{item.name}</span>
-                                  <span
-                                    className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5`}
-                                  ></span>
-                                </Link>
-                              ))}
+                              {link.submenus.head
+                                ? link.submenus.menu1.map((item) => (
+                                    <Link
+                                      key={item.id}
+                                      className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-all duration-300`}
+                                      href={item.link}
+                                    >
+                                      <span>{item.name}</span>
+                                      <span
+                                        className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5`}
+                                      ></span>
+                                    </Link>
+                                  ))
+                                : link.submenus.menu1.map((item) => (
+                                    <div
+                                      key={item.id}
+                                      className="relative px-3 py-5 bg-[#000000B2] border border-[#DBBD5C80] w-full"
+                                    >
+                                      <Link
+                                        className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-all duration-300 block`}
+                                        href={item.link}
+                                      >
+                                        <span>{item.name}</span>
+                                        <span
+                                          className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5`}
+                                        ></span>
+                                      </Link>
+                                    </div>
+                                  ))}
                             </div>
                           )}
                           {link.submenus.menu2 && (
