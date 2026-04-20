@@ -370,7 +370,7 @@ export default function Page() {
           }
           // Set localStorage variable
           const userVisit = localStorage.getItem("hasVisited");
-          if (userVisit === "true" && animationPlayed) {
+          if (userVisit === "true") {
             // Timeline
             const tl = gsap.timeline({
               onComplete: () => {

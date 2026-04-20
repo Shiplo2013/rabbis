@@ -21,11 +21,11 @@ export default function HistoryTimeline(props: ChildProps) {
   function buildIntroData() {
     return {
       "1": getRightPosition(".first-intro"),
-      "2": getRightPosition(".second-intro") + window.innerWidth * 0.12,
-      "3": getRightPosition(".third-intro") + window.innerWidth * 0.215,
-      "4": getRightPosition(".fourth-intro") + window.innerWidth * 0.37,
-      "5": getRightPosition(".fifth-intro") + window.innerWidth * 0.51,
-      "6": getRightPosition(".sixth-intro") + window.innerWidth * 0.6,
+      "2": getRightPosition(".second-intro") + window.innerWidth * 0.135,
+      "3": getRightPosition(".third-intro") + window.innerWidth * 0.242,
+      "4": getRightPosition(".fourth-intro") + window.innerWidth * 0.42,
+      "5": getRightPosition(".fifth-intro") + window.innerWidth * 0.58,
+      "6": getRightPosition(".sixth-intro") + window.innerWidth * 0.68,
     };
   }
   useEffect(() => {

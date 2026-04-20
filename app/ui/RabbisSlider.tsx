@@ -46,12 +46,12 @@ export default function RabbisSlider(props: ChildProps) {
           return (
             <SwiperSlide key={index}>
               <div className="rabbis-wrapper relative min-w-140 flex flex-col items-center justify-center group">
-                <div className="rabbis-thumb w-91.75 h-93.5 relative z-10">
+                <div className="rabbis-thumb w-80 h-87.5 relative z-10">
                   <Image
                     className="w-full object-cover object-center h-full"
                     src={RabbisThumb.src}
-                    width={"367"}
-                    height={"374"}
+                    width={"320"}
+                    height={"350"}
                     alt="Rabbis Thumb"
                     blurDataURL={RabbisThumb?.blurDataURL}
                     placeholder={"blur"}
@@ -60,17 +60,17 @@ export default function RabbisSlider(props: ChildProps) {
                 </div>
                 <div className="rabbis-content w-full flex flex-col items-center justify-center gap-y-5 relative z-20 -mt-6.5">
                   <ThemeButton
-                    extraClass="rounded-none px-5.5 py-2 max-w-37"
+                    extraClass="rounded-none px-5 py-1.5 max-w-37"
                     text="הרחב קריאה"
                     bgColor="bg-[#D1A941]"
                     textColor="text-[#000000]"
                     hoverBgColor="bg-[#ffffff]"
-                    fontSize="text-[19px]"
+                    fontSize="text-[18px]"
                     svgIconClass={""}
                   />
-                  <div className="content leading-[1em] text-[#D1A941] flex justify-center flex-col items-center gap-y-3">
-                    <h3 className="text-[33px] ">רבי נתן צבי פינקל</h3>
-                    <h5 className="text-[20px]">
+                  <div className="content leading-[1em] text-[#D1A941] flex justify-center flex-col items-center gap-y-2">
+                    <h3 className="text-[28px]">רבי נתן צבי פינקל</h3>
+                    <h5 className="text-[18px]">
                       שימש בישיבה: תר"מ - כ"ט שבט תרפ"ז
                     </h5>
                   </div>
@@ -95,13 +95,13 @@ export default function RabbisSlider(props: ChildProps) {
           style={{
             backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
           }}
-          className="group absolute left-0 bottom-0 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-27 h-27"
+          className="group absolute left-0 bottom-0 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-22 h-22"
           disabled={isBeginning}
           onClick={() => swiperRef.current?.swiper.slidePrev()}
         >
           <div className="w-full h-full flex items-center justify-center bg-[#202325] rounded-full overflow-hidden relative">
             <span className="btn-bg absolute z-10 left-0 top-0 w-full h-full bg-[#000000] translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-[cubic-bezier(0.625,0.05,0,1)]"></span>
-            <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30">
+            <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30 w-8 h-auto">
               <SwipeLeft />
             </div>
           </div>
@@ -110,13 +110,13 @@ export default function RabbisSlider(props: ChildProps) {
           style={{
             backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
           }}
-          className="group absolute right-0 bottom-0 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-27 h-27"
+          className="group absolute right-0 bottom-0 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-22 h-22"
           disabled={isEnd}
           onClick={() => swiperRef.current?.swiper.slideNext()}
         >
           <div className="w-full h-full flex items-center justify-center bg-[#202325] rounded-full overflow-hidden relative">
             <span className="btn-bg absolute z-10 left-0 top-0 w-full h-full bg-[#000000] translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-[cubic-bezier(0.625,0.05,0,1)]"></span>
-            <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30">
+            <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30 w-8 h-auto">
               <SwipeRight />
             </div>
           </div>

@@ -16,7 +16,6 @@ export default function SingleImageSection(props: ChildProps) {
   // Section Selector
   const wrapper = useRef(null);
   const image = useRef(null);
-  const overlay = useRef(null);
 
   // Section Animation
   useGSAP(
@@ -30,13 +29,6 @@ export default function SingleImageSection(props: ChildProps) {
           },
           toggleActions: "restart pause play reverse",
         },
-      });
-      tl.to(overlay.current, {
-        translateY: "-100%",
-        transformOrigin: "top",
-        duration: 0.5,
-        delay: 0,
-        ease: "eseInOut",
       });
       tl.to(image.current, {
         scale: 1,
@@ -53,6 +45,7 @@ export default function SingleImageSection(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="relative w-full h-full">
         <div ref={image} className="w-full h-full relative z-10">
@@ -67,10 +60,6 @@ export default function SingleImageSection(props: ChildProps) {
             alt="Image Background"
           />
         </div>
-        <div
-          ref={overlay}
-          className="absolute bottom-0 left-0 -ml-12.5 w-[calc(100%+100px)] h-full z-20 bg-black transition-all duration-1000 ease-[cubic-bezier(0.625, 0.05, 0, 1)]"
-        ></div>
       </div>
     </section>
   );
