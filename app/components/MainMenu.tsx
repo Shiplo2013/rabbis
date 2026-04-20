@@ -16,8 +16,16 @@ export default function MainMenu({
   timeLine,
 }: MainMenuProps) {
   const SUBMENU = [
-    { id: 1, title: "שם הרב" },
-    { id: 2, title: "שם הרב" },
+    { id: 1, title: "שם הרב", link: "#" },
+    { id: 2, title: "שם הרב", link: "#" },
+  ];
+  const SUBMENU2 = [
+    { id: 1, title: "שם הרב", link: "/chronicles" },
+    { id: 2, title: "שם הרב", link: "/chronicles" },
+  ];
+  const SUBMENU3 = [
+    { id: 1, title: "שם הרב", link: "/communities" },
+    { id: 2, title: "שם הרב", link: "/communities" },
   ];
   // Get elements
   //const closeBTN = useRef(null);
@@ -49,7 +57,7 @@ export default function MainMenu({
         <div className="main-menu-top pr-4 flex overflow-hidden">
           <div className="menu-right w-1/4">
             <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
-              כנסת ישראל
+              <Link href="/">כנסת ישראל</Link>
             </h3>
             <div className="menu-list">
               <ul className="main-menu-list">
@@ -64,7 +72,7 @@ export default function MainMenu({
                 </li>
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"#"}
                     className="hover:text-[#C3A13F] transition-colors duration-500 ease-in-out"
                   >
                     לבקר בהיכלו
@@ -72,7 +80,7 @@ export default function MainMenu({
                   <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
                 </li>
                 <li className="group relative">
-                  <SubMenuItem itemText="דברי הימים" subItem={SUBMENU} />
+                  <SubMenuItem itemText="דברי הימים" subItem={SUBMENU2} />
                 </li>
                 <li className="group relative submenu-parent">
                   <SubMenuItem itemText="מזקנים אתבונן" subItem={SUBMENU} />
@@ -88,7 +96,7 @@ export default function MainMenu({
                 </li>
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"/the-circle-of-the-year"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     עוז וחדוה במקומו
@@ -99,7 +107,7 @@ export default function MainMenu({
               <ul className="bottom-menu mt-10">
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"/contact"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     צור קשר
@@ -108,7 +116,7 @@ export default function MainMenu({
                 </li>
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"/donation"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     תרומות
@@ -120,13 +128,13 @@ export default function MainMenu({
           </div>
           <div className="menu-left w-1/4">
             <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
-              כנסת הבוגרים
+              <Link href="/yeshiva-graduates">כנסת הבוגרים</Link>
             </h3>
             <div className="menu-list">
               <ul className="menu-list-items">
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"#"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     בוגרי הישיבה
@@ -135,7 +143,7 @@ export default function MainMenu({
                 </li>
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"#"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     ראיונות - עדויות
@@ -143,11 +151,11 @@ export default function MainMenu({
                   <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
                 </li>
                 <li className="group relative">
-                  <SubMenuItem itemText="קהילות" subItem={SUBMENU} />
+                  <SubMenuItem itemText="קהילות" subItem={SUBMENU3} />
                 </li>
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"/communities/sheets"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     גליונות - ביטאון
@@ -156,7 +164,7 @@ export default function MainMenu({
                 </li>
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"/zatzel-graduates"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     בוגרים זצ״ל
@@ -165,7 +173,7 @@ export default function MainMenu({
                 </li>
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"/alumni-conference"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     כנס הבוגרים
@@ -174,7 +182,7 @@ export default function MainMenu({
                 </li>
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"/cycle-pictures"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     תמונות מחזור
@@ -185,7 +193,7 @@ export default function MainMenu({
               <ul className="bottom-menu mt-10">
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"/the-knesset-of-customs"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     כנסת המנהגים
@@ -194,7 +202,7 @@ export default function MainMenu({
                 </li>
                 <li className="group relative">
                   <Link
-                    href={"/"}
+                    href={"#"}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     עד שבחברון - חדשות

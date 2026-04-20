@@ -5,7 +5,7 @@ import Caret from "../assets/icons/Caret";
 
 interface ChildProps {
   itemText: string;
-  subItem: { id: number; title: string }[];
+  subItem: { id: number; title: string; link: string }[];
 }
 
 export default function SubMenuItem(props: ChildProps) {
@@ -56,7 +56,7 @@ export default function SubMenuItem(props: ChildProps) {
           <li key={item.id} className="relative pr-5">
             <span className="w-1.75 h-1.75 bg-[#D1A941] block rounded-full absolute top-1/2 right-0 -mt-1"></span>
             <Link
-              href={"/"}
+              href={item.link}
               className="hover:text-[#C3A13F] transition-colors duration-500"
             >
               {item.title}

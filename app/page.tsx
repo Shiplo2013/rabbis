@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import WishIcon from "./assets/icons/WishIcon";
 import CursorFollow from "./components/CursorFollow";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -15,6 +16,7 @@ import AudioPlayer from "./ui/AudioPlayer";
 import SlidingArrow from "./ui/SlidingArrow";
 import SmoothWrapper from "./ui/SmoothWrapper";
 import TextSplitLines from "./ui/TextSplitLines";
+import ThemeButton from "./ui/ThemeButton";
 import TitleSplitChars from "./ui/TitleSplitChars";
 import {
   gsap,
@@ -436,6 +438,16 @@ export default function Home() {
       <SlidingArrow />
       <CursorFollow isPlaying={isPlaying} />
       <AudioPlayer audioRef={audio} src={audioLink} />
+      <div className="wish-button fixed p-5 bottom-0 right-15 z-50 opacity-0 invisible">
+        <ThemeButton
+          extraClass="w-13 h-13 flex item-center justify-center"
+          bgColor="bg-[#ffffff]"
+          textColor="text-[#000000]"
+          hoverBgColor="bg-[#C3A13F]"
+          svgIcon={<WishIcon className="group-hover:stroke-[#ffffff]" />}
+          svgIconClass={""}
+        />
+      </div>
     </div>
   );
 }

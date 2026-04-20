@@ -153,10 +153,10 @@ function Footer(props: ChildProps) {
       <div className="footer-wrapper w-full bg-amber-50 flex items-center justify-center text-black pt-30 pb-25">
         <div className="w-[80%] max-w-282.5">
           <div className="footer-projects border-b-2 border-[#000000]">
-            <FooterProject title={"דברי הימים"} />
-            <FooterProject title={"מזקנים אתבונן"} />
-            <FooterProject title={"רבני הישיבה"} />
-            <FooterProject title={"לבקר בהיכלו"} />
+            <FooterProject title={"דברי הימים"} link="/chronicles" />
+            <FooterProject title={"מזקנים אתבונן"} link="#" />
+            <FooterProject title={"רבני הישיבה"} link="/yeshiva-rabbis" />
+            <FooterProject title={"לבקר בהיכלו"} link="#" />
           </div>
           <div className="footer-widgets mt-34 flex justify-between overflow-hidden">
             <div className="footer-widget3">
