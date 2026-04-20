@@ -59,7 +59,7 @@ export default function Introduction(props: ChildProps) {
           >
             <span className="block text">{parse(props.data[0].title)}</span>
           </h1>
-          <h4 className="intro-content overflow-hidden text-[28px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30 w-[17.76vw]">
+          <h4 className="intro-content overflow-hidden text-[28px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30 w-[28vw]">
             <span className="block text">{parse(props.data[0].content)}</span>
           </h4>
         </div>

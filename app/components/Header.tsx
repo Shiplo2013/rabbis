@@ -19,28 +19,38 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
   const location = usePathname();
   // Menu Links
   const links = [
-    { href: "/contact", name: "הווייתה", icon: false },
+    {
+      href: "#",
+      name: "הישיבה ומוסדותתיה",
+      icon: false,
+      submenus: {
+        menu1: [
+          { id: 1, name: `לבקר בהיכלו`, link: "#" },
+          { id: 2, name: `מוסדות הישיבה`, link: "#" },
+        ],
+      },
+    },
     { href: "/chronicles", name: "דברי הימים", icon: false },
-    { href: "/communities", name: "מזקנים אתבונן", icon: false },
+    { href: "#", name: "מזקנים אתבונן", icon: false },
     { href: "/yeshiva-rabbis", name: "רבני הישיבה", icon: false },
-    { href: "", name: "מועדים וזמנים", icon: false },
+    { href: "/the-circle-of-the-year", name: "מועדים וזמנים", icon: false },
     {
       href: "/",
       name: "כנסת הבוגרים",
       icon: false,
       submenus: {
         menu1: [
-          { id: 1, name: `בוגרי הישיבה`, link: "/" },
-          { id: 2, name: `ראיונות - עדויות`, link: "/" },
-          { id: 3, name: `קהילות`, link: "/" },
-          { id: 4, name: `גליונות - ביטאון`, link: "/" },
-          { id: 5, name: `בוגרים זצ״ל`, link: "/" },
-          { id: 6, name: `כנס הבוגרים`, link: "/" },
-          { id: 7, name: `תמונות מחזור`, link: "/" },
+          { id: 1, name: `בוגרי הישיבה`, link: "#" },
+          { id: 2, name: `ראיונות - עדויות`, link: "#" },
+          { id: 3, name: `קהילות`, link: "/communities" },
+          { id: 4, name: `גליונות - ביטאון`, link: "/communities/sheets" },
+          { id: 5, name: `בוגרים זצ״ל`, link: "/zatzel-graduates" },
+          { id: 6, name: `כנס הבוגרים`, link: "/alumni-conference" },
+          { id: 7, name: `תמונות מחזור`, link: "/cycle-pictures" },
         ],
         menu2: [
-          { id: 1, name: `כנסת המנהגים`, link: "/" },
-          { id: 2, name: `עד שבחברון - חדשות`, link: "/" },
+          { id: 1, name: `כנסת המנהגים`, link: "/the-knesset-of-customs" },
+          { id: 2, name: `עד שבחברון - חדשות`, link: "#" },
         ],
       },
     },
@@ -107,7 +117,7 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
   }, [isMenuActive]);
   return (
     <>
-      <header className="fixed w-screen h-0 top-0 left-0 flex justify-between items-start z-40 pl-10">
+      <header className="fixed w-screen h-0 top-0 left-0 flex justify-between items-start z-99 pl-10">
         <div className="header-right flex items-start pr-17 opacity-0">
           <div className="horizontal-menu bg-[#000000B2] border border-[#DBBD5C80] h-screen fixed top-0 right-0">
             <button
@@ -164,39 +174,45 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
                       )}
                     </Link>
                     {haveSubmenu && (
-                      <div className="submenu-content absolute bottom-full  -mb-13 pr-10 transition-all duration-500 min-w-48 rotate-90 opacity-0 -translate-x-full invisible origin-topcenter group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0">
+                      <div className="submenu-content absolute bottom-full -mb-8 pr-10 transition-all duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible origin-topcenter group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0">
                         <div className="menu-head bg-[#000000B2] border border-[#DBBD5C80] px-4 py-3 mb-1.5 text-[#E2D7C3] text-[15.55px] leading[70%]">
-                          {link.name}
+                          <Link href={"/yeshiva-graduates"}>{link.name}</Link>
                         </div>
                         <div className="submenu-items bg-[#000000B2] border border-[#DBBD5C80] flex flex-col">
-                          <div className="menu1 flex flex-col gap-y-2 p-3 border-b border-[#C3A13F]">
-                            {link.submenus.menu1.map((item) => (
-                              <Link
-                                key={item.id}
-                                className="submenu-item group text-[#E2D7C3] text-[15px] hover:text-[#C3A13F] relative transition-all duration-300"
-                                href={item.link}
-                              >
-                                <span>{item.name}</span>
-                                <span
-                                  className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5`}
-                                ></span>
-                              </Link>
-                            ))}
-                          </div>
-                          <div className="menu2 p-3 flex flex-col gap-y-2">
-                            {link.submenus.menu2.map((item) => (
-                              <Link
-                                key={item.id}
-                                className="submenu-item group/child text-[#E2D7C3] text-[15px] hover:text-[#C3A13F] relative transition-all duration-300"
-                                href={item.link}
-                              >
-                                <span>{item.name}</span>
-                                <span
-                                  className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover/child:opacity-100 group-hover/child:w-1.5`}
-                                ></span>
-                              </Link>
-                            ))}
-                          </div>
+                          {link.submenus.menu1 && (
+                            <div
+                              className={`menu1 flex flex-col gap-y-2 p-3 ${link.submenus.menu2 && "border-b"} border-[#C3A13F]`}
+                            >
+                              {link.submenus.menu1.map((item) => (
+                                <Link
+                                  key={item.id}
+                                  className="submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-all duration-300"
+                                  href={item.link}
+                                >
+                                  <span>{item.name}</span>
+                                  <span
+                                    className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5`}
+                                  ></span>
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                          {link.submenus.menu2 && (
+                            <div className="menu2 p-3 flex flex-col gap-y-2">
+                              {link.submenus.menu2.map((item) => (
+                                <Link
+                                  key={item.id}
+                                  className="submenu-item group/child text-[#E2D7C3] leading-[70%] text-[15px] hover:text-[#C3A13F] relative transition-all duration-300"
+                                  href={item.link}
+                                >
+                                  <span>{item.name}</span>
+                                  <span
+                                    className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover/child:opacity-100 group-hover/child:w-1.5`}
+                                  ></span>
+                                </Link>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -225,6 +241,7 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
             hoverTextColor="group-hover:text-[#FFFFFF]"
             text="הרימו תרומה"
             svgIconClass={""}
+            buttonLink="/communities/sheets"
           />
           <ThemeButton
             extraClass="py-2 px-5"
@@ -235,9 +252,10 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
             icon={buttonIcon2}
             text="ביטאון"
             svgIconClass={""}
+            buttonLink="/donation"
           />
           <div className="circle-button">
-            <Link className="group relative" href="/">
+            <Link className="group relative" href="/the-circle-of-the-year">
               <div className="button-content w-19 h-19 rounded-full flex items-center justify-center relative p-2">
                 <div className="rounded-full w-full h-full flex items-center justify-center relative z-40">
                   <div className="button-border absolute w-full h-full flex transition-all duration-500">
