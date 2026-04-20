@@ -35,7 +35,7 @@ export default function MainMenu({
   return (
     <div
       id="main-menu"
-      className={`fixed top-0 left-0 w-screen h-screen bg-no-repeat bg-cover z-50 flex items-center justify-center gap-10 opacity-0 invisible py-[5vh] px-[5vw]`}
+      className={`fixed top-0 left-0 w-screen h-screen bg-no-repeat bg-cover z-999 flex items-center justify-center gap-10 opacity-0 invisible py-[5vh] px-[5vw]`}
     >
       <div
         style={{

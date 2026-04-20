@@ -34,6 +34,7 @@ export default function Home() {
   // Selector
   const main = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLDivElement>(null);
+  const wishButton = useRef<HTMLDivElement>(null);
   // Audo Player
   const [audioLink, setAudioLink] = useState(
     "http://dovp7.sg-host.com/wp-content/uploads/2026/02/music.mp3",
@@ -316,6 +317,31 @@ export default function Home() {
     };
   }, [isAllAnimationComplete, verticalSection]);
 
+  // Page Content Animation
+  useGSAP(() => {
+    gsap.to(wishButton.current, {
+      scrollTrigger: {
+        start: () => {
+          return window.innerWidth * 2.1;
+        },
+        toggleActions: "restart pause play reverse",
+      },
+      opacity: 1,
+      visibility: "visible",
+      ease: "none",
+      duration: 0.5,
+      delay: 0,
+    });
+    // Click event
+    wishButton.current?.addEventListener("click", () => {
+      gsap.to(window, {
+        scrollTo: window.innerWidth * 2,
+        duration: 1,
+        ease: "none",
+      });
+    });
+  }, [isAllAnimationComplete]);
+
   // Play Pause State
   const [isPlaying, setIsPlaying] = useState(false);
   function isAudioPlaying(value: { paused: any } | null) {
@@ -438,7 +464,10 @@ export default function Home() {
       <SlidingArrow />
       <CursorFollow isPlaying={isPlaying} />
       <AudioPlayer audioRef={audio} src={audioLink} />
-      <div className="wish-button fixed p-5 bottom-0 right-15 z-50 opacity-0 invisible">
+      <div
+        ref={wishButton}
+        className="wish-button fixed p-5 bottom-0 right-15 z-50 opacity-0 invisible"
+      >
         <ThemeButton
           extraClass="w-13 h-13 flex item-center justify-center"
           bgColor="bg-[#ffffff]"
