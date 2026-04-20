@@ -129,22 +129,6 @@ export default function Home() {
           opacity: 0,
         });
       }
-      // Set Page and Main opacity to 1
-      if (main.current && page.current) {
-        gsap.set([main.current, page.current], {
-          opacity: 1,
-          ease: "none",
-          duration: 0.5,
-          delay: 0,
-        });
-      }
-      if (headerLeft && headerRight) {
-        gsap.set([headerLeft, headerRight], {
-          opacity: 1,
-          ease: "none",
-          duration: 1,
-        });
-      }
       // Set localStorage variable
       const userVisit = localStorage.getItem("hasVisited");
       if (userVisit === "true" && animationPlayed) {
@@ -155,40 +139,40 @@ export default function Home() {
             setIsAllAnimationComplete(true);
           },
         });
-        // if (main.current) {
-        //   tl.to(main.current, {
-        //     opacity: 1,
-        //     ease: "none",
-        //     duration: 0.5,
-        //     delay: 0,
-        //   });
-        // }
-        // if (page.current) {
-        //   tl.to(page.current, {
-        //     opacity: 1,
-        //     ease: "none",
-        //     duration: 0,
-        //     delay: 0,
-        //   });
-        // }
-        // if (headerLeft) {
-        //   tl.to(headerLeft, {
-        //     opacity: 1,
-        //     ease: "none",
-        //     duration: 1,
-        //   });
-        // }
-        // if (headerRight) {
-        //   tl.to(
-        //     headerRight,
-        //     {
-        //       opacity: 1,
-        //       ease: "none",
-        //       duration: 1,
-        //     },
-        //     "-=1",
-        //   );
-        // }
+        if (main.current) {
+          tl.to(main.current, {
+            opacity: 1,
+            ease: "none",
+            duration: 0.5,
+            delay: 0,
+          });
+        }
+        if (page.current) {
+          tl.to(page.current, {
+            opacity: 1,
+            ease: "none",
+            duration: 0,
+            delay: 0,
+          });
+        }
+        if (headerLeft) {
+          tl.to(headerLeft, {
+            opacity: 1,
+            ease: "none",
+            duration: 1,
+          });
+        }
+        if (headerRight) {
+          tl.to(
+            headerRight,
+            {
+              opacity: 1,
+              ease: "none",
+              duration: 1,
+            },
+            "-=1",
+          );
+        }
         if (bannerTitle1 && splitTitle1) {
           tl.to(
             splitTitle1,
@@ -328,7 +312,7 @@ export default function Home() {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   // Play Pause State
   const [isPlaying, setIsPlaying] = useState(false);

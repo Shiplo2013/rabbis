@@ -134,8 +134,8 @@ export default function RabbisTimeline3(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       <div className="section-row w-full h-full flex px-[15.5vw] py-[5vh] items-center justify-center relative z-30 gap-x-[8vw]">
-        <div className="rabbis-title self-end">
-          <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F]">
+        <div dir="ltr" className="rabbis-title self-end">
+          <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F] text-right">
             ציוני
             <br />
             דרך
@@ -159,8 +159,8 @@ export default function RabbisTimeline3(props: ChildProps) {
                   alt="Rabbis Image"
                 />
               </div>
-              <div className="title mt-auto">
-                <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6]">
+              <div dir="ltr" className="title mt-auto">
+                <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6] text-right">
                   {parse(item.text)}
                 </h4>
               </div>

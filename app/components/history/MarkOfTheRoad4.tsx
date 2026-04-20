@@ -194,7 +194,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
               className="title w-full text-[30px] text-black leading-[90%] text-right"
             >
               <h4 className="font-bold">{parse(sectionData[1]?.title)}</h4>
-              <div className="text">
+              <div className="text text-right">
                 <p>{parse(sectionData[1]?.text)}</p>
               </div>
             </div>

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Loader from "./Loader";
 import Loading from "./Loading";
 
 function LoadingEffect(props: { animated: (value: boolean) => void }) {
@@ -11,18 +10,18 @@ function LoadingEffect(props: { animated: (value: boolean) => void }) {
     // Set localStorage variable
     const userVisit = localStorage.getItem("hasVisited");
     if (userVisit == null || userVisit == "false") {
-      localStorage.setItem("hasVisited", "false");
+      localStorage.setItem("hasVisited", "true");
       setIsFirstVisit(true);
     } else {
+      props.animated(true);
       setIsFirstVisit(false);
     }
   }, []);
   // loadin is true
   if (isFirstVisit) {
     return <Loading animated={props.animated} />;
-  } else {
-    return <Loader animated={props.animated} />;
   }
+  return <></>;
 }
 
 export default LoadingEffect;

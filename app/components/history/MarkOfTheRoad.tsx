@@ -170,6 +170,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="section-row w-full h-full flex px-[6.3vw] py-[4.5vw] gap-x-[10vw]">
         <div dir="ltr" className="section-title flex items-end w-[15vw]">

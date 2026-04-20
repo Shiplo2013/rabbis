@@ -225,22 +225,6 @@ export default function Page() {
         gsap.set(history.current, { opacity: 1 });
         gsap.set(timelineRef, { yPercent: 100 });
       }
-      // Set Page and Main opacity to 1
-      if (main.current && page.current) {
-        gsap.set([main.current, page.current], {
-          opacity: 1,
-          ease: "none",
-          duration: 0.5,
-          delay: 0,
-        });
-      }
-      if (headerLeft && headerRight) {
-        gsap.set([headerLeft, headerRight], {
-          opacity: 1,
-          ease: "none",
-          duration: 1,
-        });
-      }
       // Set localStorage variable
       const userVisit = localStorage.getItem("hasVisited");
       if (userVisit === "true" && animationPlayed) {
@@ -251,32 +235,32 @@ export default function Page() {
             setIsAllAnimationComplete(true);
           },
         });
-        // tl.to(main.current, {
-        //   opacity: 1,
-        //   ease: "none",
-        //   duration: 0.5,
-        //   delay: 0,
-        // });
-        // tl.to(page.current, {
-        //   opacity: 1,
-        //   ease: "none",
-        //   duration: 0,
-        //   delay: 0,
-        // })
-        //   .to(".header-left", {
-        //     opacity: 1,
-        //     ease: "none",
-        //     duration: 1,
-        //   })
-        //   .to(
-        //     ".header-right",
-        //     {
-        //       opacity: 1,
-        //       ease: "none",
-        //       duration: 1,
-        //     },
-        //     "-=1",
-        //   );
+        tl.to(main.current, {
+          opacity: 1,
+          ease: "none",
+          duration: 0.5,
+          delay: 0,
+        });
+        tl.to(page.current, {
+          opacity: 1,
+          ease: "none",
+          duration: 0,
+          delay: 0,
+        })
+          .to(".header-left", {
+            opacity: 1,
+            ease: "none",
+            duration: 1,
+          })
+          .to(
+            ".header-right",
+            {
+              opacity: 1,
+              ease: "none",
+              duration: 1,
+            },
+            "-=1",
+          );
         if (headingTitleSpan && splitTitle) {
           tl.to(
             splitTitle,
@@ -432,7 +416,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 44.24,
+          end: "+=" + window.innerWidth * 44.84,
           scrub: scurbScale,
           pin: true,
           anticipatePin: 1,
@@ -547,7 +531,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 44.24 - 500),
+          end: "+=" + (window.innerWidth * 44.84 - 500),
           scrub: scurbScale,
         },
       });
@@ -625,7 +609,7 @@ export default function Page() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[4424.6vw] h-screen will-change-transform`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[4484.6vw] h-screen will-change-transform`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
@@ -661,31 +645,31 @@ export default function Page() {
               <RabbisPeriodSection
                 animWidthText={1.8}
                 extraClass={
-                  "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
+                  "min-w-[100vw] w-[100vw] h-screen panel-section will-change-transform"
                 }
               />
               <SingleImageSection
-                animWidthText={2.6}
+                animWidthText={2.7}
                 extraClass={
                   "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
                 }
                 image={HistoryImage1}
               />
               <MarkOfTheRoad
-                animWidthText={2.9}
+                animWidthText={3}
                 extraClass={
                   "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
                 }
               />
               <RabbisTimeline
-                animWidthText={4.5}
+                animWidthText={4.6}
                 extraClass={
                   "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
                 }
                 bgImage={timelineBG}
               />
               <HistoryQuoteSection
-                animWidthText={6}
+                animWidthText={6.1}
                 bgImage={""}
                 extraClass={
                   "min-w-[45vw] w-[45vw] h-screen panel-section will-change-transform"
@@ -694,7 +678,7 @@ export default function Page() {
                 boxClass="translate-x-[6vw]"
               />
               <Introduction2
-                animWidthText={6.8}
+                animWidthText={6.9}
                 animated={isAllAnimationComplete}
                 bgImage={IntroBG}
                 bgOverlay={""}
@@ -711,14 +695,14 @@ export default function Page() {
                 }}
               />
               <NewsPapperSection
-                animWidthText={7.7}
+                animWidthText={7.8}
                 extraClass={
                   "min-w-[128vw] w-[128vw] h-screen panel-section will-change-transform"
                 }
                 bgImage={NewsSectionBG}
               />
               <TitleSection
-                animWidthText={8.5}
+                animWidthText={8.6}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -726,13 +710,13 @@ export default function Page() {
                 rightShape={true}
               />
               <RabbisPeriodSection
-                animWidthText={9.4}
+                animWidthText={9.5}
                 extraClass={
-                  "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
+                  "min-w-[100vw] w-[100vw] h-screen panel-section will-change-transform"
                 }
               />
               <MarkOfTheRoad2
-                animWidthText={10.2}
+                animWidthText={10.3}
                 extraClass={
                   "min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform"
                 }
@@ -752,10 +736,10 @@ export default function Page() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
-                animWidthText={12.7}
+                animWidthText={13}
               />
               <ArrowSliderSection
-                animWidthText={13.7}
+                animWidthText={14}
                 extraClass={
                   "min-w-[65.8vw] w-[65.8vw] h-screen panel-section will-change-transform"
                 }
@@ -767,13 +751,13 @@ export default function Page() {
                 sectionImage={sectionImage}
               />
               <EvidenceOfPeriod
-                animWidthText={14.35}
+                animWidthText={14.65}
                 extraClass={
                   "min-w-[93vw] w-[93vw] h-screen panel-section will-change-transform"
                 }
               />
               <TitleSection
-                animWidthText={14.7}
+                animWidthText={15}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -781,13 +765,13 @@ export default function Page() {
                 rightShape={true}
               />
               <RabbisPeriodSection
-                animWidthText={15.6}
+                animWidthText={15.9}
                 extraClass={
-                  "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
+                  "min-w-[100vw] w-[100vw] h-screen panel-section will-change-transform"
                 }
               />
               <MarkOfTheRoad3
-                animWidthText={16.65}
+                animWidthText={17}
                 extraClass={
                   "min-w-[285vw] w-[285vw] h-screen panel-section will-change-transform"
                 }
@@ -807,10 +791,10 @@ export default function Page() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
-                animWidthText={19.5}
+                animWidthText={19.9}
               />
               <LambOfferingSection
-                animWidthText={20.25}
+                animWidthText={20.65}
                 extraClass={
                   "min-w-[146vw] w-[146vw] h-screen panel-section will-change-transform"
                 }
@@ -830,16 +814,16 @@ export default function Page() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
-                animWidthText={21.9}
+                animWidthText={22.3}
               />
               <MoveToJerusalem
-                animWidthText={22.9}
+                animWidthText={23.3}
                 extraClass={
                   "min-w-[170vw] w-[170vw] h-screen panel-section will-change-transform"
                 }
               />
               <TitleSection
-                animWidthText={24.1}
+                animWidthText={24.3}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -847,20 +831,20 @@ export default function Page() {
                 rightShape={false}
               />
               <RabbisPeriodSection
-                animWidthText={24.9}
+                animWidthText={25.3}
                 extraClass={
-                  "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
+                  "min-w-[100vw] w-[100vw] h-screen panel-section will-change-transform"
                 }
               />
               <RabbisTimeline2
-                animWidthText={25.7}
+                animWidthText={26.1}
                 extraClass={
                   "min-w-[405vw] w-[405vw] h-screen panel-section will-change-transform"
                 }
                 bgImage={timelineBG}
               />
               <HistoryQuoteSection
-                animWidthText={29.8}
+                animWidthText={30.3}
                 bgImage={""}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
@@ -883,16 +867,16 @@ export default function Page() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
-                animWidthText={30.8}
+                animWidthText={31.2}
               />
               <OnlyTextSection
-                animWidthText={31.3}
+                animWidthText={31.6}
                 extraClass={
                   "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
                 }
               />
               <ArrowSliderSection
-                animWidthText={32}
+                animWidthText={32.3}
                 extraClass={
                   "min-w-[70vw] w-[70vw] h-screen panel-section will-change-transform"
                 }
@@ -904,19 +888,19 @@ export default function Page() {
                 sectionImage={arrowSectionImage}
               />
               <ImageOnlySection
-                animWidthText={32.3}
+                animWidthText={32.6}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
               />
               <SingleVideoSection
-                animWidthText={32.8}
+                animWidthText={33.2}
                 extraClass={
                   "min-w-[26vw] w-[26vw] h-screen panel-section will-change-transform"
                 }
               />
               <TitleSection
-                animWidthText={33}
+                animWidthText={33.4}
                 extraClass={
                   "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                 }
@@ -924,13 +908,13 @@ export default function Page() {
                 rightShape={false}
               />
               <RabbisPeriodSection
-                animWidthText={33.8}
+                animWidthText={34.2}
                 extraClass={
-                  "min-w-[90vw] w-[90vw] h-screen panel-section will-change-transform"
+                  "min-w-[100vw] w-[100vw] h-screen panel-section will-change-transform"
                 }
               />
               <RabbisTimeline3
-                animWidthText={34.7}
+                animWidthText={35.1}
                 extraClass={
                   "min-w-[125vw] w-[125vw] h-screen panel-section will-change-transform"
                 }
@@ -951,16 +935,16 @@ export default function Page() {
                 audioControl={function (): void {
                   throw new Error("Function not implemented.");
                 }}
-                animWidthText={36}
+                animWidthText={36.6}
               />
               <OnlyTextSection2
-                animWidthText={36.6}
+                animWidthText={37.2}
                 extraClass={
                   "min-w-[32.5vw] w-[32.5vw] h-screen panel-section will-change-transform"
                 }
               />
               <ImageOnlySection2
-                animWidthText={37.5}
+                animWidthText={38}
                 extraClass={
                   "min-w-[55.5vw] w-[55.5vw] h-screen panel-section will-change-transform"
                 }
@@ -969,17 +953,17 @@ export default function Page() {
                 extraClass={
                   "panel-section will-change-transform min-w-[210vw] w-[210vw]"
                 }
-                animWidthText={38}
+                animWidthText={38.4}
               />
               <OnlyParallaxImageSection
                 extraClass={
                   "panel-section will-change-transform min-w-[61.8vw] w-[61.8vw]"
                 }
                 image={OnlyImage}
-                animWidthText={39.5}
+                animWidthText={40}
               />
               <MarkOfTheRoad4
-                animWidthText={40.5}
+                animWidthText={41.2}
                 extraClass={
                   "min-w-[130vw] w-[130vw] h-screen panel-section will-change-transform"
                 }
@@ -988,20 +972,20 @@ export default function Page() {
                 extraClass={
                   "min-w-[137vw] w-[137vw] h-screen panel-section will-change-transform"
                 }
-                animWidthText={42}
+                animWidthText={42.7}
               />
               <OnlyImageSection
                 extraClass={
                   "panel-section will-change-transform min-w-[35.8vw] w-[35.8vw]"
                 }
                 image={OnlyImage2}
-                animWidthText={42.8}
+                animWidthText={43.5}
               />
               <HistoryQuoteSection2
                 extraClass={
                   "panel-section will-change-transform min-w-[75vw] w-[75vw]"
                 }
-                animWidthText={43.5}
+                animWidthText={44.2}
                 bgImage={QuoteSectionBG}
                 boxClass={""}
                 data={QuoteData3}

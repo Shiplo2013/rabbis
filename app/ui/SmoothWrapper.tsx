@@ -21,9 +21,9 @@ export default function SmoothWrapper({
       }
 
       const smoother = ScrollSmoother.create({
-        smooth: 1,
+        smooth: 0.1,
         effects: true,
-        smoothTouch: 0.1,
+        smoothTouch: 0.5,
         //normalizeScroll: true,
       });
 

@@ -140,13 +140,13 @@ export default function RabbisPeriodSection(props: ChildProps) {
         overlayLeftColor={"#0a0a0a"}
         animatePosition={props.animWidthText}
       />
-      <div className="period-content-wrapper flex items-center justify-center w-full h-full relative z-20 pr-[10vw] pl-[10vw] pt-[10vh]">
+      <div className="period-content-wrapper flex items-center justify-center w-full h-full relative z-20 pr-[10vw] pl-[10vw] pt-[6vh]">
         <div
           ref={button}
           className="period-button absolute top-[7.8vh] left-[12.7vw]"
         >
           <ThemeButton
-            extraClass="w-38.25 h-38.25 flex item-center justify-center border-[4px] border-[#D1A941] text-[37px] leading-[0.8em] p-6 text-center font-bold"
+            extraClass="w-32 h-32 flex item-center justify-center border-[4px] border-[#D1A941] text-[28px] leading-[0.8em] p-6 text-center font-bold"
             bgColor="bg-[#ffffff]"
             textColor="text-[#000000]"
             hoverBgColor="bg-[#C3A13F]"
@@ -160,7 +160,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
         >
           <h2
             ref={title}
-            className="text-[55px] leading-[0.7em] text-[#FBF4E6]"
+            className="text-[45px] leading-[0.7em] text-[#FBF4E6]"
           >
             הרבנים בתקופת תרל"ז - תרע"ד
           </h2>

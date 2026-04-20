@@ -108,6 +108,7 @@ export default function RabbisTimeline(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
+      data-scroll-section={props.animWidthText}
     >
       <ParallaxBackground
         bgImage={props.bgImage}

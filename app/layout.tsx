@@ -47,7 +47,7 @@ export default function RootLayout({
   return (
     <html lang="en" dir="rtl">
       <body
-        className={`${customFont.className} antialiased bg-black text-white`}
+        className={`${customFont.className} antialiased bg-black text-white overflow-hidden`}
       >
         {children}
       </body>
