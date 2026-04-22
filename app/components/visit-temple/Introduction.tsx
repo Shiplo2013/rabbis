@@ -24,7 +24,7 @@ export default function Introduction(props: ChildProps) {
 
   // Console
   useEffect(() => {
-    console.log(pageData[0].image);
+    //console.log(pageData[0].image);
   }, [pageData]);
   return (
     <section

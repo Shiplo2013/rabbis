@@ -14,7 +14,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText, ScrollTrigger, useGSAP);
 }
 
-export default function Contact() {
+export default function Page() {
   // Container Ref
   const main = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLDivElement>(null);

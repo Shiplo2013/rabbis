@@ -80,7 +80,6 @@ export default function HistoryQuoteSection2(props: ChildProps) {
         <BackgroundImage2
           bgImage={props.bgImage}
           start={props.animWidthText}
-          end={0}
           panel={""}
         />
       </div>
