@@ -10,7 +10,6 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   bgImage: any;
   start: number;
-  end: number;
   panel: any;
 }
 
@@ -45,7 +44,7 @@ export default function BackgroundImage2(props: ChildProps) {
   return (
     <div
       ref={background}
-      className={`banner-background absolute top-0 left-0 w-full h-full bg-black z-10 transition-none`}
+      className={`banner-background absolute top-0 left-0 w-full h-full bg-black z-10 transition-none pointer-events-none select-none`}
     >
       <Image
         className="bg-image w-full object-cover object-center h-full"

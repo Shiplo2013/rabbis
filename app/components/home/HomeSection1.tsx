@@ -108,7 +108,6 @@ export default function HomeSection1(props: ChildProps) {
         bgImage={sectionBg}
         panel={props.panel}
         start={props.animWidthPost}
-        end={0}
       />
       <div className="section-content relative z-30 w-full h-full">
         <div

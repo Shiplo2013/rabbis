@@ -1,14 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import Rabbis1 from "../assets/images/rabbis1.jpg";
-import Rabbis2 from "../assets/images/rabbis2.jpg";
-import Rabbis3 from "../assets/images/rabbis3.jpg";
-import Rabbis4 from "../assets/images/rabbis4.jpg";
-import Rabbis5 from "../assets/images/rabbis5.jpg";
-import Rabbis6 from "../assets/images/rabbis6.jpg";
-import Rabbis7 from "../assets/images/rabbis7.jpg";
-import Rabbis8 from "../assets/images/rabbis8.jpg";
 import introImage1 from "../assets/images/visit-temple/temple.png";
 import Wave from "../assets/images/wave.svg";
 import IntroBG from "../assets/images/yeshiva-graduates-bg.jpg";
@@ -35,64 +27,7 @@ export default function Rabbis() {
       image: introImage1,
     },
   ];
-  // Rabbis Data
-  const RabbisSection1 = [
-    {
-      sectionTitle: "ראשי הישיבה",
-      sectionContent: [
-        {
-          title: `מרן ראש הישיבה<br/> הגאון רבי פרבשטיין משה<br/> מרדכי שליט״א`,
-          image: Rabbis1,
-        },
-        {
-          title: `מרן ראש הישיבההגאון רבי שלמה כץ שליט"א`,
-          image: Rabbis2,
-        },
-        {
-          title: `מרן ראש הישיבההגאון רבי יוסף חברוני שליט"א`,
-          image: Rabbis3,
-        },
-      ],
-    },
-  ];
-  const RabbisSection2 = [
-    {
-      sectionTitle: "מנהל רוחני",
-      sectionContent: [
-        {
-          title: `מרן המשגיחהגאון רבי חיים יצחק קפלן שליט"א`,
-          image: Rabbis4,
-        },
-      ],
-    },
-  ];
-  const RabbisSection3 = [
-    {
-      sectionTitle: "רמים",
-      sectionContent: [
-        {
-          title: `הגאון רבי אברהם לויסון שליט"א`,
-          image: Rabbis5,
-        },
-        {
-          title: `הגאון רבי איתן יפהן שליט"א`,
-          image: Rabbis5,
-        },
-        {
-          title: `הגאון רבי חיים אהרון רלבג שליט"א`,
-          image: Rabbis6,
-        },
-        {
-          title: `הגאון רבי  נחום  בר חיים שליט"א`,
-          image: Rabbis7,
-        },
-        {
-          title: `הגאון רבי חנוך הרטמן שליט"א`,
-          image: Rabbis8,
-        },
-      ],
-    },
-  ];
+
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -122,7 +57,7 @@ export default function Rabbis() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerHeight * 3,
+          end: "+=" + window.innerHeight * 5,
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -150,7 +85,7 @@ export default function Rabbis() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerHeight * 3 - 500),
+          end: "+=" + (window.innerHeight * 5 - 2200),
           scrub: scurbScale,
         },
       });
@@ -345,7 +280,7 @@ export default function Rabbis() {
 
   useGSAP(() => {
     // Page Overflow Hidden
-    document.body.classList.remove("!overflow-auto");
+    document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
@@ -381,7 +316,7 @@ export default function Rabbis() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[400vw] h-screen items-center will-change-transform`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[255.60vw] h-screen items-center will-change-transform`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
@@ -401,8 +336,8 @@ export default function Rabbis() {
                 }}
               />
               <VisitTempleSection
-                extraClass="w-screen panel-section will-change-transform"
-                animWidthText={0.5}
+                extraClass="w-[155.6vw] panel-section will-change-transform"
+                animWidthText={0.2}
               />
             </div>
           </div>
