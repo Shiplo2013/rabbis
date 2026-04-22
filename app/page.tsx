@@ -303,20 +303,6 @@ export default function Home() {
     };
   }, [pathname]);
 
-  // Set Body Overflow Hidden
-  useEffect(() => {
-    if (isAllAnimationComplete) {
-      document.body.classList.remove("overflow-hidden");
-      document.body.classList.add("overflow-x-hidden", "overscroll-none");
-      verticalSection?.pause();
-    } else {
-      verticalSection?.play();
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isAllAnimationComplete, verticalSection]);
-
   // Page Content Animation
   useGSAP(() => {
     gsap.to(wishButton.current, {
@@ -377,8 +363,25 @@ export default function Home() {
     }
   }, [audio.current]);
 
+  // Set Body Overflow Hidden
   useEffect(() => {
-    document.body.classList.add("overflow-hidden");
+    if (isAllAnimationComplete) {
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
+      verticalSection?.resume();
+    } else {
+      verticalSection?.pause();
+    }
+    return () => {
+      //document.body.style.overflow = "auto";
+    };
+  }, [isAllAnimationComplete]);
+  // Page default
+  useEffect(() => {
+    // Page Overflow Hidden
+    document.body.classList.remove("!overflow-auto");
+    document.body.classList.add("!overflow-hidden");
+    // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
       gsap.to(main.current, {
         opacity: 0,

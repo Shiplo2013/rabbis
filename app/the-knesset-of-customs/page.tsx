@@ -405,8 +405,8 @@ export default function Page() {
   useEffect(() => {
     if (isAllAnimationComplete) {
       // Body Overflow Hidden
-      document.body.classList.remove("overflow-hidden");
-      document.body.classList.add("overflow-x-hidden", "overscroll-none");
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
       verticalSection?.pause();
     } else {
       verticalSection?.resume();
@@ -417,7 +417,9 @@ export default function Page() {
   }, [isAllAnimationComplete]);
 
   useGSAP(() => {
-    document.body.classList.add("overflow-hidden");
+    // Page Overflow Hidden
+    document.body.classList.remove("!overflow-auto");
+    document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
       gsap.to(main.current, {
