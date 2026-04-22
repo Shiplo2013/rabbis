@@ -373,11 +373,9 @@ export default function Page() {
 
   // Page Section Animation
   useGSAP(() => {
-    ScrollTrigger.normalizeScroll(true);
+    //ScrollTrigger.normalizeScroll(true);
     let timeline = null;
     if (typeof window !== "undefined" && panel) {
-      // Overflow body
-      document.body.classList.add("overflow-x-hidden", "overscroll-none");
       const scurbScale = 2;
       // Select Part 1 timeline
       const intro2Right = getRightPosition(".second-intro");
@@ -547,8 +545,8 @@ export default function Page() {
   useEffect(() => {
     if (isAllAnimationComplete) {
       // Body Overflow Hidden
-      document.body.classList.remove("overflow-hidden");
-      document.body.classList.add("overflow-x-hidden", "overscroll-none");
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
       verticalSection?.pause();
     } else {
       verticalSection?.resume();
@@ -574,7 +572,10 @@ export default function Page() {
 
   // Default Effect
   useEffect(() => {
-    document.body.classList.add("overflow-hidden");
+    // Page Overflow Hidden
+    document.body.classList.remove("!overflow-auto");
+    document.body.classList.add("!overflow-hidden");
+    // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
       gsap.to(main.current, {
         opacity: 0,

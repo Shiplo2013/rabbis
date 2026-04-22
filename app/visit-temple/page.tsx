@@ -192,6 +192,12 @@ export default function Rabbis() {
               opacity: 0,
             });
           }
+          if (introImage) {
+            gsap.set(introImage, {
+              x: "10vw",
+              opacity: 0,
+            });
+          }
           // Set localStorage variable
           const userVisit = localStorage.getItem("hasVisited");
           if (userVisit === "true") {
@@ -256,11 +262,11 @@ export default function Rabbis() {
             }
             // Intro Image Animation
             if (introImage) {
-              tl.from(
+              tl.to(
                 introImage,
                 {
-                  x: "10vw",
-                  opacity: 0,
+                  x: "0vw",
+                  opacity: 1,
                   duration: 3,
                   delay: 0,
                   ease: "expo.inOut",
@@ -326,8 +332,8 @@ export default function Rabbis() {
   useEffect(() => {
     if (isAllAnimationComplete) {
       // Body Overflow Hidden
-      document.body.classList.remove("overflow-hidden");
-      document.body.classList.add("overflow-x-hidden", "overscroll-none");
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
       verticalSection?.pause();
     } else {
       verticalSection?.resume();
@@ -338,7 +344,9 @@ export default function Rabbis() {
   }, [isAllAnimationComplete]);
 
   useGSAP(() => {
-    document.body.classList.add("overflow-hidden");
+    // Page Overflow Hidden
+    document.body.classList.remove("!overflow-auto");
+    document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
       gsap.to(main.current, {

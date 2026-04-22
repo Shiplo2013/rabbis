@@ -137,7 +137,7 @@ export default function About() {
     let verticalSection = null;
     if (typeof window !== "undefined" && panel) {
       // Overflow body
-      document.body.classList.add("overflow-x-hidden", "overscroll-none");
+      document.body.classList.add("overflow-auto");
       const scurbScale = 2;
 
       // Vertical Section
