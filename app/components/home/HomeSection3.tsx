@@ -108,7 +108,6 @@ export default function HomeSection3(props: ChildProps) {
         bgImage={sectionBg}
         panel={wrapper}
         start={props.animWidthImage}
-        end={0}
       />
       <div
         className={`section-content w-full h-auto flex items-center justify-start pl-[5%] relative z-40`}
