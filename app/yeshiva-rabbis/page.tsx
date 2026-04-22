@@ -23,7 +23,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-export default function Rabbis() {
+export default function Page() {
   // Router Path
   const pathname = usePathname();
   // Rabbis Data

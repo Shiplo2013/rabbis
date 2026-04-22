@@ -1,14 +1,14 @@
 "use client";
+import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import introImage1 from "../assets/images/visit-temple/temple.png";
+import Testimonial1 from "../assets/images/testimonial-1.jpg";
+import Testimonial2 from "../assets/images/testimonial-2.jpg";
+import Testimonial3 from "../assets/images/testimonial-3.jpg";
 import Wave from "../assets/images/wave.svg";
-import IntroBG from "../assets/images/yeshiva-graduates-bg.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LoadingEffect from "../components/LoadingEffect";
-import Introduction from "../components/visit-temple/Introduction";
-import VisitTempleSection from "../components/visit-temple/VisitTempleSection";
 import BigTitleSplitLines from "../ui/BigTitleSplitLines";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 import SmoothWrapper from "../ui/SmoothWrapper";
@@ -21,12 +21,23 @@ export default function Page() {
   // Router Path
   const pathname = usePathname();
   // Page Data
-  const IntroData1 = [
-    {
-      title: `לבקר<br/>בהיכלו`,
-      image: introImage1,
-    },
-  ];
+  const PageContent = {
+    title: `עדויות חיות למורשת שנמשכת מדור לדור`,
+    testimonials: [
+      {
+        title: `הרב מנחם מוזס`,
+        image: Testimonial1,
+      },
+      {
+        title: `הרב צבי פולק`,
+        image: Testimonial2,
+      },
+      {
+        title: `הרב מנדלזון משה יוסף מאיר`,
+        image: Testimonial3,
+      },
+    ],
+  };
 
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
@@ -44,8 +55,6 @@ export default function Page() {
   const waveMask = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
 
-  const introData = JSON.stringify(IntroData1);
-
   // Page Section Animation
   useGSAP(() => {
     if (typeof window !== "undefined" && panel) {
@@ -57,7 +66,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerHeight * 5,
+          end: "+=" + window.innerHeight * 3,
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -85,7 +94,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerHeight * 5 - 2200),
+          end: "+=" + (window.innerHeight * 3 - 500),
           scrub: scurbScale,
         },
       });
@@ -108,13 +117,10 @@ export default function Page() {
           const headerLeft = main.current?.querySelector(".header-left");
           const headerRight = main.current?.querySelector(".header-right");
           const introTitle = main.current?.querySelector(
-            ".first-intro h1.intro-title",
+            ".introduction h1.intro-title",
           );
-          const introImage = main.current?.querySelector(
-            ".first-intro .intro-image",
-          );
-          const bannerBackgroundOverlay = main.current?.querySelector(
-            ".first-intro .intro-background .intro-bg-mask",
+          const Testimonial1 = main.current?.querySelector(
+            ".testimonials .testimonial-item:nth-child(1)",
           );
           let splitIntroTitle;
           if (introTitle) {
@@ -127,9 +133,9 @@ export default function Page() {
               opacity: 0,
             });
           }
-          if (introImage) {
-            gsap.set(introImage, {
-              x: "10vw",
+          if (Testimonial1) {
+            gsap.set(Testimonial1, {
+              x: "-15vw",
               opacity: 0,
             });
           }
@@ -196,9 +202,9 @@ export default function Page() {
               );
             }
             // Intro Image Animation
-            if (introImage) {
+            if (Testimonial1) {
               tl.to(
-                introImage,
+                Testimonial1,
                 {
                   x: "0vw",
                   opacity: 1,
@@ -206,7 +212,7 @@ export default function Page() {
                   delay: 0,
                   ease: "expo.inOut",
                 },
-                "-=1.5",
+                "-=2",
               );
             }
             // Wave Line Animation
@@ -223,18 +229,6 @@ export default function Page() {
                 "-=2.5",
               );
             }
-            if (bannerBackgroundOverlay) {
-              tl.to(
-                bannerBackgroundOverlay,
-                {
-                  translateY: "-100%",
-                  delay: 0,
-                  duration: 3,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
           }
         });
       }
@@ -245,20 +239,29 @@ export default function Page() {
   // Set Page Content Animation
   const setPageContentAnimation = () => {
     // Page Content Animation
-    const introImage = main.current?.querySelector(".first-intro .intro-image");
-    if (introImage) {
-      gsap.to(introImage, {
-        x: "-30vw",
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return 0;
-          },
-          end: () => {
-            return "+=" + window.innerWidth * 2;
-          },
-          scrub: 2,
-        },
+    const Testimonials = main.current?.querySelectorAll(
+      ".testimonials .testimonial-item",
+    );
+    if (Testimonials) {
+      Testimonials.forEach((testimonial, index) => {
+        if (index !== 0) {
+          gsap.set(testimonial, {
+            x: "-30vw",
+            opacity: 0,
+          });
+          gsap.to(testimonial, {
+            x: "0vw",
+            opacity: 1,
+            ease: "expo.inOut",
+            duration: 2,
+            scrollTrigger: {
+              start: () => {
+                return window.innerWidth * (index * 0.4);
+              },
+              toggleActions: "restart pause resume reverse",
+            },
+          });
+        }
       });
     }
   };
@@ -316,29 +319,43 @@ export default function Page() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[255.60vw] h-screen items-center will-change-transform`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[260vw] h-screen items-center will-change-transform`}
             >
-              <Introduction
-                animated={isAllAnimationComplete}
-                animationStatus={isAllAnimationComplete}
-                bgImage={IntroBG}
-                bgOverlay={""}
-                data={introData}
-                extraClass={
-                  "first-intro panel-section will-change-transform min-w-screen w-screen"
-                }
-                panel={panel}
-                bgPosition=""
-                overlayClass="bg-[#000000] opacity-0"
-                bgClass=""
-                audioControl={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
-              <VisitTempleSection
-                extraClass="w-[155.6vw] panel-section will-change-transform"
-                animWidthText={0.2}
-              />
+              <div
+                dir="rtl"
+                className="testimonials-content w-[260vw] h-full py-[10vh] px-[10vw] flex items-center gap-x-[6.3vw]"
+              >
+                <div className="introduction w-[33.4vw] min-w-[33.4vw] will-change-transform">
+                  <h1
+                    dir="ltr"
+                    className="intro-title text-[160px] leading-[70%] text-[#C3A13F] text-right"
+                  >
+                    {parse(PageContent.title)}
+                  </h1>
+                </div>
+                <div className="testimonials flex h-screen items-center justify-center gap-x-[10vw] w-[200vw] will-change-transform">
+                  {PageContent.testimonials.map((testimonial, index) => (
+                    <div
+                      key={index}
+                      className="testimonial-item w-screen h-screen flex items-center justify-start gap-x-[2.8vw] will-change-transform"
+                    >
+                      <div className="testimonial-image w-[40vw] min-w-[40vw] h-[50vh] relative">
+                        <img
+                          src={testimonial.image.src}
+                          alt={testimonial.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <h2
+                        dir="ltr"
+                        className="testimonial-title text-[55px] leading-[70%] text-[#C3A13F] text-right"
+                      >
+                        {parse(testimonial.title)}
+                      </h2>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </main>
