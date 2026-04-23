@@ -1,5 +1,6 @@
 "use client";
 import parse from "html-react-parser";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Testimonial1 from "../assets/images/testimonial-1.jpg";
@@ -340,10 +341,15 @@ export default function Page() {
                       className="testimonial-item w-screen h-screen flex items-center justify-start gap-x-[2.8vw] will-change-transform"
                     >
                       <div className="testimonial-image w-[40vw] min-w-[40vw] h-[50vh] relative">
-                        <img
-                          src={testimonial.image.src}
-                          alt={testimonial.title}
+                        <Image
                           className="w-full h-full object-cover"
+                          src={testimonial.image.src}
+                          width={768}
+                          height={464}
+                          alt={`Testimonial Image ${index + 1}`}
+                          blurDataURL={testimonial.image.blurDataURL}
+                          placeholder="blur"
+                          loading="lazy"
                         />
                       </div>
                       <h2
