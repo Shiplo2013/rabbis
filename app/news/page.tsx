@@ -38,13 +38,13 @@ export default function Page() {
     {
       title: `ושמתיה כאבל יחיד ואחריתה כיום מר`,
       summary: `עצרות מספד והתעוררות לזכר בוגרי הישיבה החשובים שנסלקו לבית עולמם`,
-      link: `#`,
+      link: `/news/single`,
       images: [PostImage1, PostImage2, PostImage3],
     },
     {
       title: `ושמתיה כאבל יחיד ואחריתה כיום מר`,
       summary: `עצרות מספד והתעוררות לזכר בוגרי הישיבה החשובים שנסלקו לבית עולמם`,
-      link: `#`,
+      link: `/news/single`,
       images: [PostImage1, PostImage2, PostImage3],
     },
   ];

@@ -18,12 +18,7 @@ export default function CommunitesPostCat(props: ChildProps) {
       </div>
       <div className="posts-wrapper h-auto flex gap-[5vw]">
         {props?.postsContent?.[0]?.sectionContent.map((item, index) => (
-          <SingleCommunittyPost
-            key={index}
-            title={item.title}
-            content={item.content}
-            image={item.image}
-          />
+          <SingleCommunittyPost key={index} data={JSON.stringify(item)} />
         ))}
       </div>
     </section>

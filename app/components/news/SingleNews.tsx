@@ -23,16 +23,18 @@ export default function SingleNews(props: ChildProps) {
             key={index}
             className={`news-image news-image-${index} ${index === 0 ? "w-[22vw] h-[63vh] z-50" : "w-[30vw] h-[40vh]"} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-none`}
           >
-            <Image
-              className="w-full h-full object-cover object-center"
-              src={item.src}
-              width={item.width}
-              height={item.height}
-              alt={`News Image ${index + 1}`}
-              blurDataURL={item.blurDataURL}
-              placeholder="blur"
-              loading="lazy"
-            />
+            <Link className="cursor-none" href={newsData?.link || "#"}>
+              <Image
+                className="w-full h-full object-cover object-center"
+                src={item.src}
+                width={item.width}
+                height={item.height}
+                alt={`News Image ${index + 1}`}
+                blurDataURL={item.blurDataURL}
+                placeholder="blur"
+                loading="lazy"
+              />
+            </Link>
           </div>
         ))}
       </div>
