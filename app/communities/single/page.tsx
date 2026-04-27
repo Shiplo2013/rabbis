@@ -138,6 +138,7 @@ export default function Page() {
   // Page Refs
   const main = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLDivElement>(null);
+  const communityLoader = useRef<HTMLDivElement>(null);
   const swiperRef = useRef<SwiperRef>(null);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -158,6 +159,20 @@ export default function Page() {
                 setIsAllAnimationComplete(true);
               },
             });
+            if (communityLoader.current) {
+              tl.to(communityLoader.current, {
+                opacity: 0,
+                ease: "none",
+                duration: 1,
+                delay: 1,
+              });
+              tl.to(communityLoader.current, {
+                visibility: "hidden",
+                ease: "none",
+                duration: 0,
+                delay: 0,
+              });
+            }
             if (main.current) {
               tl.to(main.current, {
                 opacity: 1,
@@ -627,9 +642,9 @@ export default function Page() {
                             </div>
                             <div className="news-list flex flex-wrap items-start justify-start gap-y-[5vh] gap-x-[3vw] w-full text-[22px] leading-[1em] text-[#C3A13F]">
                               {CommunityTabs[activeTab].content.news.map(
-                                (item) => (
+                                (item, index) => (
                                   <div
-                                    key={item.title}
+                                    key={index}
                                     style={{
                                       backgroundImage: `url(${NewsBG.src})`,
                                     }}
@@ -653,9 +668,9 @@ export default function Page() {
                             </div>
                             <div className="news-list flex flex-wrap items-start justify-start gap-y-[5vh] gap-x-[3vw] w-full text-[22px] leading-[1em] text-[#C3A13F]">
                               {CommunityTabs[activeTab].content.event.map(
-                                (item) => (
+                                (item, index) => (
                                   <div
-                                    key={item.title}
+                                    key={index}
                                     className="news-item bg-white flex flex-col gap-y-2 py-8 px-13 w-[calc((100%-3vw)/2)]max-w-110"
                                   >
                                     <p className="font-bold">{item.text}</p>
@@ -725,28 +740,24 @@ export default function Page() {
                       content={`במעמד נשאו ראשי הישיבה דברים בענייני דיומא ודברי חיזוק לקהילה כשהם מדגישים כי המקום המהווה...`}
                       subtitle={"י״ג בחשוון תשפ״ו"}
                       buttonLabel={"קהילת בני ברק"}
-                      buttonColor={"bg-[#C3A13F] hover:bg-[#c59811]"}
                     />
                     <EventItem
                       title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
                       content={`במעמד נשאו ראשי הישיבה דברים בענייני דיומא ודברי חיזוק לקהילה כשהם מדגישים כי המקום המהווה...`}
                       subtitle={"י״ג בחשוון תשפ״ו"}
                       buttonLabel={"קהילת בני ברק"}
-                      buttonColor={"bg-[#5A7C4E] hover:bg-[#2b6018]"}
                     />
                     <EventItem
                       title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
                       content={`במעמד נשאו ראשי הישיבה דברים בענייני דיומא ודברי חיזוק לקהילה כשהם מדגישים כי המקום המהווה...`}
                       subtitle={"י״ג בחשוון תשפ״ו"}
                       buttonLabel={"קהילת בני ברק"}
-                      buttonColor={"bg-[#C3A13F] hover:bg-[#c59811]"}
                     />
                     <EventItem
                       title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
                       content={`במעמד נשאו ראשי הישיבה דברים בענייני דיומא ודברי חיזוק לקהילה כשהם מדגישים כי המקום המהווה...`}
                       subtitle={"י״ג בחשוון תשפ״ו"}
                       buttonLabel={"קהילת בני ברק"}
-                      buttonColor={"bg-[#5A7C4E] hover:bg-[#2b6018]"}
                     />
                   </div>
                 </div>
@@ -756,6 +767,18 @@ export default function Page() {
         </main>
         <Footer className={"relative z-20"} />
       </SmoothWrapper>
+      <div
+        ref={communityLoader}
+        className="community-loader fixed top-0 left-0 w-full h-full bg-[#C3A13F] flex items-center justify-center z-999"
+      >
+        <h2 className="loader-heading text-[130px] leading-[80%] font-bold text-[#091B24] text-center">
+          חברון
+          <br />
+          היכל יחזקאל
+          <br />
+          פתח תקווה
+        </h2>
+      </div>
     </div>
   );
 }
