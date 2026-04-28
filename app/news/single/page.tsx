@@ -4,11 +4,9 @@ import { useRef, useState } from "react";
 import PostImage1 from "../../assets/images/single-news-image.jpg";
 import Footer from "../../components/Footer";
 
-import ArrowLeft2 from "@/app/assets/icons/ArrowLeft2";
-import ArrowRight from "@/app/assets/icons/ArrowRight";
 import SinglePageHeader from "@/app/components/SinglePageHeader";
+import PostNavigation from "@/app/ui/PostNavigation";
 import parse from "html-react-parser";
-import Link from "next/dist/client/link";
 import Image from "next/image";
 import PrevPostImage from "../../assets/images/prev-post.jpg";
 import LoadingEffect from "../../components/LoadingEffect";
@@ -29,15 +27,17 @@ export default function Page() {
     image: PostImage1,
     caption: `ראש הישיבה הגר"ד כהן שליט"א בדברי קינה`,
     link: `/news/single`,
-    prevPost: {
-      image: PrevPostImage,
-      title: `מי יתנני כעפר`,
-      link: `/`,
-    },
-    nextPost: {
-      image: PrevPostImage,
-      title: `הבו לי צמחי פרא`,
-      link: `/`,
+    navigation: {
+      prevPost: {
+        image: PrevPostImage,
+        title: `מי יתנני כעפר`,
+        link: `/`,
+      },
+      nextPost: {
+        image: PrevPostImage,
+        title: `הבו לי צמחי פרא`,
+        link: `/`,
+      },
     },
   };
 
@@ -381,66 +381,10 @@ export default function Page() {
                 >
                   {parse(NewsPostsData?.summary)}
                 </div>
-                <div className="post-navigation bg-black py-10 px-15 flex items-center justify-between mt-[8.6vh]">
-                  {NewsPostsData?.nextPost && (
-                    <Link
-                      href={NewsPostsData?.nextPost?.link}
-                      className="next-post relative group"
-                    >
-                      <div className="image w-[6.4vw] h-[6.4vw] overflow-hidden">
-                        <Image
-                          className="w-full h-full object-cover object-center"
-                          src={NewsPostsData?.nextPost?.image?.src}
-                          width={NewsPostsData?.nextPost?.image?.width}
-                          height={NewsPostsData?.nextPost?.image?.height}
-                          alt="News Image"
-                          blurDataURL={
-                            NewsPostsData?.nextPost?.image?.blurDataURL
-                          }
-                          placeholder="blur"
-                          loading="lazy"
-                        />
-                      </div>
-                      <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-1.5 text-center text-[10px] leading-[70%] min-w-22 max-w-full">
-                        {NewsPostsData?.nextPost.title}
-                      </h4>
-                      <div className="absolute top-1/2 -translate-y-1/2 right-full -mr-5 w-14 h-14 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:translate-x-3">
-                        <div className="w-8 h-auto transition-all duration-300 group-hover:translate-x-1">
-                          <ArrowRight />
-                        </div>
-                      </div>
-                    </Link>
-                  )}
-                  {NewsPostsData?.prevPost && (
-                    <Link
-                      href={NewsPostsData?.prevPost?.link}
-                      className="prev-post relative group"
-                    >
-                      <div className="image w-[6.4vw] h-[6.4vw] overflow-hidden">
-                        <Image
-                          className="w-full h-full object-cover object-center"
-                          src={NewsPostsData?.prevPost?.image?.src}
-                          width={NewsPostsData?.prevPost?.image?.width}
-                          height={NewsPostsData?.prevPost?.image?.height}
-                          alt="News Image"
-                          blurDataURL={
-                            NewsPostsData?.prevPost?.image?.blurDataURL
-                          }
-                          placeholder="blur"
-                          loading="lazy"
-                        />
-                      </div>
-                      <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-1.5 text-center text-[10px] leading-[70%] min-w-22 max-w-full">
-                        {NewsPostsData?.prevPost.title}
-                      </h4>
-                      <div className="absolute top-1/2 -translate-y-1/2 left-full -ml-5 w-14 h-14 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:-translate-x-3">
-                        <div className="w-8 h-auto transition-all duration-300 group-hover:-translate-x-1">
-                          <ArrowLeft2 />
-                        </div>
-                      </div>
-                    </Link>
-                  )}
-                </div>
+                <PostNavigation
+                  extraClass="mt-[8.6vh]"
+                  data={JSON.stringify(NewsPostsData.navigation)}
+                />
               </div>
             </div>
           </section>
