@@ -1,19 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import ArrowRight from "../assets/icons/ArrowRight";
 import logo from "../assets/images/logo.png";
 import ThemeButton2 from "../ui/ThemeButton2";
+import RabbisHamburgerMenu from "../ui/past-rabbis/RabbisHamburgerMenu";
 
-export default function RabbisHeader({ link }: { link: string }) {
-  const [allRabbisMenu, setAllRabbisMenu] = useState(false);
+interface RabbisHeaderProps {
+  link: string;
+  data: string;
+  activeMenu?: boolean;
+  activeMenuFunction?: (state: boolean) => void;
+}
+
+export default function RabbisHeader(props: RabbisHeaderProps) {
   return (
     <>
       <header className="rabbis-header w-25 h-screen bg-black fixed top-0 right-0 z-99 px-3 py-10 opacity-0 border-l border-[rgba(212,175,55,0.30)]">
         <div className="header-content w-full h-full flex flex-col items-center justify-center">
           <div className="back-link mt-0 mb-auto">
             <Link
-              href={link}
+              href={props.link}
               className="group w-14 h-14 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300"
             >
               <div className="w-8 h-auto transition-all duration-300 group-hover:translate-x-1">
@@ -36,7 +42,9 @@ export default function RabbisHeader({ link }: { link: string }) {
             </div>
           </div>
           <div
-            onClick={() => setAllRabbisMenu(true)}
+            onClick={() => {
+              props.activeMenuFunction?.(!props.activeMenu);
+            }}
             className="button cursor-pointer"
           >
             <ThemeButton2
@@ -50,6 +58,13 @@ export default function RabbisHeader({ link }: { link: string }) {
           </div>
         </div>
       </header>
+
+      <RabbisHamburgerMenu
+        extraClass=""
+        data={props.data}
+        activeMenu={props.activeMenu}
+        activeMenuFunction={props.activeMenuFunction}
+      />
     </>
   );
 }

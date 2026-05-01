@@ -5,7 +5,7 @@ interface ChildProps {
   animWidthText: number;
 }
 
-export default function CustomsContentSection(props: ChildProps) {
+export default function ContentSection(props: ChildProps) {
   return (
     <section
       dir="rtl"

@@ -7,10 +7,16 @@ import ContentParts from "@/app/ui/ContentParts";
 import PostNavigation from "@/app/ui/past-rabbis/PostNavigation";
 import RabbisOptions from "@/app/ui/past-rabbis/RabbisOptions";
 import QuoteSection from "@/app/ui/QuoteSection";
+import parse from "html-react-parser";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import SimpleBar from "simplebar-react";
 import IntroBG from "../../assets/images/past-rabbis-bg.jpg";
+import PopupImage1 from "../../assets/images/popup-image-1.jpg";
+import PopupImage2 from "../../assets/images/popup-image-2.jpg";
 import PostImage1 from "../../assets/images/rabbis-image-1.jpg";
+import PostImage2 from "../../assets/images/rabbis-image-2.jpg";
 import Wave from "../../assets/images/wave.svg";
 import Footer from "../../components/Footer";
 import LoadingEffect from "../../components/LoadingEffect";
@@ -70,14 +76,80 @@ export default function Page() {
         link: `/`,
       },
     },
+    popup1: {
+      title: `כשענווה כיסתה את חרפת המילים`,
+      content: `<p><strong>סיפר אחד מתלמידי הישיבה:</strong></p><p>במעמד אירוסיי כבדוני לדרוש בדברי תורה, ואני שהייתי בטוח שהבחורים כדרכם, יפריעו לי באמצע ויפסיקו אותי, הכנתי רק את תחילת הדברים.</p><p>אבל במקום זאת, השתררה דממה, אינני יודע מדוע אבל הבחורים לא הבינו שעליהם להפסיק אותי, ותחת זאת שתקו, וכך נאלמתי דום, אל מול פני ראש הישיבה רבי אברהם פרבשטיין, המחותנים, והמוזמנים. והתחלתי לגמגם, מילים אקראיות שעלו בדעתי, זה היה בזיון נורא. לבסוף, התיישבתי מושפל וכואב.</p><p>ואז, כשכיבדו את ראש הישיבה לדבר, קרה הדבר המדהים. כולם ציפו לשמוע דרשה למדנית ועמוקה, כדרכו בקודש, אך הוא... עשה עצמו כמגמגם, התעכב על כל מילה, חזר על דברים שכבר אמר. התפתל בדבריו כאילו גם הוא, כמותי, לא מוצא את ידיו ורגליו, ולבסוף סיים והתיישב.</p><p>באותו רגע, הבנתי. בתוך ים של מבוכה, הרגשתי את ידו המושטת של ראש הישיבה. הוא לא התבלבל באמת. הוא עשה זאת בכוונה, בוויתור מוחלט על כבודו העצמי, רק כדי להסיר ממני את הבושה. כדי שאדע שאני לא לבד. הייתה זו דרשת המידות הגדולה ביותר שיכולתי לקבל, עמוקה יותר מכל חידוש תורה.</p><p>ואז, כשכיבדו את ראש הישיבה לדבר, קרה הדבר המדהים. כולם ציפו לשמוע דרשה למדנית ועמוקה, כדרכו בקודש, אך הוא... עשה עצמו כמגמגם, התעכב על כל מילה, חזר על דברים שכבר אמר. התפתל בדבריו כאילו גם הוא, כמותי, לא מוצא את ידיו ורגליו, ולבסוף סיים והתיישב.</p><p>באותו רגע, הבנתי. בתוך ים של מבוכה, הרגשתי את ידו המושטת של ראש הישיבה. הוא לא התבלבל באמת. הוא עשה זאת בכוונה, בוויתור מוחלט על כבודו העצמי, רק כדי להסיר ממני את הבושה. כדי שאדע שאני לא לבד. הייתה זו דרשת המידות הגדולה ביותר שיכולתי לקבל, עמוקה יותר מכל חידוש תורה.</p><p>ואז, כשכיבדו את ראש הישיבה לדבר, קרה הדבר המדהים. כולם ציפו לשמוע דרשה למדנית ועמוקה, כדרכו בקודש, אך הוא... עשה עצמו כמגמגם, התעכב על כל מילה, חזר על דברים שכבר אמר. התפתל בדבריו כאילו גם הוא, כמותי, לא מוצא את ידיו ורגליו, ולבסוף סיים והתיישב.</p><p>באותו רגע, הבנתי. בתוך ים של מבוכה, הרגשתי את ידו המושטת של ראש הישיבה. הוא לא התבלבל באמת. הוא עשה זאת בכוונה, בוויתור מוחלט על כבודו העצמי, רק כדי להסיר ממני את הבושה. כדי שאדע שאני לא לבד. הייתה זו דרשת המידות הגדולה ביותר שיכולתי לקבל, עמוקה יותר מכל חידוש תורה.</p>`,
+    },
+    popup2: {
+      title: `ספרי רבי שלמה נתן קוטלר זצוק״ל`,
+      image1: PopupImage1,
+      content1: {
+        title: `כרם שלמה`,
+        text: `<p>התחלות והדרכים לסמוך על כל מסכתות חז"ל ועל כל סדרי משניות, גם הדרנים וסיומים על כל הש"ס בכלל, ועל כל ששה סדרי משנה.</p><p>חידושי הלכות ואגדות וגם דרוש וגלוי כוונות בדרך הלכות באיזה עניינים שונים מיני הספרים.</p>`,
+      },
+      image2: PopupImage2,
+      content2: {
+        title: `בית שלמה`,
+        text: `<p>התחלות והדרכים לסמוך על כל מסכתות חז"ל ועל כל סדרי משניות, גם הדרנים וסיומים על כל הש"ס בכלל, ועל כל ששה סדרי משנה.</p><p>חידושי הלכות ואגדות וגם דרוש וגלוי כוונות בדרך הלכות באיזה עניינים שונים מיני הספרים.</p>`,
+      },
+    },
   };
+
+  // Hamburger Menu
+  const PageMenu = [
+    {
+      title: `הגאון רבי אברהם יהודה פרבשטיין זצוק"ל`,
+      image: PostImage1,
+      link: `/past-rabbis/single`,
+    },
+    {
+      title: `הגאון רבי אברהם יהודה פרבשטיין זצוק"ל`,
+      image: PostImage2,
+      link: `/past-rabbis/single`,
+    },
+    {
+      title: `הגאון רבי אברהם יהודה פרבשטיין זצוק"ל`,
+      image: PostImage1,
+      link: `/past-rabbis/single`,
+    },
+    {
+      title: `הגאון רבי אברהם יהודה פרבשטיין זצוק"ל`,
+      image: PostImage2,
+      link: `/past-rabbis/single`,
+    },
+    {
+      title: `הגאון רבי אברהם יהודה פרבשטיין זצוק"ל`,
+      image: PostImage1,
+      link: `/past-rabbis/single`,
+    },
+    {
+      title: `הגאון רבי אברהם יהודה פרבשטיין זצוק"ל`,
+      image: PostImage2,
+      link: `/past-rabbis/single`,
+    },
+  ];
 
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+  const [activeHamburgerMenu, setActiveHamburgerMenu] = useState(false);
   // Vertical Section
   const [verticalSection, setVerticalSection] =
     useState<gsap.core.Timeline | null>(null);
+
+  // Popup State
+  const [activeCardPopup, setActiveCardPopup] = useState(false);
+  const [activeBookPopup, setActiveBookPopup] = useState(false);
+  const [cardPopupTimeline] = useState(
+    gsap.timeline({
+      paused: true,
+    }),
+  );
+  const [bookPopupTimeline] = useState(
+    gsap.timeline({
+      paused: true,
+    }),
+  );
 
   // Page Refs
   const main = useRef<HTMLDivElement>(null);
@@ -88,6 +160,11 @@ export default function Page() {
   const waveMask = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
   const movingButtonRef = useRef<HTMLDivElement>(null);
+  const popupCardRef = useRef<HTMLDivElement>(null);
+  const popupBookRef = useRef<HTMLDivElement>(null);
+  const popupContent = useRef<HTMLDivElement>(null);
+  const popupBookContent = useRef<HTMLDivElement>(null);
+  const [contentHeight, setContentHeight] = useState(0);
 
   // Page Section Animation
   useGSAP(() => {
@@ -499,7 +576,7 @@ export default function Page() {
   useEffect(() => {
     if (isAllAnimationComplete) {
       // Body Overflow Hidden
-      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.remove("!overflow-hidden", "overflow-hidden");
       document.body.classList.add("!overflow-auto");
       verticalSection?.pause();
     } else {
@@ -511,8 +588,132 @@ export default function Page() {
   }, [isAllAnimationComplete]);
 
   useGSAP(() => {
+    // Popup Animation
+    const cardButton = main.current?.querySelectorAll(
+      ".rabbis-menu-item.card-button",
+    );
+    const bookButton = main.current?.querySelectorAll(
+      ".rabbis-menu-item.book-button",
+    );
+    // Card Popup Elements
+    const popupOverlay = popupCardRef.current?.querySelector(".overlay");
+    const popupWrapper = popupCardRef.current?.querySelector(".popup-wrapper");
+    const closeButton = popupCardRef.current?.querySelector("button.close-btn");
+    // Book Popup Elements
+    const popupBookOverlay = popupBookRef.current?.querySelector(".overlay");
+    const popupBookWrapper =
+      popupBookRef.current?.querySelector(".popup-wrapper");
+    const closeBookButton =
+      popupBookRef.current?.querySelector("button.close-btn");
+
+    // Card Popup Animation
+    cardPopupTimeline.to(popupCardRef.current, {
+      opacity: 1,
+      visibility: "visible",
+      duration: 0,
+      delay: 0,
+      ease: "none",
+    });
+    // Overlay
+    if (popupOverlay) {
+      cardPopupTimeline.to(popupOverlay, {
+        opacity: 1,
+        visibility: "visible",
+        duration: 0.5,
+        delay: 0,
+        ease: "none",
+      });
+    }
+    // Animate Popup Content
+    if (popupWrapper) {
+      gsap.set(popupWrapper, {
+        x: () => popupWrapper.clientWidth + 50,
+      });
+      cardPopupTimeline.to(
+        popupWrapper,
+        {
+          x: 0,
+          duration: 1.5,
+          delay: 0.5,
+          ease: "expo.inOut",
+        },
+        "-=1",
+      );
+    }
+    // Book Popup Animation
+    bookPopupTimeline.to(popupBookRef.current, {
+      opacity: 1,
+      visibility: "visible",
+      duration: 0,
+      delay: 0,
+      ease: "none",
+    });
+    // Overlay
+    if (popupBookOverlay) {
+      bookPopupTimeline.to(popupBookOverlay, {
+        opacity: 1,
+        visibility: "visible",
+        duration: 0.5,
+        delay: 0,
+        ease: "none",
+      });
+    }
+    // Animate Popup Content
+    if (popupBookWrapper) {
+      gsap.set(popupBookWrapper, {
+        x: () => popupBookWrapper.clientWidth + 50,
+      });
+      bookPopupTimeline.to(
+        popupBookWrapper,
+        {
+          x: 0,
+          duration: 1.5,
+          delay: 0.5,
+          ease: "expo.inOut",
+        },
+        "-=1",
+      );
+    }
+    // Card Button click Event
+    cardButton?.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveCardPopup(true);
+        document.body.classList.add("!overflow-hidden");
+        document.body.classList.remove("!overflow-auto");
+      });
+    });
+    // Close Popup on Overlay Click
+    popupOverlay?.addEventListener("click", () => {
+      setActiveCardPopup(false);
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
+    });
+    closeButton?.addEventListener("click", () => {
+      setActiveCardPopup(false);
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
+    });
+    // Book Button click Event
+    bookButton?.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveBookPopup(true);
+        document.body.classList.add("!overflow-hidden");
+        document.body.classList.remove("!overflow-auto");
+      });
+    });
+    // Close Book Popup on Overlay Click
+    popupBookOverlay?.addEventListener("click", () => {
+      setActiveBookPopup(false);
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
+    });
+    closeBookButton?.addEventListener("click", () => {
+      setActiveBookPopup(false);
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
+    });
     // Page Overflow Hidden
-    document.body.classList.remove("!overflow-auto");
+    document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
@@ -528,11 +729,28 @@ export default function Page() {
         },
       });
     };
+    // Set content height
+    if (popupContent.current) {
+      setContentHeight(popupContent?.current?.offsetHeight || 0);
+    }
   }, []);
+  // Play Card Popup Animation
+  useGSAP(() => {
+    activeCardPopup ? cardPopupTimeline.play() : cardPopupTimeline.reverse();
+  }, [activeCardPopup]);
+  // Play Book Popup Animation
+  useGSAP(() => {
+    activeBookPopup ? bookPopupTimeline.play() : bookPopupTimeline.reverse();
+  }, [activeBookPopup]);
   return (
     <div ref={main} id="main" className="relative">
       <LoadingEffect animated={setAnimationPlayed} />
-      <RabbisHeader link={`/past-rabbis`} />
+      <RabbisHeader
+        link={`/past-rabbis`}
+        data={JSON.stringify(PageMenu)}
+        activeMenu={activeHamburgerMenu}
+        activeMenuFunction={setActiveHamburgerMenu}
+      />
       <SmoothWrapper>
         <main
           ref={page}
@@ -615,6 +833,119 @@ export default function Page() {
         </main>
         <Footer className={"relative z-20"} />
       </SmoothWrapper>
+
+      <div
+        ref={popupCardRef}
+        className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
+      >
+        <div className="popup-wrapper bg-[#FBF4E6] w-150 h-full relative z-50 py-[9.3vh] px-[3.8vw]">
+          <div
+            ref={popupContent}
+            className="popup-content w-full h-full relative z-30"
+          >
+            <SimpleBar
+              style={{
+                maxHeight: contentHeight,
+                paddingRight: 30,
+                marginRight: -30,
+              }}
+              autoHide={false}
+            >
+              <div className="title mb-[5vh]">
+                <h3 className="text-[55px] leading-[70%] text-[#D1A941] font-bold">
+                  {pageData.popup1.title}
+                </h3>
+              </div>
+              <div className="content text-[21px] leading-[1.4em] text-black">
+                {parse(pageData.popup1.content)}
+              </div>
+            </SimpleBar>
+          </div>
+          <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">
+            <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
+          </button>
+        </div>
+        <div className="overlay fixed top-0 right-0 w-screen h-screen z-30 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"></div>
+      </div>
+
+      <div
+        ref={popupBookRef}
+        className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
+      >
+        <div className="popup-wrapper bg-[#FBF4E6] w-150 h-full relative z-50 py-[9.3vh] px-[3.8vw]">
+          <div
+            ref={popupBookContent}
+            className="popup-content w-full h-full relative z-30"
+          >
+            <SimpleBar
+              style={{
+                maxHeight: contentHeight,
+                paddingRight: 30,
+                marginRight: -30,
+              }}
+              autoHide={false}
+            >
+              <div className="title mb-[5vh]">
+                <h3 className="text-[55px] leading-[70%] text-[#D1A941] font-bold">
+                  {pageData.popup2.title}
+                </h3>
+              </div>
+              <div className="book-image mb-9.5">
+                <div className="w-77 h-auto">
+                  <Image
+                    className="w-full h-full object-cover object-center"
+                    src={pageData.popup2.image1}
+                    alt="Book Image"
+                    width={400}
+                    height={400}
+                    blurDataURL={pageData.popup2.image1?.blurDataURL}
+                    placeholder="blur"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+              <div className="content text-[21px] leading-[1.4em] text-black mb-10">
+                <div className="title mb-7">
+                  <h4 className="text-[34px] leading-[70%] font-medium">
+                    {parse(pageData.popup2.content1.title)}
+                  </h4>
+                </div>
+                <div className="text flex flex-col gap-y-4">
+                  {parse(pageData.popup2.content1.text)}
+                </div>
+              </div>
+              <div className="book-image mb-9.5">
+                <div className="w-77 h-auto">
+                  <Image
+                    className="w-full h-full object-cover object-center"
+                    src={pageData.popup2.image2}
+                    alt="Book Image"
+                    width={400}
+                    height={400}
+                    blurDataURL={pageData.popup2.image2?.blurDataURL}
+                    placeholder="blur"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+              <div className="content text-[21px] leading-[1.4em] text-black">
+                <div className="title mb-7">
+                  <h4 className="text-[34px] leading-[70%] font-medium">
+                    {parse(pageData.popup2.content2.title)}
+                  </h4>
+                </div>
+                <div className="text flex flex-col gap-y-4">
+                  {parse(pageData.popup2.content2.text)}
+                </div>
+              </div>
+            </SimpleBar>
+          </div>
+          <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">
+            <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
+          </button>
+        </div>
+        <div className="overlay fixed top-0 right-0 w-screen h-screen z-30 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"></div>
+      </div>
 
       <div
         ref={movingButtonRef}
