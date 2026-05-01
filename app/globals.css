@@ -471,6 +471,41 @@ body {
         }
       }
     }
+    .popup {
+      .popup-wrapper {
+        .popup-content {
+          .simplebar-scrollable-y {
+            .simplebar-track.simplebar-vertical {
+              width: 5px !important;
+              z-index: 10;
+              right: 0 !important;
+              &&:after {
+                content: "";
+                display: block;
+                width: 1px;
+                height: 100%;
+                position: absolute;
+                right: 50%;
+                top: 0;
+                background: #c3a13f;
+                margin-left: 0px;
+              }
+              .simplebar-scrollbar {
+                cursor: pointer;
+                background: #c3a13f;
+                z-index: 20;
+                border-radius: 10px;
+
+                &&:before {
+                  background-color: #c3a13f !important;
+                  opacity: 1 !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 body::-webkit-scrollbar,

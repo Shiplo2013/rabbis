@@ -27,8 +27,13 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
         head: false,
         class: "-mb-2",
         menu1: [
-          { id: 1, name: `לבקר בהיכלו`, link: "#" },
-          { id: 2, name: `מוסדות הישיבה`, link: "#" },
+          {
+            id: 1,
+            name: `לבקר בהיכלו`,
+            link: "/visit-temple",
+            comingsoon: false,
+          },
+          { id: 2, name: `מוסדות הישיבה`, link: "#", comingsoon: true },
         ],
       },
     },
@@ -44,17 +49,51 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
         head: true,
         class: "-mb-8",
         menu1: [
-          { id: 1, name: `בוגרי הישיבה`, link: "#" },
-          { id: 2, name: `ראיונות - עדויות`, link: "#" },
-          { id: 3, name: `קהילות`, link: "/communities" },
-          { id: 4, name: `גליונות - ביטאון`, link: "/communities/sheets" },
-          { id: 5, name: `בוגרים זצ״ל`, link: "/zatzel-graduates" },
-          { id: 6, name: `כנס הבוגרים`, link: "/alumni-conference" },
-          { id: 7, name: `תמונות מחזור`, link: "/cycle-pictures" },
+          {
+            id: 2,
+            name: `ראיונות - עדויות`,
+            link: "/testimonials",
+            comingsoon: false,
+          },
+          { id: 3, name: `קהילות`, link: "/communities", comingsoon: false },
+          {
+            id: 4,
+            name: `גליונות - ביטאון`,
+            link: "/communities/sheets",
+            comingsoon: false,
+          },
+          {
+            id: 5,
+            name: `בוגרים זצ״ל`,
+            link: "/zatzel-graduates",
+            comingsoon: false,
+          },
+          {
+            id: 6,
+            name: `כנס הבוגרים`,
+            link: "/alumni-conference",
+            comingsoon: false,
+          },
+          {
+            id: 7,
+            name: `תמונות מחזור`,
+            link: "/cycle-pictures",
+            comingsoon: false,
+          },
         ],
         menu2: [
-          { id: 1, name: `כנסת המנהגים`, link: "/the-knesset-of-customs" },
-          { id: 2, name: `עד שבחברון - חדשות`, link: "#" },
+          {
+            id: 1,
+            name: `כנסת המנהגים`,
+            link: "/the-knesset-of-customs",
+            comingsoon: false,
+          },
+          {
+            id: 2,
+            name: `עד שבחברון - חדשות`,
+            link: "/news",
+            comingsoon: true,
+          },
         ],
       },
     },
@@ -219,6 +258,11 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
                                         <span
                                           className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5`}
                                         ></span>
+                                        {item.comingsoon && (
+                                          <div className="comingsoon absolute top-0 right-full flex items-center justify-center text-[#D4AF37] text-[16px] mr-7 font-bold opacity-0 transition-all duration-300 group-hover:opacity-100">
+                                            בקרוב
+                                          </div>
+                                        )}
                                       </Link>
                                     </div>
                                   ))}

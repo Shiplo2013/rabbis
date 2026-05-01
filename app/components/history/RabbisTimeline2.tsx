@@ -260,7 +260,7 @@ function RabbisTimeline2(props: ChildProps) {
               return (
                 <div
                   key={index}
-                  className="timeline-content notifiaction py-5 px-8 w-108 bg-[#5A7C4E] relative self-start pl-19 mx-auto z-40 mt-[14vh] -ml-[8vw] -mr-[12vw]"
+                  className="timeline-content notifiaction-button py-5 px-8 w-108 bg-[#5A7C4E] relative self-start pl-19 mx-auto z-40 mt-[14vh] -ml-[8vw] -mr-[12vw] cursor-pointer"
                 >
                   <div className="notify-icon w-50.5 h-33.75 absolute top-0 left-0 -translate-x-1/2">
                     <Image
