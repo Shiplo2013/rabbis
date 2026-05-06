@@ -1,7 +1,8 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "@/app/ui/plugins";
 import Image, { StaticImageData } from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -11,6 +12,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   image: StaticImageData;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function OnlyParallaxImageSection(props: ChildProps) {
@@ -18,6 +20,12 @@ export default function OnlyParallaxImageSection(props: ChildProps) {
   const background = useRef(null);
   // Route
   const pathname = usePathname();
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
   // GSAP Context for Animations
   useGSAP(
     () => {
@@ -28,7 +36,11 @@ export default function OnlyParallaxImageSection(props: ChildProps) {
         ease: "none",
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthText;
+            return (
+              getTimelineOffset() +
+              GetRightPosition(background.current) -
+              window.innerWidth * 1.5
+            );
           },
           end: () => {
             return "+=" + window.innerWidth * 2;

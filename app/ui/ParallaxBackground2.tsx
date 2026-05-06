@@ -1,8 +1,7 @@
 "use client";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { RefObject, useRef } from "react";
-import GetRightPosition from "./GetRightPosition";
+import { useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "./plugins";
 
 if (typeof window !== "undefined") {
@@ -14,7 +13,6 @@ interface ChildProps {
   overlayLeft: boolean;
   overlayLeftColor: string;
   animatePosition: number;
-  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function ParallaxBackground(props: ChildProps) {
@@ -22,24 +20,18 @@ export default function ParallaxBackground(props: ChildProps) {
   const pathname = usePathname();
   // Selector
   const background = useRef<HTMLDivElement>(null);
-  // Section Ref
-  const timeline = props.panel;
-  // Get Offset Top of Timeline
-  const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
-  };
   // Animation
   useGSAP(
     () => {
       if (props.animatePosition !== 0) {
         // Banner Background
-        gsap.set(background.current, { scale: 1.2, x: "20vw" });
+        gsap.set(background.current, { scale: 1.2, x: "30vw" });
         gsap.to(background.current, {
           x: "-20vw",
           ease: "none",
           scrollTrigger: {
             start: () => {
-              return getTimelineOffset() + GetRightPosition(background.current);
+              return window.innerWidth * (props.animatePosition - 0.5);
             },
             end: () => {
               return "+=" + window.innerWidth * 2;

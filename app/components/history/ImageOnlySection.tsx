@@ -1,6 +1,7 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import Image1 from "../../assets/images/image-only.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
@@ -11,6 +12,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function ImageOnlySection(props: ChildProps) {
@@ -18,6 +20,10 @@ export default function ImageOnlySection(props: ChildProps) {
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
   // Section Animation
   useGSAP(
     () => {
@@ -27,7 +33,11 @@ export default function ImageOnlySection(props: ChildProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * props.animWidthText;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(wrapper.current) -
+                window.innerWidth / 2
+              );
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,

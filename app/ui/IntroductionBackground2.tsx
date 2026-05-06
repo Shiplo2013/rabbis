@@ -1,52 +1,61 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { RefObject, useRef } from "react";
-import GetRightPosition from "./GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "./plugins";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
-
 interface ChildProps {
   bgImage: any;
+  panel?: RefObject<HTMLDivElement | null>;
+  timeline?: string;
   overlayClass: string;
   imagePosition: string;
   bgClass: string;
   animatePosition: number;
-  panel?: RefObject<HTMLDivElement | null>;
 }
 
-export default function BigSectionBackground(props: ChildProps) {
+export default function IntroductionBackground2(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
-  // Selector
-  const background = useRef<HTMLDivElement>(null);
-  // Section Ref
   const timeline = props.panel;
-  // Get Offset Top of Timeline
   const getTimelineOffset = () => {
     return timeline?.current ? timeline.current.offsetTop : 0;
   };
+  // Get Intro Right Position
+  function getRightPosition(selector: any) {
+    const intro = selector;
+    if (!intro) return 0;
+    const introObj = intro.getBoundingClientRect();
+    const introRight = Math.floor(window.innerWidth - introObj.right);
+    return introRight;
+  }
+  // Selector
+  const background = useRef<HTMLDivElement>(null);
   // Seciton Animation
   useGSAP(
     () => {
-      if (props.animatePosition !== 0) {
+      if (
+        typeof window !== "undefined" &&
+        background.current &&
+        props.animatePosition > 0
+      ) {
         // Banner Background
-        gsap.set(background.current, { scale: 1.2, x: "30vw" });
+        gsap.set(background.current, { scale: 1.4, x: "20vw" });
         gsap.to(background.current, {
-          x: "-30vw",
+          x: "-20vw",
           ease: "none",
           scrollTrigger: {
             start: () => {
               return (
                 getTimelineOffset() +
-                GetRightPosition(background.current) -
-                window.innerWidth * 1.2
+                getRightPosition(background.current) +
+                window.innerWidth * 0.2
               );
             },
             end: () => {
-              return "+=" + window.innerWidth * 3.2;
+              return "+=" + window.innerWidth * 2;
             },
             scrub: 2,
           },

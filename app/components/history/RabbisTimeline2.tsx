@@ -1,9 +1,10 @@
 "use client";
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import ParallaxBackground from "@/app/ui/ParallaxBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import bookIcon from "../../assets/images/lamb-book-icon.png";
 import rabbisImage10 from "../../assets/images/rabbis-timeline10.jpg";
 import rabbisImage11 from "../../assets/images/rabbis-timeline11.jpg";
@@ -24,12 +25,17 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   bgImage: any;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 function RabbisTimeline2(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Data
   const RabbisData = [
@@ -123,7 +129,11 @@ function RabbisTimeline2(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * props.animWidthText;
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(wrapper.current) -
+                      window.innerWidth * 0.3
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -135,99 +145,120 @@ function RabbisTimeline2(props: ChildProps) {
       });
 
       // Section Items
-      sectionItems?.forEach((item, index) => {
-        const image = item.querySelector(".image");
-        const title = item.querySelector(".title>h4");
-        const animationPoint = props.animWidthText + 0.3 + index * 0.4;
-        if (item.classList.contains("notifiaction")) {
-          const notificationIcon = item?.querySelector(".notify-icon");
-          // Notification
-          gsap.set(item, {
-            y: 100,
-            opacity: 0,
-          });
-          gsap.to(item, {
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            ease: "expo.out",
-            scrollTrigger: {
-              start: () => {
-                return window.innerWidth * animationPoint;
-              },
-              toggleActions: "restart pause play reverse",
-            },
-          });
-          // Notification Icon
-          gsap.set(notificationIcon, {
-            y: 20,
-            x: -30,
-            rotate: -15,
-            opacity: 0,
-          });
-          gsap.to(notificationIcon, {
-            y: 0,
-            x: 0,
-            rotate: 0,
-            opacity: 1,
-            duration: 1,
-            delay: 0.5,
-            ease: "expo.out",
-            scrollTrigger: {
-              start: () => {
-                return window.innerWidth * animationPoint;
-              },
-              toggleActions: "restart pause play reverse",
-            },
-          });
-        } else {
-          // Item Image
-          gsap.set(image, {
-            x: -100,
-            opacity: 0,
-          });
-          gsap.to(image, {
-            x: 0,
-            opacity: 1,
-            duration: 1,
-            ease: "expo.out",
-            scrollTrigger: {
-              start: () => {
-                return window.innerWidth * animationPoint;
-              },
-              toggleActions: "restart pause play reverse",
-            },
-          });
-          // Rubbis Title
-          document.fonts.ready.then(() => {
-            // Section Title 1
-            gsap.set(title, { opacity: 1 });
-            let splititle;
-            SplitText.create(title, {
-              type: "lines",
-              linesClass: "line direction-rtl",
-              autoSplit: true,
-              mask: "lines",
-              onSplit: (self) => {
-                splititle = gsap.from(self.lines, {
-                  duration: 1,
-                  yPercent: 100,
-                  opacity: 0,
-                  stagger: 0.05,
-                  ease: "expo.out",
-                  scrollTrigger: {
-                    start: () => {
-                      return window.innerWidth * animationPoint;
-                    },
-                    toggleActions: "restart pause play reverse",
-                  },
-                });
-                return splititle;
+      if (sectionItems) {
+        sectionItems?.forEach((item, index) => {
+          const image = item.querySelector(".image");
+          const title = item.querySelector(".title>h4");
+          if (item.classList.contains("notification-button")) {
+            const notificationIcon = item?.querySelector(".notify-icon");
+            // Notification
+            gsap.set(item, {
+              y: 100,
+              opacity: 0,
+            });
+            gsap.to(item, {
+              y: 0,
+              opacity: 1,
+              duration: 1,
+              ease: "expo.out",
+              scrollTrigger: {
+                start: () => {
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(item) +
+                    window.innerWidth * 0.1
+                  );
+                },
+                toggleActions: "restart pause play reverse",
               },
             });
-          });
-        }
-      });
+            // Notification Icon
+            gsap.set(notificationIcon, {
+              y: 20,
+              x: -30,
+              rotate: -15,
+              opacity: 0,
+            });
+            gsap.to(notificationIcon, {
+              y: 0,
+              x: 0,
+              rotate: 0,
+              opacity: 1,
+              duration: 1,
+              delay: 0.5,
+              ease: "expo.out",
+              scrollTrigger: {
+                start: () => {
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(item) +
+                    window.innerWidth * 0.1
+                  );
+                },
+                toggleActions: "restart pause play reverse",
+              },
+            });
+          } else {
+            // Item Image
+            if (image) {
+              gsap.set(image, {
+                x: -100,
+                opacity: 0,
+              });
+              gsap.to(image, {
+                x: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "expo.out",
+                scrollTrigger: {
+                  start: () => {
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(item) +
+                      window.innerWidth * 0.1
+                    );
+                  },
+                  toggleActions: "restart pause play reverse",
+                },
+              });
+            }
+            // Rubbis Title
+            document.fonts.ready.then(() => {
+              // Section Title 1
+              if (title) {
+                gsap.set(title, { opacity: 1 });
+                let splititle;
+                SplitText.create(title, {
+                  type: "lines",
+                  linesClass: "line direction-rtl",
+                  autoSplit: true,
+                  mask: "lines",
+                  onSplit: (self) => {
+                    splititle = gsap.from(self.lines, {
+                      duration: 1,
+                      yPercent: 100,
+                      opacity: 0,
+                      stagger: 0.05,
+                      ease: "expo.out",
+                      scrollTrigger: {
+                        start: () => {
+                          return (
+                            getTimelineOffset() +
+                            GetRightPosition(item) +
+                            window.innerWidth * 0.1
+                          );
+                        },
+                        toggleActions: "restart pause play reverse",
+                      },
+                    });
+                    return splititle;
+                  },
+                });
+              }
+            });
+          }
+        });
+      }
     },
     { scope: wrapper, dependencies: [pathname] },
   );
@@ -260,7 +291,7 @@ function RabbisTimeline2(props: ChildProps) {
               return (
                 <div
                   key={index}
-                  className="timeline-content notifiaction-button py-5 px-8 w-108 bg-[#5A7C4E] relative self-start pl-19 mx-auto z-40 mt-[14vh] -ml-[8vw] -mr-[12vw] cursor-pointer"
+                  className="timeline-content notification-button py-5 px-8 w-108 bg-[#5A7C4E] relative self-start pl-19 mx-auto z-40 mt-[14vh] -ml-[8vw] -mr-[12vw] cursor-pointer"
                 >
                   <div className="notify-icon w-50.5 h-33.75 absolute top-0 left-0 -translate-x-1/2">
                     <Image

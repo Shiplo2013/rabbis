@@ -1,6 +1,7 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
@@ -10,6 +11,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function OnlyTextSection(props: ChildProps) {
@@ -17,6 +19,10 @@ export default function OnlyTextSection(props: ChildProps) {
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section data
   const textData = [
@@ -52,7 +58,11 @@ export default function OnlyTextSection(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * props.animWidthText;
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(wrapper.current) -
+                      window.innerWidth * 0.5
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -79,7 +89,11 @@ export default function OnlyTextSection(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * props.animWidthText;
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(wrapper.current) -
+                      window.innerWidth * 0.5
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },

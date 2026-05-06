@@ -1,7 +1,8 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import ThemeButton2 from "@/app/ui/ThemeButton2";
 import VideoPlayer from "@/app/ui/VideoPlayer";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import PlusIcon from "../../assets/icons/PlusIcon";
 import thumb from "../../assets/images/video-section.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
@@ -13,6 +14,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function SingleVideoSection(props: ChildProps) {
@@ -22,6 +24,10 @@ export default function SingleVideoSection(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const videoWrap = useRef<HTMLDivElement>(null);
   const videoButton = useRef<HTMLDivElement>(null);
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
   // Data
   const video = "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
   const videoData = [
@@ -42,7 +48,11 @@ export default function SingleVideoSection(props: ChildProps) {
           delay: -0.5,
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * props.animWidthText;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(video) -
+                window.innerWidth * 0.3
+              );
             },
             toggleActions: "restart pause play reverse",
           },

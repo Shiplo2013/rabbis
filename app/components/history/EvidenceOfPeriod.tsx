@@ -1,9 +1,10 @@
 import MinusIcon from "@/app/assets/icons/MinusIcon";
 import GetRightPosition from "@/app/ui/GetRightPosition";
+import ImageRevealWithoutParallaxBG2 from "@/app/ui/ImageRevealWithoutParallaxBG2";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import PlayIcon from "../../assets/icons/PlayIcon";
 import videoThumb from "../../assets/images/evidence-video-thumb.jpg";
 import evidanceBG from "../../assets/images/evidenceBG.png";
@@ -16,6 +17,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function EvidenceOfPeriod(props: ChildProps) {
@@ -23,6 +25,12 @@ export default function EvidenceOfPeriod(props: ChildProps) {
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Data
   const sectionData = {
@@ -54,7 +62,11 @@ export default function EvidenceOfPeriod(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(video) - window.innerWidth / 2;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(video) -
+                window.innerWidth / 2
+              );
             },
             toggleActions: "restart pause play reverse",
           },
@@ -83,7 +95,11 @@ export default function EvidenceOfPeriod(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(item) - window.innerWidth / 2;
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(item) -
+                      window.innerWidth / 2
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -102,6 +118,7 @@ export default function EvidenceOfPeriod(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="evidence-wrapper w-full h-full pr-[6vw] py-[7vh] flex">
         <div className="section-content flex gap-x-[2.4vw]">
@@ -132,15 +149,12 @@ export default function EvidenceOfPeriod(props: ChildProps) {
           </div>
           <div className="content w-[66vw] flex items-center relative px-[4.35vw]">
             <div className="content-bg absolute z-10 top-1/2 left-1/2 -translate-1/2 w-full h-full select-none pointer-events-none">
-              <Image
-                className={`w-full object-cover h-full relative z-10`}
-                src={evidanceBG?.src}
-                width={`1263`}
-                height={`842`}
-                blurDataURL={evidanceBG?.blurDataURL}
-                placeholder={"blur"}
-                loading="lazy"
-                alt="Content Background"
+              <ImageRevealWithoutParallaxBG2
+                bgImage={evidanceBG}
+                overlayLeft={false}
+                overlayLeftColor={""}
+                animatePosition={props.animWidthText - 0.7}
+                panel={props.panel}
               />
             </div>
             <div

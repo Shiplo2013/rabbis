@@ -3,7 +3,7 @@ import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import historyImage1 from "../../assets/images/2013.jpg";
 import historyImage3 from "../../assets/images/2016-2.jpg";
 import historyImage2 from "../../assets/images/2016.jpg";
@@ -17,6 +17,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function MarkOfTheRoad2(props: ChildProps) {
@@ -24,6 +25,12 @@ export default function MarkOfTheRoad2(props: ChildProps) {
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Data
   const sectionData = [
@@ -48,83 +55,103 @@ export default function MarkOfTheRoad2(props: ChildProps) {
   useGSAP(
     () => {
       const items = wrapper.current?.querySelectorAll(".section-content");
-      items?.forEach((item) => {
-        const image = item.querySelector(".image");
-        const title = item.querySelector(".title>h4");
-        const text = item.querySelector(".title>.text");
-        // Rubbis Image
-        gsap.set(image, {
-          y: 100,
-          opacity: 0,
-        });
-        gsap.to(image, {
-          y: 0,
-          opacity: 1,
-          duration: 1.5,
-          ease: "expo.inOut",
-          scrollTrigger: {
-            start: () => {
-              return GetRightPosition(image) - window.innerWidth / 3;
-            },
-            toggleActions: "restart pause play reverse",
-          },
-        });
-        // Rubbis Title
-        document.fonts.ready.then(() => {
-          // Section Title
-          gsap.set(title, { opacity: 1 });
-          let splititle;
-          SplitText.create(title, {
-            type: "lines",
-            linesClass: "line direction-rtl",
-            autoSplit: true,
-            mask: "lines",
-            onSplit: (self) => {
-              splititle = gsap.from(self.lines, {
-                duration: 2,
-                yPercent: 100,
-                opacity: 0,
-                delay: -0.5,
-                stagger: 0.02,
-                ease: "expo.inOut",
-                scrollTrigger: {
-                  start: () => {
-                    return GetRightPosition(title) - window.innerWidth / 2;
-                  },
-                  toggleActions: "restart pause resume reverse",
+      if (items) {
+        items?.forEach((item) => {
+          const image = item.querySelector(".image");
+          const title = item.querySelector(".title>h4");
+          const text = item.querySelector(".title>.text");
+          // Rubbis Image
+          if (image) {
+            gsap.set(image, {
+              y: 100,
+              opacity: 0,
+            });
+            gsap.to(image, {
+              y: 0,
+              opacity: 1,
+              duration: 1.5,
+              ease: "expo.inOut",
+              scrollTrigger: {
+                start: () => {
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(image) -
+                    window.innerWidth * 1.7
+                  );
+                },
+                toggleActions: "restart pause play reverse",
+              },
+            });
+          }
+          // Rubbis Title
+          document.fonts.ready.then(() => {
+            // Section Title
+            if (title) {
+              gsap.set(title, { opacity: 1 });
+              let splititle;
+              SplitText.create(title, {
+                type: "lines",
+                linesClass: "line direction-rtl",
+                autoSplit: true,
+                mask: "lines",
+                onSplit: (self) => {
+                  splititle = gsap.from(self.lines, {
+                    duration: 2,
+                    yPercent: 100,
+                    opacity: 0,
+                    delay: -0.5,
+                    stagger: 0.02,
+                    ease: "expo.inOut",
+                    scrollTrigger: {
+                      start: () => {
+                        return (
+                          getTimelineOffset() +
+                          GetRightPosition(title) -
+                          window.innerWidth * 1.7
+                        );
+                      },
+                      toggleActions: "restart pause resume reverse",
+                    },
+                  });
+                  return splititle;
                 },
               });
-              return splititle;
-            },
-          });
-          // Section Text
-          gsap.set(text, { opacity: 1 });
-          let splitext;
-          SplitText.create(text, {
-            type: "lines",
-            linesClass: "line direction-rtl",
-            autoSplit: true,
-            mask: "lines",
-            onSplit: (self) => {
-              splitext = gsap.from(self.lines, {
-                duration: 2,
-                yPercent: 100,
-                opacity: 0,
-                delay: -0.5,
-                stagger: 0.02,
-                ease: "expo.inOut",
-                scrollTrigger: {
-                  start: () => {
-                    return GetRightPosition(title) - window.innerWidth / 2;
-                  },
-                  toggleActions: "restart pause resume reverse",
+            }
+            // Section Text
+            if (text) {
+              gsap.set(text, { opacity: 1 });
+              let splitext;
+              SplitText.create(text, {
+                type: "lines",
+                linesClass: "line direction-rtl",
+                autoSplit: true,
+                mask: "lines",
+                onSplit: (self) => {
+                  splitext = gsap.from(self.lines, {
+                    duration: 2,
+                    yPercent: 100,
+                    opacity: 0,
+                    delay: -0.5,
+                    stagger: 0.02,
+                    ease: "expo.inOut",
+                    scrollTrigger: {
+                      start: () => {
+                        return (
+                          getTimelineOffset() +
+                          GetRightPosition(text) -
+                          window.innerWidth * 1.7
+                        );
+                      },
+                      toggleActions: "restart pause resume reverse",
+                    },
+                  });
+                  return splitext;
                 },
               });
-              return splitext;
-            },
+            }
           });
         });
-      });
+      }
       if (items && items[0]) {
         gsap.set(items[0], {
           x: "-10vw",
@@ -132,7 +159,11 @@ export default function MarkOfTheRoad2(props: ChildProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(items[0]) - window.innerWidth / 2;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(items[0]) -
+                window.innerWidth * 1.8
+              );
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -161,6 +192,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
           animatePosition={props.animWidthText}
           imagePosition={""}
           overlayClass=""
+          panel={props.panel}
         />
       </div>
       <div className="section-row w-full h-full flex px-[6.3vw] py-[4.5vw] items-center relative z-30">

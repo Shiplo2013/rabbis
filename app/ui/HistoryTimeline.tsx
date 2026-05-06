@@ -17,15 +17,22 @@ export default function HistoryTimeline(props: ChildProps) {
     const introRight = Math.floor(window.innerWidth - introObj.right);
     return introRight;
   }
+  // Get Offset Top Position
+  function getOffsetTop(selector: string) {
+    const element = document.querySelector(selector);
+    if (!element) return 0;
+    const offsetTop = element.getBoundingClientRect().top + window.scrollY;
+    return offsetTop;
+  }
 
   function buildIntroData() {
     return {
-      "1": getRightPosition(".first-intro"),
-      "2": getRightPosition(".second-intro") + window.innerWidth * 0.135,
-      "3": getRightPosition(".third-intro") + window.innerWidth * 0.242,
-      "4": getRightPosition(".fourth-intro") + window.innerWidth * 0.42,
-      "5": getRightPosition(".fifth-intro") + window.innerWidth * 0.58,
-      "6": getRightPosition(".sixth-intro") + window.innerWidth * 0.68,
+      "1": getOffsetTop("#page>.timeline1"),
+      "2": getOffsetTop("#page>.timeline2"),
+      "3": getOffsetTop("#page>.timeline3"),
+      "4": getOffsetTop("#page>.timeline4"),
+      "5": getOffsetTop("#page>.timeline5"),
+      "6": getOffsetTop("#page>.timeline6"),
     };
   }
   useEffect(() => {

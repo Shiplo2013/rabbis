@@ -1,6 +1,7 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
@@ -10,6 +11,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function OnlyTextSection2(props: ChildProps) {
@@ -17,6 +19,12 @@ export default function OnlyTextSection2(props: ChildProps) {
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section data
   const textData = [
@@ -49,7 +57,11 @@ export default function OnlyTextSection2(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * props.animWidthText;
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(wrapper.current) -
+                      window.innerWidth * 0.8
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },

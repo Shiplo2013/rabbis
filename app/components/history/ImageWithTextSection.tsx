@@ -2,7 +2,7 @@ import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import Image1 from "../../assets/images/text-image1.jpg";
 import Image2 from "../../assets/images/text-image2.jpg";
 import Image3 from "../../assets/images/text-image3.jpg";
@@ -16,6 +16,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function ImageWithTextSection(props: ChildProps) {
@@ -23,6 +24,12 @@ export default function ImageWithTextSection(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   // Path
   const pathname = usePathname();
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Data
   const sectionData = {
@@ -54,7 +61,11 @@ export default function ImageWithTextSection(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageRef1) - window.innerWidth / 3;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(imageRef1) -
+                window.innerWidth * 2
+              );
             },
             toggleActions: "restart pause play reverse",
           },
@@ -67,7 +78,11 @@ export default function ImageWithTextSection(props: ChildProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageRef1image1) - window.innerWidth / 2;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(imageRef1) -
+                window.innerWidth * 2.5
+              );
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -104,7 +119,9 @@ export default function ImageWithTextSection(props: ChildProps) {
                 scrollTrigger: {
                   start: () => {
                     return (
-                      GetRightPosition(imageTextheading) - window.innerWidth / 2
+                      getTimelineOffset() +
+                      GetRightPosition(imageTextheading) -
+                      window.innerWidth * 2
                     );
                   },
                   toggleActions: "restart pause resume reverse",
@@ -134,7 +151,9 @@ export default function ImageWithTextSection(props: ChildProps) {
                 scrollTrigger: {
                   start: () => {
                     return (
-                      GetRightPosition(imageTexttext) - window.innerWidth / 2
+                      getTimelineOffset() +
+                      GetRightPosition(imageTexttext) -
+                      window.innerWidth * 2
                     );
                   },
                   toggleActions: "restart pause resume reverse",
@@ -163,7 +182,11 @@ export default function ImageWithTextSection(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageRef2) - window.innerWidth / 3;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(imageRef2) -
+                window.innerWidth * 2
+              );
             },
             toggleActions: "restart pause play reverse",
           },
@@ -176,7 +199,11 @@ export default function ImageWithTextSection(props: ChildProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageRef2image3) - window.innerWidth / 2;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(imageRef2) -
+                window.innerWidth * 2.5
+              );
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,

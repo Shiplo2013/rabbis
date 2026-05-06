@@ -1,7 +1,8 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import TitleImage from "../../assets/images/title-image.png";
 import rightShape from "../../assets/images/title-shape1.png";
 import leftShape from "../../assets/images/title-shape2.png";
@@ -16,6 +17,7 @@ interface ChildProps {
   animWidthText: number;
   rightShape: boolean;
   leftShape: boolean;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function TitleSection(props: ChildProps) {
@@ -25,6 +27,12 @@ export default function TitleSection(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const introTitle = useRef<HTMLHeadingElement>(null);
   const introImage = useRef<HTMLDivElement>(null);
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
   // Content
   const Title = `רבנים<br/> בתקופה<br/> זו`;
   useGSAP(
@@ -34,7 +42,11 @@ export default function TitleSection(props: ChildProps) {
       const tl = gsap.timeline({
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthText;
+            return (
+              getTimelineOffset() +
+              GetRightPosition(wrapper.current) -
+              window.innerWidth
+            );
           },
           end: () => "+=" + window.innerWidth * 2,
           scrub: 2,
@@ -63,7 +75,11 @@ export default function TitleSection(props: ChildProps) {
               opacity: 0,
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * (props.animWidthText + 0.3);
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(wrapper.current) -
+                    window.innerWidth / 2
+                  );
                 },
                 toggleActions: "restart pause play reverse",
               },

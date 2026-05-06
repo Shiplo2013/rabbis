@@ -1,4 +1,6 @@
-import IntroductionBackground from "@/app/ui/IntroductionBackground";
+"use client";
+import GetRightPosition from "@/app/ui/GetRightPosition";
+import IntroductionBackground2 from "@/app/ui/IntroductionBackground2";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -24,7 +26,7 @@ interface ChildProps {
   timeline?: string;
 }
 
-export default function Introduction2(props: ChildProps) {
+export default function IntroductionContent(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
@@ -38,14 +40,10 @@ export default function Introduction2(props: ChildProps) {
   // Section animation
   useGSAP(
     () => {
-      if (typeof window === "undefined" || !wrapper.current) {
-        return;
-      }
-
-      const setupAnimation = () => {
+      if (typeof window !== "undefined" && wrapper.current) {
         document.fonts.ready.then(() => {
           // Section Title
-          if (title.current) {
+          if (title.current && props.data[0].title !== "") {
             gsap.set(title.current, { opacity: 1 });
             let splititle;
             SplitText.create(title.current, {
@@ -62,7 +60,11 @@ export default function Introduction2(props: ChildProps) {
                   ease: "expo.out",
                   scrollTrigger: {
                     start: () => {
-                      return getTimelineOffset() - 10;
+                      return (
+                        getTimelineOffset() +
+                        GetRightPosition(wrapper.current) +
+                        window.innerWidth / 2
+                      );
                     },
                     toggleActions: "restart pause play reverse",
                   },
@@ -72,7 +74,7 @@ export default function Introduction2(props: ChildProps) {
             });
           }
           // Section Subtitle
-          if (subtitle.current) {
+          if (subtitle.current && props.data[0].subtitle !== "") {
             gsap.set(subtitle.current, { opacity: 1 });
             let splitSubtitle;
             SplitText.create(subtitle.current, {
@@ -88,7 +90,11 @@ export default function Introduction2(props: ChildProps) {
                   ease: "expo.out",
                   scrollTrigger: {
                     start: () => {
-                      return getTimelineOffset() - 10;
+                      return (
+                        getTimelineOffset() +
+                        GetRightPosition(wrapper.current) +
+                        window.innerWidth / 2
+                      );
                     },
                     toggleActions: "restart pause play reverse",
                   },
@@ -97,25 +103,8 @@ export default function Introduction2(props: ChildProps) {
               },
             });
           }
-
-          ScrollTrigger.refresh();
         });
-      };
-
-      if (document.readyState === "complete") {
-        setupAnimation();
-        return;
       }
-
-      const onLoad = () => {
-        setupAnimation();
-      };
-
-      window.addEventListener("load", onLoad, { once: true });
-
-      return () => {
-        window.removeEventListener("load", onLoad);
-      };
     },
     { scope: wrapper, dependencies: [pathname] },
   );
@@ -126,7 +115,7 @@ export default function Introduction2(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       {props.bgImage !== "" && (
-        <IntroductionBackground
+        <IntroductionBackground2
           bgImage={props.bgImage}
           overlayClass={props.overlayClass}
           imagePosition={props.bgPosition}

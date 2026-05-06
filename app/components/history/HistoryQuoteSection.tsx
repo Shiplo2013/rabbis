@@ -1,6 +1,7 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
@@ -13,6 +14,7 @@ interface ChildProps {
   bgImage: any;
   boxClass: string;
   data: { content: string }[];
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function HistoryQuoteSection(props: ChildProps) {
@@ -21,12 +23,16 @@ export default function HistoryQuoteSection(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const quote = useRef<HTMLDivElement>(null);
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
   // Section Animation
   useGSAP(
     () => {
       document.fonts.ready.then(() => {
         // Section Text
-        gsap.set(quote.current, { opacity: 1, x: "-5vw" });
+        gsap.set(quote.current, { opacity: 1, x: "-10vw" });
         let splititle;
         SplitText.create(quote.current, {
           type: "lines",
@@ -42,7 +48,11 @@ export default function HistoryQuoteSection(props: ChildProps) {
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * props.animWidthText;
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(quote.current) +
+                    window.innerWidth * 0.3
+                  );
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -54,14 +64,18 @@ export default function HistoryQuoteSection(props: ChildProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText - 0.5);
+              return (
+                getTimelineOffset() +
+                GetRightPosition(quote.current) -
+                window.innerWidth
+              );
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
           },
         });
         tl.to(quote.current, {
-          x: "20vw",
+          x: "15vw",
           ease: "none",
         });
       });

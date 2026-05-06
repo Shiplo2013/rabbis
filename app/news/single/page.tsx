@@ -381,21 +381,23 @@ export default function Page() {
                 >
                   {parse(NewsPostsData?.summary)}
                 </div>
-                <PostNavigation
-                  extraClass="mt-[8.6vh]"
-                  data={JSON.stringify(NewsPostsData.navigation)}
-                />
               </div>
             </div>
           </section>
         </main>
+        <div className="post-bottom pr-25">
+          <PostNavigation
+            extraClass=""
+            data={JSON.stringify(NewsPostsData.navigation)}
+          />
+        </div>
         <Footer className={"relative z-20"} />
       </SmoothWrapper>
       <div
         ref={movingButtonRef}
         className="moving-button fixed top-0 left-0 mt-2 ml-2 z-30 flex items-center justify-center pointer-events-none bg-[#BBA588] rounded-3xl py-1 px-3 opacity-0"
       >
-        <span className="text block text-black text-[12px] leading-[1em] font-bold">
+        <span className="text block text-black text-[20px] leading-[1em] font-bold">
           מעבר לחדשה הבאה
         </span>
       </div>
