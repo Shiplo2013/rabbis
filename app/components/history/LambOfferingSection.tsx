@@ -3,7 +3,7 @@ import ParallaxBackground from "@/app/ui/ParallaxBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import bookIcon from "../../assets/images/lamb-book-icon.png";
 import LambImage1 from "../../assets/images/lamb-image1.jpg";
 import LambImage2 from "../../assets/images/lamb-image2.jpg";
@@ -18,6 +18,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function LambOfferingSection(props: ChildProps) {
@@ -25,6 +26,12 @@ export default function LambOfferingSection(props: ChildProps) {
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Data
   const sectionData = [
@@ -57,7 +64,11 @@ export default function LambOfferingSection(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(notification) - window.innerWidth / 3;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(notification) +
+                window.innerWidth * 0.3
+              );
             },
             toggleActions: "restart pause play reverse",
           },
@@ -79,7 +90,11 @@ export default function LambOfferingSection(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(notification) - window.innerWidth / 3;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(notification) +
+                window.innerWidth * 0.3
+              );
             },
             toggleActions: "restart pause play reverse",
           },
@@ -109,7 +124,11 @@ export default function LambOfferingSection(props: ChildProps) {
           ease: "easeIn",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageContainer) - window.innerWidth * 0.8;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(imageContainer) -
+                window.innerWidth * 0.8
+              );
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -122,7 +141,11 @@ export default function LambOfferingSection(props: ChildProps) {
           ease: "easeIn",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageContainer) - window.innerWidth * 0.8;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(imageContainer) -
+                window.innerWidth * 0.8
+              );
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -136,7 +159,11 @@ export default function LambOfferingSection(props: ChildProps) {
           ease: "easeIn",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageContainer) - window.innerWidth * 0.8;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(imageContainer) -
+                window.innerWidth * 0.8
+              );
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -173,7 +200,9 @@ export default function LambOfferingSection(props: ChildProps) {
                 scrollTrigger: {
                   start: () => {
                     return (
-                      GetRightPosition(sectionTitle) - window.innerWidth / 2
+                      getTimelineOffset() +
+                      GetRightPosition(sectionTitle) +
+                      window.innerWidth * 0.2
                     );
                   },
                   toggleActions: "restart pause play reverse",
@@ -201,7 +230,9 @@ export default function LambOfferingSection(props: ChildProps) {
                 scrollTrigger: {
                   start: () => {
                     return (
-                      GetRightPosition(sectionText1) - window.innerWidth / 2
+                      getTimelineOffset() +
+                      GetRightPosition(sectionText1) +
+                      window.innerWidth * 0.2
                     );
                   },
                   toggleActions: "restart pause play reverse",
@@ -229,7 +260,9 @@ export default function LambOfferingSection(props: ChildProps) {
                 scrollTrigger: {
                   start: () => {
                     return (
-                      GetRightPosition(sectionText2) - window.innerWidth / 2
+                      getTimelineOffset() +
+                      GetRightPosition(sectionText2) +
+                      window.innerWidth * 0.2
                     );
                   },
                   toggleActions: "restart pause play reverse",
@@ -255,6 +288,7 @@ export default function LambOfferingSection(props: ChildProps) {
         overlayLeft={false}
         overlayLeftColor={""}
         animatePosition={props.animWidthText}
+        panel={props.panel}
       />
       <div className="content-wrapper w-full h-full pr-[11.7vw] pl-[9.6vw] py-[7vh] relative z-30 flex items-center gap-x-[12vw]">
         <div className="section-image w-[50vw] self-end relative">

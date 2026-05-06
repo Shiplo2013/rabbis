@@ -44,7 +44,7 @@ export default function CustomsContentSection(props: ChildProps) {
                     hoverBgColor="bg-[#111111]"
                     hoverTextColor="group-hover:text-white"
                     bgColor="bg-[#C3A13F]"
-                    fontSize="text-[33px]"
+                    fontSize="text-[28px]"
                     svgIconClass=""
                     buttonLink={item?.link}
                   />

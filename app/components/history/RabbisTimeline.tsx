@@ -1,8 +1,9 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import ParallaxBackground from "@/app/ui/ParallaxBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import rabbisImage1 from "../../assets/images/rabbis-timeline1.jpg";
 import rabbisImage2 from "../../assets/images/rabbis-timeline2.jpg";
 import rabbisImage3 from "../../assets/images/rabbis-timeline3.jpg";
@@ -17,12 +18,17 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   bgImage: any;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 export default function RabbisTimeline(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Data
   const RabbisData = [
@@ -63,7 +69,11 @@ export default function RabbisTimeline(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText + index * 0.35);
+              return (
+                getTimelineOffset() +
+                GetRightPosition(item) +
+                window.innerWidth * 0.2
+              );
             },
             toggleActions: "restart pause play reverse",
           },
@@ -89,7 +99,9 @@ export default function RabbisTimeline(props: ChildProps) {
                 scrollTrigger: {
                   start: () => {
                     return (
-                      window.innerWidth * (props.animWidthText + index * 0.35)
+                      getTimelineOffset() +
+                      GetRightPosition(item) +
+                      window.innerWidth * 0.2
                     );
                   },
                   toggleActions: "restart pause play reverse",
@@ -115,6 +127,7 @@ export default function RabbisTimeline(props: ChildProps) {
         overlayLeft={false}
         overlayLeftColor={""}
         animatePosition={props.animWidthText}
+        panel={props.panel}
       />
       <div className="section-row w-full h-full flex px-[15.5vw] py-[5vh] items-center justify-center relative z-30">
         <div className="rabbis-timeline flex gap-x-[20vw]">

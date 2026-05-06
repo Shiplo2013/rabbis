@@ -1,8 +1,9 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import ThemeButton from "@/app/ui/ThemeButton";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import mtjImage1 from "../../assets/images/move-to-jerusalem1.jpg";
 import mtjImage2 from "../../assets/images/move-to-jerusalem2.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
@@ -14,6 +15,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function MoveToJerusalem(props: ChildProps) {
@@ -21,6 +23,10 @@ export default function MoveToJerusalem(props: ChildProps) {
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Content
   const moveToJerusalemText = `מתוך האפר קמה הישיבה לבניין מחודש, זוהר ונישא.<br/>תלמידי הישיבה הוותיקים, יחד עם בחורים מבני היישוב הישן, מתלכדים סביב אורה של הישיבה הקדושה, וממשיכים ביתר שאת את המפעל הגדול של תורה ומוסר, כאילו לא נעקרה ממקומה מעולם.<br/>מן היום ההוא והלאה, נושאת הישיבה את שמה "ישיבת חברון", שם זה נחרת לנצח באותיות של זהב, זכר לקדושים ולטהורים אשר עלו בסערה השמימה על קידוש ה', בידי בני עוולה.<br/>בראש המחנה ניצב מרן רבי יחזקאל סרנא, כמלך בגדוד, מנהיג את הישיבה ביד רמה וברוח נדירה, ומצעידה לפסגות חדשות. מאות בני תורה, מכל קצווי הארץ, מתדפקים על שערי ההיכל  לבוא, להסתופף, ולהצטרף אל ליגיון של מלך.<br/>לצידו עומדים עמודי התורה ראשי הישיבה הגאון רבי אהרן כהן והגאון רבי משה חברוני, שותפיו לדרך, המסייעים בעדו במסירות ובהשראה.<br/>יחד, נדבך אחר נדבך, הם בונים את מבצר התורה האיתן, ההולך ונישא לעין כל – עד שהוא הופך תוך זמן קצר למרכז תורה מבהיק, המאציל מזיו קדושתו על כל ארץ הקודש כולה`;
@@ -46,7 +52,11 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText - 0.5);
+              return (
+                getTimelineOffset() +
+                GetRightPosition(image1) -
+                window.innerWidth * 0.7
+              );
             },
             toggleActions: "restart pause play reverse",
           },
@@ -57,7 +67,11 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText - 0.5);
+              return (
+                getTimelineOffset() +
+                GetRightPosition(image1) -
+                window.innerWidth * 0.7
+              );
             },
             end: () => "+=" + window.innerWidth * 2.5,
             scrub: 2,
@@ -73,7 +87,11 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText - 0.5);
+              return (
+                getTimelineOffset() +
+                GetRightPosition(button) -
+                window.innerWidth * 0.5
+              );
             },
             end: () => "+=" + window.innerWidth * 3,
             scrub: 2,
@@ -94,7 +112,11 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText + 0.2);
+              return (
+                getTimelineOffset() +
+                GetRightPosition(image2) -
+                window.innerWidth * 0.5
+              );
             },
             toggleActions: "restart pause play reverse",
           },
@@ -105,7 +127,11 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText + 0.2);
+              return (
+                getTimelineOffset() +
+                GetRightPosition(image2) -
+                window.innerWidth * 0.5
+              );
             },
             end: () => "+=" + window.innerWidth * 2.5,
             scrub: 2,
@@ -131,7 +157,11 @@ export default function MoveToJerusalem(props: ChildProps) {
                 ease: "expo.out",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * (props.animWidthText + 1);
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(text) -
+                      window.innerWidth * 0.5
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },

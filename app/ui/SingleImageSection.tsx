@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
+import GetRightPosition from "./GetRightPosition";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -9,6 +10,7 @@ interface ChildProps {
   extraClass: string;
   image: any;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 export default function SingleImageSection(props: ChildProps) {
   // Navigation
@@ -16,6 +18,10 @@ export default function SingleImageSection(props: ChildProps) {
   // Section Selector
   const wrapper = useRef(null);
   const image = useRef(null);
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Animation
   useGSAP(
@@ -25,7 +31,11 @@ export default function SingleImageSection(props: ChildProps) {
       const tl = gsap.timeline({
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthText;
+            return (
+              getTimelineOffset() +
+              GetRightPosition(image.current) -
+              window.innerWidth * 0.2
+            );
           },
           toggleActions: "restart pause play reverse",
         },

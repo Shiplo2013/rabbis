@@ -1,8 +1,8 @@
+import ImageRevealWithParallaxBG from "@/app/ui/ImageRevealWithParallaxBG";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import contentBG from "../../assets/images/content-bg.jpg";
-import ParallaxBackground from "../../ui/ParallaxBackground";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
@@ -114,13 +114,13 @@ export default function ContentSection2(props: ChildProps) {
   }, [pathname]);
   return (
     <section
-      className={`${props.extraClass} flex items-center justify-center flex-col relative`}
+      className={`${props.extraClass} flex items-center justify-center flex-col relative overflow-hidden`}
     >
-      <ParallaxBackground
+      <ImageRevealWithParallaxBG
         bgImage={contentBG}
         overlayLeft={false}
         overlayLeftColor={""}
-        animatePosition={0}
+        animatePosition={props.animWidthText - 0.3}
       />
       <div className="w-full h-full flex items-center justify-center flex-row-reverse text-[21px] text-[#3D3B37] gap-x-[7.5vw] px-[10.4vw] relative z-20">
         <div className="w-1/2">

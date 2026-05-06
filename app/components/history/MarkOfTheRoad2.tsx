@@ -1,8 +1,7 @@
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import historyImage1 from "../../assets/images/history-image1.jpg";
 import historyImage2 from "../../assets/images/history-image2.jpg";
 import historyImage3 from "../../assets/images/history-image3.jpg";
@@ -15,12 +14,28 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 export default function MarkOfTheRoad2(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
+
+  // Get Intro Right Position
+  function getRightPosition(selector: any) {
+    const intro = selector;
+    if (!intro) return 0;
+    const introObj = intro.getBoundingClientRect();
+    const introRight = Math.floor(window.innerWidth - introObj.right);
+    return introRight;
+  }
 
   // Section Data
   const sectionData = [
@@ -42,7 +57,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
   useGSAP(
     () => {
       const items = wrapper.current?.querySelectorAll(".section-content");
-      items?.forEach((item) => {
+      items?.forEach((item, index) => {
         const image = item.querySelector(".image");
         const title = item.querySelector(".title>h4");
         // Rubbis Image
@@ -57,7 +72,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(image) - window.innerWidth / 3;
+              return getTimelineOffset() + getRightPosition(image);
             },
             toggleActions: "restart pause play reverse",
           },
@@ -82,7 +97,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(title) - window.innerWidth / 2;
+                    return getTimelineOffset() + getRightPosition(title);
                   },
                   toggleActions: "restart pause resume reverse",
                 },
@@ -101,6 +116,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
+      data-scroll-section={props.animWidthText}
     >
       <div className="section-row w-full h-full flex px-[6.3vw] py-[4.5vw] gap-x-[10vw]">
         {sectionData?.map((item, index) => (

@@ -1,8 +1,9 @@
-import ParallaxBackground from "@/app/ui/ParallaxBackground";
+import GetRightPosition from "@/app/ui/GetRightPosition";
+import ImageRevealWithParallaxBG from "@/app/ui/ImageRevealWithParallaxBG";
 import RabbisSlider from "@/app/ui/RabbisSlider";
 import ThemeButton from "@/app/ui/ThemeButton";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import contentBG from "../../assets/images/history-section-bg.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
@@ -13,6 +14,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function RabbisPeriodSection(props: ChildProps) {
@@ -23,6 +25,12 @@ export default function RabbisPeriodSection(props: ChildProps) {
   const button = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const slider = useRef<HTMLDivElement>(null);
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Data
   const SlideData = [
@@ -86,7 +94,11 @@ export default function RabbisPeriodSection(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * props.animWidthText;
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(title.current) -
+                    window.innerWidth / 2
+                  );
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -103,7 +115,11 @@ export default function RabbisPeriodSection(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText + 0.3);
+              return (
+                getTimelineOffset() +
+                GetRightPosition(slider.current) -
+                window.innerWidth / 2
+              );
             },
             toggleActions: "restart pause play reverse",
           },
@@ -117,7 +133,11 @@ export default function RabbisPeriodSection(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText + 0.4);
+              return (
+                getTimelineOffset() +
+                GetRightPosition(button.current) -
+                window.innerWidth / 2
+              );
             },
             toggleActions: "restart pause play reverse",
           },
@@ -134,11 +154,12 @@ export default function RabbisPeriodSection(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
       data-scroll-section={props.animWidthText}
     >
-      <ParallaxBackground
+      <ImageRevealWithParallaxBG
         bgImage={contentBG}
         overlayLeft={true}
         overlayLeftColor={"#0a0a0a"}
-        animatePosition={props.animWidthText}
+        animatePosition={props.animWidthText - 0.3}
+        panel={props.panel}
       />
       <div className="period-content-wrapper flex items-center justify-center w-full h-full relative z-20 pr-[10vw] pl-[10vw] pt-[6vh]">
         <div

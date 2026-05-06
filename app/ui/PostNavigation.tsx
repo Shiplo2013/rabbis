@@ -22,7 +22,7 @@ export default function PostNavigation(props: ChildProps) {
           href={navigationData?.nextPost?.link}
           className="next-post relative group"
         >
-          <div className="image w-[6.4vw] h-[6.4vw] overflow-hidden">
+          <div className="image w-12vw] h-[12vw] overflow-hidden">
             <Image
               className="w-full h-full object-cover object-center"
               src={navigationData?.nextPost?.image?.src}
@@ -34,11 +34,11 @@ export default function PostNavigation(props: ChildProps) {
               loading="lazy"
             />
           </div>
-          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-1.5 text-center text-[10px] leading-[70%] min-w-22 max-w-full">
+          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-3 text-center text-[15px] leading-[70%] min-w-32 max-w-full">
             {navigationData?.nextPost.title}
           </h4>
-          <div className="absolute top-1/2 -translate-y-1/2 right-full -mr-5 w-14 h-14 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:translate-x-3">
-            <div className="w-8 h-auto transition-all duration-300 group-hover:translate-x-1">
+          <div className="absolute top-1/2 -translate-y-1/2 right-full -mr-8 w-25 h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:translate-x-3">
+            <div className="w-12 h-auto transition-all duration-300 group-hover:translate-x-1">
               <ArrowRight />
             </div>
           </div>
@@ -49,7 +49,7 @@ export default function PostNavigation(props: ChildProps) {
           href={navigationData?.prevPost?.link}
           className="prev-post relative group"
         >
-          <div className="image w-[6.4vw] h-[6.4vw] overflow-hidden">
+          <div className="image w-[12vw] h-[12vw] overflow-hidden">
             <Image
               className="w-full h-full object-cover object-center"
               src={navigationData?.prevPost?.image?.src}
@@ -61,11 +61,11 @@ export default function PostNavigation(props: ChildProps) {
               loading="lazy"
             />
           </div>
-          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-1.5 text-center text-[10px] leading-[70%] min-w-22 max-w-full">
+          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-3 text-center text-[15px] leading-[70%] min-w-32 max-w-full">
             {navigationData?.prevPost.title}
           </h4>
-          <div className="absolute top-1/2 -translate-y-1/2 left-full -ml-5 w-14 h-14 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:-translate-x-3">
-            <div className="w-8 h-auto transition-all duration-300 group-hover:-translate-x-1">
+          <div className="absolute top-1/2 -translate-y-1/2 left-full -ml-8 w-25 h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:-translate-x-3">
+            <div className="w-12 h-auto transition-all duration-300 group-hover:-translate-x-1">
               <ArrowLeft2 />
             </div>
           </div>

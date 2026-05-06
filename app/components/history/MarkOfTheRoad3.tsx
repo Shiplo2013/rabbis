@@ -18,12 +18,19 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel: React.RefObject<HTMLDivElement | null>;
 }
 export default function MarkOfTheRoad3(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Data
   const title = `ציוני<br/>דרך`;
@@ -76,7 +83,11 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return GetRightPosition(mainTitle) - window.innerWidth / 2;
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(mainTitle) -
+                      window.innerWidth * 0.4
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -107,7 +118,11 @@ export default function MarkOfTheRoad3(props: ChildProps) {
               delay: 0.5,
               scrollTrigger: {
                 start: () => {
-                  return GetRightPosition(image) - window.innerWidth / 3;
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(image) -
+                    window.innerWidth * 0.4
+                  );
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -129,7 +144,11 @@ export default function MarkOfTheRoad3(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return GetRightPosition(image) - window.innerWidth / 3;
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(image) -
+                    window.innerWidth * 0.4
+                  );
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -148,7 +167,11 @@ export default function MarkOfTheRoad3(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return GetRightPosition(image) - window.innerWidth / 2;
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(image) -
+                    window.innerWidth * 0.4
+                  );
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -168,11 +191,15 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                   duration: 2,
                   yPercent: 150,
                   stagger: 0.025,
-                  delay: -1,
+                  delay: -0.5,
                   ease: "expo.inOut",
                   scrollTrigger: {
                     start: () => {
-                      return GetRightPosition(title) - window.innerWidth / 3;
+                      return (
+                        getTimelineOffset() +
+                        GetRightPosition(title) -
+                        window.innerWidth * 0.4
+                      );
                     },
                     toggleActions: "restart pause play reverse",
                   },

@@ -1,8 +1,8 @@
 import CardSlider from "@/app/ui/CardSlider";
-import IntroductionBackground from "@/app/ui/IntroductionBackground";
+import IntroductionBackground2 from "@/app/ui/IntroductionBackground2";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
@@ -18,6 +18,7 @@ interface ChildProps {
   overlayClass: string;
   sectionImage: any;
   SlideData: { text1: string; text2: string }[];
+  panel?: RefObject<HTMLDivElement | null>;
 }
 
 export default function ArrowSliderSection(props: ChildProps) {
@@ -27,6 +28,21 @@ export default function ArrowSliderSection(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const cardSlider = useRef<HTMLDivElement>(null);
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
+
+  // Get Intro Right Position
+  function getRightPosition(selector: any) {
+    const intro = selector;
+    if (!intro) return 0;
+    const introObj = intro.getBoundingClientRect();
+    const introRight = Math.floor(window.innerWidth - introObj.right);
+    return introRight;
+  }
   // Section Animation
   useGSAP(
     () => {
@@ -42,7 +58,11 @@ export default function ArrowSliderSection(props: ChildProps) {
         ease: "expo.inOut",
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthText;
+            return (
+              getTimelineOffset() +
+              getRightPosition(cardSlider.current) -
+              window.innerWidth / 2
+            );
           },
           toggleActions: "restart pause resume reverse",
         },
@@ -52,7 +72,11 @@ export default function ArrowSliderSection(props: ChildProps) {
       const tl = gsap.timeline({
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * (props.animWidthText - 0.5);
+            return (
+              getTimelineOffset() +
+              getRightPosition(imageRef.current) -
+              window.innerWidth * 0.8
+            );
           },
           end: () => "+=" + window.innerWidth * 2,
           scrub: 2,
@@ -73,12 +97,13 @@ export default function ArrowSliderSection(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-10">
-        <IntroductionBackground
+        <IntroductionBackground2
           bgImage={props.bgImage}
           overlayClass={props.overlayClass}
           imagePosition={props.bgPosition}
           bgClass={props.bgClass}
           animatePosition={props.animWidthText}
+          panel={props.panel}
         />
       </div>
       <div className="section-wrapper w-full h-full relative z-30">

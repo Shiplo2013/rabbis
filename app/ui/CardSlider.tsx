@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { gsap, useGSAP } from "../ui/plugins";
 
@@ -7,28 +8,48 @@ interface ChildProps {
 }
 
 export default function CardSlider(props: ChildProps) {
-  const carSlider = useRef(null);
+  const carSlider = useRef<HTMLDivElement>(null);
+  const arrowButton = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
   const { contextSafe } = useGSAP();
-  useGSAP(() => {
-    const inActiveSlide = document.querySelector(
-      "#card-slider>.card-slide:not(.active)",
-    );
-    gsap.set(inActiveSlide, {
-      rotation: -6,
-      x: -44,
-    });
-  }, [carSlider]);
+
+  const getActiveSlide = () => {
+    return carSlider.current?.querySelector(
+      ".card-slide.active",
+    ) as HTMLElement | null;
+  };
+
+  const getInactiveSlide = () => {
+    return carSlider.current?.querySelector(
+      ".card-slide:not(.active)",
+    ) as HTMLElement | null;
+  };
+
+  useGSAP(
+    () => {
+      const inActiveSlide = getInactiveSlide();
+      if (!inActiveSlide) {
+        return;
+      }
+
+      gsap.set(inActiveSlide, {
+        rotation: -6,
+        x: -44,
+      });
+    },
+    { scope: carSlider, dependencies: [pathname] },
+  );
   const handleNextSlide = contextSafe(() => {
-    const activeSlide = document.querySelector(
-      "#card-slider>.card-slide.active",
-    );
-    const inActiveSlide = document.querySelector(
-      "#card-slider>.card-slide:not(.active)",
-    );
+    const activeSlide = getActiveSlide();
+    const inActiveSlide = getInactiveSlide();
+    if (!activeSlide || !inActiveSlide) {
+      return;
+    }
+
     const card = gsap.timeline({
       onComplete: () => {
-        activeSlide?.classList.remove("active");
-        inActiveSlide?.classList.add("active");
+        activeSlide.classList.remove("active");
+        inActiveSlide.classList.add("active");
       },
     });
     card
@@ -68,9 +89,12 @@ export default function CardSlider(props: ChildProps) {
   // Cursor Follower Function
   const moveCircle = contextSafe(
     (e: { screenY: number; clientX: any; clientY: any }) => {
-      const yskale = -(e.screenY / 100) * 1;
       //console.log(e.clientX, e.clientY)
-      gsap.to(".arrow-button", {
+      if (!arrowButton.current) {
+        return;
+      }
+
+      gsap.to(arrowButton.current, {
         x: e.clientX,
         y: e.clientY,
         delay: 0,
@@ -80,7 +104,11 @@ export default function CardSlider(props: ChildProps) {
   );
   // On Mouse Enter
   const handleMouseEnter = contextSafe(() => {
-    gsap.to(".arrow-button", {
+    if (!arrowButton.current) {
+      return;
+    }
+
+    gsap.to(arrowButton.current, {
       opacity: 1,
       scale: 1,
       rotation: 180,
@@ -89,7 +117,11 @@ export default function CardSlider(props: ChildProps) {
   });
   // On Mouse Leave
   const handleMouseLeave = contextSafe(() => {
-    gsap.to(".arrow-button", {
+    if (!arrowButton.current) {
+      return;
+    }
+
+    gsap.to(arrowButton.current, {
       opacity: 0,
       scale: 0,
       rotation: 0,
@@ -107,9 +139,10 @@ export default function CardSlider(props: ChildProps) {
         className="arrow-slider w-117 relative z-10 cursor-none"
       >
         <div
-          id="card-slider"
-          className="card-slider text-[#000000] text-[20px] cursor-none"
-        >
+          ref={arrowButton}
+          className="arrow-button fixed left-0 top-0 z-30 -ml-13 -mt-13 cursor-none opacity-0 pointer-events-none scale-0"
+        />
+        <div className="card-slider text-[#000000] text-[20px] cursor-none">
           <div className="card-slide active pt-12 pb-5 px-7 bg-[#F1EADA] min-h-54.25 relative z-20 transition-colors duration-300">
             <div className="slide-content">
               <span className="absolute left-5 top-3">1/2</span>

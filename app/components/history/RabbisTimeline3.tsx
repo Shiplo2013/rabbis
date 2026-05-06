@@ -1,7 +1,8 @@
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import rabbisImage1 from "../../assets/images/rabbis-timeline14.jpg";
 import rabbisImage2 from "../../assets/images/rabbis-timeline15.jpg";
 import rabbisImage3 from "../../assets/images/rabbis-timeline16.jpg";
@@ -15,12 +16,17 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   bgImage: any;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 export default function RabbisTimeline3(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
   // Section Data
   const RabbisData = [
     {
@@ -61,7 +67,11 @@ export default function RabbisTimeline3(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * props.animWidthText;
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(secTitle) +
+                      window.innerWidth * 0.1
+                    );
                   },
                   toggleActions: "restart pause resume reverse",
                 },
@@ -76,7 +86,6 @@ export default function RabbisTimeline3(props: ChildProps) {
       items?.forEach((item, index) => {
         const image = item.querySelector(".image");
         const title = item.querySelector(".title>h4");
-        const animationPoint = props.animWidthText + 0.3 + index * 0.3;
         // Rubbis Image
         gsap.set(image, {
           x: -100,
@@ -89,7 +98,11 @@ export default function RabbisTimeline3(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * animationPoint;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(item) +
+                window.innerWidth * 0.1
+              );
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -113,7 +126,11 @@ export default function RabbisTimeline3(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * animationPoint;
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(item) +
+                      window.innerWidth * 0.1
+                    );
                   },
                   toggleActions: "restart pause resume reverse",
                 },

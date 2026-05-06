@@ -1,9 +1,9 @@
-import IntroductionBackground from "@/app/ui/IntroductionBackground";
+import ImageRevealWithParallaxBG from "@/app/ui/ImageRevealWithParallaxBG";
 import TextSplitLines from "@/app/ui/TextSplitLines";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import image1 from "../../assets/images/news-section-image1.jpg";
 import image2 from "../../assets/images/news-section-image2.jpg";
 import image3 from "../../assets/images/news-section-image3.jpg";
@@ -17,11 +17,13 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   bgImage: any;
+  panel: RefObject<HTMLDivElement | null>;
 }
 
 export default function NewsPapperSection(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
+  const timeline = props.panel;
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
 
@@ -210,14 +212,15 @@ export default function NewsPapperSection(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20 overflow-hidden`}
+      data-scroll-section={props.animWidthText}
     >
       {props.bgImage !== "" && (
-        <IntroductionBackground
+        <ImageRevealWithParallaxBG
           bgImage={props.bgImage}
-          overlayClass={"hidden"}
-          imagePosition="bottom"
-          bgClass=""
-          animatePosition={props.animWidthText}
+          overlayLeft={false}
+          overlayLeftColor={""}
+          animatePosition={props.animWidthText - 0.3}
+          panel={props.panel}
         />
       )}
       <div

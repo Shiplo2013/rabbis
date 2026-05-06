@@ -21,6 +21,7 @@ import Footer from "../../components/Footer";
 
 import CalenderIcon2 from "@/app/assets/icons/CalenderIcon2";
 import CandelIcon from "@/app/assets/icons/CandelIcon";
+import CloseIcon2 from "@/app/assets/icons/CloseIcon2";
 import EventIcon from "@/app/assets/icons/EventIcon";
 import MapMarker from "@/app/assets/icons/MapMarker";
 import UserIcon2 from "@/app/assets/icons/UserIcon2";
@@ -141,6 +142,7 @@ export default function Page() {
   const communityLoader = useRef<HTMLDivElement>(null);
   const swiperRef = useRef<SwiperRef>(null);
   const [activeTab, setActiveTab] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Load Page
   useGSAP(
@@ -325,6 +327,54 @@ export default function Page() {
     };
   }, [isAllAnimationComplete]);
 
+  // Sidebar Animation
+  useGSAP(() => {
+    const sidebar = main.current?.querySelector(".community-sidebar");
+    const openBtn = main.current?.querySelector(".sidebar-open");
+    const content = main.current?.querySelector(".community-content");
+    // Sidebar
+    if (sidebar && content && openBtn) {
+      if (isSidebarOpen) {
+        // Sidebar
+        gsap.to(sidebar, {
+          x: 0,
+          duration: 1,
+          ease: "expo.inOut",
+        });
+        // Content
+        gsap.to(content, {
+          width: "calc(100% - 450px)",
+          duration: 1,
+          ease: "expo.inOut",
+        });
+        // Open Button
+        gsap.to(openBtn, {
+          xPercent: 0,
+          opacity: 0,
+          duration: 1,
+          ease: "expo.inOut",
+        });
+      } else {
+        gsap.to(sidebar, {
+          x: "-100%",
+          duration: 1,
+          ease: "expo.inOut",
+        });
+        gsap.to(content, {
+          width: "100%",
+          duration: 1,
+          ease: "expo.inOut",
+        });
+        gsap.to(openBtn, {
+          xPercent: 100,
+          opacity: 1,
+          duration: 1,
+          ease: "expo.inOut",
+        });
+      }
+    }
+  }, [isSidebarOpen]);
+
   useGSAP(() => {
     // Page Overflow Hidden
     document.body.classList.remove("!overflow-auto");
@@ -355,8 +405,8 @@ export default function Page() {
           dir="rtl"
           className="main relative overflow-hidden z-10 opacity-0"
         >
-          <section className="single-communities bg-[#091B24] min-h-screen flex pt-25">
-            <div className="community-content w-[calc(100%-450px)] h-auto bg-[#F5F0EB] text-[#091B24]">
+          <section className="single-communities bg-[#091B24] min-h-screen flex mt-25 relative">
+            <div className="community-content w-[calc(100%-450px)] h-auto bg-[#F5F0EB] text-[#091B24] relative z-40">
               <div className="community-info flex border-b border-[#000000] border-opacity-50">
                 <div className="location flex py-3 px-3 gap-x-3 w-[32%]">
                   <div className="icon w-6 h-6 flex items-center justify-center mt-1">
@@ -690,7 +740,19 @@ export default function Page() {
                 </div>
               </div>
             </div>
-            <div className="community-sidebar bg-[#091B24] text-[#FBF4E6] w-112.5 py-19 px-10">
+            <div className="community-sidebar bg-[#091B24] text-[#FBF4E6] w-112.5 h-full py-19 px-10 absolute top-0 left-0 z-50">
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="sidebar-close w-6 h-6 p-1 absolute top-4 right-4 cursor-pointer z-20"
+              >
+                <CloseIcon2 className="w-full h-auto" />
+              </button>
+              <button
+                className="sidebar-open absolute top-25 right-0 bg-[#091B24] text-white p-2 cursor-pointer z-20 w-8 h-10 flex items-center justify-center"
+                onClick={() => setIsSidebarOpen(true)}
+              >
+                <span className="block w-3 h-3 border-t border-r border-white rotate-45"></span>
+              </button>
               <div className="sidebar-wrapper">
                 <h2 className="text-[#D1A941] text-[65px] leading-[86%]">
                   קול מבין הסטנדרים

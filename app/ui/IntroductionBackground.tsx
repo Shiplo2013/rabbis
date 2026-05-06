@@ -1,14 +1,15 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "./plugins";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
-
 interface ChildProps {
   bgImage: any;
+  panel?: RefObject<HTMLDivElement | null>;
+  timeline?: string;
   overlayClass: string;
   imagePosition: string;
   bgClass: string;
@@ -18,12 +19,24 @@ interface ChildProps {
 export default function IntroductionBackground(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
   // Selector
   const background = useRef<HTMLDivElement>(null);
   // Seciton Animation
   useGSAP(
     () => {
-      if (props.animatePosition > 0) {
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const setupAnimation = () => {
+        if (!background.current || props.animatePosition <= 0) {
+          return;
+        }
+
         // Banner Background
         gsap.set(background.current, { scale: 1.2, x: "10vw" });
         gsap.to(background.current, {
@@ -31,7 +44,7 @@ export default function IntroductionBackground(props: ChildProps) {
           ease: "none",
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animatePosition - 0.5);
+              return getTimelineOffset();
             },
             end: () => {
               return "+=" + window.innerWidth * 2;
@@ -39,7 +52,25 @@ export default function IntroductionBackground(props: ChildProps) {
             scrub: 2,
           },
         });
+
+        // Ensure triggers recalculate after all assets are loaded.
+        ScrollTrigger.refresh();
+      };
+
+      if (document.readyState === "complete") {
+        setupAnimation();
+        return;
       }
+
+      const onLoad = () => {
+        setupAnimation();
+      };
+
+      window.addEventListener("load", onLoad, { once: true });
+
+      return () => {
+        window.removeEventListener("load", onLoad);
+      };
     },
     { scope: background, dependencies: [pathname] },
   );

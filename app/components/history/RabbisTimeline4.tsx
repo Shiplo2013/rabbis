@@ -2,7 +2,7 @@ import GetRightPosition from "@/app/ui/GetRightPosition";
 import TimelineCardItem from "@/app/ui/TimelineCardItem";
 import VideoItem from "@/app/ui/VideoItem";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import rabbisImage1 from "../../assets/images/timeline4image1.jpg";
 import rabbisImage2 from "../../assets/images/timeline4image2.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
@@ -14,12 +14,19 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  panel?: RefObject<HTMLDivElement | null>;
 }
 export default function RabbisTimeline4(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
   // Section Data
   const RabbisData = [
     {
@@ -112,7 +119,11 @@ export default function RabbisTimeline4(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * props.animWidthText - 0.4;
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(wrapper.current) -
+                      window.innerWidth
+                    );
                   },
                   toggleActions: "restart pause resume reverse",
                 },
@@ -131,10 +142,15 @@ export default function RabbisTimeline4(props: ChildProps) {
           duration: 1,
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(item) - window.innerWidth * 0.3;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(wrapper.current) -
+                window.innerWidth * 0.7
+              );
             },
             toggleActions: "restart pause resume reverse",
           },
+          stagger: 0.25,
         });
       });
     },
