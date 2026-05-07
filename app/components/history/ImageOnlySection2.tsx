@@ -58,8 +58,9 @@ export default function ImageOnlySection2(props: ChildProps) {
       ref={wrapper}
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      data-scroll-section={props.animWidthText}
     >
-      <div className="section-wrapper w-full h-full py-[6vh] px-[4.7vw] flex items-end justify-end">
+      <div className="section-wrapper w-full h-full py-[15vh] px-[4.7vw] flex items-end justify-end">
         <div className="image1 w-220 h-144.75 relative z-30 translate-x-[9vw]">
           <Image
             className="w-full object-cover object-center h-full"

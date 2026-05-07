@@ -164,7 +164,7 @@ export default function RabbisTimeline4(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       <div className="section-row w-full h-screen flex px-[10vw] py-[10vh] items-center relative z-30 gap-x-[8vw]">
-        <div className="rabbis-title self-end">
+        <div className="rabbis-title self-end mb-[3vh]">
           <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F]">
             ציוני
             <br />

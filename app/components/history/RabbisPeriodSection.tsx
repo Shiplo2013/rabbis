@@ -1,7 +1,7 @@
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import ImageRevealWithParallaxBG from "@/app/ui/ImageRevealWithParallaxBG";
 import RabbisSlider from "@/app/ui/RabbisSlider";
-import ThemeButton from "@/app/ui/ThemeButton";
+import ThemeButton2 from "@/app/ui/ThemeButton2";
 import { usePathname } from "next/navigation";
 import { RefObject, useRef } from "react";
 import contentBG from "../../assets/images/history-section-bg.jpg";
@@ -15,6 +15,8 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  activeMenu?: boolean;
+  activeMenuFunction?: (state: boolean) => void;
 }
 
 export default function RabbisPeriodSection(props: ChildProps) {
@@ -164,9 +166,12 @@ export default function RabbisPeriodSection(props: ChildProps) {
       <div className="period-content-wrapper flex items-center justify-center w-full h-full relative z-20 pr-[10vw] pl-[10vw] pt-[6vh]">
         <div
           ref={button}
-          className="period-button absolute top-[7.8vh] left-[12.7vw]"
+          onClick={() => {
+            props.activeMenuFunction?.(!props.activeMenu);
+          }}
+          className="period-button absolute top-[7.8vh] left-[12.7vw] cursor-pointer"
         >
-          <ThemeButton
+          <ThemeButton2
             extraClass="w-32 h-32 flex item-center justify-center border-[4px] border-[#D1A941] text-[28px] leading-[0.8em] p-6 text-center font-bold"
             bgColor="bg-[#ffffff]"
             textColor="text-[#000000]"

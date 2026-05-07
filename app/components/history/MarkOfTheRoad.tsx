@@ -173,7 +173,10 @@ export default function MarkOfTheRoad(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       <div className="section-row w-full h-full flex px-[6.3vw] py-[4.5vw] gap-x-[10vw]">
-        <div dir="ltr" className="section-title flex items-end w-[15vw]">
+        <div
+          dir="ltr"
+          className="section-title flex items-end w-[15vw] mb-[4vh]"
+        >
           <h2
             ref={titleRef}
             className="text-[161px] leading-[0.7em] text-(--theme-color) text-right"

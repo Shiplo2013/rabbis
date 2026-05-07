@@ -87,7 +87,7 @@ export default function SingleVideoSection(props: ChildProps) {
           });
           gsap.to(videoButton.current, {
             duration: 0.5,
-            y: "45vh",
+            y: "-45vh",
             scale: 0.5,
             delay: 0,
             ease: "easeInOut",
@@ -140,7 +140,7 @@ export default function SingleVideoSection(props: ChildProps) {
     <section
       ref={wrapper}
       dir="rtl"
-      className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      className={`${props.extraClass} bg-black flex items-center relative z-50`}
       data-scroll-section={props.animWidthText}
     >
       <div className="video-wrapper w-full h-full relative">
