@@ -1,5 +1,4 @@
 import GetRightPosition from "@/app/ui/GetRightPosition";
-import ThemeButton from "@/app/ui/ThemeButton";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -198,14 +197,9 @@ export default function MoveToJerusalem(props: ChildProps) {
               />
             </div>
             <div className="period-button absolute bottom-0 right-0 -mr-[10vw] -mb-11 group will-change-transform">
-              <ThemeButton
-                extraClass="w-38.25 h-38.25 flex item-center justify-center border-[4px] border-[#D1A941] text-[33px] leading-[0.8em] p-6 text-center font-bold -rotate-[9.97deg] group-hover:rotate-0 transition-all duration-500"
-                bgColor="bg-[#ffffff]"
-                textColor="text-[#000000]"
-                hoverBgColor="bg-[#C3A13F]"
-                text={`המעבר לירושלים`}
-                svgIconClass={""}
-              />
+              <div className="w-38.25 h-38.25 flex item-center justify-center border-4 rounded-full bg-white text-black border-[#D1A941] text-[33px] leading-[0.8em] p-6 text-center font-bold -rotate-[9.97deg] group-hover:rotate-0 transition-all duration-500">
+                <span className="block my-auto">{`המעבר לירושלים`}</span>
+              </div>
             </div>
           </div>
           <div className="image2 ml-[9.1vw] will-change-transform">
@@ -224,7 +218,7 @@ export default function MoveToJerusalem(props: ChildProps) {
           </div>
           <div
             dir="ltr"
-            className="section-text text-[21px] leading-[1.4em] text-[#FBF4E6] w-[26.3vw] text-right"
+            className="section-text 2xl:text-[21px] xl:text-[18px] sm:text-[16px] leading-[1.4em] text-[#FBF4E6] w-[26.3vw] text-right"
           >
             <p>{parse(moveToJerusalemText)}</p>
           </div>

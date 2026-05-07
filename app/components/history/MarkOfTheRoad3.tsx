@@ -224,7 +224,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
       <div className="section-row w-full h-full flex px-[6.3vw] py-[9vh]">
         <div
           dir="ltr"
-          className="section-title flex items-end w-[15vw] ml-[10vw]"
+          className="section-title flex items-end w-[15vw] ml-[10vw] mb-[4vh]"
         >
           <h2 className="main-title text-[161px] leading-[0.7em] text-(--theme-color) text-right">
             {parse(title)}
@@ -236,7 +236,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
             className="group section-content flex flex-col items-start gap-y-[10vh] w-48.5vw self-end -mb-[9vh] px-[2.7vw] pt-[9vh] relative cursor-pointer"
           >
             {item.notification !== "" && (
-              <div className="notifiaction py-5 px-8 w-108 bg-[#5A7C4E] relative pl-19 mx-auto z-20">
+              <div className="notifiaction notification-button py-5 px-8 w-108 bg-[#5A7C4E] relative pl-19 mx-auto z-20">
                 <div className="notify-icon w-33.75 h-25 absolute top-0 left-0 -translate-x-1/2">
                   <Image
                     className="w-full object-cover object-center h-full"

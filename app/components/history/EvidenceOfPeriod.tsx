@@ -18,6 +18,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  videoControl: any;
 }
 
 export default function EvidenceOfPeriod(props: ChildProps) {
@@ -123,7 +124,10 @@ export default function EvidenceOfPeriod(props: ChildProps) {
       <div className="evidence-wrapper w-full h-full pr-[6vw] py-[7vh] flex">
         <div className="section-content flex gap-x-[2.4vw]">
           <div className="video relative flex flex-col gap-y-[3vh] w-66.5 h-66.5">
-            <div className="thumb p-5 bg-[#d9d9d9d5] rounded-full cursor-pointer relative">
+            <div
+              className="video-popup-button thumb p-5 bg-[#d9d9d9d5] rounded-full cursor-pointer relative"
+              onClick={() => props.videoControl(true)}
+            >
               <div className="image rounded-full overflow-hidden select-none pointer-events-none border-12 border-[#c3a13f69]">
                 <Image
                   className={`w-full object-cover h-full relative z-10`}

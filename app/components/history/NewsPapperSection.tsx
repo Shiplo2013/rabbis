@@ -1,9 +1,11 @@
+"use client";
 import ImageRevealWithParallaxBG from "@/app/ui/ImageRevealWithParallaxBG";
 import TextSplitLines from "@/app/ui/TextSplitLines";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { RefObject, useRef } from "react";
+import { RefObject, useRef, useState } from "react";
+import Draggable from "react-draggable";
 import image1 from "../../assets/images/news-section-image1.jpg";
 import image2 from "../../assets/images/news-section-image2.jpg";
 import image3 from "../../assets/images/news-section-image3.jpg";
@@ -26,6 +28,10 @@ export default function NewsPapperSection(props: ChildProps) {
   const timeline = props.panel;
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const image1Ref = useRef<HTMLDivElement>(null);
+  const image2Ref = useRef<HTMLDivElement>(null);
+  const image3Ref = useRef<HTMLDivElement>(null);
+  const [draggingImage, setDraggingImage] = useState<1 | 2 | 3 | null>(null);
 
   // Section Data
   const text1 = `מלחמת העולם הראשונה טלטלה את מוסדות תבל והרעידה את כל מערכי החיים הרגילים. עולם התורה נפגע שבעתיים, כאשר הישיבות הקדושות ששכנו באזורים מוכי קרבות נאלצו לסגור את שעריהן ולנוע מזרחה, בחיפוש אחר מקום מבטחים שבו יוכלו להמשיך ללמוד באין מפריע. תקופה זו הייתה מאתגרת ורבת תהפוכות במיוחד עבור ישיבת סלבודקא כנסת ישראל.`;
@@ -45,62 +51,89 @@ export default function NewsPapperSection(props: ChildProps) {
       const content3 = wrapper.current?.querySelector(".content-text3");
       const content4 = wrapper.current?.querySelector(".content-text4");
       if (image1) {
-        gsap.set(image1, {
-          x: -150,
+        gsap.from(image1, {
+          y: 100,
+          opacity: 0,
+          duration: 1,
+          delay: 0,
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * props.animWidthText;
+            },
+            toggleActions: "restart pause resume reverse",
+          },
         });
       }
       if (image2) {
-        gsap.set(image2, {
-          x: 150,
+        gsap.from(image2, {
+          y: 100,
+          opacity: 0,
+          duration: 1,
+          delay: 0,
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * props.animWidthText;
+            },
+            toggleActions: "restart pause resume reverse",
+          },
         });
       }
       if (image3) {
-        gsap.set(image3, {
-          x: 250,
+        gsap.from(image3, {
+          y: 100,
+          opacity: 0,
+          duration: 1,
+          delay: 0,
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * props.animWidthText;
+            },
+            toggleActions: "restart pause resume reverse",
+          },
         });
       }
       // timeline for images
-      if (image1) {
-        gsap.to(image1, {
-          x: 50,
-          rotate: -5,
-          ease: "easeIn",
-          scrollTrigger: {
-            start: () => {
-              return window.innerWidth * (props.animWidthText - 0.5);
-            },
-            end: () => "+=" + window.innerWidth * 2,
-            scrub: 2,
-          },
-        });
-      }
-      if (image2) {
-        gsap.to(image2, {
-          x: -100,
-          ease: "easeIn",
-          scrollTrigger: {
-            start: () => {
-              return window.innerWidth * (props.animWidthText - 0.5);
-            },
-            end: () => "+=" + window.innerWidth * 2,
-            scrub: 2,
-          },
-        });
-      }
-      if (image3) {
-        gsap.to(image3, {
-          x: -100,
-          rotate: -10,
-          ease: "easeIn",
-          scrollTrigger: {
-            start: () => {
-              return window.innerWidth * (props.animWidthText - 0.5);
-            },
-            end: () => "+=" + window.innerWidth * 2,
-            scrub: 2,
-          },
-        });
-      }
+      // if (image1) {
+      //   gsap.to(image1, {
+      //     x: 50,
+      //     rotate: -5,
+      //     ease: "easeIn",
+      //     scrollTrigger: {
+      //       start: () => {
+      //         return window.innerWidth * (props.animWidthText - 0.5);
+      //       },
+      //       end: () => "+=" + window.innerWidth * 2,
+      //       scrub: 2,
+      //     },
+      //   });
+      // }
+      // if (image2) {
+      //   gsap.to(image2, {
+      //     x: -100,
+      //     ease: "easeIn",
+      //     scrollTrigger: {
+      //       start: () => {
+      //         return window.innerWidth * (props.animWidthText - 0.5);
+      //       },
+      //       end: () => "+=" + window.innerWidth * 2,
+      //       scrub: 2,
+      //     },
+      //   });
+      // }
+      // if (image3) {
+      //   gsap.to(image3, {
+      //     x: -100,
+      //     rotate: -10,
+      //     ease: "easeIn",
+      //     scrollTrigger: {
+      //       start: () => {
+      //         return window.innerWidth * (props.animWidthText - 0.5);
+      //       },
+      //       end: () => "+=" + window.innerWidth * 2,
+      //       scrub: 2,
+      //     },
+      //   });
+      // }
       // Text Aniamtions
       document.fonts.ready.then(() => {
         // Section content 1
@@ -229,42 +262,79 @@ export default function NewsPapperSection(props: ChildProps) {
       >
         <div className="news-section-right w-[70%] flex flex-col gap-y-[9.6vh]">
           <div className="news-section-images flex justify-center relative">
-            <div className="image1 w-137 h-93.5 absolute right-0 bottom-0 rotate-[9.24deg] translate-x-[2vw] translate-y-[1vh]">
-              <Image
-                className="w-full object-cover object-center h-full"
-                src={image1.src}
-                width={548}
-                height={374}
-                loading="lazy"
-                placeholder="blur"
-                blurDataURL={image1?.blurDataURL}
-                alt="Image 1"
-              />
-            </div>
-            <div className="image2 w-139.5 h-93 relative z-30 -translate-x-[2vw]">
-              <Image
-                className="w-full object-cover object-center h-full"
-                src={image2.src}
-                width={558}
-                height={372}
-                loading="lazy"
-                placeholder="blur"
-                blurDataURL={image2?.blurDataURL}
-                alt="Image 1"
-              />
-            </div>
-            <div className="image3 w-104.75 h-76 absolute top-0 left-0 z-40 -translate-x-[5vw] translate-y-[1.75vh]">
-              <Image
-                className="w-full object-cover object-center h-full"
-                src={image3.src}
-                width={548}
-                height={374}
-                loading="lazy"
-                placeholder="blur"
-                blurDataURL={image3?.blurDataURL}
-                alt="Image 1"
-              />
-            </div>
+            <Draggable
+              nodeRef={image1Ref}
+              onStart={() => setDraggingImage(1)}
+              onStop={() => setDraggingImage(null)}
+            >
+              <div
+                ref={image1Ref}
+                className="image1 w-137 h-93.5 absolute right-0 bottom-0 rotate-[9.24deg] translate-x-[2vw] translate-y-[1vh] cursor-grab active:cursor-grabbing select-none"
+                style={{ zIndex: draggingImage === 1 ? 50 : undefined }}
+                onDoubleClick={(e) => e.preventDefault()}
+              >
+                <Image
+                  className="w-full object-cover object-center h-full user-select-none"
+                  src={image1.src}
+                  width={548}
+                  height={374}
+                  draggable={false}
+                  loading="lazy"
+                  placeholder="blur"
+                  blurDataURL={image1?.blurDataURL}
+                  alt="Image 1"
+                />
+              </div>
+            </Draggable>
+
+            <Draggable
+              nodeRef={image2Ref}
+              onStart={() => setDraggingImage(2)}
+              onStop={() => setDraggingImage(null)}
+            >
+              <div
+                ref={image2Ref}
+                className={`image2 w-139.5 h-93 relative -translate-x-[2vw] cursor-grab active:cursor-grabbing select-none`}
+                style={{ zIndex: draggingImage === 2 ? 50 : undefined }}
+                onDoubleClick={(e) => e.preventDefault()}
+              >
+                <Image
+                  className="w-full object-cover object-center h-full user-select-none"
+                  src={image2.src}
+                  width={558}
+                  height={372}
+                  draggable={false}
+                  loading="lazy"
+                  placeholder="blur"
+                  blurDataURL={image2?.blurDataURL}
+                  alt="Image 2"
+                />
+              </div>
+            </Draggable>
+            <Draggable
+              nodeRef={image3Ref}
+              onStart={() => setDraggingImage(3)}
+              onStop={() => setDraggingImage(null)}
+            >
+              <div
+                ref={image3Ref}
+                className={`image3 w-104.75 h-76 absolute top-0 left-0 -translate-x-[5vw] translate-y-[1.75vh] cursor-grab active:cursor-grabbing select-none`}
+                style={{ zIndex: draggingImage === 3 ? 50 : undefined }}
+                onDoubleClick={(e) => e.preventDefault()}
+              >
+                <Image
+                  className="w-full object-cover object-center h-full user-select-none"
+                  src={image3.src}
+                  width={548}
+                  height={374}
+                  draggable={false}
+                  loading="lazy"
+                  placeholder="blur"
+                  blurDataURL={image3?.blurDataURL}
+                  alt="Image 3"
+                />
+              </div>
+            </Draggable>
           </div>
           <div
             dir="ltr"

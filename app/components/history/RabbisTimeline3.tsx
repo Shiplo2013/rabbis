@@ -150,8 +150,8 @@ export default function RabbisTimeline3(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="section-row w-full h-full flex px-[15.5vw] py-[5vh] items-center justify-center relative z-30 gap-x-[8vw]">
-        <div dir="ltr" className="rabbis-title self-end">
+      <div className="section-row w-full h-full flex px-[15.5vw] py-[10vh] items-center justify-center relative z-30 gap-x-[8vw]">
+        <div dir="ltr" className="rabbis-title self-end mb-[3vh]">
           <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F] text-right">
             ציוני
             <br />
@@ -164,7 +164,7 @@ export default function RabbisTimeline3(props: ChildProps) {
               key={index}
               className="current-rubbis w-64.5 flex flex-col gap-y-[7vh]"
             >
-              <div className="image w-64.5 h-76.25">
+              <div className="image w-[13.44vw] h-[32.83vh] relative overflow-hidden">
                 <Image
                   className="w-full object-cover object-center h-full relative z-10"
                   src={item?.image?.src}
@@ -177,13 +177,13 @@ export default function RabbisTimeline3(props: ChildProps) {
                 />
               </div>
               <div dir="ltr" className="title mt-auto">
-                <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6] text-right">
+                <h4 className="text-[40px] leading-[0.7em] text-[#FBF4E6] text-right pt-2">
                   {parse(item.text)}
                 </h4>
               </div>
             </div>
           ))}
-          <div className="timeline h-2.25 w-full bg-[#C3A13F] absolute top-[35vh] right-0"></div>
+          <div className="timeline h-2.25 w-full bg-[#C3A13F] absolute top-[36.5vh] right-0"></div>
         </div>
       </div>
     </section>

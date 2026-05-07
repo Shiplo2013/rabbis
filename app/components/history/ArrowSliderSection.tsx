@@ -112,7 +112,7 @@ export default function ArrowSliderSection(props: ChildProps) {
         </div>
         <div
           ref={imageRef}
-          className="section-image w-121 h-80.5 absolute bottom-[6vh] left-0"
+          className="section-image w-121 h-80.5 absolute bottom-[15vh] left-0"
         >
           <Image
             className={`w-full object-cover h-full relative z-10`}
