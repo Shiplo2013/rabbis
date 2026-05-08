@@ -25,12 +25,12 @@ export default function SingleGraduates(props: ChildProps) {
           loading="lazy"
           alt="Graduates"
         />
-        <div className="graduate-text absolute top-0 left-0 z-20 w-full h-full flex items-center text-[28px] text-black leading-[90%] py-[30%] px-[24%]">
+        <div className="graduate-text absolute top-0 left-0 z-20 w-full h-full flex items-center 2xl:text-[28px] xl:text-[22px] sm:text-[18px] text-black leading-[90%] py-[30%] px-[24%]">
           <p>{parse(props.data?.content)}</p>
         </div>
       </div>
       <div className="graduate-title text-center relative z-30 -mt-5">
-        <h2 className="text-[#D1A941] text-[55px] leading-[70%]">
+        <h2 className="text-[#D1A941] 2xl:text-[55px] xl:text-[45px] sm:text-[35px] leading-[70%]">
           {parse(props.data?.title)}
         </h2>
       </div>

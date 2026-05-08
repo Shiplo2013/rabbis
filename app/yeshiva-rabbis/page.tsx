@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import ArrowLeftIcon2 from "../assets/icons/ArrowLeftIcon2";
 import Rabbis1 from "../assets/images/rabbis1.jpg";
 import Rabbis2 from "../assets/images/rabbis2.jpg";
 import Rabbis3 from "../assets/images/rabbis3.jpg";
@@ -99,6 +100,7 @@ export default function Page() {
   const waveLine = useRef<HTMLDivElement>(null);
   const waveMask = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
+  const ArrowButtonRef = useRef<HTMLDivElement>(null);
 
   // Page Section Animation
   useGSAP(() => {
@@ -129,6 +131,20 @@ export default function Page() {
                 delay: 0,
               });
             }
+            // Arrow Button
+            if (self.progress > 0.9) {
+              gsap.to(ArrowButtonRef.current, {
+                opacity: 0,
+                duration: 0.1,
+                delay: 0,
+              });
+            } else {
+              gsap.to(ArrowButtonRef.current, {
+                opacity: 1,
+                duration: 0.1,
+                delay: 0,
+              });
+            }
           },
         },
       });
@@ -154,7 +170,7 @@ export default function Page() {
   }, [pathname]);
 
   // Load Page
-  useEffect(() => {
+  useGSAP(() => {
     // Selectors
     const headerLeft = main.current?.querySelector(".header-left");
     const headerRight = main.current?.querySelector(".header-right");
@@ -290,6 +306,21 @@ export default function Page() {
         });
       }
     });
+    // Arrow Button Animation
+    const arrowWrapper =
+      ArrowButtonRef?.current?.querySelector(".rabbis-arrow");
+    if (arrowWrapper) {
+      gsap.set(arrowWrapper, {
+        xPercent: -100,
+      });
+      gsap.to(arrowWrapper, {
+        xPercent: 0,
+        opacity: 1,
+        ease: "expo.inOut",
+        duration: 1.5,
+        delay: 0,
+      });
+    }
     // Wave Line Animation
     if (waveMask.current) {
       gsap.to(waveMask.current, {
@@ -316,7 +347,53 @@ export default function Page() {
     };
   }, [isAllAnimationComplete]);
 
+  // Active Scroll Section
+  // const [activeSection, setActiveSection] = useState(0);
+  // const [offsetPositions, setOffsetPositions] = useState<number[]>([]);
+
+  // useEffect(() => {
+  //   const rabbisContent = main.current?.querySelectorAll(".rabbis-section");
+
+  //   if (!rabbisContent?.length) {
+  //     setOffsetPositions([]);
+  //     return;
+  //   }
+
+  //   setOffsetPositions(
+  //     Array.from(rabbisContent, (section) => GetRightPosition(section)),
+  //   );
+  // }, [isAllAnimationComplete]);
+
+  // // Arrow Button Click Handler
+  // useEffect(() => {
+  //   console.log(offsetPositions);
+  //   if (activeSection < offsetPositions.length) {
+  //     const offSetRight =
+  //       Number(offsetPositions[activeSection]) -
+  //       Number(offsetPositions[0] - 100);
+  //     window.scrollTo({
+  //       top: offSetRight,
+  //       behavior: "smooth",
+  //     });
+  //   }
+  // }, [activeSection]);
+  const [activePostion, setActivePosition] = useState(0);
   useEffect(() => {
+    const mainWidth =
+      main.current?.querySelector("#section-wrapper")?.clientWidth;
+    if (mainWidth) {
+      const maxScroll = mainWidth - window.innerWidth;
+      if (activePostion > maxScroll) {
+        setActivePosition(maxScroll);
+      }
+    }
+    window.scrollTo({
+      top: activePostion,
+      behavior: "smooth",
+    });
+  }, [activePostion]);
+
+  useGSAP(() => {
     // Page Overflow Hidden
     document.body.classList.remove("!overflow-auto");
     document.body.classList.add("!overflow-hidden");
@@ -361,7 +438,9 @@ export default function Page() {
               ></section>
               <RabbisSection
                 rabbisContent={RabbisSection1}
-                className={"will-change-transform rabbis-section-1"}
+                className={
+                  "will-change-transform rabbis-section-1 active-section"
+                }
               />
               <section
                 className={`min-w-[10vw] will-change-transform`}
@@ -385,6 +464,21 @@ export default function Page() {
         </main>
         <Footer className={"relative z-20"} />
       </SmoothWrapper>
+      <div
+        ref={ArrowButtonRef}
+        className="rabbis-arrow-wrapper fixed top-0 left-0 z-50 h-screen w-[20vw]"
+      >
+        <div className="rabbis-arrow w-full h-full flex items-center justify-center bg-linear-to-r from-black to-[rgba(0,0,0,0)] opacity-0">
+          <button
+            onClick={() =>
+              setActivePosition(activePostion + window.innerWidth / 2)
+            }
+            className="next-button w-20 h-20 border-2 border-[#C3A13F] rounded-full bg-black p-5 cursor-pointer"
+          >
+            <ArrowLeftIcon2 />
+          </button>
+        </div>
+      </div>
       <div
         ref={waveLine}
         className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"

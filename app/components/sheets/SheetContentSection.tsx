@@ -61,15 +61,15 @@ export default function SheetContentSection(props: ChildProps) {
           <SheetContentItem />
           <SheetContentItem />
           <div className="subscribe-form bg-[#C3A13F] text-white px-[2.5vw] py-[3.7vh] w-[26.35vw] will-change-transform">
-            <h2 className="text-[38px] leading-[0.8em]">
+            <h2 className="2xl:text-[38px] xl:text-[30px] sm:text-[24px] leading-[0.8em]">
               קבלו ישירות למייל מאמרים חדשים, גיליונות תורניים ועדכוני תוכן מן
               הישיבה.
             </h2>
-            <div className="form group text-[22px] leading-[0.8em] mt-[4vh] flex justify-between items-end gap-x-2">
-              <div className="flex items-center gap-x-1">
+            <div className="form group 2xl:text-[22px] xl:text-[18px] sm:text-[16px] leading-[0.8em] mt-[4vh] flex justify-between items-end gap-x-2">
+              <div className="flex items-center gap-x-1 ">
                 <label>שם</label>
                 <input
-                  className="w-30 border-b border-white p-0 leading-[0.7em] focus:outline-0"
+                  className="w-full border-b border-white p-0 leading-[0.7em] focus:outline-0"
                   name="name"
                   type="text"
                 />
@@ -77,16 +77,16 @@ export default function SheetContentSection(props: ChildProps) {
               <div className="flex items-center gap-x-1">
                 <label>דוא״ל</label>
                 <input
-                  className="w-30 border-b border-white p-0 leading-[0.7em] focus:outline-0"
+                  className="w-full border-b border-white p-0 leading-[0.7em] focus:outline-0"
                   name="email"
                   type="email"
                 />
               </div>
-              <button className="text-[28px] leading-[0.8em] text-[#000000] bg-[#E7D45E] px-2.5 pb-2 pt-2.5 hover:bg-black hover:text-[#E7D45E] transition-all duration-300 cursor-pointer">
+              <button className="2xl:text-[28px] xl:text-[24px] sm:text-[20px] leading-[0.8em] text-[#000000] bg-[#E7D45E] px-2.5 pb-2 pt-2.5 hover:bg-black hover:text-[#E7D45E] transition-all duration-300 cursor-pointer">
                 שלח
               </button>
             </div>
-            <div className="text text-[16px] leading-[1em] mt-[3vh] text-center">
+            <div className="text 2xl:text-[16px] xl:text-[14px] sm:text-[12px] leading-[1em] mt-[3vh] text-center">
               <p>אני מאשר/ת קבלת עדכונים מן הישיבה</p>
             </div>
           </div>

@@ -54,8 +54,8 @@ export default function DonationContentSection(props: ChildProps) {
             <ThemeButton
               buttonLink={"/"}
               svgIconClass={""}
-              extraClass="bg-[#D4AF37] py-1.25 px-7 rounded-none"
-              fontSize="text-[40px]"
+              extraClass="bg-[#D4AF37] py-1.25 px-7 rounded-none justify-center"
+              fontSize="2xl:text-[35px] xl:text-[30px] lg:text-[25px] md:text-[20px] sm:text-[15px]"
               text={"התחל בתרומה"}
               textColor="text-black"
               hoverBgColor="bg-black"
@@ -64,13 +64,13 @@ export default function DonationContentSection(props: ChildProps) {
           </div>
           <div
             dir="ltr"
-            className="content-text1 w-[29.7vw] text-[44px] leading-[100%] font-medium text-right"
+            className="content-text1 w-[29.7vw] 2xl:text-[40px] xl:text-[35px] lg:text-[30px] md:text-[25px] sm:text-[20px] leading-[100%] font-medium text-right"
           >
             {parse(props.sectionData.content1)}
           </div>
           <div
             dir="ltr"
-            className="content-text2 w-[27.6vw] text-[28px] leading-[150%] font-medium text-right"
+            className="content-text2 w-[27.6vw] 2xl:text-[25px] xl:text-[22px] lg:text-[20px] md:text-[18px] sm:text-[16px] leading-[130%] font-medium text-right"
           >
             {parse(props.sectionData.content2)}
           </div>
@@ -84,10 +84,10 @@ export default function DonationContentSection(props: ChildProps) {
             dir="ltr"
             className="content-text3 w-[46.4vw] text-right flex flex-col items-end"
           >
-            <h3 className="title text-[49px] leading-[90%] max-w-96 mb-[3vh] font-medium">
+            <h3 className="title 2xl:text-[42px] xl:text-[38px] lg:text-[34px] md:text-[30px] sm:text-[26px] leading-[90%] max-w-96 mb-[3vh] font-medium">
               {parse(props.sectionData.content3.title)}
             </h3>
-            <div className="text text-[28px] leading-[150%] font-medium">
+            <div className="text 2xl:text-[25px] xl:text-[22px] lg:text-[20px] md:text-[18px] sm:text-[16px] leading-[150%] font-medium">
               {parse(props.sectionData.content3.text)}
             </div>
           </div>
@@ -96,8 +96,8 @@ export default function DonationContentSection(props: ChildProps) {
           <ThemeButton
             buttonLink={"/"}
             svgIconClass={""}
-            extraClass="bg-[#D4AF37] py-1.25 px-7 rounded-none"
-            fontSize="text-[40px]"
+            extraClass="bg-[#D4AF37] py-1.25 px-7 rounded-none justify-center"
+            fontSize="2xl:text-[35px] xl:text-[30px] lg:text-[25px] md:text-[20px] sm:text-[15px]"
             text={"התחל בתרומה"}
             textColor="text-black"
             hoverBgColor="bg-black"

@@ -97,7 +97,7 @@ export default function ConferenceContentSection(props: ChildProps) {
           </div>
           <div
             dir="ltr"
-            className="conference-content-wrapper absolute top-0 left-0 w-full h-full z-30 text-[21px] text-black leading-[1.3em] px-[6.25vw] py-[12.9vh] flex flex-col gap-y-[3vh] text-right"
+            className="conference-content-wrapper absolute top-0 left-0 w-full h-full z-30 2xl:text-[21px] xl:text-[18px] sm:text-[16px] text-black leading-[1.3em] px-[6.25vw] py-[12.9vh] flex flex-col gap-y-[3vh] text-right"
           >
             {parse(sectionText)}
           </div>

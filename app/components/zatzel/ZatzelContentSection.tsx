@@ -21,9 +21,9 @@ export default function ZatzelContentSection(props: ChildProps) {
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
       <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[10vw]">
-        <div className="sheet-sidebar w-70 min-w-70 h-full will-change-transform overflow-hidden">
+        <div className="sheet-sidebar w-70 min-w-70 h-full will-change-transform">
           <div className="sheet-sidebar-wrapper">
-            <div className="search-group relative mb-[3vh]">
+            <div className="date-picker search-group relative mb-[3vh]">
               <input
                 className="text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full pl-8"
                 type="text"
