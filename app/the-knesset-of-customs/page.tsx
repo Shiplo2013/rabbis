@@ -353,7 +353,7 @@ export default function Page() {
               start: () => {
                 return GetRightPosition(section) - window.innerWidth * 0.5;
               },
-              toggleActions: "restart pause resume reverse",
+              //toggleActions: "restart pause resume reverse",
             },
           });
         }
@@ -375,7 +375,7 @@ export default function Page() {
           start: () => {
             return window.innerWidth * 1.5;
           },
-          toggleActions: "restart pause resume reverse",
+          //toggleActions: "restart pause resume reverse",
         },
       });
     }
@@ -395,7 +395,7 @@ export default function Page() {
           start: () => {
             return window.innerWidth * 2.5;
           },
-          toggleActions: "restart pause resume reverse",
+          //toggleActions: "restart pause resume reverse",
         },
       });
     }

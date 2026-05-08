@@ -1,9 +1,44 @@
+"use client";
 import ArrowLeftBottom from "@/app/assets/icons/ArrowLeftBottom";
 import CaretIcon from "@/app/assets/icons/CaretIcon";
 import SearchIcon from "@/app/assets/icons/SearchIcon";
-import Link from "next/link";
+import { useState } from "react";
 
-export default function Sidebar() {
+interface SidebarProps {
+  activeCategory: string | null;
+  onCategorySelect: (id: string) => void;
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+}
+
+export default function Sidebar({
+  activeCategory,
+  onCategorySelect,
+  searchQuery,
+  onSearchChange,
+}: SidebarProps) {
+  // Menu State
+  const [menuOpen, setMenuOpen] = useState(true);
+
+  const catData = [
+    {
+      name: `חגים`,
+      id: `category1`,
+    },
+    {
+      name: `פרשת שבוע`,
+      id: `category2`,
+    },
+    {
+      name: `לימוד`,
+      id: `category3`,
+    },
+    {
+      name: `בינה`,
+      id: `category4`,
+    },
+  ];
+
   return (
     <div className="sheet-sidebar-wrapper text-[#1A1A1A]">
       <div className="search-group relative mb-[3.6vh]">
@@ -13,50 +48,48 @@ export default function Sidebar() {
           id="search-sheet"
           name="Search-Sheet"
           placeholder="חיפוש חופשי"
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
         />
         <button className="cursor-pointer absolute top-1.5 left-1.75">
           <SearchIcon />
         </button>
       </div>
       <div className="sidebar-menu mb-[6.35vh]">
-        <div className="head text-[#D1A941] text-[26px] leading-[1.4em] flex items-center gap-x-2 mb-1">
+        <div
+          className="head text-[#D1A941] text-[26px] leading-[1.4em] flex items-center gap-x-2 mb-1 cursor-pointer select-none"
+          onClick={() => setMenuOpen((prev) => !prev)}
+        >
           <p>בחר נושא</p>
-          <CaretIcon />
+          <span
+            className={`transition-transform duration-300 ${menuOpen ? "rotate-0" : "rotate-180"}`}
+          >
+            <CaretIcon />
+          </span>
         </div>
-        <div className="menu">
-          <ul className="list-none flex flex-col text-[24px] leading-[1em] gap-y-2 font-medium">
-            <li>
-              <Link
-                href={"/"}
-                className="hover:text-[#999999] transition-all duration-300"
-              >
-                חגים
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={"/"}
-                className="hover:text-[#999999] transition-all duration-300"
-              >
-                פרשת שבוע
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={"/"}
-                className="hover:text-[#999999] transition-all duration-300"
-              >
-                לימוד
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={"/"}
-                className="hover:text-[#999999] transition-all duration-300"
-              >
-                בינה
-              </Link>
-            </li>
+        <div
+          className="menu overflow-hidden transition-all duration-300 ease-in-out"
+          style={{
+            maxHeight: menuOpen ? "500px" : "0px",
+            opacity: menuOpen ? 1 : 0,
+          }}
+        >
+          <ul className="category-list list-none flex flex-col text-[24px] leading-[1em] gap-y-2 font-medium">
+            {catData?.map((item, index) => (
+              <li key={index}>
+                <button
+                  data-category={item.id}
+                  onClick={() => onCategorySelect(item.id)}
+                  className={`transition-all duration-300 cursor-pointer ${
+                    activeCategory === item.id
+                      ? "text-[#D1A941]"
+                      : "hover:text-[#999999]"
+                  }`}
+                >
+                  {item.name}
+                </button>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

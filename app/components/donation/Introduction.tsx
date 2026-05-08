@@ -65,7 +65,7 @@ export default function Introduction(props: ChildProps) {
         className="flex items-center w-full h-full relative z-30 py-[5vh] px-[5vw]"
       >
         <div className="intro-wrapper text-right flex flex-col items-end gap-x-[3.75vw] w-full px-[10vw]">
-          <h1 className="intro-title text-[208px] text-[#AC832E] leading-[0.6em] overflow-hidden relative z-20 py-7.5 font-bold">
+          <h1 className="intro-title 2xl:text-[170px] xl:text-[150px] lg:text-[130px] md:text-[110px] sm:text-[90px] text-[#AC832E] leading-[0.6em] overflow-hidden relative z-20 py-7.5 font-bold">
             {parse(props.data[0]?.title)}
           </h1>
           <div className="donation-button place-self-start overflow-hidden">
@@ -73,7 +73,7 @@ export default function Introduction(props: ChildProps) {
               buttonLink={props.data[0]?.button.link}
               svgIconClass={""}
               extraClass="bg-[#D4AF37] py-1.25 px-7 rounded-none"
-              fontSize="text-[40px]"
+              fontSize="2xl:text-[35px] xl:text-[30px] lg:text-[25px] md:text-[20px] sm:text-[15px]"
               text={props.data[0]?.button.text}
               textColor="text-black"
               hoverBgColor="bg-black"
