@@ -120,7 +120,7 @@ export default function VisitTempleSection(props: ChildProps) {
           data={JSON.stringify(videoData)}
         />
         <TempleTabs
-          extraClass="w-[130vw] will-change-transform"
+          extraClass="w-[160vw] will-change-transform"
           animWidthText={props.animWidthText}
           data={JSON.stringify(tabsData)}
         />

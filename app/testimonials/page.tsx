@@ -1,6 +1,5 @@
 "use client";
 import parse from "html-react-parser";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Testimonial1 from "../assets/images/testimonial-1.jpg";
@@ -11,6 +10,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LoadingEffect from "../components/LoadingEffect";
 import BigTitleSplitLines from "../ui/BigTitleSplitLines";
+import DonationVideo from "../ui/DonationVideo";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 import SmoothWrapper from "../ui/SmoothWrapper";
 
@@ -27,15 +27,24 @@ export default function Page() {
     testimonials: [
       {
         title: `הרב מנחם מוזס`,
-        image: Testimonial1,
+        video: {
+          poster: Testimonial1,
+          link: "http://dovp7.sg-host.com/wp-content/uploads/2026/04/Nature-videos.mp4",
+        },
       },
       {
         title: `הרב צבי פולק`,
-        image: Testimonial2,
+        video: {
+          poster: Testimonial2,
+          link: "http://dovp7.sg-host.com/wp-content/uploads/2026/04/Nature-videos.mp4",
+        },
       },
       {
         title: `הרב מנדלזון משה יוסף מאיר`,
-        image: Testimonial3,
+        video: {
+          poster: Testimonial3,
+          link: "http://dovp7.sg-host.com/wp-content/uploads/2026/04/Nature-videos.mp4",
+        },
       },
     ],
   };
@@ -329,7 +338,7 @@ export default function Page() {
                 <div className="introduction w-[33.4vw] min-w-[33.4vw] will-change-transform">
                   <h1
                     dir="ltr"
-                    className="intro-title text-[160px] leading-[70%] text-[#C3A13F] text-right"
+                    className="intro-title text-[8vw] leading-[70%] text-[#C3A13F] text-right"
                   >
                     {parse(PageContent.title)}
                   </h1>
@@ -341,15 +350,11 @@ export default function Page() {
                       className="testimonial-item w-screen h-screen flex items-center justify-start gap-x-[2.8vw] will-change-transform"
                     >
                       <div className="testimonial-image w-[40vw] min-w-[40vw] h-[50vh] relative">
-                        <Image
-                          className="w-full h-full object-cover"
-                          src={testimonial.image.src}
-                          width={768}
-                          height={464}
-                          alt={`Testimonial Image ${index + 1}`}
-                          blurDataURL={testimonial.image.blurDataURL}
-                          placeholder="blur"
-                          loading="lazy"
+                        <DonationVideo
+                          extraClass={
+                            "donation-video w-full h-full will-change-transform"
+                          }
+                          data={[testimonial?.video]}
                         />
                       </div>
                       <h2

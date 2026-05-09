@@ -1,10 +1,16 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
+import type { Swiper as SwiperClass } from "swiper";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Swiper, SwiperSlide } from "swiper/react";
 import PostImage1 from "../../assets/images/single-news-image.jpg";
 import Footer from "../../components/Footer";
 
 import SinglePageHeader from "@/app/components/SinglePageHeader";
+import NewsSingleVideo from "@/app/ui/NewsSingleVideo";
 import PostNavigation from "@/app/ui/PostNavigation";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -20,11 +26,32 @@ if (typeof window !== "undefined") {
 export default function Page() {
   // Router Path
   const pathname = usePathname();
+
   // Page Data
   const NewsPostsData = {
     title: `ושמתיה כאבל יחיד ואחריתה כיום מר`,
     summary: `<p> <strong> עצרות מספד והתעוררות לזכר בוגרי הישיבה החשובים שנסלקו לבית עולמם. </strong> </p> <p> בוגרי הישיבה ובני התורה התכנסו בימים האחרונים לעצרות מספד והתעוררות, לזכרם של בוגרי הישיבה החשובים אשר נסתלקו לאחרונה לבית עולמם, למגינת לב כל מוקיריהם. העצרות נערכו ברוב עם, באווירה של כבוד התורה וחיזוק רב, תוך העלאת דמויותיהם המאירות ופועלם הרב. </p> <p> <blockquote> בירושלים נערכה עצרת מספד מרכזית לזכרו של רבי אהרן מאיר קרביץ זצ"ל. הכינוס התקיים בבית מדרשו של הגר"ד סגל שליט"א, מקום בו קבע המנוח את תפילתו בשנים האחרונות והיה קשור אליו בקשרי תורה ויראה. </blockquote> </p> <p> בדברי ההספד נשאו דברים הגר"ד סגל שליט"א, מורנו ראש הישיבה הגר"ד כהן שליט"א, הגר"צ פרצוביץ ראש ישיבת מיר, והגרב"צ קוק. <br /> המספידים עמדו על מעלותיו הרבות של המנוח זצ"ל – דבקותו בתורה, יראת השמים שאפיינה את כל אורחותיו, וקשריו ההדוקים עם גדולי ישראל, אשר קירבוהו והשקוהו מתורתם. בדבריהם הודגש כי היה בן תורה מובהק, שכל מהותו חיבור מתמיד לדרכם ואורחתם של גדולי הדור. <br /> בפתח תקוה נערך בבית הכנסת חניכי ישיבת חברון - שירת ריבה בשכונת יוצאי חברון כינוס הספד לזכרו של רבי אהרן לפידות זצ"ל, בהשתתפות רבים מבוגרי הישיבה ותושבי העיר, שהתאספו לכבודו ולזכרו. </p> <p> <blockquote> מורנו ראש הישיבה הגר"ד כהן שליט"א האריך בדברי קינה, ועמד על תרומתו הרבה של המנוח למפעל הקירוב הגדול, תנועת בני תורה שייסד הגרב"מ אזרחי זצ"ל, אשר פעלה להוציא יקר מזולל ועשתה נפשות רבות. </blockquote> </p> <p> כמו כן הדגיש את תרומתו המשמעותית לבניית הקהילה התורנית בפתח תקוה, ובפרט לחיזוק קהילות יוצאי הישיבה בעיר. <br /> עוד הספידוהו הגר"ש גוטפריד מרא דאתרא גני הדר, הגר"מ רוט רב בית הכנסת, והרב אברהם גרינבוים, אשר העלו על נס את דמותו כאיש תורה ומעשה, מסור לצרכי ציבור באמונה, שפעל בענווה ובמסירות למען הרבות תורה ויראה. <br /> שתי עצרות המספד נחתמו בדברי חיזוק והתעוררות, בקריאה לבני התורה ולבוגרי הישיבה להתחזק בדרכם של הנפטרים היקרים זצ"ל. </p><p> <strong> עצרות מספד והתעוררות לזכר בוגרי הישיבה החשובים שנסלקו לבית עולמם. </strong> </p> <p> בוגרי הישיבה ובני התורה התכנסו בימים האחרונים לעצרות מספד והתעוררות, לזכרם של בוגרי הישיבה החשובים אשר נסתלקו לאחרונה לבית עולמם, למגינת לב כל מוקיריהם. העצרות נערכו ברוב עם, באווירה של כבוד התורה וחיזוק רב, תוך העלאת דמויותיהם המאירות ופועלם הרב. </p> <p> <blockquote> בירושלים נערכה עצרת מספד מרכזית לזכרו של רבי אהרן מאיר קרביץ זצ"ל. הכינוס התקיים בבית מדרשו של הגר"ד סגל שליט"א, מקום בו קבע המנוח את תפילתו בשנים האחרונות והיה קשור אליו בקשרי תורה ויראה. </blockquote> </p> <p> בדברי ההספד נשאו דברים הגר"ד סגל שליט"א, מורנו ראש הישיבה הגר"ד כהן שליט"א, הגר"צ פרצוביץ ראש ישיבת מיר, והגרב"צ קוק. <br /> המספידים עמדו על מעלותיו הרבות של המנוח זצ"ל – דבקותו בתורה, יראת השמים שאפיינה את כל אורחותיו, וקשריו ההדוקים עם גדולי ישראל, אשר קירבוהו והשקוהו מתורתם. בדבריהם הודגש כי היה בן תורה מובהק, שכל מהותו חיבור מתמיד לדרכם ואורחתם של גדולי הדור. <br /> בפתח תקוה נערך בבית הכנסת חניכי ישיבת חברון - שירת ריבה בשכונת יוצאי חברון כינוס הספד לזכרו של רבי אהרן לפידות זצ"ל, בהשתתפות רבים מבוגרי הישיבה ותושבי העיר, שהתאספו לכבודו ולזכרו. </p> <p> <blockquote> מורנו ראש הישיבה הגר"ד כהן שליט"א האריך בדברי קינה, ועמד על תרומתו הרבה של המנוח למפעל הקירוב הגדול, תנועת בני תורה שייסד הגרב"מ אזרחי זצ"ל, אשר פעלה להוציא יקר מזולל ועשתה נפשות רבות. </blockquote> </p> <p> כמו כן הדגיש את תרומתו המשמעותית לבניית הקהילה התורנית בפתח תקוה, ובפרט לחיזוק קהילות יוצאי הישיבה בעיר. <br /> עוד הספידוהו הגר"ש גוטפריד מרא דאתרא גני הדר, הגר"מ רוט רב בית הכנסת, והרב אברהם גרינבוים, אשר העלו על נס את דמותו כאיש תורה ומעשה, מסור לצרכי ציבור באמונה, שפעל בענווה ובמסירות למען הרבות תורה ויראה. <br /> שתי עצרות המספד נחתמו בדברי חיזוק והתעוררות, בקריאה לבני התורה ולבוגרי הישיבה להתחזק בדרכם של הנפטרים היקרים זצ"ל. </p>`,
-    image: PostImage1,
+    postSlider: [
+      {
+        type: "image",
+        src: PostImage1.src,
+        width: PostImage1.width,
+        height: PostImage1.height,
+        blurDataURL: PostImage1.blurDataURL,
+      },
+      {
+        type: "video",
+        src: "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4",
+        poster: PostImage1.src,
+      },
+      {
+        type: "image",
+        src: PrevPostImage.src,
+        width: PrevPostImage.width,
+        height: PrevPostImage.height,
+        blurDataURL: PrevPostImage.blurDataURL,
+      },
+    ],
     caption: `ראש הישיבה הגר"ד כהן שליט"א בדברי קינה`,
     link: `/news/single`,
     navigation: {
@@ -47,6 +74,10 @@ export default function Page() {
   // Vertical Section
   const [verticalSection, setVerticalSection] =
     useState<gsap.core.Timeline | null>(null);
+
+  // Slider State
+  const swiperRef = useRef<SwiperClass | null>(null);
+  const [sliderHovered, setSliderHovered] = useState(false);
 
   // Page Refs
   const main = useRef<HTMLDivElement>(null);
@@ -143,110 +174,6 @@ export default function Page() {
     },
     { scope: main, dependencies: [animationPlayed, pathname] },
   );
-
-  // Set Page Content Animation
-  //   const setPageContentAnimation = () => {
-  //     // Page Content Animation
-  //     const bordeLine = main.current?.querySelector(".border-line");
-  //     if (bordeLine) {
-  //       gsap.set(bordeLine, {
-  //         scaleY: 0,
-  //       });
-  //       gsap.to(bordeLine, {
-  //         scaleY: 1,
-  //         duration: 1,
-  //         delay: 0.5,
-  //         ease: "expo.inOut",
-  //       });
-  //     }
-  //     // Post title
-  //     const postTitle = main.current?.querySelector(
-  //       ".news-left-content .content-wrapper .post-title",
-  //     );
-  //     if (postTitle) {
-  //       // Split Title 1
-  //       let splitTitle;
-  //       splitTitle = TextSplitLines2(postTitle);
-  //       gsap.set(postTitle, {
-  //         perspective: 400,
-  //       });
-  //       gsap.set(splitTitle, {
-  //         yPercent: 150,
-  //         opacity: 0,
-  //       });
-  //       gsap.to(splitTitle, {
-  //         scrollTrigger: postTitle,
-  //         yPercent: 0,
-  //         opacity: 1,
-  //         duration: 2,
-  //         delay: 0,
-  //         stagger: 0.03,
-  //         ease: "expo.inOut",
-  //       });
-  //     }
-  //     // Post Texts
-  //     const allParagraph = main.current?.querySelectorAll(
-  //       ".news-left-content .content-wrapper .content p:not(:empty)",
-  //     );
-  //     if (allParagraph) {
-  //       allParagraph.forEach((paragraph: any) => {
-  //         // Split Text
-  //         let splitText;
-  //         splitText = TextSplitLines(paragraph);
-  //         gsap.set(paragraph, {
-  //           perspective: 400,
-  //         });
-  //         gsap.set(splitText, {
-  //           yPercent: 150,
-  //           opacity: 0,
-  //         });
-  //         gsap.to(splitText, {
-  //           scrollTrigger: paragraph,
-  //           yPercent: 0,
-  //           opacity: 1,
-  //           duration: 2,
-  //           delay: 0,
-  //           stagger: 0.03,
-  //           ease: "expo.inOut",
-  //         });
-  //       });
-  //     }
-
-  //     // Post Text Blockquote
-  //     const allBlockQuote = main.current?.querySelectorAll(
-  //       ".news-left-content .content-wrapper .content blockquote",
-  //     );
-  //     if (allBlockQuote) {
-  //       allBlockQuote.forEach((blockquote: any) => {
-  //         // Split Text
-  //         let splitText;
-  //         splitText = TextSplitLines(blockquote);
-  //         gsap.set(blockquote, {
-  //           perspective: 400,
-  //           opacity: 0,
-  //         });
-  //         gsap.set(splitText, {
-  //           yPercent: 150,
-  //           opacity: 0,
-  //         });
-  //         gsap.to(blockquote, {
-  //           opacity: 1,
-  //           duration: 0.5,
-  //           delay: 0,
-  //           ease: "none",
-  //         });
-  //         gsap.to(splitText, {
-  //           scrollTrigger: blockquote,
-  //           yPercent: 0,
-  //           opacity: 1,
-  //           duration: 2,
-  //           delay: 0,
-  //           stagger: 0.03,
-  //           ease: "expo.inOut",
-  //         });
-  //       });
-  //     }
-  //   };
 
   // On Mouse Move
   useGSAP(
@@ -350,19 +277,99 @@ export default function Page() {
         >
           <section className="single-news-section flex gap-y-[4.4vw] pr-25 h-screen bg-[#F5F0EB] text-black text-[21px] leading-[1.4em] font-medium">
             <div className="news-right-image w-[40%] h-screen relative">
-              <div className="image w-full h-full">
-                <Image
-                  className="w-full h-full object-cover object-center"
-                  src={PostImage1.src}
-                  width={PostImage1.width}
-                  height={PostImage1.height}
-                  alt="News Image"
-                  blurDataURL={PostImage1.blurDataURL}
-                  placeholder="blur"
-                  loading="lazy"
-                />
+              <div
+                className="image-video-slider w-full h-full relative"
+                onMouseEnter={() => setSliderHovered(true)}
+                onMouseLeave={() => setSliderHovered(false)}
+              >
+                {/* Custom Prev Button */}
+                <button
+                  onClick={() => swiperRef.current?.slidePrev()}
+                  aria-label="Previous slide"
+                  className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-11 h-11 rounded-full bg-black/60 text-[#C3A13F] transition-all duration-300 cursor-pointer ${
+                    sliderHovered
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-0 translate-x-4 pointer-events-none"
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                    />
+                  </svg>
+                </button>
+                {/* Custom Next Button */}
+                <button
+                  onClick={() => swiperRef.current?.slideNext()}
+                  aria-label="Next slide"
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-11 h-11 rounded-full bg-black/60 text-[#C3A13F] transition-all duration-300 cursor-pointer ${
+                    sliderHovered
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-0 -translate-x-4 pointer-events-none"
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 19.5L8.25 12l7.5-7.5"
+                    />
+                  </svg>
+                </button>
+                <Swiper
+                  onSwiper={(swiper) => {
+                    swiperRef.current = swiper;
+                  }}
+                  onSlideChange={(swiper) => {
+                    // Pause any playing video before slide changes
+                    swiper.el
+                      .querySelectorAll<HTMLVideoElement>("video")
+                      .forEach((v) => v.pause());
+                  }}
+                  className="w-full h-full"
+                  slidesPerView={1}
+                  spaceBetween={0}
+                  loop={true}
+                >
+                  {NewsPostsData?.postSlider?.map((item, index) => (
+                    <SwiperSlide key={index}>
+                      {item.type === "image" ? (
+                        <div className="post-image w-full h-full relative">
+                          <Image
+                            className="w-full h-full object-cover object-center"
+                            src={item.src}
+                            width={item.width}
+                            height={item.height}
+                            alt="News Slide"
+                            blurDataURL={item.blurDataURL}
+                            placeholder={item.blurDataURL ? "blur" : "empty"}
+                            loading="lazy"
+                          />
+                        </div>
+                      ) : (
+                        <NewsSingleVideo data={JSON.stringify(item)} />
+                      )}
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
-              <div className="caption bg-black text-white absolute bottom-0 left-0 w-full py-3.5 px-5 text-center text-[22px] leading-[1.4em]">
+              <div className="caption bg-black text-white absolute bottom-0 left-0 w-full py-3.5 px-5 text-center text-[22px] leading-[1.4em] z-50">
                 {parse(NewsPostsData?.caption)}
               </div>
             </div>

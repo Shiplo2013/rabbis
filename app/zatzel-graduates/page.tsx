@@ -315,7 +315,7 @@ export default function Page() {
     // Animations
     if (sidebar) {
       gsap.from(sidebar, {
-        xPercent: 100,
+        yPercent: 100,
         opacity: 0,
         ease: "expo.inOut",
         duration: 3,

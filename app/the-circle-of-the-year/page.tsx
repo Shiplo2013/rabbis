@@ -528,32 +528,13 @@ export default function Page() {
         ease: "easeInOut",
         scrollTrigger: {
           start: () => {
-            return "+=" + window.innerWidth * 0.4;
+            return "+=" + window.innerWidth * 0.2;
           },
           toggleActions: "restart pause play reverse",
         },
       });
     }
-    // Intro Animation
-    if (floatImage1 && floatImage2) {
-      gsap.set([floatImage1, floatImage2], {
-        yPercent: 100,
-        opacity: 0,
-      });
-      gsap.to([floatImage1, floatImage2], {
-        yPercent: 0,
-        opacity: 1,
-        ease: "expo.inOut",
-        duration: 1.5,
-        stagger: 0.2,
-        scrollTrigger: {
-          start: () => {
-            return "+=" + window.innerWidth * 1.3;
-          },
-          toggleActions: "restart pause play reverse",
-        },
-      });
-    }
+    // Second Intro Title Animation
     if (introTitle2) {
       const splitIntroTitle2 = TextSplitLines(introTitle2);
       gsap.set(introTitle2, {
@@ -572,7 +553,28 @@ export default function Page() {
         ease: "expo.inOut",
         scrollTrigger: {
           start: () => {
-            return "+=" + window.innerWidth * 1.3;
+            return "+=" + window.innerWidth * 1.2;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+      });
+    }
+
+    // Intro Animation
+    if (floatImage1 && floatImage2) {
+      gsap.set([floatImage1, floatImage2], {
+        yPercent: 100,
+        opacity: 0,
+      });
+      gsap.to([floatImage1, floatImage2], {
+        yPercent: 0,
+        opacity: 1,
+        ease: "expo.inOut",
+        duration: 1.5,
+        stagger: 0.2,
+        scrollTrigger: {
+          start: () => {
+            return "+=" + window.innerWidth * 1.2;
           },
           toggleActions: "restart pause play reverse",
         },
@@ -597,7 +599,7 @@ export default function Page() {
         ease: "expo.inOut",
         scrollTrigger: {
           start: () => {
-            return "+=" + window.innerWidth * 1.3;
+            return "+=" + window.innerWidth * 1.2;
           },
           toggleActions: "restart pause play reverse",
         },
@@ -701,7 +703,7 @@ export default function Page() {
         ease: "expo.inOut",
         scrollTrigger: {
           start: () => {
-            return "+=" + window.innerWidth * 2.3;
+            return "+=" + window.innerWidth * 2.1;
           },
           toggleActions: "restart pause play reverse",
         },
@@ -717,7 +719,7 @@ export default function Page() {
         ease: "expo.inOut",
         scrollTrigger: {
           start: () => {
-            return "+=" + window.innerWidth * 2.2;
+            return "+=" + window.innerWidth * 2.1;
           },
           toggleActions: "restart pause play reverse",
         },
@@ -729,10 +731,10 @@ export default function Page() {
         ease: "none",
         scrollTrigger: {
           start: () => {
-            return "+=" + window.innerWidth * 2.3;
+            return "+=" + window.innerWidth * 2.1;
           },
           end: () => {
-            return "+=" + window.innerWidth * 3.3;
+            return "+=" + window.innerWidth * 3.1;
           },
           scrub: 2,
         },
@@ -836,14 +838,14 @@ export default function Page() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[477vw] h-screen items-center will-change-transform`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[452vw] h-screen items-center will-change-transform`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
                 animationStatus={isAllAnimationComplete}
                 data={IntroData1}
                 extraClass={
-                  "first-intro panel-section will-change-transform min-w-screen w-screen"
+                  "first-intro panel-section will-change-transform min-w-[75vw] w-[75vw]"
                 }
               />
               <MusicCategoryList
