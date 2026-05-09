@@ -8,19 +8,19 @@ interface ChildProps {
 }
 
 export default function CardSlider(props: ChildProps) {
-  const carSlider = useRef<HTMLDivElement>(null);
+  const cardSlider = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
   const { contextSafe } = useGSAP();
 
   const getActiveSlide = () => {
-    return carSlider.current?.querySelector(
+    return cardSlider.current?.querySelector(
       ".card-slide.active",
     ) as HTMLElement | null;
   };
 
   const getInactiveSlide = () => {
-    return carSlider.current?.querySelector(
+    return cardSlider.current?.querySelector(
       ".card-slide:not(.active)",
     ) as HTMLElement | null;
   };
@@ -37,7 +37,7 @@ export default function CardSlider(props: ChildProps) {
         x: -44,
       });
     },
-    { scope: carSlider, dependencies: [pathname] },
+    { scope: cardSlider, dependencies: [pathname] },
   );
   const handleNextSlide = contextSafe(() => {
     const activeSlide = getActiveSlide();
@@ -48,8 +48,10 @@ export default function CardSlider(props: ChildProps) {
 
     const card = gsap.timeline({
       onComplete: () => {
-        activeSlide.classList.remove("active");
-        inActiveSlide.classList.add("active");
+        activeSlide.classList.remove("active", "bg-[#F1EADA]");
+        activeSlide.classList.add("bg-[#E2D7C3]");
+        inActiveSlide.classList.add("active", "bg-[#F1EADA]");
+        inActiveSlide.classList.remove("bg-[#E2D7C3]");
       },
     });
     card
@@ -140,7 +142,7 @@ export default function CardSlider(props: ChildProps) {
   return (
     <>
       <div
-        ref={carSlider}
+        ref={cardSlider}
         onClick={handleNextSlide}
         onMouseMove={moveCircle}
         onMouseEnter={handleMouseEnter}
@@ -160,7 +162,7 @@ export default function CardSlider(props: ChildProps) {
               ></p>
             </div>
           </div>
-          <div className="card-slide pt-12 pb-5 px-7 bg-[#F1EADA] min-h-54.25 absolute top-0 left-0 z-10 transition-colors duration-300">
+          <div className="card-slide pt-12 pb-5 px-7 bg-[#E2D7C3] min-h-54.25 absolute top-0 left-0 z-10 transition-colors duration-300">
             <div className="slide-content">
               <span className="absolute left-5 top-3">2/2</span>
               <p

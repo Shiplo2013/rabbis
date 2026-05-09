@@ -7,11 +7,19 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
 }
 
+interface BannerData {
+  title_1?: string;
+  title_2?: string;
+  title_3?: string;
+  subtitle?: string;
+}
+
 interface ChildProps {
   extraClass: string;
   animated: boolean;
   audioControl: () => void;
   panel: any;
+  bannerData?: BannerData;
 }
 
 export default function HomeBanner(props: ChildProps) {
@@ -52,16 +60,19 @@ export default function HomeBanner(props: ChildProps) {
       <div dir="rtl" className="flex items-center h-full relative z-30">
         <div className="section-wrapper">
           <h1 className="split-title text-[135px] text-[#AC832E] leading-none overflow-hidden">
-            <span className="banner-title1 block overflow-hidden">ישיבת</span>
+            <span className="banner-title1 block overflow-hidden">
+              {props.bannerData?.title_1 || "ישיבת"}
+            </span>
             <span className="banner-title2 block overflow-hidden text-[250px] text-[#D1A941] relative z-10 leading-none -mt-15 -mb-15 font-bold italic">
-              חברון
+              {props.bannerData?.title_2 || "חברון"}
             </span>
             <span className="banner-title3 block overflow-hidden">
-              כנסת ישראל
+              {props.bannerData?.title_3 || "כנסת ישראל"}
             </span>
           </h1>
           <h4 className="banner-content overflow-hidden text-[55px] text-[#D1A941] mt-19">
-            מאה חמישים שנות תורה, מוסר וגדלות האדם
+            {props.bannerData?.subtitle ||
+              "מאה חמישים שנות תורה, מוסר וגדלות האדם"}
           </h4>
           <div className="banner-button absolute left-13 bottom-19.5">
             <ScrollButton />

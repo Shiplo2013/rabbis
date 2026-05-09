@@ -10,10 +10,18 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
+interface SectionData {
+  image?: string;
+  title?: string;
+  foating_image?: string;
+  text?: string;
+}
+
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
   animWidthImage: number;
+  sectionData: SectionData;
 }
 
 export default function HomeSection2(props: ChildProps) {
