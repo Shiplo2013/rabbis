@@ -85,7 +85,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerHeight * 5 - 2200),
+          end: "+=" + (window.innerHeight * 5 - 100),
           scrub: scurbScale,
         },
       });
@@ -316,7 +316,7 @@ export default function Page() {
             <div
               ref={wrapper}
               id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[255.60vw] h-screen items-center will-change-transform`}
+              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[380vw] h-screen items-center will-change-transform`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
@@ -336,7 +336,7 @@ export default function Page() {
                 }}
               />
               <VisitTempleSection
-                extraClass="w-[155.6vw] panel-section will-change-transform"
+                extraClass="w-[285vw] panel-section will-change-transform"
                 animWidthText={0.2}
               />
             </div>
