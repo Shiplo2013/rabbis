@@ -9,7 +9,7 @@ interface ChildProps {
 
 export default function CardSlider(props: ChildProps) {
   const carSlider = useRef<HTMLDivElement>(null);
-  const arrowButton = useRef<HTMLDivElement>(null);
+
   const pathname = usePathname();
   const { contextSafe } = useGSAP();
 
@@ -89,12 +89,15 @@ export default function CardSlider(props: ChildProps) {
   // Cursor Follower Function
   const moveCircle = contextSafe(
     (e: { screenY: number; clientX: any; clientY: any }) => {
+      const arrowButton = document.querySelector(
+        ".sliding-arrow-button",
+      ) as HTMLDivElement | null;
       //console.log(e.clientX, e.clientY)
-      if (!arrowButton.current) {
+      if (!arrowButton) {
         return;
       }
 
-      gsap.to(arrowButton.current, {
+      gsap.to(arrowButton, {
         x: e.clientX,
         y: e.clientY,
         delay: 0,
@@ -104,11 +107,14 @@ export default function CardSlider(props: ChildProps) {
   );
   // On Mouse Enter
   const handleMouseEnter = contextSafe(() => {
-    if (!arrowButton.current) {
+    const arrowButton = document.querySelector(
+      ".sliding-arrow-button",
+    ) as HTMLDivElement | null;
+    if (!arrowButton) {
       return;
     }
 
-    gsap.to(arrowButton.current, {
+    gsap.to(arrowButton, {
       opacity: 1,
       scale: 1,
       rotation: 180,
@@ -117,11 +123,14 @@ export default function CardSlider(props: ChildProps) {
   });
   // On Mouse Leave
   const handleMouseLeave = contextSafe(() => {
-    if (!arrowButton.current) {
+    const arrowButton = document.querySelector(
+      ".sliding-arrow-button",
+    ) as HTMLDivElement | null;
+    if (!arrowButton) {
       return;
     }
 
-    gsap.to(arrowButton.current, {
+    gsap.to(arrowButton, {
       opacity: 0,
       scale: 0,
       rotation: 0,
@@ -138,10 +147,7 @@ export default function CardSlider(props: ChildProps) {
         onMouseLeave={handleMouseLeave}
         className="arrow-slider w-117 relative z-10 cursor-none"
       >
-        <div
-          ref={arrowButton}
-          className="arrow-button fixed left-0 top-0 z-30 -ml-13 -mt-13 cursor-none opacity-0 pointer-events-none scale-0"
-        />
+        <div className="arrow-button fixed left-0 top-0 z-30 -ml-13 -mt-13 cursor-none opacity-0 pointer-events-none scale-0" />
         <div className="card-slider text-[#000000] text-[20px] cursor-none">
           <div className="card-slide active pt-12 pb-5 px-7 bg-[#F1EADA] min-h-54.25 relative z-20 transition-colors duration-300">
             <div className="slide-content">
