@@ -15,11 +15,16 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
+interface SectionData {
+  text_slider?: { text_slide_1: string; text_slide_2: string }[];
+  community_posts?: [];
+}
 interface ChildProps {
   extraClass: string;
   animWidthPost: number;
   animWidthSlider: number;
   panel: any;
+  sectionData: SectionData;
 }
 
 export default function HomeSection1(props: ChildProps) {

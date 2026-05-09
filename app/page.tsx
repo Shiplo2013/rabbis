@@ -30,18 +30,27 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText, useGSAP);
 }
 
+type HomePageApiResponse = {
+  id: number;
+  slug: string;
+  link: string;
+  title: { rendered: string };
+  acf: Record<string, unknown> | unknown[] | null;
+};
+
 export default function Home() {
   // Selector
   const main = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLDivElement>(null);
   const wishButton = useRef<HTMLDivElement>(null);
   // Audo Player
-  const [audioLink, setAudioLink] = useState(
-    "http://dovp7.sg-host.com/wp-content/uploads/2026/02/music.mp3",
+  const [homePageData, setHomePageData] = useState<HomePageApiResponse | null>(
+    null,
   );
   const audio = useRef<HTMLAudioElement>(null);
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
+  const [pageDataFetched, setPageDataFetched] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
   // Vertical Section
   const [verticalSection, setVerticalSection] =
@@ -49,6 +58,44 @@ export default function Home() {
 
   // Router Path
   const pathname = usePathname();
+
+  // Get Page Data From backend
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadHomePageData = async () => {
+      try {
+        const response = await fetch("/api/home-page", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load home page data.");
+        }
+
+        const data = (await response.json()) as HomePageApiResponse;
+
+        if (isMounted) {
+          setHomePageData(data);
+          setPageDataFetched(true);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadHomePageData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!homePageData?.acf) {
+      return;
+    }
+  }, [homePageData]);
 
   // Load Page
   useGSAP(() => {
@@ -134,7 +181,7 @@ export default function Home() {
       }
       // Set localStorage variable
       const userVisit = localStorage.getItem("hasVisited");
-      if (userVisit === "true" && animationPlayed) {
+      if (userVisit === "true" && animationPlayed && pageDataFetched) {
         // Timeline
         const tl = gsap.timeline({
           onComplete: () => {
@@ -259,7 +306,7 @@ export default function Home() {
         }
       }
     });
-  }, [animationPlayed]);
+  }, [animationPlayed, pageDataFetched, pathname]);
 
   // Container width
   //const [contWidth, setContWidth] = useState(0);
@@ -424,11 +471,23 @@ export default function Home() {
                   "panel-section will-change-transform min-w-screen w-screen cursor-pointer"
                 }
                 panel={panel}
+                bannerData={
+                  typeof homePageData?.acf === "object" &&
+                  !Array.isArray(homePageData?.acf)
+                    ? (homePageData.acf as any)?.banner_section
+                    : undefined
+                }
               />
               <IntroSection
                 animWidthText={0.4}
                 extraClass={
                   "panel-section will-change-transform min-w-[50vw] w-[50vw]"
+                }
+                introData={
+                  typeof homePageData?.acf === "object" &&
+                  !Array.isArray(homePageData?.acf)
+                    ? (homePageData.acf as any)?.intro_section
+                    : undefined
                 }
               />
               <HomeSection1
@@ -438,12 +497,24 @@ export default function Home() {
                   "panel-section will-change-transform min-w-[70vw] w-[70vw]"
                 }
                 panel={panel}
+                sectionData={
+                  typeof homePageData?.acf === "object" &&
+                  !Array.isArray(homePageData?.acf)
+                    ? (homePageData.acf as any)?.home_section_1
+                    : undefined
+                }
               />
               <HomeSection2
                 animWidthImage={2.2}
                 animWidthText={2.7}
                 extraClass={
                   "panel-section will-change-transform min-w-screen w-screen bg-black"
+                }
+                sectionData={
+                  typeof homePageData?.acf === "object" &&
+                  !Array.isArray(homePageData?.acf)
+                    ? (homePageData.acf as any)?.home_section_2
+                    : undefined
                 }
               />
               <HomeSection3
@@ -466,7 +537,15 @@ export default function Home() {
       </SmoothWrapper>
       <SlidingArrow />
       <CursorFollow isPlaying={isPlaying} />
-      <AudioPlayer audioRef={audio} src={audioLink} />
+      <AudioPlayer
+        audioRef={audio}
+        src={
+          typeof homePageData?.acf === "object" &&
+          !Array.isArray(homePageData?.acf)
+            ? (homePageData.acf as any)?.banner_section?.audio_music
+            : undefined
+        }
+      />
       <div
         ref={wishButton}
         className="wish-button fixed p-5 bottom-0 right-15 z-50 opacity-0 invisible"
