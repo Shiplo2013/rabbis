@@ -1,11 +1,10 @@
 "use client";
 import BackgroundImage2 from "@/app/ui/BackgroundImage2";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import SimpleBar from "simplebar-react";
 import ArrowLeft from "../../assets/icons/ArrowLeft";
 import WishIcon from "../../assets/icons/WishIcon";
-import sectionBg from "../../assets/images/section-image.jpg";
 import CardSlider from "../../ui/CardSlider";
 import PostItem from "../../ui/PostItem";
 import ThemeButton from "../../ui/ThemeButton";
@@ -15,16 +14,19 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-interface SectionData {
-  text_slider?: { text_slide_1: string; text_slide_2: string }[];
-  community_posts?: [];
-}
 interface ChildProps {
   extraClass: string;
   animWidthPost: number;
   animWidthSlider: number;
   panel: any;
-  sectionData: SectionData;
+  sectionData: {
+    text_slider?: {
+      text_slide_1?: string;
+      text_slide_2?: string;
+    };
+    community_posts?: any;
+    background_image?: any;
+  };
 }
 
 export default function HomeSection1(props: ChildProps) {
@@ -34,13 +36,17 @@ export default function HomeSection1(props: ChildProps) {
   const isSlideOut = useRef(false);
   // Route
   const pathname = usePathname();
+  const sectionData = props.sectionData;
   // Slider Data
   const SliderData = [
     {
-      text1: `כאשר שאל מרן הסבא מסלבודקא את רבי ישראל סלנטר: מהי המטרה העיקרית שאתה רואה בייסוד מוסד קדוש זה?<br/>ענה לו רבי ישראל: <strong>"להחיות רוח שפלים ולהחיות לב נדכאים"</strong>`,
-      text2: `להרים רוחם של המבקשים לגדול, לטעת בעמקי הלב כוחות חיים חדשים. וכך הניח רבי ישראל את היסוד: ישיבה איננה רק מקום לימוד, אלא בית היוצר לנשמות; מקום שבו מעוררים את השפל לרוממות, ואת הנדכא, לחיים של גדלות האדם.`,
+      text1: sectionData.text_slider?.text_slide_1,
+      text2: sectionData.text_slider?.text_slide_2,
     },
   ];
+  useEffect(() => {
+    console.log("Section Data:", sectionData.text_slider?.text_slide_1);
+  }, [props.sectionData]);
   useGSAP(() => {
     // Selectors
     const homePost = wrapper.current?.querySelector("#home-post");
@@ -86,7 +92,7 @@ export default function HomeSection1(props: ChildProps) {
     });
 
     // CyclePreview
-    gsap.set(cyclePreview, { yPercent: 100, opacity: 0 });
+    gsap.set(cyclePreview, { opacity: 0 });
     gsap.to(cyclePreview, {
       scrollTrigger: {
         start: () => {
@@ -110,7 +116,7 @@ export default function HomeSection1(props: ChildProps) {
       data-scroll-section={props.animWidthPost}
     >
       <BackgroundImage2
-        bgImage={sectionBg}
+        bgImage={props.sectionData?.background_image}
         panel={props.panel}
         start={props.animWidthPost}
       />
@@ -119,7 +125,19 @@ export default function HomeSection1(props: ChildProps) {
           id="cycle-preview"
           className="cycle-preview absolute left-[15%] top-1/6 transition-none"
         >
-          <CardSlider SlideData={SliderData} />
+          <CardSlider
+            SlideData={
+              props.sectionData?.text_slider?.text_slide_1 &&
+              props.sectionData?.text_slider?.text_slide_2
+                ? [
+                    {
+                      text1: props.sectionData.text_slider.text_slide_1,
+                      text2: props.sectionData.text_slider.text_slide_2,
+                    },
+                  ]
+                : []
+            }
+          />
         </div>
         <div
           id="home-post"

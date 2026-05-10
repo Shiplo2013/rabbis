@@ -49,10 +49,10 @@ export default function BackgroundImage(props: ChildProps) {
     >
       <Image
         className="bg-image w-full object-cover object-center h-full"
-        src={props?.bgImage?.src}
+        src={props?.bgImage?.url}
         width="1920"
         height="1080"
-        blurDataURL={props?.bgImage?.blurDataURL}
+        blurDataURL={props?.bgImage?.sizes?.medium}
         placeholder={"blur"}
         loading="lazy"
         alt="Section Background"

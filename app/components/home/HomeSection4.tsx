@@ -1,7 +1,7 @@
 import TextSplitLines from "@/app/ui/TextSplitLines";
+import parse from "html-react-parser";
 import { usePathname } from "next/dist/client/components/navigation";
 import { useRef } from "react";
-import sectionBg from "../../assets/images/section-bg2.jpg";
 import AnimatedBackground from "../../ui/AnimatedBackground";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
@@ -12,6 +12,10 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidth: number;
+  sectionData: {
+    content?: string;
+    background_image?: any;
+  };
 }
 
 export default function HomeSection4(props: ChildProps) {
@@ -58,7 +62,10 @@ export default function HomeSection4(props: ChildProps) {
       className={`${props.extraClass} home-section4 h-screen bg-no-repeat bg-center bg-cover flex items-center relative overflow-hidden`}
       data-scroll-section={props.animWidth}
     >
-      <AnimatedBackground bgImage={sectionBg} animWidth={props.animWidth} />
+      <AnimatedBackground
+        bgImage={props.sectionData?.background_image}
+        animWidth={props.animWidth}
+      />
       <div
         className={`section-content w-full h-auto flex items-center justify-center p-[5%] relative z-40`}
       >
@@ -66,18 +73,7 @@ export default function HomeSection4(props: ChildProps) {
           dir="ltr"
           className="text text-[35px] leading-[0.9] text-[#EEECDD] font-medium w-[60%]"
         >
-          <p>
-            מיום היווסדה נושאת הישיבה הקדושה את רוח הרוממות והגדלות שנטעו
-            מייסדיה.
-          </p>
-          <p>
-            היא ממשיכה עד היום להבעיר את שלהבת התורה והמוסר בלב אלפי תלמידיה
-            ובוגריה.
-          </p>
-          <p>
-            דרכה המיוחדת - המשלבת גדלות, עומק, בהירות ושאר רוח - מלווה את
-            הצועדים בדרכה ומעמידה שדרת תלמידי חכמים נאמנים למורשתה.
-          </p>
+          {parse(props.sectionData?.content || "")}
         </div>
       </div>
     </section>
