@@ -1,4 +1,5 @@
 "use client";
+import { StaticImageData } from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import WishIcon from "./assets/icons/WishIcon";
@@ -38,15 +39,51 @@ type HomePageApiResponse = {
   acf: Record<string, unknown> | unknown[] | null;
 };
 
+type HomePageAcf = {
+  banner_section?: {
+    title_1?: string;
+    title_2?: string;
+    title_3?: string;
+    subtitle?: string;
+    audio_music?: number | string;
+    banner_background?: StaticImageData | string;
+  };
+  intro_section?: {
+    title?: string;
+  };
+  home_section_1?: {
+    text_slider?: {
+      text_slide_1?: string;
+      text_slide_2?: string;
+    };
+    community_posts?: any;
+    background_image?: any;
+  };
+  home_section_2?: {
+    image?: any;
+    title?: string;
+    foating_image?: any;
+    text?: string;
+  };
+  home_section_3?: {
+    image?: any;
+    title?: string;
+    text?: string;
+    background_image?: any;
+  };
+  home_section_4?: {
+    content?: string;
+    background_image?: any;
+  };
+};
+
 export default function Home() {
   // Selector
   const main = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLDivElement>(null);
   const wishButton = useRef<HTMLDivElement>(null);
   // Audo Player
-  const [homePageData, setHomePageData] = useState<HomePageApiResponse | null>(
-    null,
-  );
+  const [homePageData, setHomePageData] = useState<any>(null);
   const audio = useRef<HTMLAudioElement>(null);
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
@@ -58,7 +95,6 @@ export default function Home() {
 
   // Router Path
   const pathname = usePathname();
-
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
@@ -73,11 +109,10 @@ export default function Home() {
           throw new Error("Failed to load home page data.");
         }
 
-        const data = (await response.json()) as HomePageApiResponse;
+        const data = await response.json();
 
         if (isMounted) {
           setHomePageData(data);
-          setPageDataFetched(true);
         }
       } catch (error) {
         console.error(error);
@@ -95,6 +130,7 @@ export default function Home() {
     if (!homePageData?.acf) {
       return;
     }
+    setPageDataFetched(true);
   }, [homePageData]);
 
   // Load Page
@@ -306,7 +342,7 @@ export default function Home() {
         }
       }
     });
-  }, [animationPlayed, pageDataFetched, pathname]);
+  }, [pageDataFetched]);
 
   // Container width
   //const [contWidth, setContWidth] = useState(0);
@@ -348,7 +384,7 @@ export default function Home() {
         verticalSection.kill();
       }
     };
-  }, [pathname]);
+  }, [pathname, homePageData]);
 
   // Page Content Animation
   useGSAP(() => {
@@ -444,121 +480,100 @@ export default function Home() {
     };
   }, []);
   return (
-    <div ref={main} id="main" className="relative">
-      <LoadingEffect animated={setAnimationPlayed} />
-      <Header animationStatus={isAllAnimationComplete} />
-      <SmoothWrapper>
-        <main
-          ref={page}
-          id="page"
-          dir="ltr"
-          className="main relative z-10 opacity-0"
-        >
-          <div
-            ref={panel}
-            id="panel-wrapper"
-            className="w-screen h-screen flex items-end justify-end"
+    homePageData && (
+      <div ref={main} id="main" className="relative">
+        <LoadingEffect animated={setAnimationPlayed} />
+        <Header animationStatus={isAllAnimationComplete} />
+        <SmoothWrapper>
+          <main
+            ref={page}
+            id="page"
+            dir="ltr"
+            className="main relative z-10 opacity-0"
           >
             <div
-              ref={wrapper}
-              id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[510vw] h-screen will-change-transform`}
+              ref={panel}
+              id="panel-wrapper"
+              className="w-screen h-screen flex items-end justify-end"
             >
-              <HomeBanner
-                audioControl={togglePlayPause}
-                animated={isAllAnimationComplete}
-                extraClass={
-                  "panel-section will-change-transform min-w-screen w-screen cursor-pointer"
-                }
-                panel={panel}
-                bannerData={
-                  typeof homePageData?.acf === "object" &&
-                  !Array.isArray(homePageData?.acf)
-                    ? (homePageData.acf as any)?.banner_section
-                    : undefined
-                }
-              />
-              <IntroSection
-                animWidthText={0.4}
-                extraClass={
-                  "panel-section will-change-transform min-w-[50vw] w-[50vw]"
-                }
-                introData={
-                  typeof homePageData?.acf === "object" &&
-                  !Array.isArray(homePageData?.acf)
-                    ? (homePageData.acf as any)?.intro_section
-                    : undefined
-                }
-              />
-              <HomeSection1
-                animWidthPost={1}
-                animWidthSlider={1.4}
-                extraClass={
-                  "panel-section will-change-transform min-w-[70vw] w-[70vw]"
-                }
-                panel={panel}
-                sectionData={
-                  typeof homePageData?.acf === "object" &&
-                  !Array.isArray(homePageData?.acf)
-                    ? (homePageData.acf as any)?.home_section_1
-                    : undefined
-                }
-              />
-              <HomeSection2
-                animWidthImage={2.2}
-                animWidthText={2.7}
-                extraClass={
-                  "panel-section will-change-transform min-w-screen w-screen bg-black"
-                }
-                sectionData={
-                  typeof homePageData?.acf === "object" &&
-                  !Array.isArray(homePageData?.acf)
-                    ? (homePageData.acf as any)?.home_section_2
-                    : undefined
-                }
-              />
-              <HomeSection3
-                animWidthImage={3.6}
-                animWidthText={3.9}
-                extraClass={
-                  "panel-section will-change-transform min-w-[90vw] w-[90vw]"
-                }
-              />
-              <HomeSection4
-                animWidth={5}
-                extraClass={
-                  "panel-section will-change-transform min-w-screen w-screen"
-                }
-              />
+              <div
+                ref={wrapper}
+                id="section-wrapper"
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[510vw] h-screen will-change-transform`}
+              >
+                <HomeBanner
+                  audioControl={togglePlayPause}
+                  animated={isAllAnimationComplete}
+                  extraClass={
+                    "panel-section will-change-transform min-w-screen w-screen cursor-pointer"
+                  }
+                  panel={panel}
+                  bannerData={homePageData?.acf?.banner_section}
+                />
+                <IntroSection
+                  animWidthText={0.4}
+                  extraClass={
+                    "panel-section will-change-transform min-w-[50vw] w-[50vw]"
+                  }
+                  introData={homePageData?.acf?.intro_section}
+                />
+                <HomeSection1
+                  animWidthPost={1}
+                  animWidthSlider={1.4}
+                  extraClass={
+                    "panel-section will-change-transform min-w-[70vw] w-[70vw]"
+                  }
+                  panel={panel}
+                  sectionData={homePageData?.acf?.home_section_1}
+                />
+                <HomeSection2
+                  animWidthImage={2.2}
+                  animWidthText={2.7}
+                  extraClass={
+                    "panel-section will-change-transform min-w-screen w-screen bg-black"
+                  }
+                  sectionData={homePageData?.acf?.home_section_2}
+                />
+                <HomeSection3
+                  animWidthImage={3.6}
+                  animWidthText={3.9}
+                  extraClass={
+                    "panel-section will-change-transform min-w-[90vw] w-[90vw]"
+                  }
+                  sectionData={homePageData?.acf?.home_section_3}
+                />
+                <HomeSection4
+                  animWidth={5}
+                  extraClass={
+                    "panel-section will-change-transform min-w-screen w-screen"
+                  }
+                  sectionData={homePageData?.acf?.home_section_4}
+                />
+              </div>
             </div>
-          </div>
-        </main>
-        <Footer className={"relative z-20"} />
-      </SmoothWrapper>
-      <SlidingArrow />
-      <CursorFollow isPlaying={isPlaying} />
-      <AudioPlayer
-        audioRef={audio}
-        src={
-          typeof homePageData?.acf === "object" &&
-          !Array.isArray(homePageData?.acf)
-            ? (homePageData.acf as any)?.banner_section?.audio_music
-            : undefined
-        }
-      />
-      <div
-        ref={wishButton}
-        className="wish-button fixed p-5 bottom-0 right-15 z-50 opacity-0 invisible"
-      >
-        <ThemeButton
-          extraClass="w-13 h-13 flex item-center justify-center"
-          bgColor="bg-[#ffffff]"
-          textColor="text-[#000000]"
-          hoverBgColor="bg-[#C3A13F]"
-          svgIcon={<WishIcon className="group-hover:stroke-[#ffffff]" />}
-          svgIconClass={""}
+          </main>
+          <Footer className={"relative z-20"} />
+        </SmoothWrapper>
+        <SlidingArrow />
+        <CursorFollow isPlaying={isPlaying} />
+        <AudioPlayer
+          audioRef={audio}
+          src={homePageData?.acf?.banner_section?.audio_music}
         />
+        <div
+          ref={wishButton}
+          className="wish-button fixed p-5 bottom-0 right-15 z-50 opacity-0 invisible"
+        >
+          <ThemeButton
+            extraClass="w-13 h-13 flex item-center justify-center"
+            bgColor="bg-[#ffffff]"
+            textColor="text-[#000000]"
+            hoverBgColor="bg-[#C3A13F]"
+            svgIcon={<WishIcon className="group-hover:stroke-[#ffffff]" />}
+            svgIconClass={""}
+          />
+        </div>
       </div>
-    </div>
+    )
   );
 }

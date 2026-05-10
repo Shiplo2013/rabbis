@@ -63,7 +63,7 @@ export default function IntroSection(props: ChildProps) {
     >
       <div className="w-full h-full p-[10%] pr-[20%] flex items-center justify-center">
         <h2 className="intro-title text-[135px] text-[#CD5E41] leading-[0.7em] text-right max-w-108">
-          {props.introData?.title || "להחיות רוח שפלים ולהחיות לב נדכאים"}
+          {props.introData?.title}
         </h2>
       </div>
     </section>

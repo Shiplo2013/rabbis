@@ -1,4 +1,5 @@
 "use client";
+import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { gsap, useGSAP } from "../ui/plugins";
@@ -140,41 +141,33 @@ export default function CardSlider(props: ChildProps) {
     });
   });
   return (
-    <>
-      <div
-        ref={cardSlider}
-        onClick={handleNextSlide}
-        onMouseMove={moveCircle}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        className="arrow-slider w-117 relative z-10 cursor-none"
-      >
-        <div className="arrow-button fixed left-0 top-0 z-30 -ml-13 -mt-13 cursor-none opacity-0 pointer-events-none scale-0" />
-        <div className="card-slider text-[#000000] text-[20px] cursor-none">
-          <div className="card-slide active pt-12 pb-5 px-7 bg-[#F1EADA] min-h-54.25 relative z-20 transition-colors duration-300">
-            <div className="slide-content">
-              <span className="absolute left-5 top-3">1/2</span>
-              <p
-                className="font-bold"
-                dangerouslySetInnerHTML={{
-                  __html: props?.SlideData[0]?.text1,
-                }}
-              ></p>
+    <div
+      ref={cardSlider}
+      onClick={handleNextSlide}
+      onMouseMove={moveCircle}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="arrow-slider w-117 relative z-10 cursor-none"
+    >
+      <div className="arrow-button fixed left-0 top-0 z-30 -ml-13 -mt-13 cursor-none opacity-0 pointer-events-none scale-0" />
+      <div className="card-slider text-[#000000] text-[20px] cursor-none">
+        <div className="card-slide active pt-12 pb-5 px-7 bg-[#F1EADA] min-h-54.25 relative z-20 transition-colors duration-300">
+          <div className="slide-content">
+            <span className="absolute left-5 top-3">1/2</span>
+            <div className="font-medium">
+              {parse(props?.SlideData[0]?.text1)}
             </div>
           </div>
-          <div className="card-slide pt-12 pb-5 px-7 bg-[#E2D7C3] min-h-54.25 absolute top-0 left-0 z-10 transition-colors duration-300">
-            <div className="slide-content">
-              <span className="absolute left-5 top-3">2/2</span>
-              <p
-                className="font-bold"
-                dangerouslySetInnerHTML={{
-                  __html: props?.SlideData[0]?.text2,
-                }}
-              ></p>
+        </div>
+        <div className="card-slide pt-12 pb-5 px-7 bg-[#E2D7C3] min-h-54.25 absolute top-0 left-0 z-10 transition-colors duration-300">
+          <div className="slide-content">
+            <span className="absolute left-5 top-3">2/2</span>
+            <div className="font-medium">
+              {parse(props?.SlideData[0]?.text2)}
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

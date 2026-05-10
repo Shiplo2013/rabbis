@@ -1,19 +1,19 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import TextSplitLines from "@/app/ui/TextSplitLines";
+import parse from "html-react-parser";
 import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
-import { useRef } from "react";
-import Koddisha from "../../assets/images/kaddisha.jpg";
-import sectionImage from "../../assets/images/section-image2.jpg";
+import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-interface SectionData {
-  image?: string;
+interface Data {
+  image?: any;
   title?: string;
-  foating_image?: string;
+  foating_image?: any;
   text?: string;
 }
 
@@ -21,7 +21,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   animWidthImage: number;
-  sectionData: SectionData;
+  sectionData: Data;
 }
 
 export default function HomeSection2(props: ChildProps) {
@@ -114,6 +114,10 @@ export default function HomeSection2(props: ChildProps) {
     }
   }, [pathname]);
 
+  useEffect(() => {
+    // Any additional effect logic can go here
+    console.log(props.sectionData);
+  }, [pathname]);
   return (
     <section
       ref={wrapper}
@@ -127,11 +131,11 @@ export default function HomeSection2(props: ChildProps) {
       <div className="section-image h-screen w-[40vw]">
         <Image
           className="relative z-10 object-cover object-center w-full h-full"
-          src={sectionImage?.src}
-          width={sectionImage?.width}
-          height={sectionImage?.height}
+          src={props.sectionData?.image?.url}
+          width={768}
+          height={929}
           loading="lazy"
-          blurDataURL={sectionImage?.blurDataURL}
+          blurDataURL={CreateShimmerDataUrl(768, 929)}
           placeholder={"blur"}
           alt="Section Image"
         />
@@ -140,18 +144,16 @@ export default function HomeSection2(props: ChildProps) {
         className={`section-content w-[60vw] h-full flex items-center justify-center pr-[10%] pl-[5%] pt-[8%] relative z-40`}
       >
         <h2 className="over-title absolute top-[52%] right-[7%] text-[#D1A941] text-[290px] font-bold leading-[0.75] -mt-[22%] opacity-20 z-0">
-          סבא
-          <br />
-          קדישא
+          {parse(props.sectionData?.title || "")}
         </h2>
         <div className="mouse-follower absolute top-[20%] right-[20%]">
           <Image
             className="relative z-10"
-            src={Koddisha?.src}
-            width={Koddisha?.width}
-            height={Koddisha?.height}
+            src={props.sectionData?.foating_image?.url}
+            width={252}
+            height={404}
             loading="lazy"
-            blurDataURL={Koddisha?.blurDataURL}
+            blurDataURL={CreateShimmerDataUrl(252, 404)}
             placeholder={"blur"}
             alt="Koddisha"
           />
@@ -161,11 +163,7 @@ export default function HomeSection2(props: ChildProps) {
           dir="ltr"
           className="text text-[#EEECDD] text-[70px] leading-[0.8] w-4/5 relative z-40 text-right"
         >
-          <p>
-            הסבא מסלבודקא מחולל ומייסד הישיבה שהצמיח ברוממותו דורות של תלמידים
-            נעלים, עיצב נפשות ברוח גדלות האדם ומאז ועד היום ניכרת השפעתו בכל בית
-            מדרש הנושא את רוחו ומורשתו
-          </p>
+          {parse(props.sectionData?.text || "")}
         </div>
       </div>
     </section>

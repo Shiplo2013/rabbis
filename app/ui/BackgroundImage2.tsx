@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
+import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 import { gsap, ScrollTrigger, useGSAP } from "./plugins";
 
 if (typeof window !== "undefined") {
@@ -48,10 +49,10 @@ export default function BackgroundImage2(props: ChildProps) {
     >
       <Image
         className="bg-image w-full object-cover object-center h-full"
-        src={props?.bgImage?.src}
+        src={props?.bgImage?.url}
         width="1920"
         height="1080"
-        blurDataURL={props?.bgImage?.blurDataURL}
+        blurDataURL={CreateShimmerDataUrl(1920, 1080)}
         placeholder={"blur"}
         loading="lazy"
         alt="Section Background"

@@ -1,20 +1,28 @@
 import BackgroundImage2 from "@/app/ui/BackgroundImage2";
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import TextSplitLines from "@/app/ui/TextSplitLines";
+import parse from "html-react-parser";
 import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
 import { useRef } from "react";
-import Juniper from "../../assets/images/juniper.jpg";
-import sectionBg from "../../assets/images/section-bg.jpg";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
+interface Data {
+  image?: any;
+  title?: string;
+  text_1?: string;
+  text_2?: string;
+  background_image?: any;
+}
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
   animWidthImage: number;
+  sectionData: Data;
 }
 
 export default function HomeSection3(props: ChildProps) {
@@ -46,7 +54,7 @@ export default function HomeSection3(props: ChildProps) {
       });
     }
     document.fonts.ready.then(() => {
-      const text = wrapper.current?.querySelector(".section-content .text");
+      const text = wrapper.current?.querySelectorAll(".section-content .text");
       if (!text) return;
       const textSplit = TextSplitLines(text);
       gsap.set(text, {
@@ -93,10 +101,10 @@ export default function HomeSection3(props: ChildProps) {
       });
     }
   }, [pathname]);
+
   return (
     <section
       ref={wrapper}
-      style={{ backgroundImage: `url(${sectionBg.src})` }}
       dir="rtl"
       // onMouseMove={(e) => {
       //   moveImage(e);
@@ -105,7 +113,7 @@ export default function HomeSection3(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       <BackgroundImage2
-        bgImage={sectionBg}
+        bgImage={props.sectionData?.background_image}
         panel={wrapper}
         start={props.animWidthImage}
       />
@@ -115,30 +123,29 @@ export default function HomeSection3(props: ChildProps) {
         <div className="section-image w-[50%] h-screen">
           <Image
             className="relative z-10 w-full h-full object-center object-cover"
-            src={Juniper?.src}
-            width={Juniper?.width}
-            height={Juniper?.height}
+            src={props.sectionData?.image?.url}
+            width={820}
+            height={929}
             loading="lazy"
-            blurDataURL={Juniper?.blurDataURL}
+            blurDataURL={CreateShimmerDataUrl(820, 929)}
             placeholder={"blur"}
             alt="Juniper"
           />
         </div>
         <div className="section-content w-[50%] relative pt-12 pr-[10%]">
           <h2 className="over-title absolute top-[7%] right-[20%] text-[#D1A941] text-[290px] font-bold leading-[0.75] opacity-20 z-0">
-            עוז
-            <br />
-            רוח
+            {parse(props.sectionData?.title || "")}
           </h2>
           <div
             dir="ltr"
-            className="text text-[55px] leading-[0.8] w-107.5 max-w-[70%] relative"
+            className="text-[55px] leading-[0.8] w-107.5 max-w-[70%] relative pb-2 flex flex-col z-40 text-right"
           >
-            <p className="mb-7.5">מרן רבי משה מרדכי אפשטיין זצוק"ל </p>
-            <p className="font-bold">
-              הנהיג את הישיבה במסירות נפש מופלאה בתקופות סוערות, והנחיל לתלמידיו
-              מושגים נעלים של עיון התורה ועמלה.
-            </p>
+            <div className="text mb-7.5">
+              {parse(props.sectionData?.text_1 || "")}
+            </div>
+            <div className="text font-bold">
+              {parse(props.sectionData?.text_2 || "")}
+            </div>
           </div>
         </div>
       </div>
