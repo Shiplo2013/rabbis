@@ -116,7 +116,7 @@ export default function HomeSection2(props: ChildProps) {
 
   useEffect(() => {
     // Any additional effect logic can go here
-    console.log(props.sectionData);
+    //console.log(props.sectionData);
   }, [pathname]);
   return (
     <section

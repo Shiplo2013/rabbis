@@ -1,4 +1,5 @@
 import BackgroundImage2 from "@/app/ui/BackgroundImage2";
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -11,15 +12,23 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
 }
 
+interface TabsData {
+  tab_title?: string;
+  title?: string;
+  subtitle?: string;
+  text?: string;
+  gallery_images?: unknown;
+}
+
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
-  data: string;
+  data: TabsData[];
 }
 
 export default function TempleTabs(props: ChildProps) {
   const [activeTab, setActiveTab] = useState(0);
-  const [tabsData, setTabsData] = useState<any>(JSON.parse(props.data));
+  const tabsData = props.data as TabsData[];
   const galleryRef = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
 
@@ -90,7 +99,7 @@ export default function TempleTabs(props: ChildProps) {
                 onClick={() => setActiveTab(index)}
               >
                 <span className="relative">
-                  {tab.head}
+                  {tab.tab_title}
                   <div
                     className={`w-full h-0.5  bg-[#FBF4E6] ${activeTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-all duration-300`}
                   ></div>
@@ -99,7 +108,7 @@ export default function TempleTabs(props: ChildProps) {
             ))}
           </div>
         </div>
-        <div className="tabs-content w-[255vw] h-full flex items-center relative z-20 px-[8.5vw] py-[10vh]">
+        <div className="tabs-content h-full flex items-center relative z-20 px-[8.5vw] py-[10vh]">
           <div className="tabs-content-bg absolute overflow-hidden w-full h-full z-10 top-0 right-0 user-select-none pointer-events-none">
             <BackgroundImage2
               bgImage={tabContentBG}
@@ -113,73 +122,79 @@ export default function TempleTabs(props: ChildProps) {
                 <div className={`tab-content-item w-[32vw]`}>
                   <div className="title mb-[6vh]">
                     <h2 className="text-[#C3A13F66] text-[114px] leading-[70%] font-bold max-w-76">
-                      {parse(tabsData[activeTab].content.title)}
+                      {parse(tabsData[activeTab]?.title || "")}
                     </h2>
                   </div>
                   <div className="subtitle mb-[4vh]">
                     <h3 className="text-[45px] leading-[1em] text-[#EEECDD]">
-                      {parse(tabsData[activeTab].content.subtitle)}
+                      {parse(tabsData[activeTab]?.subtitle || "")}
                     </h3>
                   </div>
-                  <div className="content text-[#EEECDD] text-[21px] leading-[1.3em]">
-                    {parse(tabsData[activeTab].content.text)}
+                  <div className="content text-[#EEECDD] text-[21px] leading-[1.3em] [&>p]:not(:last-child):mb-5">
+                    {parse(tabsData[activeTab]?.text || "")}
                   </div>
                 </div>
 
-                <div className="tab-gallery flex items-center h-screen ml-auto mr-auto relative w-[200vw] will-change-transform">
+                <div className="tab-gallery flex items-center h-screen ml-auto mr-auto relative will-change-transform">
                   <div
                     ref={galleryRef}
                     className="gallery-wrapper w-full h-full flex items-center will-change-transform"
                   >
-                    {tabsData[activeTab]?.content.images.map(
-                      (item: { image: any; size: string }, index: number) => {
-                        if (item.size === "landescape") {
-                          return (
+                    {Object.values(
+                      tabsData[activeTab]?.gallery_images || [],
+                    ).map((item: any, index: number) => {
+                      if (item.size === "landescape") {
+                        return (
+                          <div
+                            key={index}
+                            className="single-gallery will-change-transform w-[32vw] h-[40vh] overflow-hidden"
+                          >
                             <div
-                              key={index}
-                              className="single-gallery will-change-transform w-[32vw] h-[40vh] overflow-hidden"
+                              className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
                             >
-                              <div
-                                className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
-                              >
-                                <Image
-                                  className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
-                                  src={item?.image?.src}
-                                  width={item?.image?.width}
-                                  height={item?.image?.height}
-                                  blurDataURL={item?.image?.blurDataURL}
-                                  placeholder={"blur"}
-                                  loading="lazy"
-                                  alt="Gallery Image"
-                                />
-                              </div>
+                              <Image
+                                className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+                                src={item?.image?.url || item?.image?.src}
+                                width={item?.image?.width}
+                                height={item?.image?.height}
+                                blurDataURL={CreateShimmerDataUrl(
+                                  item?.image?.width,
+                                  item?.image?.height,
+                                )}
+                                placeholder={"blur"}
+                                loading="lazy"
+                                alt="Gallery Image"
+                              />
                             </div>
-                          );
-                        } else {
-                          return (
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div
+                            key={index}
+                            className="single-gallery will-change-transform w-[22vw] h-[70vh] overflow-hidden"
+                          >
                             <div
-                              key={index}
-                              className="single-gallery will-change-transform w-[22vw] h-[70vh] overflow-hidden"
+                              className={`single-gallery-image w-[60vw] h-[85vh] absolute top-1/2 left-1/2 -translate-[50%]`}
                             >
-                              <div
-                                className={`single-gallery-image w-[60vw] h-[85vh] absolute top-1/2 left-1/2 -translate-[50%]`}
-                              >
-                                <Image
-                                  className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
-                                  src={item?.image?.src}
-                                  width={item?.image?.width}
-                                  height={item?.image?.height}
-                                  blurDataURL={item?.image?.blurDataURL}
-                                  placeholder={"blur"}
-                                  loading="lazy"
-                                  alt="Gallery Image"
-                                />
-                              </div>
+                              <Image
+                                className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+                                src={item?.image?.url || item?.image?.src}
+                                width={item?.image?.width}
+                                height={item?.image?.height}
+                                blurDataURL={CreateShimmerDataUrl(
+                                  item?.image?.width,
+                                  item?.image?.height,
+                                )}
+                                placeholder={"blur"}
+                                loading="lazy"
+                                alt="Gallery Image"
+                              />
                             </div>
-                          );
-                        }
-                      },
-                    )}
+                          </div>
+                        );
+                      }
+                    })}
                   </div>
                 </div>
               </div>

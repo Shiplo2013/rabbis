@@ -1,41 +1,19 @@
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 
 interface ChildProps {
   extraClass: string;
-  data: string | VideoSource[];
+  data: VideoSource;
 }
 
 interface VideoSource {
-  poster?: string | { src?: string };
-  link?: string;
+  poster?: any;
+  video?: any;
 }
 
 export default function VideoPlayer(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
-  const videoData = useMemo<VideoSource[]>(() => {
-    if (Array.isArray(props.data)) {
-      return props.data;
-    }
-
-    try {
-      const parsedData = JSON.parse(props.data);
-      return Array.isArray(parsedData) ? parsedData : [];
-    } catch {
-      return [];
-    }
-  }, [props.data]);
-
-  const firstVideo = videoData[0];
-  const poster =
-    typeof firstVideo?.poster === "string"
-      ? firstVideo.poster
-      : firstVideo?.poster?.src || "";
-  const link = firstVideo?.link || "";
-
-  if (!link) {
-    return null;
-  }
+  const videoData = props.data as VideoSource;
 
   return (
     <div
@@ -45,10 +23,10 @@ export default function VideoPlayer(props: ChildProps) {
     >
       <video
         width="100%"
-        poster={poster}
+        poster={videoData?.poster?.url || ""}
         className="w-full h-full object-cover object-center"
       >
-        <source src={link} type="video/mp4" />
+        <source src={videoData?.video?.url || ""} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
     </div>

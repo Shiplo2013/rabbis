@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { RefObject, useRef } from "react";
+import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 import { gsap, ScrollTrigger, useGSAP } from "./plugins";
 
 if (typeof window !== "undefined") {
@@ -81,10 +82,13 @@ export default function IntroductionBackground(props: ChildProps) {
     >
       <Image
         className={`w-full object-cover ${props.imagePosition === "bottom" ? "object-bottom" : "object-center"} h-full relative z-10`}
-        src={props?.bgImage?.src}
+        src={props?.bgImage?.url}
         width={`${props?.bgImage?.width > 1920 ? props?.bgImage?.width : "1920"}`}
-        height={`${props?.bgImage?.width > 1080 ? props?.bgImage?.width : "1080"}`}
-        blurDataURL={props?.bgImage?.blurDataURL}
+        height={`${props?.bgImage?.height > 1080 ? props?.bgImage?.height : "1080"}`}
+        blurDataURL={CreateShimmerDataUrl(
+          props?.bgImage?.width || 1920,
+          props?.bgImage?.height || 1080,
+        )}
         placeholder={"blur"}
         loading="lazy"
         alt="Introduction Background"

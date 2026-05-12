@@ -1,7 +1,14 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
+
+interface IntroData {
+  title?: string;
+  image?: any;
+  background?: any;
+}
 
 interface ChildProps {
   extraClass: string;
@@ -14,18 +21,13 @@ interface ChildProps {
   overlayClass: string;
   bgPosition: string;
   bgClass: string;
-  data: string;
+  data: IntroData | string | null;
 }
 
 export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
-  const [pageData, setPageData] = useState(JSON.parse(props.data));
-
-  // Console
-  useEffect(() => {
-    //console.log(pageData[0].image);
-  }, [pageData]);
+  const introData = props.data as IntroData;
   return (
     <section
       ref={wrapper}
@@ -63,16 +65,16 @@ export default function Introduction(props: ChildProps) {
             dir="rtl"
             className="intro-title text-[320px] text-[#AC832E] font-bold leading-[0.7em] overflow-hidden relative z-20 py-13"
           >
-            {parse(pageData[0].title)}
+            {parse(introData?.title || "")}
           </h1>
           <div className="intro-image absolute right-[14.5vw] top-[16vh] w-[17.70vw] h-[63.5vh] z-10 will-change-transform">
             <Image
               className="w-full h-full object-cover"
-              src={pageData[0].image?.src}
+              src={introData?.image?.src || introData?.image?.url}
               width={`393`}
               height={`590`}
               alt="Introduction Image"
-              blurDataURL={pageData[0].image?.blurDataURL}
+              blurDataURL={CreateShimmerDataUrl(393, 590)}
               placeholder={"blur"}
               loading="lazy"
             />
