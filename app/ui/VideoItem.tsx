@@ -24,12 +24,14 @@ export default function VideoItem(props: ChildProps) {
   const videoButton = useRef<HTMLDivElement>(null);
   // Data
   const video = "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
-  const videoData = [
-    {
-      poster: thumb,
-      link: video,
+  const videoData = {
+    poster: {
+      url: thumb.src,
     },
-  ];
+    video: {
+      url: video,
+    },
+  };
   // Section Animation
   useGSAP(
     () => {
@@ -139,10 +141,7 @@ export default function VideoItem(props: ChildProps) {
     >
       <div className="video-wrapper w-full h-full relative">
         <div ref={videoWrap} className="video h-full w-full relative z-10">
-          <VideoPlayer
-            extraClass="w-full h-full"
-            data={JSON.stringify(videoData)}
-          />
+          <VideoPlayer extraClass="w-full h-full" data={videoData} />
           <div
             onClick={handleButtonClick}
             className="video-overlay absolute top-0 left-0 w-full h-full bg-black z-40 opacity-40 cursor-pointer"

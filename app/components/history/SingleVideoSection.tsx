@@ -30,12 +30,14 @@ export default function SingleVideoSection(props: ChildProps) {
   };
   // Data
   const video = "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
-  const videoData = [
-    {
-      poster: thumb,
-      link: video,
+  const videoData = {
+    poster: {
+      url: thumb.src,
     },
-  ];
+    video: {
+      url: video,
+    },
+  };
   // Section Animation
   useGSAP(
     () => {

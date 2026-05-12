@@ -23,10 +23,13 @@ export default function VideoPlayer(props: ChildProps) {
     >
       <video
         width="100%"
-        poster={videoData?.poster?.url || ""}
+        poster={videoData?.poster?.url || videoData?.poster?.src || ""}
         className="w-full h-full object-cover object-center"
       >
-        <source src={videoData?.video?.url || ""} type="video/mp4" />
+        <source
+          src={videoData?.video?.url || videoData?.video?.src || ""}
+          type="video/mp4"
+        />
         Your browser does not support the video tag.
       </video>
     </div>
