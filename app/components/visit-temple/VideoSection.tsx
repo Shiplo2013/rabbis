@@ -9,10 +9,15 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 }
 
+interface VideoData {
+  poster?: any;
+  video?: any;
+}
+
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
-  data: string;
+  data: VideoData;
 }
 
 export default function VideoSection(props: ChildProps) {
@@ -22,6 +27,7 @@ export default function VideoSection(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const videoWrap = useRef<HTMLDivElement>(null);
   const videoButton = useRef<HTMLDivElement>(null);
+  const videoData = props.data as VideoData;
 
   // Section Animation
   useGSAP(
@@ -132,7 +138,7 @@ export default function VideoSection(props: ChildProps) {
     >
       <div className="video-wrapper w-full h-full relative">
         <div ref={videoWrap} className="video h-full w-full relative z-10">
-          <VideoPlayer extraClass="w-full h-full" data={props.data} />
+          <VideoPlayer extraClass="w-full h-full" data={videoData} />
           <div
             onClick={handleButtonClick}
             className="video-overlay absolute top-0 left-0 w-full h-full bg-[#766565] z-40 opacity-57 cursor-pointer"
