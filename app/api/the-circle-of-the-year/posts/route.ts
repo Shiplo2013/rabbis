@@ -2,6 +2,6 @@ import { createCptListHandler } from "../../_shared/cpt-handler";
 export const dynamic = "force-dynamic";
 
 export const GET = createCptListHandler({
-  postType: "past-rabbis",
-  postTypeName: "past rabbis",
+  postType: "holidays",
+  postTypeName: "holidays",
 });

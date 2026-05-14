@@ -166,10 +166,8 @@ export default function TerribleDaysSection(props: ChildProps) {
             <Image
               className="float-image w-full object-contain object-center h-full"
               src={
-                pageData[props.activeMusicItem]?.introduction?.album_image_1
-                  ?.url ||
-                pageData[props.activeMusicItem]?.introduction?.album_image_1
-                  ?.src
+                pageData?.acf?.introduction?.album_image_1?.url ||
+                pageData?.acf?.introduction?.album_image_1?.src
               }
               width="147"
               height="221"
@@ -179,27 +177,18 @@ export default function TerribleDaysSection(props: ChildProps) {
               alt="Turntable"
             />
           </div>
-          <div
-            dir="ltr"
-            className="intro-wrapper max-w-150 text-center flex flex-col gap-y-[3.6vh] relative z-30"
-          >
+          <div className="intro-wrapper max-w-150 text-center flex flex-col gap-y-[3.6vh] relative z-30">
             <h2
               ref={introTitle}
               className="title text-[128px] leading-[80%] overflow-hidden"
             >
-              {parse(
-                pageData[props.activeMusicItem]?.introduction?.album_title ||
-                  "",
-              )}
+              {parse(pageData?.acf?.introduction?.album_title || "")}
             </h2>
             <h5
               ref={introSubtitle}
               className="subtitle text-[35px] leading-[90%] overflow-hidden"
             >
-              {parse(
-                pageData[props.activeMusicItem]?.introduction?.album_subtitle ||
-                  "",
-              )}
+              {parse(pageData?.acf?.introduction?.album_subtitle || "")}
             </h5>
           </div>
           <div
@@ -209,10 +198,8 @@ export default function TerribleDaysSection(props: ChildProps) {
             <Image
               className="float-image w-full object-contain object-center h-full"
               src={
-                pageData[props.activeMusicItem]?.introduction?.album_image_2
-                  ?.url ||
-                pageData[props.activeMusicItem]?.introduction?.album_image_2
-                  ?.src
+                pageData?.acf?.introduction?.album_image_2?.url ||
+                pageData?.acf?.introduction?.album_image_2?.src
               }
               width="158"
               height="238"
@@ -225,28 +212,17 @@ export default function TerribleDaysSection(props: ChildProps) {
         </div>
         <div className="terrible-content w-[77vw] h-full flex items-center justify-center relative p-[8vh_5vw]">
           <div className="content-wrapper relative flex gap-x-[4.6vw]">
-            <div dir="ltr" className="content-right w-1/2">
+            <div className="content-right w-1/2">
               <h3 className="title text-[35px] leading-[85%] text-right">
-                {parse(
-                  pageData[props.activeMusicItem]?.content_section?.title || "",
-                )}
+                {parse(pageData?.acf?.content_section?.title || "")}
               </h3>
               <div className="text text-[21px] leading-[150%]">
-                {parse(
-                  pageData[props.activeMusicItem]?.content_section?.text_1 ||
-                    "",
-                )}
+                {parse(pageData?.acf?.content_section?.text_1 || "")}
               </div>
             </div>
-            <div
-              dir="ltr"
-              className="content-left w-1/2 text-[21px] leading-[150%] text-right"
-            >
+            <div className="content-left w-1/2 text-[21px] leading-[150%] text-right">
               <div className="text">
-                {parse(
-                  pageData[props.activeMusicItem]?.content_section?.text_2 ||
-                    "",
-                )}
+                {parse(pageData?.acf?.content_section?.text_2 || "")}
               </div>
               <Link className="text-black font-bold mt-2 block" href={"/"}>
                 קרא עוד...
@@ -269,14 +245,11 @@ export default function TerribleDaysSection(props: ChildProps) {
         <div className="terrible-musics w-[60vw] mr-[10vw] h-full flex flex-col items-center justify-start gap-y-[17.65vh] relative p-[15vh_5vw]">
           <div className="music-title w-full">
             <h2 className="text-[#344128] text-[101px] leading-[76%]">
-              {parse(
-                pageData[props.activeMusicItem]?.music_albums?.section_title ||
-                  "",
-              )}
+              {parse(pageData?.acf?.music_albums?.section_title || "")}
             </h2>
           </div>
           <div className="music-albums flex gap-x-[3.85vw] my-auto w-full">
-            {pageData[props.activeMusicItem]?.music_albums?.albums?.map(
+            {pageData?.acf?.music_albums?.albums?.map(
               (item: any, index: number) => (
                 <div
                   key={index}

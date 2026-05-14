@@ -199,11 +199,6 @@ export default function Page() {
     };
   }, [slug]);
 
-  useEffect(() => {
-    console.log(post);
-    console.log(allPosts);
-  }, [post]);
-
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
