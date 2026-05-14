@@ -1,8 +1,7 @@
 "use client";
 import parse from "html-react-parser";
-import { StaticImageData } from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import SimpleBar from "simplebar-react";
 import { gsap, useGSAP } from "../../ui/plugins";
 
@@ -13,14 +12,16 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
-  data: string;
+  data: any;
+  activeMusicItem: any;
+  setActiveMusicItem: (item: any) => void;
 }
 
 export default function MusicCategoryList(props: ChildProps) {
   // Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const [catList, setCatList] = useState(JSON.parse(props.data));
+  const catList = props.data as any[];
   // Section Animation
   useGSAP(
     () => {
@@ -82,40 +83,43 @@ export default function MusicCategoryList(props: ChildProps) {
         }
       }
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, catList] },
   );
   return (
-    <section
-      ref={wrapper}
-      dir="rtl"
-      className={`${props.extraClass} h-screen flex items-center relative z-20`}
-    >
-      <div className="music-cat-wrapper w-full h-full px-[4.16vw] pt-[15vh] pb-[8vh]">
-        <SimpleBar
-          style={{ maxHeight: "75vh", paddingLeft: 30, marginLeft: -30 }}
-          autoHide={false}
-        >
-          <div className="music-cat-list border-b border-[#F4EDDD]">
-            {catList?.map(
-              (
-                item: { title: string; image: StaticImageData },
-                index: number,
-              ) => (
+    catList && (
+      <section
+        ref={wrapper}
+        dir="rtl"
+        className={`${props.extraClass} h-screen flex items-center relative z-20`}
+      >
+        <div className="music-cat-wrapper w-full h-full px-[4.16vw] pt-[15vh] pb-[8vh]">
+          <SimpleBar
+            style={{ maxHeight: "75vh", paddingLeft: 30, marginLeft: -30 }}
+            autoHide={false}
+          >
+            <div className="music-cat-list border-b border-[#F4EDDD]">
+              {catList?.map((item: any, index: number) => (
                 <div
                   key={index}
                   data-index={index}
-                  className="music-cat border-t border-[#F4EDDD] py-[3vh] cursor-pointer text-center"
-                  data-image={item?.image?.src}
+                  onClick={() => props.setActiveMusicItem(index)}
+                  className={`music-cat border-t border-[#F4EDDD] py-[3vh] cursor-pointer text-center ${
+                    props.activeMusicItem === index ? "active" : ""
+                  }`}
+                  data-image={
+                    item?.introduction?.album_image_1?.url ||
+                    item?.introduction?.album_image_1?.src
+                  }
                 >
                   <h3 className="text-[77px] font-light leading-[100%]">
-                    {parse(item.title)}
+                    {parse(item?.introduction?.album_title || "")}
                   </h3>
                 </div>
-              ),
-            )}
-          </div>
-        </SimpleBar>
-      </div>
-    </section>
+              ))}
+            </div>
+          </SimpleBar>
+        </div>
+      </section>
+    )
   );
 }

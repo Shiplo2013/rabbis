@@ -7,7 +7,6 @@ import {
 } from "../assets/images/arrow-section-bg.jpg";
 import sectionImage from "../assets/images/arrow-section-image.jpg";
 import arrowSectionImage from "../assets/images/arrow-section-image2.jpg";
-import timelineBG from "../assets/images/history-bg.jpg";
 import introBG5 from "../assets/images/intro-bg-5.jpg";
 import introBG6 from "../assets/images/intro-bg-6.jpg";
 import introBG7 from "../assets/images/intro-bg-7.jpg";
@@ -22,6 +21,7 @@ import QuoteSectionBG from "../assets/images/quote-section-bg.jpg";
 import PostImage1 from "../assets/images/rabbis-image-1.jpg";
 import PostImage2 from "../assets/images/rabbis-image-2.jpg";
 import HistoryImage1 from "../assets/images/single-image.jpg";
+import timelineBG from "../assets/images/timeline-bg.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ArrowSliderSection from "../components/history/ArrowSliderSection";
@@ -247,6 +247,8 @@ export default function Page() {
     useState<gsap.core.Timeline | null>(null);
   const [timelinePeriod4, setTimelinePeriod4] =
     useState<gsap.core.Timeline | null>(null);
+  const [timeline4ContainerAnimation, setTimeline4ContainerAnimation] =
+    useState<gsap.core.Tween | null>(null);
   const [timelinePeriod5, setTimelinePeriod5] =
     useState<gsap.core.Timeline | null>(null);
   const [timelinePeriod6, setTimelinePeriod6] =
@@ -433,6 +435,7 @@ export default function Page() {
     let timeline2 = null;
     let timeline3 = null;
     let timeline4 = null;
+    let timeline4ContainerTween: gsap.core.Tween | null = null;
     let timeline5 = null;
     let timeline6 = null;
     if (typeof window !== "undefined" && main) {
@@ -615,7 +618,7 @@ export default function Page() {
           },
         },
       });
-      timeline4.to(wrapper4.current, {
+      timeline4ContainerTween = gsap.to(wrapper4.current, {
         x: () =>
           wrapper4.current
             ? wrapper4.current.offsetWidth - window.innerWidth
@@ -628,6 +631,7 @@ export default function Page() {
           scrub: scurbScale,
         },
       });
+      setTimeline4ContainerAnimation(timeline4ContainerTween);
       setTimelinePeriod4(timeline4);
       // Timeline Section  5
       timeline5 = gsap.timeline({
@@ -727,6 +731,7 @@ export default function Page() {
       timelinePeriod2?.kill();
       timelinePeriod3?.kill();
       timelinePeriod4?.kill();
+      timeline4ContainerTween?.kill();
       timelinePeriod5?.kill();
       timelinePeriod6?.kill();
     };

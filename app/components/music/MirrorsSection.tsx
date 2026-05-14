@@ -1,13 +1,14 @@
 "use client";
 
 import ArrowLeftIcon from "@/app/assets/icons/ArrowLeftIcon";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import BgImage from "../../assets/images/mirros-bg.jpg";
 // Import Swiper React components
 
 // Import Swiper styles
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import { usePathname } from "next/navigation";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 // import required modules
@@ -19,7 +20,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
-  data: string;
+  data: any;
 }
 
 export default function MirrorsSection(props: ChildProps) {
@@ -27,7 +28,7 @@ export default function MirrorsSection(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   // Use State
-  const [pageData, setPageData] = useState(JSON.parse(props.data));
+  const pageData = props.data || {};
   // Section Animation
   useGSAP(
     () => {
@@ -135,59 +136,55 @@ export default function MirrorsSection(props: ChildProps) {
       <div className="mirror-section-wrapper w-full h-full relative z-30 pt-[15vh] pb-[10vh] px-[10vw]">
         <div className="section-title">
           <h2 className="text-[#F4EDDD] text-[101px] leading-[76%]">
-            {pageData?.title}
+            {pageData?.section_title}
           </h2>
         </div>
         <div className="mirror-slider flex items-end justify-center relative">
           <div className="image-slider w-[28vw] h-[70vh] relative">
-            {pageData.slides?.map(
-              (item: { image: StaticImageData }, index: number) => {
-                return (
-                  <div
-                    key={index}
-                    style={{
-                      clipPath: `${index === 0 ? "inset(0%)" : "inset(50%)"}`,
-                      zIndex: `1${index}`,
-                    }}
-                    className="singel-slide w-full h-full absolute top-0 left-0 transition-none"
-                  >
-                    <Image
-                      className="slide-image w-full object-cover object-center h-full"
-                      src={item?.image?.src}
-                      width="540"
-                      height="660"
-                      blurDataURL={item?.image?.blurDataURL}
-                      placeholder={"blur"}
-                      loading="lazy"
-                      alt="Mirrors"
-                    />
-                  </div>
-                );
-              },
-            )}
+            {pageData.images?.map((item: any, index: number) => {
+              return (
+                <div
+                  key={index}
+                  style={{
+                    clipPath: `${index === 0 ? "inset(0%)" : "inset(50%)"}`,
+                    zIndex: `1${index}`,
+                  }}
+                  className="singel-slide w-full h-full absolute top-0 left-0 transition-none"
+                >
+                  <Image
+                    className="slide-image w-full object-cover object-center h-full"
+                    src={item?.url || item?.src}
+                    width="540"
+                    height="660"
+                    blurDataURL={CreateShimmerDataUrl(540, 660)}
+                    placeholder={"blur"}
+                    loading="lazy"
+                    alt="Mirrors"
+                  />
+                </div>
+              );
+            })}
           </div>
           <div className="image-thumb absolute bottom-0 right-[5%] flex flex-col gap-y-3">
-            {pageData.slides?.map(
-              (item: { image: StaticImageData }, index: number) => {
-                return (
-                  <div
-                    key={index}
-                    className={`slide-thumb thumb-image-${index} w-15 h-15 transition-none ${index !== 0 && "opacity-50"}`}
-                  >
-                    <Image
-                      className="thumb-image w-full object-cover object-center h-full"
-                      src={item?.image?.src}
-                      width="60"
-                      height="60"
-                      blurDataURL={item?.image?.blurDataURL}
-                      placeholder={"blur"}
-                      loading="lazy"
-                      alt="Mirrors Thumb"
-                    />
-                  </div>
-                );
-              },
-            )}
+            {pageData.images?.map((item: any, index: number) => {
+              return (
+                <div
+                  key={index}
+                  className={`slide-thumb thumb-image-${index} w-15 h-15 transition-none ${index !== 0 && "opacity-50"}`}
+                >
+                  <Image
+                    className="thumb-image w-full object-cover object-center h-full"
+                    src={item?.url || item?.src}
+                    width="60"
+                    height="60"
+                    blurDataURL={CreateShimmerDataUrl(60, 60)}
+                    placeholder={"blur"}
+                    loading="lazy"
+                    alt="Mirrors Thumb"
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
         <div className="mirror-next absolute left-[4vw] top-1/2">

@@ -1,14 +1,16 @@
 import CloseIcon from "@/app/assets/icons/CloseIcon";
 import { useGSAP } from "@gsap/react";
+import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import { gsap } from "../../ui/plugins";
 import TextSplitLines from "../TextSplitLines";
 
 interface RabbisHamburgerMenuProps {
   extraClass?: string;
-  data?: string;
+  data?: any;
   activeMenu?: boolean;
   activeMenuFunction?: (state: boolean) => void;
 }
@@ -17,11 +19,8 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
   // Selector
   const hamurgerMenu = useRef<HTMLDivElement>(null);
   const menuOverlay = useRef<HTMLDivElement>(null);
-
-  // Section Data
-  const [menuData, setMenuData] = useState(
-    props.data ? JSON.parse(props.data) : null,
-  );
+  const pathname = usePathname();
+  const allPosts = props.data || [];
 
   // Menu State
   const [menuTimeline] = useState(
@@ -165,7 +164,7 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
         "-=1.5",
       );
     }
-  }, []);
+  }, [pathname]);
 
   useGSAP(() => {
     props.activeMenu ? menuTimeline.play() : menuTimeline.reverse();
@@ -205,9 +204,9 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
             </h3>
           </div>
           <div className="rabbis-burger-menu flex flex-col gap-y-[4.7vh] h-[65vh] overflow-y-auto pr-2">
-            {menuData?.map((item: any, index: number) => (
+            {allPosts?.map((item: any, index: number) => (
               <Link
-                href={item.link}
+                href={item.slug ? `/past-rabbis/${item.slug}` : "#"}
                 key={index}
                 className="burger-menu-item group flex gap-x-2.5"
               >
@@ -215,10 +214,12 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
                   <div className="image-inner w-full h-full group-hover:scale-110 transition-all duration-300">
                     <Image
                       className="w-full h-full object-cover object-center"
-                      src={item.image.src}
+                      src={
+                        item?.acf?.thumbnail?.url || item?.acf?.thumbnail?.src
+                      }
                       width={122}
                       height={125}
-                      alt={item.title}
+                      alt={item?.title}
                     />
                   </div>
                 </div>
@@ -226,7 +227,7 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
                   dir="ltr"
                   className="title text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
                 >
-                  <p>{item.title}</p>
+                  <p>{parse(item?.title)}</p>
                 </div>
               </Link>
             ))}

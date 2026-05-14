@@ -83,7 +83,7 @@ export default function Home() {
   const page = useRef<HTMLDivElement>(null);
   const wishButton = useRef<HTMLDivElement>(null);
   // Audo Player
-  const [homePageData, setHomePageData] = useState<any>(null);
+  const [homePageData, setHomePageData] = useState<any | HomePageAcf>(null);
   const audio = useRef<HTMLAudioElement>(null);
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
@@ -384,7 +384,7 @@ export default function Home() {
         verticalSection.kill();
       }
     };
-  }, [pathname, homePageData]);
+  }, [pathname, pageDataFetched]);
 
   // Page Content Animation
   useGSAP(() => {

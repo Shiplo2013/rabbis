@@ -1,15 +1,16 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import ThemeButton from "@/app/ui/ThemeButton";
+import parse from "html-react-parser";
 import Image from "next/image";
-import { useState } from "react";
 
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
-  data: string;
+  data: any;
 }
 
 export default function CustomsContentSection(props: ChildProps) {
-  const [sectionData, setSectionData] = useState<any>(JSON.parse(props.data));
+  const rabbisPosts = props.data;
 
   return (
     <section
@@ -17,7 +18,7 @@ export default function CustomsContentSection(props: ChildProps) {
       className={`${props.extraClass} rabbis-section bg-black flex items-center relative z-20`}
     >
       <div className="rabbis-wrapper w-full h-full flex gap-x-[10vw]">
-        {sectionData.map((item: any, index: number) => {
+        {rabbisPosts.map((item: any, index: number) => {
           return (
             <div
               key={index}
@@ -27,11 +28,11 @@ export default function CustomsContentSection(props: ChildProps) {
                 <div className="image w-full h-[57.2vh] relative">
                   <Image
                     className="w-full h-full object-cover object-center"
-                    src={item?.image?.src}
+                    src={item?.acf?.thumbnail?.url || item?.acf?.thumbnail?.src}
                     width={522}
                     height={532}
-                    alt={`Rabbis Image ${index + 1}`}
-                    blurDataURL={item?.image?.blurDataURL}
+                    alt={item.title}
+                    blurDataURL={CreateShimmerDataUrl(522, 532)}
                     placeholder="blur"
                     loading="lazy"
                   />
@@ -46,16 +47,16 @@ export default function CustomsContentSection(props: ChildProps) {
                     bgColor="bg-[#C3A13F]"
                     fontSize="text-[28px]"
                     svgIconClass=""
-                    buttonLink={item?.link}
+                    buttonLink={item?.slug ? `/past-rabbis/${item.slug}` : "#"}
                   />
                 </div>
               </div>
               <div className="rabbis-content w-[28vw] text-[#D1A941]">
                 <h2 className="text-[55px] leading-[0.7em] overflow-hidden relative">
-                  {item.title}
+                  {parse(item.title)}
                 </h2>
                 <div className="content text-[33px] leading-[1em] mt-5 relative">
-                  {item.excerpt}
+                  {parse(item?.acf?.time)}
                 </div>
               </div>
             </div>

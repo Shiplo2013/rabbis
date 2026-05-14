@@ -82,7 +82,7 @@ export default function IntroductionBackground(props: ChildProps) {
     >
       <Image
         className={`w-full object-cover ${props.imagePosition === "bottom" ? "object-bottom" : "object-center"} h-full relative z-10`}
-        src={props?.bgImage?.url}
+        src={props?.bgImage?.src || props?.bgImage?.url || ""}
         width={`${props?.bgImage?.width > 1920 ? props?.bgImage?.width : "1920"}`}
         height={`${props?.bgImage?.height > 1080 ? props?.bgImage?.height : "1080"}`}
         blurDataURL={CreateShimmerDataUrl(

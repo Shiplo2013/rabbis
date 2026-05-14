@@ -2,8 +2,6 @@
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import PostImage1 from "../assets/images/rabbis-image-1.jpg";
-import PostImage2 from "../assets/images/rabbis-image-2.jpg";
 import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -21,48 +19,64 @@ if (typeof window !== "undefined") {
 }
 
 export default function Page() {
+  // Selectors
+  const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
+  const [pageDataFetched, setPageDataFetched] = useState(false);
   // Router Path
   const pathname = usePathname();
-  // Page Data
-  const IntroData1 = [
-    {
-      title: `מזקנים אתבונן`,
-      content: `<p>מיום שהעתיקה את גחלת סלובודקה הקדושה אל אדמת הקודש,נשאה הישיבה את דגל ההדר, עמל התורה וגדלות האדם.בצל גדולי הדור ומחנכים דגולים, נבנו בה דורות של תלמידי חכמים,שהרקידו את אולמות ההלכה, העמידו תלמידים, והאירו בתורה כל פינה בארץ.</p><p>חברון היא לא רק ישיבה, היא שושלת של נשמה, מוסר וגבורה רוחנית,שמהדהדת עד היום בלבבות אלפי תלמידים ובכל בית מדרש שזוכה לאורה.</p>`,
-    },
-  ];
-  // Rabbis Data
-  const PastRabbis = [
-    {
-      title: `רבי נתן צבי פינקל`,
-      excerpt: `י"ז בכסלו תקצ"ו - ו' בחשוון תרפ"ו`,
-      image: PostImage1,
-      link: "/past-rabbis/single",
-    },
-    {
-      title: `הגאון רבי אברהם יהודה פרבשטיין זצוק"ל`,
-      excerpt: `י"ז בכסלו תקצ"ו - ו' בחשוון תרפ"ו`,
-      image: PostImage2,
-      link: "/past-rabbis/single",
-    },
-    {
-      title: `רבי נתן צבי פינקל`,
-      excerpt: `י"ז בכסלו תקצ"ו - ו' בחשוון תרפ"ו`,
-      image: PostImage1,
-      link: "/past-rabbis/single",
-    },
-    {
-      title: `הגאון רבי אברהם יהודה פרבשטיין זצוק"ל`,
-      excerpt: `י"ז בכסלו תקצ"ו - ו' בחשוון תרפ"ו`,
-      image: PostImage2,
-      link: "/past-rabbis/single",
-    },
-  ];
+
+  // Get Page Data From backend
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadRabbisPageData = async () => {
+      try {
+        const response = await fetch("/api/past-rabbis", {
+          cache: "no-store",
+        });
+        const response2 = await fetch("/api/past-rabbis/posts", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load rabbis page data.");
+        }
+
+        if (!response2.ok) {
+          throw new Error("Failed to load rabbis posts data.");
+        }
+
+        const data = await response.json();
+        const data2 = await response2.json();
+
+        if (isMounted) {
+          setRabbisPageData({ ...data, posts: data2.posts });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadRabbisPageData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!rabbisPageData?.acf) {
+      return;
+    }
+    setPageDataFetched(true);
+  }, [rabbisPageData]);
 
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
   const [sectionWidth, setSectionWidth] = useState(
-    PastRabbis.length * 58.4 + (PastRabbis.length - 1) * 10,
+    rabbisPageData?.posts.length * 58.4 +
+      (rabbisPageData?.posts.length - 1) * 10,
   );
   // Vertical Section
   const [verticalSection, setVerticalSection] =
@@ -79,8 +93,7 @@ export default function Page() {
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
-      setPageContentAnimation();
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       // Overflow body
       const scurbScale = 2;
 
@@ -129,169 +142,166 @@ export default function Page() {
         verticalSection.kill();
       }
     };
-  }, [pathname, sectionWidth]);
+  }, [pathname, sectionWidth, pageDataFetched]);
 
   // Load Page
-  useGSAP(
-    () => {
-      if (typeof window !== "undefined" && panel) {
-        document.fonts.ready.then(() => {
-          // Selectors
-          const headerLeft = main.current?.querySelector(".header-left");
-          const headerRight = main.current?.querySelector(".header-right");
-          // Banner Button
-          const introTitle = main.current?.querySelector(
-            ".first-intro .intro-title",
-          );
-          // Banner Button
-          const introContent = main.current?.querySelectorAll(
-            ".first-intro .intro-content>p",
-          );
-          // Past Rabbis
-          const firstRabbis = main.current?.querySelector(
-            ".rabbis-section .rabbis-item:first-child",
-          );
-          if (firstRabbis) {
-            gsap.set(firstRabbis, {
-              opacity: 0,
+  useGSAP(() => {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+      document.fonts.ready.then(() => {
+        // Selectors
+        const headerLeft = main.current?.querySelector(".header-left");
+        const headerRight = main.current?.querySelector(".header-right");
+        // Banner Button
+        const introTitle = main.current?.querySelector(
+          ".first-intro .intro-title",
+        );
+        // Banner Button
+        const introContent = main.current?.querySelectorAll(
+          ".first-intro .intro-content>p",
+        );
+        // Past Rabbis
+        const firstRabbis = main.current?.querySelector(
+          ".rabbis-section .rabbis-item:first-child",
+        );
+        if (firstRabbis) {
+          gsap.set(firstRabbis, {
+            opacity: 0,
+          });
+        }
+        // Split Title 1
+        let splitTitle;
+        if (introTitle) {
+          splitTitle = BigTitleSplitLines(introTitle);
+          gsap.set(introTitle, {
+            perspective: 400,
+          });
+          gsap.set(splitTitle, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Split Title 2
+        let splitContent;
+        if (introContent) {
+          splitContent = TextSplitLines(introContent);
+          gsap.set(introContent, {
+            perspective: 400,
+          });
+          gsap.set(splitContent, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Set localStorage variable
+        const userVisit = localStorage.getItem("hasVisited");
+        if (userVisit === "true" && animationPlayed) {
+          // Timeline
+          const tl = gsap.timeline({
+            onComplete: () => {
+              // Set Animation Played to true
+              setIsAllAnimationComplete(true);
+            },
+          });
+          if (main.current) {
+            tl.to(main.current, {
+              opacity: 1,
+              ease: "none",
+              duration: 0.5,
+              delay: 0,
             });
           }
-          // Split Title 1
-          let splitTitle;
-          if (introTitle) {
-            splitTitle = BigTitleSplitLines(introTitle);
-            gsap.set(introTitle, {
-              perspective: 400,
-            });
-            gsap.set(splitTitle, {
-              yPercent: 150,
-              opacity: 0,
+          if (headerLeft) {
+            tl.to(headerLeft, {
+              opacity: 1,
+              ease: "none",
+              duration: 1,
             });
           }
-          // Split Title 2
-          let splitContent;
-          if (introContent) {
-            splitContent = TextSplitLines(introContent);
-            gsap.set(introContent, {
-              perspective: 400,
-            });
-            gsap.set(splitContent, {
-              yPercent: 150,
-              opacity: 0,
-            });
-          }
-          // Set localStorage variable
-          const userVisit = localStorage.getItem("hasVisited");
-          if (userVisit === "true" && animationPlayed) {
-            // Timeline
-            const tl = gsap.timeline({
-              onComplete: () => {
-                // Set Animation Played to true
-                setIsAllAnimationComplete(true);
-              },
-            });
-            if (main.current) {
-              tl.to(main.current, {
-                opacity: 1,
-                ease: "none",
-                duration: 0.5,
-                delay: 0,
-              });
-            }
-            if (headerLeft) {
-              tl.to(headerLeft, {
+          if (headerRight) {
+            tl.to(
+              headerRight,
+              {
                 opacity: 1,
                 ease: "none",
                 duration: 1,
-              });
-            }
-            if (headerRight) {
-              tl.to(
-                headerRight,
-                {
-                  opacity: 1,
-                  ease: "none",
-                  duration: 1,
-                },
-                "-=1",
-              );
-            }
-            if (page.current) {
-              tl.to(
-                page.current,
-                {
-                  opacity: 1,
-                  ease: "none",
-                  duration: 1,
-                },
-                "-=1",
-              );
-            }
-            if (introTitle && splitTitle) {
-              tl.to(
-                splitTitle,
-                {
-                  yPercent: 0,
-                  opacity: 1,
-                  duration: 3,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                },
-                "-=1.5",
-              );
-            }
-            if (introContent && splitContent) {
-              tl.to(
-                splitContent,
-                {
-                  yPercent: 0,
-                  opacity: 1,
-                  duration: 3,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
-            // First Rabbis
-            if (firstRabbis) {
-              tl.to(
-                firstRabbis,
-                {
-                  marginRight: "-13vw",
-                  opacity: 1,
-                  delay: 0,
-                  duration: 3,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
-            // Wave Line Animation
-            if (waveMask.current) {
-              tl.to(
-                waveMask.current,
-                {
-                  translateY: 0,
-                  opacity: 1,
-                  ease: "expo.inOut",
-                  duration: 3,
-                  delay: 0,
-                },
-                "-=2.5",
-              );
-            }
+              },
+              "-=1",
+            );
           }
-        });
-      }
-    },
-    { scope: main, dependencies: [animationPlayed, pathname] },
-  );
+          if (page.current) {
+            tl.to(
+              page.current,
+              {
+                opacity: 1,
+                ease: "none",
+                duration: 1,
+              },
+              "-=1",
+            );
+          }
+          if (introTitle && splitTitle) {
+            tl.to(
+              splitTitle,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=1.5",
+            );
+          }
+          if (introContent && splitContent) {
+            tl.to(
+              splitContent,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+          // First Rabbis
+          if (firstRabbis) {
+            tl.to(
+              firstRabbis,
+              {
+                marginRight: "-13vw",
+                opacity: 1,
+                delay: 0,
+                duration: 3,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+          // Wave Line Animation
+          if (waveMask.current) {
+            tl.to(
+              waveMask.current,
+              {
+                translateY: 0,
+                opacity: 1,
+                ease: "expo.inOut",
+                duration: 3,
+                delay: 0,
+              },
+              "-=2.5",
+            );
+          }
+        }
+      });
+    }
+  }, [pageDataFetched]);
 
   // Set Page Content Animation
-  const setPageContentAnimation = () => {
+  useGSAP(() => {
     // Page Content Animation
     const firstRabbis = main.current?.querySelector(
       ".rabbis-section .rabbis-item:first-child",
@@ -338,7 +348,7 @@ export default function Page() {
         }
       });
     }
-  };
+  }, [pageDataFetched]);
 
   // Set Body Overflow Hidden
   useEffect(() => {
@@ -375,70 +385,76 @@ export default function Page() {
     };
   }, []);
   return (
-    <div ref={main} id="main" className="relative">
-      <LoadingEffect animated={setAnimationPlayed} />
-      <Header animationStatus={isAllAnimationComplete} />
-      <SmoothWrapper>
-        <main
-          ref={page}
-          id="page"
-          dir="ltr"
-          className="main relative overflow-hidden z-10 opacity-0"
-        >
-          <div
-            ref={panel}
-            id="panel-wrapper"
-            className="w-screen h-screen flex items-end justify-end"
+    rabbisPageData && (
+      <div ref={main} id="main" className="relative">
+        <LoadingEffect animated={setAnimationPlayed} />
+        <Header animationStatus={isAllAnimationComplete} />
+        <SmoothWrapper>
+          <main
+            ref={page}
+            id="page"
+            dir="ltr"
+            className="main relative overflow-hidden z-10 opacity-0"
           >
             <div
-              ref={wrapper}
-              id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${sectionWidth + 100}vw] h-screen items-center will-change-transform`}
+              ref={panel}
+              id="panel-wrapper"
+              className="w-screen h-screen flex items-end justify-end"
             >
-              <Introduction
-                animated={isAllAnimationComplete}
-                animationStatus={isAllAnimationComplete}
-                bgImage={""}
-                bgOverlay={""}
-                data={IntroData1}
-                extraClass={
-                  "first-intro panel-section will-change-transform min-w-screen w-screen"
-                }
-                panel={panel}
-                bgPosition=""
-                overlayClass="bg-[#000000] opacity-0"
-                bgClass=""
-                audioControl={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
-              <CustomsContentSection
-                extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
-                animWidthText={1}
-                data={JSON.stringify(PastRabbis)}
-              />
+              <div
+                ref={wrapper}
+                id="section-wrapper"
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${sectionWidth + 100}vw] h-screen items-center will-change-transform`}
+              >
+                <Introduction
+                  animated={isAllAnimationComplete}
+                  animationStatus={isAllAnimationComplete}
+                  bgImage={""}
+                  bgOverlay={""}
+                  data={
+                    rabbisPageData.acf.introduction
+                      ? [rabbisPageData.acf.introduction]
+                      : []
+                  }
+                  extraClass={
+                    "first-intro panel-section will-change-transform min-w-screen w-screen"
+                  }
+                  panel={panel}
+                  bgPosition=""
+                  overlayClass="bg-[#000000] opacity-0"
+                  bgClass=""
+                  audioControl={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+                <CustomsContentSection
+                  extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
+                  animWidthText={1}
+                  data={rabbisPageData?.posts}
+                />
+              </div>
             </div>
-          </div>
-        </main>
-        <Footer className={"relative z-20"} />
-      </SmoothWrapper>
-      <div
-        ref={waveLine}
-        className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
-      >
+          </main>
+          <Footer className={"relative z-20"} />
+        </SmoothWrapper>
         <div
-          ref={waveMask}
-          style={{
-            maskImage: `url(${Wave.src})`,
-          }}
-          className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+          ref={waveLine}
+          className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
         >
           <div
-            ref={progress}
-            className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#F5F0EB] z-10"
-          ></div>
+            ref={waveMask}
+            style={{
+              maskImage: `url(${Wave.src})`,
+            }}
+            className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+          >
+            <div
+              ref={progress}
+              className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#F5F0EB] z-10"
+            ></div>
+          </div>
         </div>
       </div>
-    </div>
+    )
   );
 }

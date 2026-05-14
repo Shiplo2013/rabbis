@@ -9,6 +9,7 @@ import PlayingIcon from "@/app/assets/icons/PlayingIcon";
 import ReplayIcon from "@/app/assets/icons/ReplayIcon";
 import SearchIcon2 from "@/app/assets/icons/SearchIcon2";
 import AudioPlayer2 from "@/app/ui/AudioPlayer2";
+import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,6 +29,9 @@ interface ChildProps {
   audioPopup: boolean;
   setAudioPopup: (value: boolean) => void;
   data: string;
+  data2: any;
+  activeTab: number;
+  setActiveTab: (value: number) => void;
 }
 
 // Format seconds → "m:ss"
@@ -52,7 +56,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
 
   // State
   const sectionData = useMemo(() => JSON.parse(props.data), [props.data]);
-  const [activeTab, setActiveTab] = useState(0);
+  const musicPageData = props.data2 || {};
   const [activeMusic, setActiveMusic] = useState({
     tabIndex: 0,
     musicIndex: 0,
@@ -213,7 +217,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
     const nextIndex = (activeMusic.musicIndex + 1) % currentTabMusics.length;
     const nextMusic = currentTabMusics[nextIndex];
 
-    setActiveTab(currentTabIndex);
+    props.setActiveTab(currentTabIndex);
     setActiveMusic({
       tabIndex: currentTabIndex,
       musicIndex: nextIndex,
@@ -467,32 +471,25 @@ export default function MirrorAudioPlayer(props: ChildProps) {
           <div className="player-left w-full flex flex-col gap-y-[7vh]">
             <div className="player-content flex flex-col gap-y-[2vh]">
               <h2 className="text-[#C3A13F] text-[55px] leading-[75%]">
-                {sectionData.title}
+                {parse(musicPageData[0]?.introduction?.album_title || "")}
               </h2>
               <div className="text max-w-177 text-[23px] leading-[120%]">
-                {sectionData.text}
+                {parse(musicPageData[0]?.introduction?.album_subtitle || "")}
               </div>
             </div>
 
             <div className="player-content-tabs flex flex-col gap-y-5">
               {/* Tab headers */}
               <div className="tab-head flex gap-x-6">
-                {sectionData.tabs?.map(
-                  (
-                    item: {
-                      tabTitle: string;
-                      text: string;
-                      musics: { title: string; link: string }[];
-                    },
-                    index: number,
-                  ) => (
+                {musicPageData[0]?.album?.music_category?.map(
+                  (item: any, index: number) => (
                     <div
                       key={index}
                       data-key={index}
-                      onClick={() => setActiveTab(index)}
-                      className={`single-tab-head text-[#ffffff] text-[24px] leading-[100%] ${activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer w-1/4 transition-all duration-300 ${activeTab === index && "active-tab"}`}
+                      onClick={() => props.setActiveTab(index)}
+                      className={`single-tab-head text-[#ffffff] text-[24px] leading-[100%] ${props.activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer w-1/4 transition-all duration-300 ${props.activeTab === index && "active-tab"}`}
                     >
-                      <p>{item.tabTitle}</p>
+                      <p>{parse(item.album_title || "")}</p>
                       <span className="icon w-3">
                         <ArrowLeft extraClass="fill-white" />
                       </span>
@@ -503,10 +500,13 @@ export default function MirrorAudioPlayer(props: ChildProps) {
 
               {/* Tab content */}
               <div className="tab-content-wrapper">
-                {sectionData.tabs[activeTab] && (
-                  <div data-index={activeTab} className="tab-content">
+                {musicPageData[0]?.album?.music_category[props.activeTab] && (
+                  <div data-index={props.activeTab} className="tab-content">
                     <div className="text text-[18px] leading-[120%] max-w-191.25">
-                      {sectionData.tabs[activeTab].text}
+                      {parse(
+                        musicPageData[0]?.album?.music_category[props.activeTab]
+                          ?.album_text || "",
+                      )}
                       <Link
                         href={"/"}
                         className="text-[14px] leading-[100%] text-[#E5C15A] mr-2"
@@ -527,58 +527,56 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                         autoHide={false}
                       >
                         <div className="music-list-wrapper flex flex-col gap-y-4">
-                          {sectionData.tabs[activeTab]?.musics?.map(
-                            (
-                              music: { title: string; link: string },
-                              index: number,
-                            ) => {
-                              const isActive =
-                                activeMusic.musicIndex === index &&
-                                activeMusic.tabIndex === activeTab;
-                              return (
-                                <div
-                                  key={index}
-                                  onClick={() => {
-                                    if (isActive) return;
-                                    shouldAutoPlayRef.current = true;
-                                    setActiveMusic({
-                                      ...activeMusic,
-                                      tabIndex: activeTab,
-                                      musicIndex: index,
-                                      title: music.title,
-                                      link: music.link,
-                                    });
-                                  }}
-                                  className={`single-music flex items-center justify-between ${isActive ? "bg-[rgba(0,0,0,0.8)] active-music" : "bg-[rgba(0,0,0,0.4)]"} py-4 px-5 rounded-full relative cursor-pointer hover:bg-[rgba(0,0,0,0.8)] transition-all duration-300`}
-                                >
-                                  <div className="title flex items-center gap-x-8">
-                                    <PlayIcon2 />
-                                    <h5 className="text-[24px] leading-[1.2em]">
-                                      {music.title}
-                                    </h5>
-                                  </div>
-
-                                  {/* Playing animation icon */}
-                                  <div
-                                    className={`music-play absolute top-1/2 left-1/2 -translate-1/2 ${isActive ? "opacity-100" : "opacity-0"}`}
-                                  >
-                                    <PlayingIcon />
-                                  </div>
-
-                                  {/* Duration — shows real time once loaded, otherwise cached */}
-                                  <div className="duration text-[21px] leading-[100%] text-[#FBF4E6]">
-                                    <p>
-                                      {isActive
-                                        ? formatTime(duration) ||
-                                          musicDurations[music.link] ||
-                                          "0:00"
-                                        : musicDurations[music.link] || "0:00"}
-                                    </p>
-                                  </div>
+                          {musicPageData[0]?.album?.music_category[
+                            props.activeTab
+                          ]?.musics?.map((item: any, index: number) => {
+                            const isActive =
+                              activeMusic.musicIndex === index &&
+                              activeMusic.tabIndex === props.activeTab;
+                            return (
+                              <div
+                                key={index}
+                                onClick={() => {
+                                  if (isActive) return;
+                                  shouldAutoPlayRef.current = true;
+                                  setActiveMusic({
+                                    ...activeMusic,
+                                    tabIndex: props.activeTab,
+                                    musicIndex: index,
+                                    title: item?.title,
+                                    link: item?.music?.url,
+                                  });
+                                }}
+                                className={`single-music flex items-center justify-between ${isActive ? "bg-[rgba(0,0,0,0.8)] active-music" : "bg-[rgba(0,0,0,0.4)]"} py-4 px-5 rounded-full relative cursor-pointer hover:bg-[rgba(0,0,0,0.8)] transition-all duration-300`}
+                              >
+                                <div className="title flex items-center gap-x-8">
+                                  <PlayIcon2 />
+                                  <h5 className="text-[24px] leading-[1.2em]">
+                                    {parse(item?.title || "")}
+                                  </h5>
                                 </div>
-                              );
-                            },
-                          )}
+
+                                {/* Playing animation icon */}
+                                <div
+                                  className={`music-play absolute top-1/2 left-1/2 -translate-1/2 ${isActive ? "opacity-100" : "opacity-0"}`}
+                                >
+                                  <PlayingIcon />
+                                </div>
+
+                                {/* Duration — shows real time once loaded, otherwise cached */}
+                                <div className="duration text-[21px] leading-[100%] text-[#FBF4E6]">
+                                  <p>
+                                    {isActive
+                                      ? formatTime(duration) ||
+                                        musicDurations[item?.music?.url] ||
+                                        "0:00"
+                                      : musicDurations[item?.music?.url] ||
+                                        "0:00"}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </SimpleBar>
                     </div>

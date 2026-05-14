@@ -8,7 +8,7 @@ interface ChildProps {
   extraClass: string;
   animated: boolean;
   animationStatus: boolean;
-  data: { title: string }[];
+  data: { title: string };
 }
 
 export default function Introduction(props: ChildProps) {
@@ -49,7 +49,7 @@ export default function Introduction(props: ChildProps) {
         </div>
         <div className="section-wrapper text-right flex flex-col items-end gap-x-[3.75vw]">
           <h1 className="intro-title text-[135px] text-white leading-[0.6em] overflow-hidden relative z-20 py-7.5">
-            {parse(props.data[0].title)}
+            {parse(props.data?.title)}
           </h1>
         </div>
       </div>

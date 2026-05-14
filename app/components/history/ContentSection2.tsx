@@ -120,12 +120,15 @@ export default function ContentSection2(props: ChildProps) {
         bgImage={contentBG}
         overlayLeft={false}
         overlayLeftColor={""}
-        animatePosition={props.animWidthText - 0.3}
+        animatePosition={props.animWidthText - 0.4}
       />
       <div className="w-full h-full flex items-center justify-center flex-row-reverse text-[21px] text-[#3D3B37] gap-x-[7.5vw] px-[10.4vw] relative z-20">
         <div className="w-1/2">
           <div className="text-[44px] leading-[1em] mb-5 w-full">
-            <h2 ref={heading} className="hiscont-title overflow-hidden w-full">
+            <h2
+              ref={heading}
+              className="hiscont-title overflow-hidden w-full mix-blend-difference"
+            >
               {sectionData[0].title}
             </h2>
           </div>

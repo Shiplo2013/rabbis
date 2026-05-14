@@ -1,7 +1,8 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 interface ChildProps {
   extraClass: string;
@@ -14,13 +15,13 @@ interface ChildProps {
   overlayClass: string;
   bgPosition: string;
   bgClass: string;
-  data: string;
+  data: any;
 }
 
 export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
-  const [introData, setIntroData] = useState(JSON.parse(props.data));
+  const rabbisPosts = props.data || {};
   return (
     <section
       ref={wrapper}
@@ -60,20 +61,20 @@ export default function Introduction(props: ChildProps) {
           <div className="rabbis-image w-[27.1vw] h-[57.2vh] relative opacity-0">
             <Image
               className="w-full h-full object-cover object-center"
-              src={introData?.image?.src}
+              src={rabbisPosts?.thumbnail?.url || rabbisPosts?.thumbnail?.src}
               width={522}
               height={532}
-              alt={`${parse(introData.title)}`}
-              blurDataURL={introData?.image?.blurDataURL}
+              alt={`${parse(rabbisPosts?.title)}`}
+              blurDataURL={CreateShimmerDataUrl(522, 532)}
               placeholder="blur"
               loading="lazy"
             />
           </div>
           <h1 className="intro-title text-[55px] leading-[0.7em] overflow-hidden relative z-20 pt-3 mt-[5vh]">
-            {parse(introData.title)}
+            {parse(rabbisPosts?.title)}
           </h1>
           <div className="intro-content overflow-hidden text-[33px] leading-[70%] py-1 mt-3 relative z-30 max-w-208 [&>p:not(:last-child)]:mb-5">
-            {parse(introData.content)}
+            {parse(rabbisPosts.time)}
           </div>
         </div>
       </div>
