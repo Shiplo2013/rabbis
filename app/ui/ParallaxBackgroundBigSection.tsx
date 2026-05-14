@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { RefObject, useRef } from "react";
 import GetRightPosition from "./GetRightPosition";
@@ -11,13 +10,11 @@ if (typeof window !== "undefined") {
 
 interface ChildProps {
   bgImage: any;
-  overlayLeft: boolean;
-  overlayLeftColor: string;
   animatePosition: number;
   panel?: RefObject<HTMLDivElement | null>;
 }
 
-export default function ParallaxBackground(props: ChildProps) {
+export default function ParallaxBackgroundBigSection(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Selector
@@ -33,16 +30,20 @@ export default function ParallaxBackground(props: ChildProps) {
     () => {
       if (props.animatePosition !== 0) {
         // Banner Background
-        gsap.set(background.current, { scale: 1.2, x: "20vw" });
+        gsap.set(background.current, { scale: 1.2, x: "100vw" });
         gsap.to(background.current, {
-          x: "-20vw",
+          x: "-100vw",
           ease: "none",
           scrollTrigger: {
             start: () => {
-              return getTimelineOffset() + GetRightPosition(background.current);
+              return (
+                getTimelineOffset() +
+                GetRightPosition(background.current) +
+                window.innerWidth * 0.4
+              );
             },
             end: () => {
-              return "+=" + window.innerWidth * 2;
+              return "+=" + window.innerWidth * 5;
             },
             scrub: 2,
           },
@@ -51,29 +52,12 @@ export default function ParallaxBackground(props: ChildProps) {
     },
     { scope: background, dependencies: [pathname] },
   );
+
   return (
     <div
       ref={background}
-      className={`parallax-background absolute top-0 left-0 w-full h-screen bg-black z-10 transition-none`}
-    >
-      {props.overlayLeft && (
-        <div
-          style={{
-            backgroundImage: `linear-gradient(to right, ${props.overlayLeftColor}, ${props.overlayLeftColor}00)`,
-          }}
-          className="absolute left-0 top-0 w-25 h-full z-30"
-        ></div>
-      )}
-      <Image
-        className="parallax-image w-full object-cover object-center h-full relative z-10"
-        src={props?.bgImage?.src}
-        width="1920"
-        height="1080"
-        blurDataURL={props?.bgImage?.blurDataURL}
-        placeholder={"blur"}
-        loading="lazy"
-        alt="Parallax Background"
-      />
-    </div>
+      style={{ backgroundImage: `url(${props.bgImage.src})` }}
+      className={`parallax-background bg-contain bg-repeat-y absolute top-0 right-0 w-full h-screen bg-black z-10 transition-none`}
+    ></div>
   );
 }

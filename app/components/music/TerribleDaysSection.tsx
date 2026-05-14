@@ -1,9 +1,13 @@
 "use client";
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
-import Image, { StaticImageData } from "next/image";
+import { usePathname } from "next/dist/client/components/navigation";
+import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
+import FloatImageBorder from "../../assets/images/float-image3.png";
 import TerribleBG from "../../assets/images/terrible-bg.jpg";
+import CreateShimmerDataUrl from "../../ui/CreateShimmerDataUrl";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
@@ -14,31 +18,108 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   setAudioPopup: (value: boolean) => void;
-  data: string;
+  data: any;
+  panel: any;
+  activeMusicItem: number;
+  setActiveMusicItem: (value: number) => void;
+  setActiveMusicFolder: (value: number) => void;
+  activeTab: number;
+  setActiveTab: (value: number) => void;
 }
 
 export default function TerribleDaysSection(props: ChildProps) {
   // Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const background = useRef<HTMLDivElement>(null);
+  const introTitle = useRef<HTMLHeadingElement>(null);
+  const introSubtitle = useRef<HTMLHeadingElement>(null);
+  const floatImage1 = useRef<HTMLDivElement>(null);
+  const floatImage2 = useRef<HTMLDivElement>(null);
+  // Pathname
+  const pathname = usePathname();
+  // Page Data
+  const pageData = props.data || {};
+  // Timeline Selector
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
-  const pageData = useMemo(() => JSON.parse(props.data), [props.data]);
-  const parsedMusicTitle = useMemo(
-    () => parse(pageData?.musics?.title || ""),
-    [pageData?.musics?.title],
-  );
-  const parsedContentText1 = useMemo(
-    () => parse(pageData?.content?.text1 || ""),
-    [pageData?.content?.text1],
-  );
-  const parsedContentText2 = useMemo(
-    () => parse(pageData?.content?.text2 || ""),
-    [pageData?.content?.text2],
+  // Section animation
+  useGSAP(
+    () => {
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
+
+      const setupAnimation = () => {
+        document.fonts.ready.then(() => {
+          if (floatImage1.current) {
+            gsap.to(floatImage1.current, {
+              x: "10vw",
+              ease: "none",
+              scrollTrigger: {
+                start: () => {
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(floatImage1.current) -
+                    window.innerWidth * 0.5
+                  );
+                },
+                end: () => {
+                  return "+=" + window.innerWidth * 1.5;
+                },
+                scrub: 2,
+              },
+            });
+          }
+          if (floatImage2.current) {
+            gsap.to(floatImage2.current, {
+              x: "-10vw",
+              ease: "none",
+              scrollTrigger: {
+                start: () => {
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(floatImage2.current) -
+                    window.innerWidth * 0.5
+                  );
+                },
+                end: () => {
+                  return "+=" + window.innerWidth * 1.5;
+                },
+                scrub: 2,
+              },
+            });
+          }
+
+          ScrollTrigger.refresh();
+        });
+      };
+
+      if (document.readyState === "complete") {
+        setupAnimation();
+        return;
+      }
+
+      const onLoad = () => {
+        setupAnimation();
+      };
+
+      window.addEventListener("load", onLoad, { once: true });
+
+      return () => {
+        window.removeEventListener("load", onLoad);
+      };
+    },
+    { scope: wrapper, dependencies: [pathname] },
   );
 
   // Album click
-  const handleAlbumClick = () => {
+  const handleAlbumClick = (index: number) => {
     props.setAudioPopup(true);
+    props.setActiveMusicFolder(index);
+    props.setActiveTab(0);
   };
 
   // Animations
@@ -78,13 +159,21 @@ export default function TerribleDaysSection(props: ChildProps) {
       ></div>
       <div className="terrible-wrapper w-full h-full relative z-40 text-[#344128] flex">
         <div className="terrible-intro w-[75vw] h-full flex items-center justify-center relative p-[8vh_5vw]">
-          <div className="float-image1 absolute top-[24.5%] left-[22.2%] w-36.75 h-55.25 -rotate-[7.97deg]">
+          <div
+            ref={floatImage1}
+            className="float-image1 absolute top-[24.5%] left-[22.2%] w-36.75 h-55.25 -rotate-[7.97deg]"
+          >
             <Image
               className="float-image w-full object-contain object-center h-full"
-              src={pageData?.intro?.floatImage1?.src}
+              src={
+                pageData[props.activeMusicItem]?.introduction?.album_image_1
+                  ?.url ||
+                pageData[props.activeMusicItem]?.introduction?.album_image_1
+                  ?.src
+              }
               width="147"
               height="221"
-              blurDataURL={pageData?.intro?.floatImage1?.blurDataURL}
+              blurDataURL={CreateShimmerDataUrl(147, 221)}
               placeholder={"blur"}
               loading="lazy"
               alt="Turntable"
@@ -94,20 +183,40 @@ export default function TerribleDaysSection(props: ChildProps) {
             dir="ltr"
             className="intro-wrapper max-w-150 text-center flex flex-col gap-y-[3.6vh] relative z-30"
           >
-            <h2 className="title text-[128px] leading-[80%] overflow-hidden">
-              {pageData?.intro.title}
+            <h2
+              ref={introTitle}
+              className="title text-[128px] leading-[80%] overflow-hidden"
+            >
+              {parse(
+                pageData[props.activeMusicItem]?.introduction?.album_title ||
+                  "",
+              )}
             </h2>
-            <h5 className="subtitle text-[35px] leading-[90%] overflow-hidden">
-              {pageData?.intro.text}
+            <h5
+              ref={introSubtitle}
+              className="subtitle text-[35px] leading-[90%] overflow-hidden"
+            >
+              {parse(
+                pageData[props.activeMusicItem]?.introduction?.album_subtitle ||
+                  "",
+              )}
             </h5>
           </div>
-          <div className="float-image2 absolute top-[19%] right-[27%] w-39.5 h-59.5 rotate-[7.97deg]">
+          <div
+            ref={floatImage2}
+            className="float-image2 absolute top-[19%] right-[27%] w-39.5 h-59.5 rotate-[7.97deg]"
+          >
             <Image
               className="float-image w-full object-contain object-center h-full"
-              src={pageData?.intro?.floatImage2?.src}
+              src={
+                pageData[props.activeMusicItem]?.introduction?.album_image_2
+                  ?.url ||
+                pageData[props.activeMusicItem]?.introduction?.album_image_2
+                  ?.src
+              }
               width="158"
               height="238"
-              blurDataURL={pageData?.intro?.floatImage2?.blurDataURL}
+              blurDataURL={CreateShimmerDataUrl(158, 238)}
               placeholder={"blur"}
               loading="lazy"
               alt="Turntable"
@@ -118,17 +227,27 @@ export default function TerribleDaysSection(props: ChildProps) {
           <div className="content-wrapper relative flex gap-x-[4.6vw]">
             <div dir="ltr" className="content-right w-1/2">
               <h3 className="title text-[35px] leading-[85%] text-right">
-                {pageData?.content?.title}
+                {parse(
+                  pageData[props.activeMusicItem]?.content_section?.title || "",
+                )}
               </h3>
               <div className="text text-[21px] leading-[150%]">
-                {parsedContentText1}
+                {parse(
+                  pageData[props.activeMusicItem]?.content_section?.text_1 ||
+                    "",
+                )}
               </div>
             </div>
             <div
               dir="ltr"
               className="content-left w-1/2 text-[21px] leading-[150%] text-right"
             >
-              <div className="text">{parsedContentText2}</div>
+              <div className="text">
+                {parse(
+                  pageData[props.activeMusicItem]?.content_section?.text_2 ||
+                    "",
+                )}
+              </div>
               <Link className="text-black font-bold mt-2 block" href={"/"}>
                 קרא עוד...
               </Link>
@@ -136,10 +255,10 @@ export default function TerribleDaysSection(props: ChildProps) {
             <div className="float-image absolute left-0 bottom-0 w-62.25 h-39.75 -ml-22.5 mb-[11%]">
               <Image
                 className="float-image w-full object-contain object-center h-full"
-                src={pageData?.content?.floatImage?.src}
+                src={FloatImageBorder?.src}
                 width="249"
                 height="159"
-                blurDataURL={pageData?.content?.floatImage?.blurDataURL}
+                blurDataURL={CreateShimmerDataUrl(249, 159)}
                 placeholder={"blur"}
                 loading="lazy"
                 alt="Turntable"
@@ -150,27 +269,27 @@ export default function TerribleDaysSection(props: ChildProps) {
         <div className="terrible-musics w-[60vw] mr-[10vw] h-full flex flex-col items-center justify-start gap-y-[17.65vh] relative p-[15vh_5vw]">
           <div className="music-title w-full">
             <h2 className="text-[#344128] text-[101px] leading-[76%]">
-              {parsedMusicTitle}
+              {parse(
+                pageData[props.activeMusicItem]?.music_albums?.section_title ||
+                  "",
+              )}
             </h2>
           </div>
           <div className="music-albums flex gap-x-[3.85vw] my-auto w-full">
-            {pageData?.musics?.albums?.map(
-              (
-                item: { title: string; icon: StaticImageData },
-                index: number,
-              ) => (
+            {pageData[props.activeMusicItem]?.music_albums?.albums?.map(
+              (item: any, index: number) => (
                 <div
                   key={index}
-                  onClick={handleAlbumClick}
+                  onClick={() => handleAlbumClick(index)}
                   className="music-album group flex flex-col gap-y-3 cursor-pointer"
                 >
                   <div className="icon w-60.25 h-49.25 group-hover:scale-105 transition-all duration-200 ease-in-out">
                     <Image
                       className="bg-image w-full object-cover object-center h-full"
-                      src={item?.icon?.src}
+                      src={item?.album_icon?.url || item?.album_icon?.src}
                       width="241"
                       height="197"
-                      blurDataURL={item?.icon?.blurDataURL}
+                      blurDataURL={CreateShimmerDataUrl(241, 197)}
                       placeholder={"blur"}
                       loading="lazy"
                       alt="Turntable"
@@ -178,7 +297,7 @@ export default function TerribleDaysSection(props: ChildProps) {
                   </div>
                   <div className="title">
                     <h4 className="text-[45px] leading-[70%] text-[#C3A13F] text-center">
-                      {item.title}
+                      {item.album_title}
                     </h4>
                   </div>
                 </div>

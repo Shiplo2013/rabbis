@@ -1,6 +1,6 @@
 "use client";
 import GetRightPosition from "@/app/ui/GetRightPosition";
-import ParallaxBackground from "@/app/ui/ParallaxBackground";
+import ParallaxBackgroundBigSection from "@/app/ui/ParallaxBackgroundBigSection";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -165,8 +165,8 @@ function RabbisTimeline2(props: ChildProps) {
                 start: () => {
                   return (
                     getTimelineOffset() +
-                    GetRightPosition(item) +
-                    window.innerWidth * 0.1
+                    GetRightPosition(item) -
+                    window.innerWidth * 0.2
                   );
                 },
                 toggleActions: "restart pause play reverse",
@@ -191,8 +191,8 @@ function RabbisTimeline2(props: ChildProps) {
                 start: () => {
                   return (
                     getTimelineOffset() +
-                    GetRightPosition(item) +
-                    window.innerWidth * 0.1
+                    GetRightPosition(item) -
+                    window.innerWidth * 0.2
                   );
                 },
                 toggleActions: "restart pause play reverse",
@@ -214,8 +214,8 @@ function RabbisTimeline2(props: ChildProps) {
                   start: () => {
                     return (
                       getTimelineOffset() +
-                      GetRightPosition(item) +
-                      window.innerWidth * 0.1
+                      GetRightPosition(item) -
+                      window.innerWidth * 0.2
                     );
                   },
                   toggleActions: "restart pause play reverse",
@@ -244,8 +244,8 @@ function RabbisTimeline2(props: ChildProps) {
                         start: () => {
                           return (
                             getTimelineOffset() +
-                            GetRightPosition(item) +
-                            window.innerWidth * 0.1
+                            GetRightPosition(item) -
+                            window.innerWidth * 0.2
                           );
                         },
                         toggleActions: "restart pause play reverse",
@@ -270,10 +270,9 @@ function RabbisTimeline2(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
       data-scroll-section={props.animWidthText}
     >
-      <ParallaxBackground
+      <ParallaxBackgroundBigSection
         bgImage={props.bgImage}
-        overlayLeft={false}
-        overlayLeftColor={""}
+        panel={props.panel}
         animatePosition={props.animWidthText}
       />
       <div className="section-row w-full h-full flex px-[10vw] py-[10vh] items-center justify-start relative z-30 gap-x-[8vw]">
@@ -352,7 +351,10 @@ function RabbisTimeline2(props: ChildProps) {
               );
             }
           })}
-          <div className="timeline h-2.25 w-full bg-[#C3A13F] absolute top-[36vh] right-0"></div>
+          <div
+            style={{ marginTop: "10vh" }}
+            className={`timeline h-2 w-full bg-[#C3A13F] absolute right-0 top-1/2`}
+          ></div>
         </div>
       </div>
     </section>

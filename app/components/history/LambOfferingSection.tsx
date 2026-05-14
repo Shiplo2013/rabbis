@@ -255,17 +255,19 @@ export default function LambOfferingSection(props: ChildProps) {
               splititle = gsap.from(self.lines, {
                 duration: 2,
                 yPercent: 150,
-                stagger: 0.025,
+                stagger: 0,
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
                     return (
                       getTimelineOffset() +
-                      GetRightPosition(sectionTitle) +
-                      window.innerWidth * 0.2
+                      GetRightPosition(sectionTitle) -
+                      window.innerWidth * 0.1
                     );
                   },
+                  end: () => "+=" + window.innerWidth * 0.5,
                   toggleActions: "restart pause play reverse",
+                  scrub: 2,
                 },
               });
               return splititle;
@@ -285,17 +287,19 @@ export default function LambOfferingSection(props: ChildProps) {
               splititle = gsap.from(self.lines, {
                 duration: 2,
                 yPercent: 150,
-                stagger: 0.025,
+                stagger: 0,
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
                     return (
                       getTimelineOffset() +
-                      GetRightPosition(sectionText1) +
-                      window.innerWidth * 0.2
+                      GetRightPosition(sectionText1) -
+                      window.innerWidth * 0.1
                     );
                   },
+                  end: () => "+=" + window.innerWidth * 0.5,
                   toggleActions: "restart pause play reverse",
+                  scrub: 2,
                 },
               });
               return splititle;
@@ -315,17 +319,19 @@ export default function LambOfferingSection(props: ChildProps) {
               splititle = gsap.from(self.lines, {
                 duration: 2,
                 yPercent: 150,
-                stagger: 0.025,
+                stagger: 0,
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
                     return (
                       getTimelineOffset() +
-                      GetRightPosition(sectionText2) +
-                      window.innerWidth * 0.2
+                      GetRightPosition(sectionText2) -
+                      window.innerWidth * 0.1
                     );
                   },
+                  end: () => "+=" + window.innerWidth * 0.5,
                   toggleActions: "restart pause play reverse",
+                  scrub: 2,
                 },
               });
               return splititle;

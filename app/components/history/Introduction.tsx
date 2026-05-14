@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -21,8 +22,6 @@ interface ChildProps {
 export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
-  const backgorund = wrapper.current?.querySelector(".intro-background");
-  const bgMask = wrapper.current?.querySelector(".intro-bg-mask");
 
   return (
     <section
@@ -47,10 +46,13 @@ export default function Introduction(props: ChildProps) {
         <div className="absolute top-0 left-0 w-full h-full z-20">
           <Image
             className={`w-full object-contain h-full relative`}
-            src={props?.bgOverlay?.src}
+            src={props?.bgOverlay?.src || props?.bgOverlay?.url || ""}
             width={`${props?.bgOverlay?.width > 1920 ? props?.bgOverlay?.width : "1920"}`}
-            height={`${props?.bgOverlay?.width > 1080 ? props?.bgOverlay?.width : "1080"}`}
-            blurDataURL={props?.bgOverlay?.blurDataURL}
+            height={`${props?.bgOverlay?.height > 1080 ? props?.bgOverlay?.height : "1080"}`}
+            blurDataURL={CreateShimmerDataUrl(
+              props?.bgOverlay?.width > 1920 ? props?.bgOverlay?.width : 1920,
+              props?.bgOverlay?.height > 1080 ? props?.bgOverlay?.height : 1080,
+            )}
             placeholder={"blur"}
             loading="lazy"
             alt="Introduction Background Overlay"

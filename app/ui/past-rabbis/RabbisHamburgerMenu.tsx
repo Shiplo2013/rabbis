@@ -1,27 +1,40 @@
 import CloseIcon from "@/app/assets/icons/CloseIcon";
 import { useGSAP } from "@gsap/react";
+import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import { gsap } from "../../ui/plugins";
 import TextSplitLines from "../TextSplitLines";
 
 interface RabbisHamburgerMenuProps {
   extraClass?: string;
-  data?: string;
+  data?: any;
   activeMenu?: boolean;
   activeMenuFunction?: (state: boolean) => void;
 }
+
+type MenuPost = {
+  id?: number;
+  title?: string | { rendered?: string };
+  slug?: string;
+  acf?: {
+    title?: string;
+    thumbnail?: { url?: string; src?: string };
+  };
+};
 
 export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
   // Selector
   const hamurgerMenu = useRef<HTMLDivElement>(null);
   const menuOverlay = useRef<HTMLDivElement>(null);
-
-  // Section Data
-  const [menuData, setMenuData] = useState(
-    props.data ? JSON.parse(props.data) : null,
-  );
+  const pathname = usePathname();
+  const allPosts: MenuPost[] = Array.isArray(props.data)
+    ? props.data
+    : Array.isArray(props.data?.posts)
+      ? props.data.posts
+      : [];
 
   // Menu State
   const [menuTimeline] = useState(
@@ -32,11 +45,10 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
 
   // Handle Menu Close
   useGSAP(() => {
+    console.log(allPosts);
     // Set Animations
     const title = hamurgerMenu.current?.querySelector(".menu-title>h3");
     const closeButton = hamurgerMenu.current?.querySelector(".menu-close");
-    const menuItems =
-      hamurgerMenu.current?.querySelectorAll(".burger-menu-item");
     const menuItemsTitle = hamurgerMenu.current?.querySelectorAll(
       ".burger-menu-item .title>p",
     );
@@ -165,7 +177,7 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
         "-=1.5",
       );
     }
-  }, []);
+  }, [pathname]);
 
   useGSAP(() => {
     props.activeMenu ? menuTimeline.play() : menuTimeline.reverse();
@@ -205,9 +217,9 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
             </h3>
           </div>
           <div className="rabbis-burger-menu flex flex-col gap-y-[4.7vh] h-[65vh] overflow-y-auto pr-2">
-            {menuData?.map((item: any, index: number) => (
+            {allPosts.map((item: MenuPost, index: number) => (
               <Link
-                href={item.link}
+                href={item.slug ? `/past-rabbis/${item.slug}` : "#"}
                 key={index}
                 className="burger-menu-item group flex gap-x-2.5"
               >
@@ -215,10 +227,14 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
                   <div className="image-inner w-full h-full group-hover:scale-110 transition-all duration-300">
                     <Image
                       className="w-full h-full object-cover object-center"
-                      src={item.image.src}
+                      src={
+                        item?.acf?.thumbnail?.url ||
+                        item?.acf?.thumbnail?.src ||
+                        ""
+                      }
                       width={122}
                       height={125}
-                      alt={item.title}
+                      alt={item?.acf?.title || "Rabbi image"}
                     />
                   </div>
                 </div>
@@ -226,7 +242,14 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
                   dir="ltr"
                   className="title text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
                 >
-                  <p>{item.title}</p>
+                  <p>
+                    {parse(
+                      item?.acf?.title ||
+                        (typeof item?.title === "string"
+                          ? item.title
+                          : item?.title?.rendered || ""),
+                    )}
+                  </p>
                 </div>
               </Link>
             ))}

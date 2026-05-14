@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import ArrowRight from "../assets/icons/ArrowRight";
 import logo from "../assets/images/logo.png";
 import ThemeButton2 from "../ui/ThemeButton2";
@@ -7,12 +8,11 @@ import RabbisHamburgerMenu from "../ui/past-rabbis/RabbisHamburgerMenu";
 
 interface RabbisHeaderProps {
   link: string;
-  data: string;
-  activeMenu?: boolean;
-  activeMenuFunction?: (state: boolean) => void;
+  data: any;
 }
 
 export default function RabbisHeader(props: RabbisHeaderProps) {
+  const [activeHamburgerMenu, setActiveHamburgerMenu] = useState(false);
   return (
     <>
       <header className="rabbis-header w-25 h-screen bg-black fixed top-0 right-0 z-99 px-3 py-10 opacity-0 border-l border-[rgba(212,175,55,0.30)]">
@@ -43,7 +43,7 @@ export default function RabbisHeader(props: RabbisHeaderProps) {
           </div>
           <div
             onClick={() => {
-              props.activeMenuFunction?.(!props.activeMenu);
+              setActiveHamburgerMenu(!activeHamburgerMenu);
             }}
             className="button cursor-pointer"
           >
@@ -62,8 +62,8 @@ export default function RabbisHeader(props: RabbisHeaderProps) {
       <RabbisHamburgerMenu
         extraClass=""
         data={props.data}
-        activeMenu={props.activeMenu}
-        activeMenuFunction={props.activeMenuFunction}
+        activeMenu={activeHamburgerMenu}
+        activeMenuFunction={setActiveHamburgerMenu}
       />
     </>
   );
