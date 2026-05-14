@@ -25,6 +25,23 @@ export default function Page() {
   // Router Path
   const pathname = usePathname();
 
+  // Animation State
+  const [animationPlayed, setAnimationPlayed] = useState(false);
+  const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+  const [sectionWidth, setSectionWidth] = useState(200);
+  // Vertical Section
+  const [verticalSection, setVerticalSection] =
+    useState<gsap.core.Timeline | null>(null);
+
+  // Page Refs
+  const main = useRef<HTMLDivElement>(null);
+  const page = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const wrapper = useRef<HTMLDivElement>(null);
+  const waveLine = useRef<HTMLDivElement>(null);
+  const waveMask = useRef<HTMLDivElement>(null);
+  const progress = useRef<HTMLDivElement>(null);
+
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
@@ -69,27 +86,22 @@ export default function Page() {
       return;
     }
     setPageDataFetched(true);
+
+    const updateSectionWidth = () => {
+      const newSectionWidth =
+        rabbisPageData?.posts.length * 58.4 +
+        (rabbisPageData?.posts.length - 1) * 10 +
+        100;
+
+      setSectionWidth(newSectionWidth);
+    };
+
+    updateSectionWidth();
+    window.addEventListener("resize", updateSectionWidth);
+    return () => {
+      window.removeEventListener("resize", updateSectionWidth);
+    };
   }, [rabbisPageData]);
-
-  // Animation State
-  const [animationPlayed, setAnimationPlayed] = useState(false);
-  const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
-  const [sectionWidth, setSectionWidth] = useState(
-    rabbisPageData?.posts.length * 58.4 +
-      (rabbisPageData?.posts.length - 1) * 10,
-  );
-  // Vertical Section
-  const [verticalSection, setVerticalSection] =
-    useState<gsap.core.Timeline | null>(null);
-
-  // Page Refs
-  const main = useRef<HTMLDivElement>(null);
-  const page = useRef<HTMLDivElement>(null);
-  const panel = useRef<HTMLDivElement>(null);
-  const wrapper = useRef<HTMLDivElement>(null);
-  const waveLine = useRef<HTMLDivElement>(null);
-  const waveMask = useRef<HTMLDivElement>(null);
-  const progress = useRef<HTMLDivElement>(null);
 
   // Page Section Animation
   useGSAP(() => {
@@ -142,7 +154,7 @@ export default function Page() {
         verticalSection.kill();
       }
     };
-  }, [pathname, sectionWidth, pageDataFetched]);
+  }, [pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
@@ -313,7 +325,7 @@ export default function Page() {
     // First Rabbis
     if (firstRabbis) {
       gsap.to(firstRabbis, {
-        x: "-10vw",
+        x: "0vw",
         ease: "none",
         scrollTrigger: {
           start: () => {
@@ -404,7 +416,7 @@ export default function Page() {
               <div
                 ref={wrapper}
                 id="section-wrapper"
-                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${sectionWidth + 100}vw] h-screen items-center will-change-transform`}
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${sectionWidth}vw] h-screen items-center will-change-transform`}
               >
                 <Introduction
                   animated={isAllAnimationComplete}
