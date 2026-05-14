@@ -107,12 +107,12 @@ export default function MusicCategoryList(props: ChildProps) {
                     props.activeMusicItem === index ? "active" : ""
                   }`}
                   data-image={
-                    item?.introduction?.album_image_1?.url ||
-                    item?.introduction?.album_image_1?.src
+                    item?.acf?.introduction?.album_image_1?.url ||
+                    item?.acf?.introduction?.album_image_1?.src
                   }
                 >
                   <h3 className="text-[77px] font-light leading-[100%]">
-                    {parse(item?.introduction?.album_title || "")}
+                    {parse(item?.acf?.introduction?.album_title || "")}
                   </h3>
                 </div>
               ))}

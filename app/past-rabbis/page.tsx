@@ -67,7 +67,7 @@ export default function Page() {
         const data2 = await response2.json();
 
         if (isMounted) {
-          setRabbisPageData({ ...data, posts: data2.posts });
+          setRabbisPageData({ pageData: data, posts: data2.posts });
         }
       } catch (error) {
         console.error(error);
@@ -82,10 +82,11 @@ export default function Page() {
   }, [pathname]);
 
   useEffect(() => {
-    if (!rabbisPageData?.acf) {
+    if (!rabbisPageData?.pageData || !rabbisPageData?.posts) {
       return;
     }
     setPageDataFetched(true);
+    console.log("Past Rabbis Page Data:", rabbisPageData);
 
     const updateSectionWidth = () => {
       const newSectionWidth =
@@ -424,8 +425,8 @@ export default function Page() {
                   bgImage={""}
                   bgOverlay={""}
                   data={
-                    rabbisPageData.acf.introduction
-                      ? [rabbisPageData.acf.introduction]
+                    rabbisPageData?.pageData?.acf?.introduction
+                      ? [rabbisPageData?.pageData?.acf?.introduction]
                       : []
                   }
                   extraClass={

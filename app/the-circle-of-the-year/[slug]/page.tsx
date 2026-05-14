@@ -2,20 +2,20 @@
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import Wave from "../assets/images/wave.svg";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
+import Wave from "../../assets/images/wave.svg";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
 
 import Image from "next/image";
-import LoadingEffect from "../components/LoadingEffect";
-import Introduction from "../components/music/Introduction";
-import MirrorAudioPlayer from "../components/music/MirrorAudioPlayer";
-import MirrorsSection from "../components/music/MirrorsSection";
-import MusicCategoryList from "../components/music/MusicCategoryList";
-import TerribleDaysSection from "../components/music/TerribleDaysSection";
-import CreateShimmerDataURL from "../ui/CreateShimmerDataUrl";
-import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
-import SmoothWrapper from "../ui/SmoothWrapper";
+import LoadingEffect from "../../components/LoadingEffect";
+import Introduction from "../../components/music/Introduction";
+import MirrorAudioPlayer from "../../components/music/MirrorAudioPlayer";
+import MirrorsSection from "../../components/music/MirrorsSection";
+import MusicCategoryList from "../../components/music/MusicCategoryList";
+import TerribleDaysSection from "../../components/music/TerribleDaysSection";
+import CreateShimmerDataURL from "../../ui/CreateShimmerDataUrl";
+import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
+import SmoothWrapper from "../../ui/SmoothWrapper";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -37,23 +37,15 @@ export default function Page() {
         const response = await fetch("/api/the-circle-of-the-year", {
           cache: "no-store",
         });
-        const response2 = await fetch("/api/the-circle-of-the-year/posts", {
-          cache: "no-store",
-        });
 
         if (!response.ok) {
           throw new Error("Failed to load music page data.");
         }
 
-        if (!response2.ok) {
-          throw new Error("Failed to load holiday posts data.");
-        }
-
         const data = await response.json();
-        const data2 = await response2.json();
 
         if (isMounted) {
-          setMusicPageData({ musicPage: data, holidayPosts: data2 });
+          setMusicPageData(data);
         }
       } catch (error) {
         console.error(error);
@@ -68,11 +60,10 @@ export default function Page() {
   }, [pathname]);
 
   useEffect(() => {
-    if (!musicPageData?.musicPage?.acf) {
+    if (!musicPageData?.acf) {
       return;
     }
     setPageDataFetched(true);
-    console.log(musicPageData);
   }, [musicPageData]);
 
   // Animation State
@@ -437,7 +428,7 @@ export default function Page() {
                 <Introduction
                   animated={isAllAnimationComplete}
                   animationStatus={isAllAnimationComplete}
-                  data={musicPageData?.musicPage?.acf?.introduction}
+                  data={musicPageData?.acf?.introduction}
                   extraClass={
                     "first-intro panel-section will-change-transform min-w-[75vw] w-[75vw]"
                   }
@@ -445,14 +436,14 @@ export default function Page() {
                 <MusicCategoryList
                   extraClass="music-categories panel-section will-change-transform min-w-[70vw] w-[70vw]"
                   animWidthText={0}
-                  data={musicPageData?.holidayPosts?.posts}
+                  data={musicPageData?.acf?.music_albums_section}
                   activeMusicItem={activeMusicItem}
                   setActiveMusicItem={setActiveMusicItem}
                 />
                 <TerribleDaysSection
                   extraClass="terrieble-content panel-section will-change-transform min-w-[222vw] w-[222vw]"
                   animWidthText={0.5}
-                  data={musicPageData?.holidayPosts?.posts[activeMusicItem]}
+                  data={musicPageData?.acf?.music_albums_section}
                   setAudioPopup={setAudioPopup}
                   activeMusicItem={activeMusicItem}
                   setActiveMusicItem={setActiveMusicItem}
@@ -464,10 +455,7 @@ export default function Page() {
                 <MirrorsSection
                   extraClass="mirrors-content panel-section will-change-transform min-w-[85vw] w-[85vw]"
                   animWidthText={3.8}
-                  data={
-                    musicPageData?.holidayPosts?.posts[activeMusicItem]?.acf
-                      ?.mirrors_section
-                  }
+                  data={musicPageData?.acf?.mirrors_section}
                 />
               </div>
             </div>
@@ -479,7 +467,7 @@ export default function Page() {
           id="hover-image"
           className="fixed top-0 left-0 z-999 w-29 h-43.25 -ml-14.5 -mt-21.5 overflow-hidden opacity-0 invisible cursor-none pointer-events-none"
         >
-          {musicPageData?.holidayPosts?.posts?.map(
+          {musicPageData?.acf?.music_albums_section?.map(
             (item: any, index: number) => (
               <div
                 key={index}
@@ -488,15 +476,15 @@ export default function Page() {
                 <Image
                   className="bg-image w-full object-cover object-center h-full"
                   src={
-                    item?.acf?.introduction?.album_image_1?.url ||
-                    item?.acf?.introduction?.album_image_1?.src
+                    item?.introduction?.album_image_1?.url ||
+                    item?.introduction?.album_image_1?.src
                   }
                   width="116"
                   height="173"
                   blurDataURL={CreateShimmerDataURL(116, 173)}
                   placeholder={"blur"}
                   loading="lazy"
-                  alt={item?.acf?.introduction?.album_title || "Album Image"}
+                  alt={item?.introduction?.album_title || "Album Image"}
                 />
               </div>
             ),
@@ -509,10 +497,10 @@ export default function Page() {
           setAudioPopup={setAudioPopup}
           data={{
             introduction:
-              musicPageData?.holidayPosts?.posts[activeMusicItem]?.acf
+              musicPageData?.acf?.music_albums_section[activeMusicItem]
                 ?.introduction,
             album:
-              musicPageData?.holidayPosts?.posts[activeMusicItem]?.acf
+              musicPageData?.acf?.music_albums_section[activeMusicItem]
                 ?.music_albums?.albums[activeMusicFolder],
           }}
           activeTab={activeTab}

@@ -13,7 +13,7 @@ import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
 import AlbumImage from "../../assets/images/album-image.jpg";
 import PlayerBG from "../../assets/images/mirros-bg.jpg";
@@ -28,8 +28,7 @@ interface ChildProps {
   animWidthText: number;
   audioPopup: boolean;
   setAudioPopup: (value: boolean) => void;
-  data: string;
-  data2: any;
+  data: any;
   activeTab: number;
   setActiveTab: (value: number) => void;
 }
@@ -55,13 +54,21 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   const pathname = usePathname();
 
   // State
-  const sectionData = useMemo(() => JSON.parse(props.data), [props.data]);
-  const musicPageData = props.data2 || {};
+  const musicPageData = props.data || {};
+  useEffect(() => {
+    console.log(
+      musicPageData?.album?.music_category[props.activeTab].musics[0],
+    );
+  }, [props.data]);
   const [activeMusic, setActiveMusic] = useState({
     tabIndex: 0,
     musicIndex: 0,
-    title: `${sectionData.tabs[0].musics[0].title}`,
-    link: `${sectionData.tabs[0].musics[0].link}`,
+    title: `${
+      musicPageData?.album?.music_category[props.activeTab].musics[0].title
+    }`,
+    link: `${
+      musicPageData?.album?.music_category[props.activeTab].musics[0].music?.url
+    }`,
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInfinityActive, setIsInfinityActive] = useState(false);
@@ -210,7 +217,8 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   // Play Group music
   const playNextMusicInActiveGroup = () => {
     const currentTabIndex = activeMusic.tabIndex;
-    const currentTabMusics = sectionData.tabs[currentTabIndex]?.musics || [];
+    const currentTabMusics =
+      musicPageData[0]?.album?.music_category[currentTabIndex]?.musics || [];
 
     if (!currentTabMusics.length) return;
 

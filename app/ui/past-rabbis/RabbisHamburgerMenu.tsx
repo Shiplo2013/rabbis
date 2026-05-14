@@ -17,7 +17,7 @@ interface RabbisHamburgerMenuProps {
 
 type MenuPost = {
   id?: number;
-  title?: string | { rendered?: string };
+  title?: string;
   slug?: string;
   acf?: {
     title?: string;
@@ -45,7 +45,7 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
 
   // Handle Menu Close
   useGSAP(() => {
-    console.log(allPosts);
+    //console.log(allPosts);
     // Set Animations
     const title = hamurgerMenu.current?.querySelector(".menu-title>h3");
     const closeButton = hamurgerMenu.current?.querySelector(".menu-close");
@@ -242,14 +242,7 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
                   dir="ltr"
                   className="title text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
                 >
-                  <p>
-                    {parse(
-                      item?.acf?.title ||
-                        (typeof item?.title === "string"
-                          ? item.title
-                          : item?.title?.rendered || ""),
-                    )}
-                  </p>
+                  <p>{parse(item?.title || item?.acf?.title || "")}</p>
                 </div>
               </Link>
             ))}
