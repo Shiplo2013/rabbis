@@ -224,7 +224,7 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
                 className="burger-menu-item group flex gap-x-2.5"
               >
                 <div className="image w-29.5 h-29.5 overflow-hidden border-dashed border-transparent group-hover:border-[#D1A941]">
-                  <div className="image-inner w-full h-full group-hover:scale-110 transition-all duration-300">
+                  <div className="image-inner w-full h-full group-hover:scale-110 transition-all duration-300 grayscale group-hover:grayscale-0">
                     <Image
                       className="w-full h-full object-cover object-center"
                       src={
