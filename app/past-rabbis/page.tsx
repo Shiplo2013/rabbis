@@ -28,6 +28,7 @@ export default function Page() {
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   // Vertical Section
   const [verticalSection, setVerticalSection] =
@@ -95,6 +96,7 @@ export default function Page() {
         100;
 
       setSectionWidth(newSectionWidth);
+      setContainerWidth(newSectionWidth + 100);
     };
 
     updateSectionWidth();
@@ -115,7 +117,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerWidth * ((sectionWidth + 100) / 100),
+          end: "+=" + window.innerWidth * (containerWidth / 100),
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -143,7 +145,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * ((sectionWidth + 100) / 100) - 500),
+          end: "+=" + (window.innerWidth * (containerWidth / 100) - 500),
           scrub: scurbScale,
         },
       });
@@ -417,7 +419,7 @@ export default function Page() {
               <div
                 ref={wrapper}
                 id="section-wrapper"
-                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${sectionWidth}vw] h-screen items-center will-change-transform`}
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
               >
                 <Introduction
                   animated={isAllAnimationComplete}

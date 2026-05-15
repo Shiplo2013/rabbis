@@ -721,7 +721,7 @@ export default function Page() {
                                 (item, index) => (
                                   <div
                                     key={index}
-                                    className="news-item bg-white flex flex-col gap-y-2 py-8 px-13 w-[calc((100%-3vw)/2)]max-w-110"
+                                    className="news-item bg-white flex flex-col gap-y-2 py-8 px-13 w-[calc((100%-3vw)/2)] max-w-110"
                                   >
                                     <p className="font-bold">{item.text}</p>
                                     <p>{item.info}</p>

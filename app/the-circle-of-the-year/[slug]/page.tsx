@@ -1,6 +1,6 @@
 "use client";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Wave from "../../assets/images/wave.svg";
 import Footer from "../../components/Footer";
@@ -27,6 +27,8 @@ export default function Page() {
   const [pageDataFetched, setPageDataFetched] = useState(false);
   // Router Path
   const pathname = usePathname();
+  const params = useParams();
+  const slug = params?.slug as string;
 
   // Get Page Data From backend
   useEffect(() => {
@@ -37,15 +39,23 @@ export default function Page() {
         const response = await fetch("/api/the-circle-of-the-year", {
           cache: "no-store",
         });
+        const response2 = await fetch("/api/the-circle-of-the-year/posts", {
+          cache: "no-store",
+        });
 
         if (!response.ok) {
           throw new Error("Failed to load music page data.");
         }
 
+        if (!response2.ok) {
+          throw new Error("Failed to load holiday posts data.");
+        }
+
         const data = await response.json();
+        const data2 = await response2.json();
 
         if (isMounted) {
-          setMusicPageData(data);
+          setMusicPageData({ musicPage: data, holidayPosts: data2 });
         }
       } catch (error) {
         console.error(error);
@@ -60,10 +70,16 @@ export default function Page() {
   }, [pathname]);
 
   useEffect(() => {
-    if (!musicPageData?.acf) {
+    if (!musicPageData?.musicPage?.acf) {
       return;
     }
     setPageDataFetched(true);
+
+    musicPageData?.holidayPosts?.posts.map(
+      (item: any, index: number) =>
+        decodeURIComponent(item.slug) === decodeURIComponent(slug) &&
+        setActiveMusicItem(index),
+    );
   }, [musicPageData]);
 
   // Animation State
@@ -428,7 +444,7 @@ export default function Page() {
                 <Introduction
                   animated={isAllAnimationComplete}
                   animationStatus={isAllAnimationComplete}
-                  data={musicPageData?.acf?.introduction}
+                  data={musicPageData?.musicPage?.acf?.introduction}
                   extraClass={
                     "first-intro panel-section will-change-transform min-w-[75vw] w-[75vw]"
                   }
@@ -436,14 +452,14 @@ export default function Page() {
                 <MusicCategoryList
                   extraClass="music-categories panel-section will-change-transform min-w-[70vw] w-[70vw]"
                   animWidthText={0}
-                  data={musicPageData?.acf?.music_albums_section}
+                  data={musicPageData?.holidayPosts?.posts}
                   activeMusicItem={activeMusicItem}
                   setActiveMusicItem={setActiveMusicItem}
                 />
                 <TerribleDaysSection
                   extraClass="terrieble-content panel-section will-change-transform min-w-[222vw] w-[222vw]"
                   animWidthText={0.5}
-                  data={musicPageData?.acf?.music_albums_section}
+                  data={musicPageData?.holidayPosts?.posts[activeMusicItem]}
                   setAudioPopup={setAudioPopup}
                   activeMusicItem={activeMusicItem}
                   setActiveMusicItem={setActiveMusicItem}
@@ -455,7 +471,16 @@ export default function Page() {
                 <MirrorsSection
                   extraClass="mirrors-content panel-section will-change-transform min-w-[85vw] w-[85vw]"
                   animWidthText={3.8}
-                  data={musicPageData?.acf?.mirrors_section}
+                  data={
+                    musicPageData?.holidayPosts?.posts[activeMusicItem]?.acf
+                      ?.mirrors_section
+                  }
+                  nextPost={
+                    activeMusicItem + 1 <
+                    musicPageData?.holidayPosts?.posts?.length
+                      ? musicPageData?.holidayPosts?.posts[activeMusicItem + 1]
+                      : musicPageData?.holidayPosts?.posts[0]
+                  }
                 />
               </div>
             </div>
@@ -467,7 +492,7 @@ export default function Page() {
           id="hover-image"
           className="fixed top-0 left-0 z-999 w-29 h-43.25 -ml-14.5 -mt-21.5 overflow-hidden opacity-0 invisible cursor-none pointer-events-none"
         >
-          {musicPageData?.acf?.music_albums_section?.map(
+          {musicPageData?.holidayPosts?.posts?.map(
             (item: any, index: number) => (
               <div
                 key={index}
@@ -476,15 +501,15 @@ export default function Page() {
                 <Image
                   className="bg-image w-full object-cover object-center h-full"
                   src={
-                    item?.introduction?.album_image_1?.url ||
-                    item?.introduction?.album_image_1?.src
+                    item?.acf?.introduction?.album_image_1?.url ||
+                    item?.acf?.introduction?.album_image_1?.src
                   }
                   width="116"
                   height="173"
                   blurDataURL={CreateShimmerDataURL(116, 173)}
                   placeholder={"blur"}
                   loading="lazy"
-                  alt={item?.introduction?.album_title || "Album Image"}
+                  alt={item?.acf?.introduction?.album_title || "Album Image"}
                 />
               </div>
             ),
@@ -497,10 +522,10 @@ export default function Page() {
           setAudioPopup={setAudioPopup}
           data={{
             introduction:
-              musicPageData?.acf?.music_albums_section[activeMusicItem]
+              musicPageData?.holidayPosts?.posts[activeMusicItem]?.acf
                 ?.introduction,
             album:
-              musicPageData?.acf?.music_albums_section[activeMusicItem]
+              musicPageData?.holidayPosts?.posts[activeMusicItem]?.acf
                 ?.music_albums?.albums[activeMusicFolder],
           }}
           activeTab={activeTab}

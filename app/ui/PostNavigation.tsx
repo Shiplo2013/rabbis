@@ -22,7 +22,7 @@ export default function PostNavigation(props: ChildProps) {
           href={navigationData?.nextPost?.link}
           className="next-post relative group"
         >
-          <div className="image w-12vw] h-[12vw] overflow-hidden">
+          <div className="image w-[12vw] h-[12vw] overflow-hidden">
             <Image
               className="w-full h-full object-cover object-center"
               src={navigationData?.nextPost?.image?.src}

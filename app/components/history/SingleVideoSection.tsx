@@ -156,7 +156,7 @@ export default function SingleVideoSection(props: ChildProps) {
         <div
           ref={videoButton}
           onClick={handleButtonClick}
-          className="absolute top-1/2 left-1/2 z-30 -translate-1/2 cursor-pointer"
+          className="absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
         >
           <ThemeButton2
             extraClass="w-29.25 h-29.25 flex items-center justify-center border-2 border-[#C3A13F] group"

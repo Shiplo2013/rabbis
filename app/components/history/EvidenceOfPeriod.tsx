@@ -143,7 +143,7 @@ export default function EvidenceOfPeriod(props: ChildProps) {
               <div className="minus-icon absolute top-0 right-0 w-11.75 h-11.75 bg-[#D1C39C] flex items-center justify-center rounded-full ">
                 <MinusIcon />
               </div>
-              <div className="play-icon absolute top-1/2 left-1/2 z-20 -translate-1/2 ml-3">
+              <div className="play-icon absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 ml-3">
                 <PlayIcon />
               </div>
             </div>
@@ -152,7 +152,7 @@ export default function EvidenceOfPeriod(props: ChildProps) {
             </h3>
           </div>
           <div className="content w-[66vw] flex items-center relative px-[4.35vw]">
-            <div className="content-bg absolute z-10 top-1/2 left-1/2 -translate-1/2 w-full h-full select-none pointer-events-none">
+            <div className="content-bg absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full select-none pointer-events-none">
               <ImageRevealWithoutParallaxBG2
                 bgImage={evidanceBG}
                 overlayLeft={false}

@@ -72,7 +72,6 @@ export default function Page() {
       return;
     }
     setPageDataFetched(true);
-    console.log(musicPageData);
   }, [musicPageData]);
 
   // Animation State
@@ -467,6 +466,12 @@ export default function Page() {
                   data={
                     musicPageData?.holidayPosts?.posts[activeMusicItem]?.acf
                       ?.mirrors_section
+                  }
+                  nextPost={
+                    activeMusicItem + 1 <
+                    musicPageData?.holidayPosts?.posts?.length
+                      ? musicPageData?.holidayPosts?.posts[activeMusicItem + 1]
+                      : musicPageData?.holidayPosts?.posts[0]
                   }
                 />
               </div>
