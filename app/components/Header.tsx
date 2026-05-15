@@ -218,10 +218,10 @@ function Header({ animationStatus }: { animationStatus: boolean }) {
                     </Link>
                     {haveSubmenu && (
                       <div
-                        className={`submenu-content absolute bottom-full pr-10 transition-all duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible origin-topcenter group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0 ${link.submenus.class}`}
+                        className={`submenu-content absolute bottom-full pr-10 transition-all duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0 ${link.submenus.class}`}
                       >
                         {link.submenus.head && (
-                          <div className="menu-head bg-[#000000B2] border border-[#DBBD5C80] px-4 py-3 mb-1.5 text-[#E2D7C3] text-[15.55px] leading[70%]">
+                          <div className="menu-head bg-[#000000B2] border border-[#DBBD5C80] px-4 py-3 mb-1.5 text-[#E2D7C3] text-[15.55px] leading-[70%]">
                             <Link href={"/yeshiva-graduates"}>{link.name}</Link>
                           </div>
                         )}

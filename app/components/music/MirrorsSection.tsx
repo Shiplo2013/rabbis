@@ -1,15 +1,13 @@
 "use client";
 
 import ArrowLeftIcon from "@/app/assets/icons/ArrowLeftIcon";
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
+import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import BgImage from "../../assets/images/mirros-bg.jpg";
-// Import Swiper React components
-
-// Import Swiper styles
-import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
-import { usePathname } from "next/navigation";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 // import required modules
 
@@ -21,6 +19,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   data: any;
+  nextPost: any;
 }
 
 export default function MirrorsSection(props: ChildProps) {
@@ -29,6 +28,7 @@ export default function MirrorsSection(props: ChildProps) {
   const pathname = usePathname();
   // Use State
   const pageData = props.data || {};
+  const nextPost = props.nextPost || {};
   // Section Animation
   useGSAP(
     () => {
@@ -190,13 +190,13 @@ export default function MirrorsSection(props: ChildProps) {
         <div className="mirror-next absolute left-[4vw] top-1/2">
           <Link
             className="group flex flex-col items-start justify-start"
-            href={"/"}
+            href={"/the-circle-of-the-year/" + nextPost?.slug}
           >
             <span className="icon w-5.25 transition-all duration-300 ease-in-out group-hover:-translate-x-6">
               <ArrowLeftIcon />
             </span>
             <span className="title text-[36px] text-[#F4EDDD] font-thin">
-              חנוכה
+              {parse(nextPost?.title)}
             </span>
           </Link>
         </div>

@@ -777,7 +777,9 @@ export default function Page() {
                     title: post?.acf?.title,
                     blockquote: post?.acf?.quotes,
                     content_1: post?.acf?.content_1,
+                    popup_1_title: post?.acf?.popup_1?.title,
                   }}
+                  setActiveCardPopup={setActiveCardPopup}
                 />
               </div>
             </div>
@@ -871,7 +873,7 @@ export default function Page() {
                   </div>
                 </SimpleBar>
               </div>
-              <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">
+              <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">
                 <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
               </button>
             </div>

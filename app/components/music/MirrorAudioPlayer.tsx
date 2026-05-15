@@ -55,11 +55,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
 
   // State
   const musicPageData = props.data || {};
-  useEffect(() => {
-    console.log(
-      musicPageData?.album?.music_category[props.activeTab].musics[0],
-    );
-  }, [props.data]);
   const [activeMusic, setActiveMusic] = useState({
     tabIndex: 0,
     musicIndex: 0,
@@ -479,17 +474,17 @@ export default function MirrorAudioPlayer(props: ChildProps) {
           <div className="player-left w-full flex flex-col gap-y-[7vh]">
             <div className="player-content flex flex-col gap-y-[2vh]">
               <h2 className="text-[#C3A13F] text-[55px] leading-[75%]">
-                {parse(musicPageData[0]?.introduction?.album_title || "")}
+                {parse(musicPageData?.introduction?.album_title || "")}
               </h2>
               <div className="text max-w-177 text-[23px] leading-[120%]">
-                {parse(musicPageData[0]?.introduction?.album_subtitle || "")}
+                {parse(musicPageData?.introduction?.album_subtitle || "")}
               </div>
             </div>
 
             <div className="player-content-tabs flex flex-col gap-y-5">
               {/* Tab headers */}
               <div className="tab-head flex gap-x-6">
-                {musicPageData[0]?.album?.music_category?.map(
+                {musicPageData?.album?.music_category?.map(
                   (item: any, index: number) => (
                     <div
                       key={index}
@@ -508,11 +503,11 @@ export default function MirrorAudioPlayer(props: ChildProps) {
 
               {/* Tab content */}
               <div className="tab-content-wrapper">
-                {musicPageData[0]?.album?.music_category[props.activeTab] && (
+                {musicPageData?.album?.music_category[props.activeTab] && (
                   <div data-index={props.activeTab} className="tab-content">
                     <div className="text text-[18px] leading-[120%] max-w-191.25">
                       {parse(
-                        musicPageData[0]?.album?.music_category[props.activeTab]
+                        musicPageData?.album?.music_category[props.activeTab]
                           ?.album_text || "",
                       )}
                       <Link
@@ -535,7 +530,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                         autoHide={false}
                       >
                         <div className="music-list-wrapper flex flex-col gap-y-4">
-                          {musicPageData[0]?.album?.music_category[
+                          {musicPageData?.album?.music_category[
                             props.activeTab
                           ]?.musics?.map((item: any, index: number) => {
                             const isActive =
@@ -566,7 +561,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
 
                                 {/* Playing animation icon */}
                                 <div
-                                  className={`music-play absolute top-1/2 left-1/2 -translate-1/2 ${isActive ? "opacity-100" : "opacity-0"}`}
+                                  className={`music-play absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${isActive ? "opacity-100" : "opacity-0"}`}
                                 >
                                   <PlayingIcon />
                                 </div>
