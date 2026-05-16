@@ -1,5 +1,6 @@
 import ArrowLeft2 from "@/app/assets/icons/ArrowLeft2";
 import ArrowRight from "@/app/assets/icons/ArrowRight";
+import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -29,7 +30,7 @@ export default function PostNavigation(props: ChildProps) {
             : null;
 
     return {
-      title: post?.acf?.title || post?.title || "",
+      title: parse(post?.title || ""),
       link: `/past-rabbis/${post?.slug}`,
       image,
     };
@@ -98,7 +99,7 @@ export default function PostNavigation(props: ChildProps) {
           ) : (
             <div className="image w-[12vw] h-[12vw] overflow-hidden bg-[#1a1a1a]" />
           )}
-          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-2 text-center text-[13px] leading-[80%] min-w-32 max-w-full">
+          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-3 text-center text-[15px] leading-[70%] min-w-32 max-w-full">
             {navigationData?.nextPost.title}
           </h4>
           <div className="absolute top-1/2 -translate-y-1/2 right-full -mr-8 w-25 h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:translate-x-3">
@@ -133,7 +134,7 @@ export default function PostNavigation(props: ChildProps) {
           ) : (
             <div className="image w-[12vw] h-[12vw] overflow-hidden bg-[#1a1a1a]" />
           )}
-          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-2 text-center text-[13px] leading-[80%] min-w-32 max-w-full">
+          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-3 text-center text-[15px] leading-[70%] min-w-32 max-w-full">
             {navigationData?.prevPost.title}
           </h4>
           <div className="absolute top-1/2 -translate-y-1/2 left-full -ml-8 w-25 h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:-translate-x-3">

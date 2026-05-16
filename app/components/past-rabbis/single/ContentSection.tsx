@@ -58,7 +58,7 @@ export default function ContentSection(props: ChildProps) {
         </div>
 
         {contentData?.blockquote && (
-          <div className="rabbis-text1 text-[70px] leading-[70%] text-[#57717A] w-[55vw] min-w-[55vw] px-[5.4vw] py-[5vh] text-right">
+          <div className="rabbis-text1 text-[70px] leading-[75%] text-[#57717A] w-[55vw] min-w-[55vw] px-[5.4vw] py-[5vh] text-right">
             <h3>{parse(contentData?.blockquote)}</h3>
           </div>
         )}
@@ -85,11 +85,11 @@ export default function ContentSection(props: ChildProps) {
         {contentData?.content_1 && (
           <div className="rabbis-text2 w-[70vw] min-w-[70vw] px-[5.4vw] py-[5vh] text-right">
             <div className="title mb-[8vh]">
-              <h5 className="text-[50px] leading-[70%] text-center text-[#D1A941]">
+              <h5 className="text-[55px] leading-[70%] text-center text-[#D1A941]">
                 {parse(contentData?.content_1?.title)}
               </h5>
             </div>
-            <div className="content text-[18px] leading-[1.4em] font-medium text-[#000000] flex gap-x-[3vw]">
+            <div className="content text-[21px] leading-[1.4em] font-medium text-[#000000] flex gap-x-[3vw]">
               <div className="text w-1/2">
                 {parse(contentData?.content_1?.text_right)}
               </div>
