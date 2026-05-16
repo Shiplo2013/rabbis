@@ -1,26 +1,44 @@
-import SingleCommunittyPost from "./SingleCommunittyPost";
+import SingleCommunityPost from "./SingleCommunityPost";
 
 interface ChildProps {
+  key?: number;
   className: string;
-  postsContent: {
-    sectionTitle: string;
-    sectionContent: { title: string; content: string; image: any }[];
-  }[];
+  postsContent: SectionData | null;
 }
 
-export default function CommunitesPostCat(props: ChildProps) {
+type SectionData = {
+  categoryId: number;
+  categoryTitle: string;
+  posts: {
+    [x: string]: any;
+    id: number;
+    slug: string;
+    link: string;
+    title: string;
+    content: string;
+    excerpt: string;
+    date: string | undefined;
+    modified: string | undefined;
+    acf: Record<string, unknown> | unknown[] | null;
+  };
+};
+
+export default function CommunitiesPostCat(props: ChildProps) {
+  const postData = props.postsContent as SectionData | null;
+
   return (
-    <section dir="rtl" className={`community-cat-section ${props.className}`}>
+    <div dir="rtl" className={`community-cat-section ${props.className}`}>
       <div className="community-cat-title mb-10.5">
         <h2 className="text-[55px] leading-[0.7em] text-(--theme-color)">
-          {props?.postsContent?.[0]?.sectionTitle}
+          {postData?.categoryTitle || ""}
         </h2>
       </div>
       <div className="posts-wrapper h-auto flex gap-[5vw]">
-        {props?.postsContent?.[0]?.sectionContent.map((item, index) => (
-          <SingleCommunittyPost key={index} data={JSON.stringify(item)} />
-        ))}
+        {postData?.posts &&
+          postData?.posts?.map((item: any, index: number) => (
+            <SingleCommunityPost key={index} data={item} />
+          ))}
       </div>
-    </section>
+    </div>
   );
 }

@@ -87,7 +87,6 @@ export default function Page() {
       return;
     }
     setPageDataFetched(true);
-    console.log("Past Rabbis Page Data:", rabbisPageData);
 
     const updateSectionWidth = () => {
       const newSectionWidth =

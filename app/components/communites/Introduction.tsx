@@ -14,12 +14,26 @@ interface ChildProps {
   overlayClass: string;
   bgPosition: string;
   bgClass: string;
-  data: { title: string; content: string }[];
+  data: SectionData | string | null;
 }
+
+type SectionData = {
+  id: number;
+  link: string;
+  slug: string;
+  title: {
+    rendered: string;
+  };
+  content: {
+    rendered: string;
+  };
+};
 
 export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const sectionData = props.data as SectionData;
+
   return (
     <section
       ref={wrapper}
@@ -57,10 +71,12 @@ export default function Introduction(props: ChildProps) {
             dir="rtl"
             className="intro-title text-[228px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 flex justify-center"
           >
-            <span className="block text">{parse(props.data[0].title)}</span>
+            <span className="block text">
+              {parse(sectionData?.title?.rendered || "")}
+            </span>
           </h1>
           <h4 className="intro-content overflow-hidden text-[28px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30 w-[28vw]">
-            <span className="block text">{parse(props.data[0].content)}</span>
+            {parse(sectionData?.content?.rendered || "")}
           </h4>
         </div>
       </div>

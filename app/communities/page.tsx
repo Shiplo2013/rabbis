@@ -1,11 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import PostImage1 from "../assets/images/community-post1.jpg";
-import PostImage2 from "../assets/images/community-post2.jpg";
-import PostImage3 from "../assets/images/community-post3.jpg";
-import PostImage4 from "../assets/images/community-post4.jpg";
-import PostImage5 from "../assets/images/community-post5.jpg";
 import IntroBG from "../assets/images/intro-bg-10.jpg";
 import Wave from "../assets/images/wave.svg";
 import CommunitesPostCat from "../components/communites/CommunitiesPostCat";
@@ -26,64 +21,96 @@ if (typeof window !== "undefined") {
 export default function Page() {
   // Router Path
   const pathname = usePathname();
-  // Page Data
-  const IntroData1 = [
-    {
-      title: `קהילות`,
-      content: `תלמידי ישיבת חברון, לאורך כל תולדותיה, המשיכו לשמר את הקשר העמוק ואת דיבוק החברים גם לאחר נישואיהם. קהילות וכוללים ומסגרות שונות שבהם מאוגדים הבוגרים ממשיכים לטפח בקרבם את רוחה הגדולה של הישיבה`,
-    },
-  ];
-  // Rabbis Data
-  const CommunitesPostCat1 = [
-    {
-      sectionTitle: `פתח תקווה`,
-      sectionContent: [
-        {
-          title: `חברון שירת ריבה`,
-          content: `שכונת יוצאי חברון-גני הדר`,
-          image: PostImage1,
-          link: "/communities/single",
-        },
-        {
-          title: `חברון היכל יחזקאל`,
-          content: `מרכז העיר`,
-          image: PostImage2,
-          link: "/communities/single",
-        },
-        {
-          title: `חברון צעירים`,
-          content: `שכונת הדר גנים`,
-          image: PostImage3,
-          link: "/communities/single",
-        },
-      ],
-    },
-  ];
-  const CommunitesPostCat2 = [
-    {
-      sectionTitle: `בני ברק`,
-      sectionContent: [
-        {
-          title: `בית הכנסת הגדול בני ברק`,
-          content: `חניכי ישיבת חברון`,
-          image: PostImage4,
-          link: "/communities/single",
-        },
-        {
-          title: `מרכז העיר`,
-          content: `חברון סמטת האר"י`,
-          image: PostImage5,
-          link: "/communities/single",
-        },
-        {
-          title: `חברון מהרש"ל`,
-          content: `מרכז העיר`,
-          image: PostImage5,
-          link: "/communities/single",
-        },
-      ],
-    },
-  ];
+  const [communityPageData, setCommunityPageData] = useState<any | []>(null);
+  const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(300);
+  const [sectionWidth, setSectionWidth] = useState(200);
+
+  // Get Page Data From backend
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCommunityPageData = async () => {
+      try {
+        const response = await fetch("/api/communities", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load community page data.");
+        }
+
+        const data = await response.json();
+        // Second Response
+        const categories = data?.acf?.select_categories ?? [];
+
+        const postsByCategory = await Promise.all(
+          categories.map(async (category: any) => {
+            const categoryId = category?.term_id;
+            const categoryTitle = category?.name;
+            const response = await fetch(
+              `/api/communities/posts?communities_cat=${categoryId}&per_page=20`,
+              { cache: "no-store" },
+            );
+
+            if (!response.ok) {
+              throw new Error(
+                `Failed to load posts for category ${categoryId}`,
+              );
+            }
+
+            const result = await response.json();
+
+            return {
+              categoryId,
+              categoryTitle,
+              posts: result.posts,
+            };
+          }),
+        );
+
+        if (isMounted) {
+          setCommunityPageData({ pageData: data, postsData: postsByCategory });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadCommunityPageData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!communityPageData) {
+      return;
+    }
+    setPageDataFetched(true);
+
+    const updateSectionWidth = () => {
+      const newSectionWidth =
+        communityPageData?.postsData.length * 24.3 +
+        (communityPageData?.postsData.length - 1) * 15 +
+        30 +
+        communityPageData?.postsData
+          .map((item: any) => item.posts.length - 1)
+          .reduce((a: number, b: number) => a + b, 0) *
+          5;
+
+      setSectionWidth(newSectionWidth);
+      setContainerWidth(newSectionWidth + 100);
+    };
+
+    updateSectionWidth();
+    window.addEventListener("resize", updateSectionWidth);
+    return () => {
+      window.removeEventListener("resize", updateSectionWidth);
+    };
+  }, [communityPageData]);
+
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -102,7 +129,7 @@ export default function Page() {
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       setPageContentAnimation();
       // Overflow body
       const scurbScale = 2;
@@ -116,19 +143,23 @@ export default function Page() {
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
-            gsap.to(progress.current, { width: `${100 * self.progress}%` });
-            if (self.progress > 0.97) {
-              gsap.to(waveLine.current, {
-                opacity: 0,
-                duration: 0.1,
-                delay: 0,
-              });
-            } else {
-              gsap.to(waveLine.current, {
-                opacity: 1,
-                duration: 0.1,
-                delay: 0,
-              });
+            if (progress.current) {
+              gsap.to(progress.current, { width: `${100 * self.progress}%` });
+            }
+            if (waveLine.current) {
+              if (self.progress > 0.97) {
+                gsap.to(waveLine.current, {
+                  opacity: 0,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              } else {
+                gsap.to(waveLine.current, {
+                  opacity: 1,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
             }
           },
         },
@@ -152,7 +183,7 @@ export default function Page() {
         verticalSection.kill();
       }
     };
-  }, [pathname]);
+  }, [pageDataFetched]);
 
   // Load Page
   useEffect(() => {
@@ -301,15 +332,15 @@ export default function Page() {
         );
       }
     }
-  }, [animationPlayed]);
+  }, [pageDataFetched]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
-    // Page Content Animation
-    const rabbisContent = main.current?.querySelectorAll(
-      ".community-cat-section",
-    );
     document.fonts.ready.then(() => {
+      // Page Content Animation
+      const rabbisContent = main.current?.querySelectorAll(
+        ".community-cat-section",
+      );
       if (rabbisContent) {
         rabbisContent.forEach((section) => {
           const sectionTitle = section.querySelector(".community-cat-title h2");
@@ -344,7 +375,7 @@ export default function Page() {
             sectionItems.forEach((item) => {
               const postTitle = item.querySelector(".post-text .post-title");
               const postExcerpt = item.querySelector(
-                ".post-text .post-excerpt",
+                ".post-text .post-location",
               );
               const postOverlay = item.querySelector(".post-image-overlay");
               // Post Title
@@ -430,7 +461,7 @@ export default function Page() {
 
   useEffect(() => {
     // Page Overflow Hidden
-    document.body.classList.remove("!overflow-auto");
+    document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
@@ -448,82 +479,83 @@ export default function Page() {
     };
   }, []);
   return (
-    <div ref={main} id="main" className="relative">
-      <LoadingEffect animated={setAnimationPlayed} />
-      <Header animationStatus={isAllAnimationComplete} />
-      <SmoothWrapper>
-        <main
-          ref={page}
-          id="page"
-          dir="ltr"
-          className="main relative overflow-hidden z-10 opacity-0"
-        >
-          <div
-            ref={panel}
-            id="panel-wrapper"
-            className="w-screen h-screen flex items-end justify-end"
+    communityPageData && (
+      <div ref={main} id="main" className="relative">
+        <LoadingEffect animated={setAnimationPlayed} />
+        <Header animationStatus={isAllAnimationComplete} />
+        <SmoothWrapper>
+          <main
+            ref={page}
+            id="page"
+            dir="ltr"
+            className="main relative overflow-hidden z-10 opacity-0"
           >
             <div
-              ref={wrapper}
-              id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[500vw] h-screen items-center will-change-transform`}
+              ref={panel}
+              id="panel-wrapper"
+              className="w-screen h-screen flex items-end justify-end"
             >
-              <Introduction
-                animated={isAllAnimationComplete}
-                animationStatus={isAllAnimationComplete}
-                bgImage={IntroBG}
-                bgOverlay={""}
-                data={IntroData1}
-                extraClass={
-                  "first-intro panel-section will-change-transform min-w-screen w-screen"
-                }
-                panel={panel}
-                bgPosition=""
-                overlayClass="bg-[#000000] opacity-0"
-                bgClass=""
-                audioControl={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
-              <section
-                className={`min-w-[15vw] will-change-transform`}
-              ></section>
-              <CommunitesPostCat
-                postsContent={CommunitesPostCat1}
-                className={"will-change-transform rabbis-section-1"}
-              />
-              <section
-                className={`min-w-[20vw] will-change-transform`}
-              ></section>
-              <CommunitesPostCat
-                postsContent={CommunitesPostCat2}
-                className={"will-change-transform rabbis-section-2"}
-              />
-              <section
-                className={`min-w-[10vw] will-change-transform`}
-              ></section>
+              <div
+                ref={wrapper}
+                id="section-wrapper"
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+              >
+                <Introduction
+                  animated={isAllAnimationComplete}
+                  animationStatus={isAllAnimationComplete}
+                  bgImage={IntroBG}
+                  bgOverlay={""}
+                  data={communityPageData?.pageData}
+                  extraClass={
+                    "first-intro panel-section will-change-transform min-w-screen w-screen"
+                  }
+                  panel={panel}
+                  bgPosition=""
+                  overlayClass="bg-[#000000] opacity-0"
+                  bgClass=""
+                  audioControl={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+                <section
+                  className={`panel-section will-change-transform min-w-screen w-[${sectionWidth}vw] px-[15vw] box-border`}
+                >
+                  <div className="w-full flex justify-end gap-x-[15vw]">
+                    {communityPageData?.postsData &&
+                      communityPageData?.postsData?.map(
+                        (categoryData: any, index: number) => (
+                          <CommunitesPostCat
+                            key={index}
+                            postsContent={categoryData}
+                            className={`will-change-transform rabbis-section-${index}`}
+                          />
+                        ),
+                      )}
+                  </div>
+                </section>
+              </div>
             </div>
-          </div>
-        </main>
-        <Footer className={"relative z-20"} />
-      </SmoothWrapper>
-      <div
-        ref={waveLine}
-        className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
-      >
+          </main>
+          <Footer className={"relative z-20"} />
+        </SmoothWrapper>
         <div
-          ref={waveMask}
-          style={{
-            maskImage: `url(${Wave.src})`,
-          }}
-          className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+          ref={waveLine}
+          className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
         >
           <div
-            ref={progress}
-            className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#0a0a0a] z-10"
-          ></div>
+            ref={waveMask}
+            style={{
+              maskImage: `url(${Wave.src})`,
+            }}
+            className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+          >
+            <div
+              ref={progress}
+              className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#0a0a0a] z-10"
+            ></div>
+          </div>
         </div>
       </div>
-    </div>
+    )
   );
 }

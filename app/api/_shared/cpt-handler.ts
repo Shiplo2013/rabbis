@@ -45,17 +45,19 @@ function normalizePost(post: CptPost): NormalizedPost {
  * Creates a GET handler that returns a paginated list of CPT posts.
  *
  * Query params forwarded to WP REST API:
- *   page      — page number (default 1)
- *   per_page  — posts per page (default 20, max 100)
- *   search    — full-text search string
- *   orderby   — field to order by (default "date")
- *   order     — "asc" | "desc" (default "desc")
+ *   page       — page number (default 1)
+ *   per_page   — posts per page (default 20, max 100)
+ *   search     — full-text search string
+ *   orderby    — field to order by (default "date")
+ *   order      — "asc" | "desc" (default "desc")
+ *   categories — comma-separated IDs or array syntax (?categories=1,2,3 or ?categories=1&categories=2)
  */
 export function createCptListHandler(options: {
   postType: string;
   postTypeName: string;
+  taxonomyParam?: string;
 }) {
-  const { postType, postTypeName } = options;
+  const { postType, postTypeName, taxonomyParam } = options;
 
   return async function GET(request: NextRequest) {
     try {
@@ -66,6 +68,26 @@ export function createCptListHandler(options: {
       const search = searchParams.get("search") ?? "";
       const orderby = searchParams.get("orderby") ?? "date";
       const order = searchParams.get("order") ?? "desc";
+      const taxonomyFilter = taxonomyParam
+        ? searchParams.getAll(taxonomyParam).filter((value) => value.trim())
+        : [];
+
+      // Handle both comma-separated and array-style category params
+      const categoriesParam = searchParams.get("categories");
+      const allCategories: string[] = [];
+      if (categoriesParam) {
+        // Handle comma-separated: "1,2,3"
+        allCategories.push(
+          ...categoriesParam
+            .split(",")
+            .map((c) => c.trim())
+            .filter(Boolean),
+        );
+      }
+      // Handle array syntax: ?categories=1&categories=2
+      searchParams.getAll("categories").forEach((cat, index) => {
+        if (index > 0 && cat.trim()) allCategories.push(cat.trim());
+      });
 
       const url = new URL(`${WORDPRESS_API_BASE}/${postType}`);
       url.searchParams.set("acf_format", "standard");
@@ -78,6 +100,29 @@ export function createCptListHandler(options: {
       url.searchParams.set("orderby", orderby);
       url.searchParams.set("order", order);
       if (search) url.searchParams.set("search", search);
+      if (allCategories.length > 0) {
+        url.searchParams.set("categories", allCategories.join(","));
+      }
+      if (taxonomyParam && taxonomyFilter.length > 0) {
+        url.searchParams.set(taxonomyParam, taxonomyFilter.join(","));
+      }
+
+      // Forward custom taxonomy query params for CPTs.
+      // Example: /api/communities/posts?communities_category=123
+      const passthroughKeys = new Set([
+        "page",
+        "per_page",
+        "search",
+        "orderby",
+        "order",
+        "categories",
+        ...(taxonomyParam ? [taxonomyParam] : []),
+      ]);
+      for (const [key, value] of searchParams.entries()) {
+        if (!passthroughKeys.has(key) && value.trim()) {
+          url.searchParams.set(key, value.trim());
+        }
+      }
 
       const response = await fetch(url.toString(), { cache: "no-store" });
 
