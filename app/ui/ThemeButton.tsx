@@ -12,7 +12,7 @@ interface ChildProps {
   svgIcon?: React.ReactNode;
   buttonLink?: string;
   fontSize?: string;
-  svgIconClass: string;
+  svgIconClass?: string;
 }
 
 export default function ThemeButton(props: ChildProps) {

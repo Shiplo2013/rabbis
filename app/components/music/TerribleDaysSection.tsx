@@ -5,6 +5,8 @@ import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
+import AlbumIcon1 from "../../assets/images/album-icon1.png";
+import AlbumIcon2 from "../../assets/images/album-icon2.png";
 import FloatImageBorder from "../../assets/images/float-image3.png";
 import TerribleBG from "../../assets/images/terrible-bg.jpg";
 import CreateShimmerDataUrl from "../../ui/CreateShimmerDataUrl";
@@ -256,17 +258,37 @@ export default function TerribleDaysSection(props: ChildProps) {
                   onClick={() => handleAlbumClick(index)}
                   className="music-album group flex flex-col gap-y-3 cursor-pointer"
                 >
-                  <div className="icon w-60.25 h-49.25 group-hover:scale-105 transition-all duration-200 ease-in-out">
-                    <Image
-                      className="bg-image w-full object-cover object-center h-full"
-                      src={item?.album_icon?.url || item?.album_icon?.src}
-                      width="241"
-                      height="197"
-                      blurDataURL={CreateShimmerDataUrl(241, 197)}
-                      placeholder={"blur"}
-                      loading="lazy"
-                      alt="Turntable"
-                    />
+                  <div className="icon w-[12.5vw] h-auto relative">
+                    <div className="icon-default w-full h-full relative group-hover:opacity-0 group-hover:scale-90 transition-all duration-200 ease-in-out">
+                      <Image
+                        className="bg-image w-full object-cover object-center h-full"
+                        src={AlbumIcon2.src || item?.album_icon?.url}
+                        width="241"
+                        height="197"
+                        blurDataURL={
+                          AlbumIcon2.blurDataURL ||
+                          CreateShimmerDataUrl(241, 197)
+                        }
+                        placeholder={"blur"}
+                        loading="lazy"
+                        alt="Turntable"
+                      />
+                    </div>
+                    <div className="icon-hover w-full h-full absolute top-0 left-0 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-200 ease-in-out">
+                      <Image
+                        className="bg-image w-full object-cover object-center h-full"
+                        src={AlbumIcon1.src || item?.album_icon?.url}
+                        width="241"
+                        height="197"
+                        blurDataURL={
+                          AlbumIcon1.blurDataURL ||
+                          CreateShimmerDataUrl(241, 197)
+                        }
+                        placeholder={"blur"}
+                        loading="lazy"
+                        alt="Turntable"
+                      />
+                    </div>
                   </div>
                   <div className="title">
                     <h4 className="text-[45px] leading-[70%] text-[#C3A13F] text-center">

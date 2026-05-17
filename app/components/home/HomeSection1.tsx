@@ -1,7 +1,7 @@
 "use client";
 import BackgroundImage2 from "@/app/ui/BackgroundImage2";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
 import ArrowLeft from "../../assets/icons/ArrowLeft";
 import WishIcon from "../../assets/icons/WishIcon";
@@ -19,42 +19,35 @@ interface ChildProps {
   animWidthPost: number;
   animWidthSlider: number;
   panel: any;
-  sectionData: {
-    text_slider?: {
-      text_slide_1?: string;
-      text_slide_2?: string;
-    };
-    community_posts?: any;
-    background_image?: any;
-  };
+  sectionData: SectionData;
 }
+
+type SectionData = {
+  text_slider?: {
+    text_slide_1?: string;
+    text_slide_2?: string;
+  };
+  community_posts?: any;
+  background_image?: any;
+};
 
 export default function HomeSection1(props: ChildProps) {
   // Selectors
   const wrapper = useRef<HTMLElement>(null);
   const CTAbutton = useRef<HTMLDivElement>(null);
-  const isSlideOut = useRef(false);
+  const homePost = useRef<HTMLDivElement>(null);
+  const [isSlideOut, setIsSlideOut] = useState(false);
   // Route
   const pathname = usePathname();
-  const sectionData = props.sectionData;
-  // Slider Data
-  const SliderData = [
-    {
-      text1: sectionData.text_slider?.text_slide_1,
-      text2: sectionData.text_slider?.text_slide_2,
-    },
-  ];
-  useEffect(() => {
-    console.log("Section Data:", sectionData.text_slider?.text_slide_1);
-  }, [props.sectionData]);
+  const sectionData = props.sectionData as SectionData;
+
   useGSAP(() => {
     // Selectors
-    const homePost = wrapper.current?.querySelector("#home-post");
     const cyclePreview = wrapper.current?.querySelector("#cycle-preview");
     // HomeSection1
-    if (!homePost || !cyclePreview) return;
+    if (!homePost.current || !cyclePreview) return;
     gsap.set(CTAbutton.current, { yPercent: 100, opacity: 0 });
-    gsap.set(homePost, { xPercent: 82 });
+    //gsap.set(homePost.current, { xPercent: 82 });
     gsap.to(CTAbutton.current, {
       scrollTrigger: {
         start: () => {
@@ -67,28 +60,6 @@ export default function HomeSection1(props: ChildProps) {
       opacity: 1,
       delay: 0,
       ease: "expo.inOut",
-    });
-    // On Button Click
-    CTAbutton.current?.addEventListener("click", () => {
-      if (isSlideOut.current) {
-        // Slide in from right
-        gsap.to(homePost, {
-          duration: 1.5,
-          xPercent: 82,
-          delay: 0,
-          ease: "expo.inOut",
-        });
-        isSlideOut.current = false;
-      } else {
-        // Slide out to left
-        gsap.to(homePost, {
-          duration: 1.5,
-          xPercent: 0,
-          delay: 0,
-          ease: "expo.inOut",
-        });
-        isSlideOut.current = true;
-      }
     });
 
     // CyclePreview
@@ -108,6 +79,29 @@ export default function HomeSection1(props: ChildProps) {
       ease: "expo.inOut",
     });
   }, [pathname]);
+
+  // Slider Animation
+  useGSAP(() => {
+    // On Button Click
+    if (!isSlideOut) {
+      // Slide in from right
+      gsap.to(homePost.current, {
+        duration: 1.5,
+        xPercent: 82,
+        delay: 0,
+        ease: "expo.inOut",
+      });
+    } else {
+      // Slide out to left
+      gsap.to(homePost.current, {
+        duration: 1.5,
+        xPercent: 0,
+        delay: 0,
+        ease: "expo.inOut",
+      });
+    }
+  }, [isSlideOut]);
+
   return (
     <section
       ref={wrapper}
@@ -116,7 +110,7 @@ export default function HomeSection1(props: ChildProps) {
       data-scroll-section={props.animWidthPost}
     >
       <BackgroundImage2
-        bgImage={props.sectionData?.background_image}
+        bgImage={sectionData?.background_image}
         panel={props.panel}
         start={props.animWidthPost}
       />
@@ -127,12 +121,12 @@ export default function HomeSection1(props: ChildProps) {
         >
           <CardSlider
             SlideData={
-              props.sectionData?.text_slider?.text_slide_1 &&
-              props.sectionData?.text_slider?.text_slide_2
+              sectionData?.text_slider?.text_slide_1 &&
+              sectionData?.text_slider?.text_slide_2
                 ? [
                     {
-                      text1: props.sectionData.text_slider.text_slide_1,
-                      text2: props.sectionData.text_slider.text_slide_2,
+                      text1: sectionData.text_slider.text_slide_1,
+                      text2: sectionData.text_slider.text_slide_2,
                     },
                   ]
                 : []
@@ -140,7 +134,7 @@ export default function HomeSection1(props: ChildProps) {
           />
         </div>
         <div
-          id="home-post"
+          ref={homePost}
           className="post-wrapper absolute right-0 bottom-0 flex items-end gap-9 transition-none"
         >
           <div className="post-grid bg-[#F1EADA] text-[#C3A13F] p-11 max-h-100 relative">
@@ -183,7 +177,11 @@ export default function HomeSection1(props: ChildProps) {
               </SimpleBar>
             </div>
           </div>
-          <div ref={CTAbutton} className="wish-icon py-5">
+          <div
+            ref={CTAbutton}
+            onClick={() => setIsSlideOut(!isSlideOut)}
+            className="wish-icon py-5"
+          >
             <ThemeButton
               extraClass="w-13 h-13 flex item-center justify-center"
               bgColor="bg-[#ffffff]"

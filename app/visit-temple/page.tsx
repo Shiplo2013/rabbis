@@ -99,7 +99,7 @@ export default function Page() {
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       // Overflow body
       const scurbScale = 2;
 
@@ -152,7 +152,7 @@ export default function Page() {
 
   // Load Page
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       document.fonts.ready.then(() => {
         // Selectors
         const headerLeft = main.current?.querySelector(".header-left");

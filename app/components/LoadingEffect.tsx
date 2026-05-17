@@ -1,10 +1,12 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 
 function LoadingEffect(props: { animated: (value: boolean) => void }) {
   // Initialize state to check if the user has visited
   const [isFirstVisit, setIsFirstVisit] = useState(false);
+  const pathname = usePathname();
   // Set localStorage variable
   useEffect(() => {
     // Set localStorage variable
@@ -16,7 +18,7 @@ function LoadingEffect(props: { animated: (value: boolean) => void }) {
       props.animated(true);
       setIsFirstVisit(false);
     }
-  }, []);
+  }, [pathname]);
   // loadin is true
   if (isFirstVisit) {
     return <Loading animated={props.animated} />;
