@@ -1,5 +1,6 @@
 import ArrowLeft2 from "@/app/assets/icons/ArrowLeft2";
 import ArrowRight from "@/app/assets/icons/ArrowRight";
+import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -29,7 +30,7 @@ export default function PostNavigation(props: ChildProps) {
             : null;
 
     return {
-      title: post?.acf?.title || post?.title || "",
+      title: parse(post?.title || ""),
       link: `/past-rabbis/${post?.slug}`,
       image,
     };

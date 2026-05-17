@@ -28,10 +28,18 @@ interface ChildProps {
   animWidthText: number;
   audioPopup: boolean;
   setAudioPopup: (value: boolean) => void;
-  data: any;
+  data: MusicItem;
   activeTab: number;
   setActiveTab: (value: number) => void;
+  activeMusicFolder: number;
+  setActiveMusicFolder: (value: number) => void;
 }
+
+type MusicItem = {
+  introduction: any;
+  album: any;
+  allAlbums: any;
+};
 
 // Format seconds → "m:ss"
 function formatTime(seconds: number): string {
@@ -39,6 +47,38 @@ function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+function loadAudioDuration(src: string): Promise<string> {
+  return new Promise((resolve) => {
+    if (!src) {
+      resolve("0:00");
+      return;
+    }
+
+    const preloader = new Audio();
+    preloader.preload = "metadata";
+    preloader.src = src;
+
+    const cleanup = () => {
+      preloader.removeEventListener("loadedmetadata", onLoadedMetadata);
+      preloader.removeEventListener("error", onError);
+      preloader.src = "";
+    };
+
+    const onLoadedMetadata = () => {
+      resolve(formatTime(preloader.duration));
+      cleanup();
+    };
+
+    const onError = () => {
+      resolve("0:00");
+      cleanup();
+    };
+
+    preloader.addEventListener("loadedmetadata", onLoadedMetadata);
+    preloader.addEventListener("error", onError);
+  });
 }
 
 export default function MirrorAudioPlayer(props: ChildProps) {
@@ -54,7 +94,10 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   const pathname = usePathname();
 
   // State
-  const musicPageData = props.data || {};
+  const musicPageData = (props.data as MusicItem) || {};
+  useEffect(() => {
+    console.log("Music Player Data:", musicPageData);
+  }, [musicPageData]);
   const [activeMusic, setActiveMusic] = useState({
     tabIndex: 0,
     musicIndex: 0,
@@ -72,6 +115,43 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   const [musicDurations, setMusicDurations] = useState<Record<string, string>>(
     {},
   );
+
+  const currentMusicList =
+    musicPageData?.allAlbums?.[props.activeMusicFolder]?.album
+      ?.music_category?.[props.activeTab]?.musics ||
+    musicPageData?.album?.music_category?.[props.activeTab]?.musics ||
+    [];
+
+  useEffect(() => {
+    if (!currentMusicList.length) return;
+
+    let isMounted = true;
+
+    setMusicDurations({});
+
+    const preloadDurations = async () => {
+      const entries = await Promise.all(
+        currentMusicList.map(async (item: any) => {
+          const src = item?.music?.url;
+          const durationLabel = await loadAudioDuration(src);
+          return [src, durationLabel] as const;
+        }),
+      );
+
+      if (!isMounted) return;
+
+      setMusicDurations((prev) => ({
+        ...prev,
+        ...Object.fromEntries(entries.filter(([src]) => Boolean(src))),
+      }));
+    };
+
+    preloadDurations();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentMusicList, props.activeTab, props.activeMusicFolder]);
 
   // ─── Animation helpers ────────────────────────────────────────────
   function scaleYPathRandomly(
@@ -213,7 +293,9 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   const playNextMusicInActiveGroup = () => {
     const currentTabIndex = activeMusic.tabIndex;
     const currentTabMusics =
-      musicPageData[0]?.album?.music_category[currentTabIndex]?.musics || [];
+      currentMusicList.length && currentTabIndex === props.activeTab
+        ? currentMusicList
+        : musicPageData?.album?.music_category[currentTabIndex]?.musics || [];
 
     if (!currentTabMusics.length) return;
 
@@ -426,7 +508,10 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                 </div>
                 <div className="album-info absolute right-0 bottom-0 px-3.5 py-3 flex flex-col gap-y-2">
                   <h4 className="text-[#F4EDDD] text-[18px] leading-[120%]">
-                    ימים נוראים
+                    {
+                      musicPageData?.allAlbums?.[props.activeMusicFolder]
+                        ?.album_title
+                    }
                   </h4>
                   <p className="tags text-[#ffffff] text-[10px] leading-[100%] bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.12)] py-2 px-3 rounded-full">
                     אוסף • תיקיות לפי נושא
@@ -439,22 +524,22 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                 <p className="flex items-center justify-between text-[#ffffff] text-[11px] leading-[100%]">
                   תיקיות ראשיות
                   <span className="w-6.5 h-6.5 text-[#ffffff] text-[10px] leading-[100%] bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.12)] p-1 flex items-center justify-center rounded-full">
-                    3
+                    {musicPageData?.allAlbums?.length || 0}
                   </span>
                 </p>
               </div>
 
               {/* Folder buttons */}
-              <div className="album-result mt-3 flex flex-col gap-y-2">
-                <button className="text-[#F4EDDD] text-[18px] leading-[100%] bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.10)] rounded-2xl text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300">
-                  סליחות
-                </button>
-                <button className="text-[#F4EDDD] text-[18px] leading-[100%] bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.10)] rounded-2xl text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300">
-                  ראש השנה
-                </button>
-                <button className="text-[#F4EDDD] text-[18px] leading-[100%] bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.10)] rounded-2xl text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300">
-                  יום כיפור
-                </button>
+              <div className="album-result mt-3 flex flex-col gap-y-2 max-h-37 overflow-y-auto">
+                {musicPageData?.allAlbums?.map((item: any, index: number) => (
+                  <div
+                    onClick={() => props.setActiveMusicFolder(index)}
+                    key={index}
+                    className={`text-[#F4EDDD] text-[18px] leading-[100%] ${props.activeMusicFolder === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.10)] rounded-2xl text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300`}
+                  >
+                    {item.album_title}
+                  </div>
+                ))}
               </div>
 
               {/* Search */}

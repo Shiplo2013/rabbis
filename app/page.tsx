@@ -130,8 +130,10 @@ export default function Home() {
     if (!homePageData?.acf) {
       return;
     }
-    setPageDataFetched(true);
-  }, [homePageData]);
+    if (animationPlayed) {
+      setPageDataFetched(true);
+    }
+  }, [homePageData, animationPlayed]);
 
   // Load Page
   useGSAP(() => {
@@ -351,7 +353,7 @@ export default function Home() {
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       // Overflow body
       const scurbScale = 2;
 
@@ -388,27 +390,30 @@ export default function Home() {
 
   // Page Content Animation
   useGSAP(() => {
-    gsap.to(wishButton.current, {
-      scrollTrigger: {
-        start: () => {
-          return window.innerWidth * 2.1;
+    // Wish Button
+    if (wishButton.current) {
+      gsap.to(wishButton.current, {
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth * 2.1;
+          },
+          toggleActions: "restart pause play reverse",
         },
-        toggleActions: "restart pause play reverse",
-      },
-      opacity: 1,
-      visibility: "visible",
-      ease: "none",
-      duration: 0.5,
-      delay: 0,
-    });
-    // Click event
-    wishButton.current?.addEventListener("click", () => {
-      gsap.to(window, {
-        scrollTo: window.innerWidth * 2,
-        duration: 1,
+        opacity: 1,
+        visibility: "visible",
         ease: "none",
+        duration: 0.5,
+        delay: 0,
       });
-    });
+      // Click event
+      wishButton.current?.addEventListener("click", () => {
+        gsap.to(window, {
+          scrollTo: window.innerWidth * 2,
+          duration: 1,
+          ease: "none",
+        });
+      });
+    }
   }, [isAllAnimationComplete]);
 
   // Play Pause State

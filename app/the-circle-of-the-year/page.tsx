@@ -519,9 +519,14 @@ export default function Page() {
             album:
               musicPageData?.holidayPosts?.posts[activeMusicItem]?.acf
                 ?.music_albums?.albums[activeMusicFolder],
+            allAlbums:
+              musicPageData?.holidayPosts?.posts[activeMusicItem]?.acf
+                ?.music_albums?.albums,
           }}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          activeMusicFolder={activeMusicFolder}
+          setActiveMusicFolder={setActiveMusicFolder}
         />
         <div
           ref={waveLine}

@@ -39,13 +39,13 @@ export default function CustomsContentSection(props: ChildProps) {
                 </div>
                 <div className="read-more absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 z-30">
                   <ThemeButton
-                    extraClass="rounded-none py-5 px-10 items-center leading-[80%]"
+                    extraClass="rounded-none py-5 px-10 items-center leading-[80%] min-w-60 justify-center"
                     text="הרחב קריאה"
                     textColor="text-black"
                     hoverBgColor="bg-[#111111]"
                     hoverTextColor="group-hover:text-white"
                     bgColor="bg-[#C3A13F]"
-                    fontSize="text-[28px]"
+                    fontSize="text-[30px]"
                     svgIconClass=""
                     buttonLink={item?.slug ? `/past-rabbis/${item.slug}` : "#"}
                   />

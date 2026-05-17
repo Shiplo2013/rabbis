@@ -6,6 +6,7 @@ import Sidebar from "./Sidebar";
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  data: any;
 }
 
 export default function CustomsContentSection(props: ChildProps) {
@@ -17,35 +18,9 @@ export default function CustomsContentSection(props: ChildProps) {
   const [searchQuery, setSearchQuery] = useState("");
   // Section Data
   const Years = ["תשפ״ו", "תשפ״ה", "תשפ״ד", "תשפ״ג"];
-  // Contect Data
-  const contentData = [
-    {
-      quote: `״טל תן לרצות ארצך״`,
-      title: `היכן אומרים ׳תפילת טל׳`,
-      excerpt: `איתא בתענית (ג, א) שבימות הגשמים חייבים להזכיר גשמים ("משיב הרוח ומוריד הגשם"), ובימות הקיץ אין חיוב להזכיר טל ורוחות...`,
-      category: "category1",
-    },
-    {
-      quote: `״טל תן לרצות ארצך״`,
-      title: `היכן אומרים ׳תפילת טל׳`,
-      excerpt: `איתא בתענית (ג, א) שבימות הגשמים חייבים להזכיר גשמים ("משיב הרוח ומוריד הגשם"), ובימות הקיץ אין חיוב להזכיר טל ורוחות...`,
-      category: "category2",
-    },
-    {
-      quote: `״טל תן לרצות ארצך״`,
-      title: `היכן אומרים ׳תפילת טל׳`,
-      excerpt: `איתא בתענית (ג, א) שבימות הגשמים חייבים להזכיר גשמים ("משיב הרוח ומוריד הגשם"), ובימות הקיץ אין חיוב להזכיר טל ורוחות...`,
-      category: "category3",
-    },
-    {
-      quote: `״טל תן לרצות ארצך״`,
-      title: `היכן אומרים ׳תפילת טל׳`,
-      excerpt: `איתא בתענית (ג, א) שבימות הגשמים חייבים להזכיר גשמים ("משיב הרוח ומוריד הגשם"), ובימות הקיץ אין חיוב להזכיר טל ורוחות...`,
-      category: "category4",
-    },
-  ];
+  const sectionData = props.data || [];
 
-  const filteredData = contentData.filter((item) => {
+  const filteredData = sectionData?.posts?.filter((item: any) => {
     const matchesCategory = activeCategory
       ? item.category === activeCategory
       : true;
@@ -64,7 +39,7 @@ export default function CustomsContentSection(props: ChildProps) {
       className={`${props.extraClass} bg-[#F5F0EB] flex items-center justify-start relative z-20`}
     >
       <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[5.8vw]">
-        <div className="sheet-sidebar w-54.5 h-full will-change-transform overflow-hidden">
+        <div className="sheet-sidebar w-54.5 min-w-[11.35vw] h-full will-change-transform overflow-hidden">
           <Sidebar
             activeCategory={activeCategory}
             onCategorySelect={(id) =>
@@ -75,8 +50,8 @@ export default function CustomsContentSection(props: ChildProps) {
           />
         </div>
         <div className="sheet-content flex items-stretch gap-x-[3.2vw] will-change-transform">
-          {filteredData.map((item, index) => (
-            <CustomContentItem key={index} data={JSON.stringify(item)} />
+          {sectionData?.posts?.map((item: any, index: number) => (
+            <CustomContentItem key={index} data={item} />
           ))}
           <div className="subscribe-form bg-[#000000] text-white px-[2.5vw] py-[3.7vh] w-[26.35vw] flex items-center flex-col justify-center will-change-transform">
             <div className="subscribe-form-wrapper">
@@ -111,7 +86,7 @@ export default function CustomsContentSection(props: ChildProps) {
             </div>
           </div>
         </div>
-        <div className="sheet-readmore">
+        <div className="sheet-readmore min-w-50">
           <button className="text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-[#C3A13F] hover:border-[#C3A13F] transition-all duration-500">
             טען עוד
           </button>
