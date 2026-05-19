@@ -91,7 +91,6 @@ export default function Page() {
       return;
     }
     setPageDataFetched(true);
-    console.log("Community post Data:", post);
     setCommunityTabs([
       {
         title: "אירועים",
@@ -374,9 +373,6 @@ export default function Page() {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("Community Tabs:", communityTabs);
-  }, [communityTabs]);
   return (
     <div ref={main} id="main" className="relative">
       <LoadingEffect animated={setAnimationPlayed} />

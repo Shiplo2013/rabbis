@@ -1,43 +1,95 @@
+"use client";
+import FsLightbox from "fslightbox-react";
 import Image from "next/image";
+import { useState } from "react";
 import ArrowDownIcon from "../assets/icons/ArrowDownIcon";
 import ViewIcon from "../assets/icons/ViewIcon";
 import sheetImg from "../assets/images/sheet-image1.jpg";
+import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 import ThemeButton2 from "./ThemeButton2";
 
-export default function SheetContentItem() {
+export default function SheetContentItem(props: {
+  data?: any;
+  loading?: boolean;
+}) {
+  const itemData = props.data || {};
+  const [lightboxController, setLightboxController] = useState({
+    toggler: false,
+    slide: 1,
+  });
+
+  const openLightbox = () => {
+    setLightboxController((prev) => ({
+      toggler: !prev.toggler,
+      slide: 1,
+    }));
+  };
+
   return (
-    <div className="sheet-item will-change-transform">
-      <div className="sheet-image backface-hidden overflow-hidden relative">
-        <Image
-          className="w-full object-cover object-center h-full relative z-10 will-change-transform"
-          src={sheetImg?.src}
-          width="337"
-          height="476"
-          blurDataURL={sheetImg?.blurDataURL}
-          placeholder={"blur"}
-          loading="lazy"
-          alt="Rabbis"
-        />
-        <div className="sheet-image-overlay absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform backface-hidden"></div>
+    itemData && (
+      <div className="sheet-item will-change-transform overflow-hidden">
+        {itemData?.acf?.thumbnail && (
+          <FsLightbox
+            toggler={lightboxController.toggler}
+            sources={[itemData?.acf?.thumbnail?.url || sheetImg.src]}
+            types={["image"]}
+            slide={lightboxController.slide}
+          />
+        )}
+        {itemData?.acf?.thumbnail && (
+          <div className="sheet-image backface-hidden overflow-hidden relative">
+            <Image
+              className="w-full object-cover object-center h-full relative z-10 will-change-transform"
+              src={itemData?.acf?.thumbnail?.url || sheetImg.src}
+              width="337"
+              height="476"
+              blurDataURL={
+                CreateShimmerDataUrl(337, 476) || sheetImg?.blurDataURL
+              }
+              placeholder={"blur"}
+              loading="lazy"
+              alt={itemData?.title || "Sheet Item Image"}
+            />
+          </div>
+        )}
+        {props.loading && (
+          <div className="sheet-icons flex justify-center mt-4.5 gap-x-4">
+            <ThemeButton2
+              extraClass="download w-11 h-11 flex item-center justify-center rounded-none cursor-pointer"
+              bgColor="bg-[#C3A13F]"
+              textColor="text-[#000000]"
+              hoverBgColor="bg-[#ffffff]"
+              svgIcon={<ArrowDownIcon />}
+              svgIconClass={""}
+              onClick={() => {
+                if (itemData?.acf?.magazine) {
+                  window.open(itemData?.acf?.magazine?.url, "_blank");
+                }
+              }}
+            />
+            <ThemeButton2
+              extraClass="view-button w-11 h-11 flex item-center justify-center rounded-none cursor-pointer"
+              bgColor="bg-[#C3A13F]"
+              textColor="text-[#000000]"
+              hoverBgColor="bg-[#ffffff]"
+              svgIcon={<ViewIcon />}
+              svgIconClass={""}
+              onClick={() => {
+                if (itemData?.acf?.thumbnail) {
+                  openLightbox();
+                }
+              }}
+            />
+          </div>
+        )}
+        {!props.loading && (
+          <div className="flex h-full items-center justify-center absolute top-0 left-0 w-full z-40 bg-black">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
+            </div>
+          </div>
+        )}
       </div>
-      <div className="sheet-icons flex justify-center mt-4.5 gap-x-4">
-        <ThemeButton2
-          extraClass="download w-11 h-11 flex item-center justify-center rounded-none cursor-pointer"
-          bgColor="bg-[#C3A13F]"
-          textColor="text-[#000000]"
-          hoverBgColor="bg-[#ffffff]"
-          svgIcon={<ArrowDownIcon />}
-          svgIconClass={""}
-        />
-        <ThemeButton2
-          extraClass="download w-11 h-11 flex item-center justify-center rounded-none cursor-pointer"
-          bgColor="bg-[#C3A13F]"
-          textColor="text-[#000000]"
-          hoverBgColor="bg-[#ffffff]"
-          svgIcon={<ViewIcon />}
-          svgIconClass={""}
-        />
-      </div>
-    </div>
+    )
   );
 }

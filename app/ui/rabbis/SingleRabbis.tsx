@@ -1,5 +1,6 @@
 import parse from "html-react-parser";
 import Image from "next/image";
+import CreateShimmerDataUrl from "../CreateShimmerDataUrl";
 
 interface ChildProps {
   title: string;
@@ -15,8 +16,10 @@ export default function SingleRabbis(props: ChildProps) {
           src={props?.image?.src}
           width="336"
           height="334"
-          blurDataURL={props?.image?.blurDataURL}
-          placeholder={"blur"}
+          blurDataURL={
+            props?.image?.blurDataURL || CreateShimmerDataUrl(336, 334)
+          }
+          placeholder={props?.image?.blurDataURL ? "blur" : "empty"}
           loading="lazy"
           alt="Rabbis"
         />

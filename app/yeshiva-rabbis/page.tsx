@@ -25,10 +25,17 @@ if (typeof window !== "undefined") {
 }
 
 export default function Page() {
+  // Selectors
+  const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
+  const [rabbisSectionsData, setRabbisSectionsData] = useState<any[]>([]);
+  const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(300);
+  const [sectionWidth, setSectionWidth] = useState(200);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   // Router Path
   const pathname = usePathname();
-  // Rabbis Data
-  const RabbisSection1 = [
+  const fallbackRabbisSections = [
     {
       sectionTitle: "ראשי הישיבה",
       sectionContent: [
@@ -46,8 +53,6 @@ export default function Page() {
         },
       ],
     },
-  ];
-  const RabbisSection2 = [
     {
       sectionTitle: "מנהל רוחני",
       sectionContent: [
@@ -57,8 +62,6 @@ export default function Page() {
         },
       ],
     },
-  ];
-  const RabbisSection3 = [
     {
       sectionTitle: "רמים",
       sectionContent: [
@@ -102,9 +105,124 @@ export default function Page() {
   const progress = useRef<HTMLDivElement>(null);
   const ArrowButtonRef = useRef<HTMLDivElement>(null);
 
+  // Get Page Data From backend
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadRabbisPageData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/yeshiva-rabbis", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load rabbis page data.");
+        }
+
+        const data = await response.json();
+
+        const sections = Array.isArray(data?.acf?.section)
+          ? data.acf.section
+          : [];
+
+        const mappedSections = await Promise.all(
+          sections.map(async (section: any) => {
+            const sectionPostIds = (section?.section_posts || [])
+              .map((post: any) => post?.ID || post?.id || post)
+              .filter(Boolean);
+
+            if (!sectionPostIds.length) {
+              return {
+                sectionTitle: section?.section_title || "",
+                sectionContent: [],
+              };
+            }
+
+            const sectionPostsResponse = await fetch(
+              `/api/yeshiva-rabbis/posts?include=${sectionPostIds.join(",")}&orderby=include&per_page=100`,
+              { cache: "no-store" },
+            );
+
+            if (!sectionPostsResponse.ok) {
+              return {
+                sectionTitle: section?.section_title || "",
+                sectionContent: [],
+              };
+            }
+
+            const sectionPostsData = await sectionPostsResponse.json();
+            const sectionContent = (sectionPostsData?.posts || []).map(
+              (post: any) => ({
+                title: post?.acf?.title || post?.title || "",
+                image: {
+                  src:
+                    post?.acf?.image?.url ||
+                    post?.acf?.thumbnail?.url ||
+                    Rabbis1.src,
+                  blurDataURL: post?.acf?.image?.blurDataURL,
+                },
+              }),
+            );
+
+            return {
+              sectionTitle: section?.section_title || "",
+              sectionContent,
+            };
+          }),
+        );
+
+        if (isMounted) {
+          setRabbisPageData(
+            mappedSections.length ? mappedSections : fallbackRabbisSections,
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        setError("Failed to load rabbis page data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadRabbisPageData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!rabbisPageData) {
+      return;
+    }
+    setPageDataFetched(true);
+    // Update Section Width on Data Change
+    const updateSectionWidth = () => {
+      const postCount = rabbisPageData.reduce(
+        (acc: any, section: any) => acc + section.sectionContent.length,
+        0,
+      );
+      const newSectionWidth =
+        postCount * 17.5 +
+        (postCount - 1) * 5 +
+        24 +
+        (rabbisPageData?.length - 1) * 10; // 17.5vw per post + 5vw gap + 24vw for padding + 10vw per section
+
+      setSectionWidth(newSectionWidth);
+      setContainerWidth(newSectionWidth);
+    };
+
+    updateSectionWidth();
+    window.addEventListener("resize", updateSectionWidth);
+    return () => {
+      window.removeEventListener("resize", updateSectionWidth);
+    };
+  }, [rabbisPageData]);
+
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       // Overflow body
       const scurbScale = 2;
 
@@ -113,7 +231,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerHeight * 3,
+          end: "+=" + window.innerWidth * (containerWidth / 100),
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -155,7 +273,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerHeight * 3 - 500),
+          end: "+=" + (window.innerWidth * (containerWidth / 100) - 500),
           scrub: scurbScale,
         },
       });
@@ -167,7 +285,7 @@ export default function Page() {
         verticalSection.kill();
       }
     };
-  }, [pathname]);
+  }, [pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
@@ -229,7 +347,7 @@ export default function Page() {
         );
       }
     }
-  }, [animationPlayed]);
+  }, [pageDataFetched]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
@@ -347,36 +465,6 @@ export default function Page() {
     };
   }, [isAllAnimationComplete]);
 
-  // Active Scroll Section
-  // const [activeSection, setActiveSection] = useState(0);
-  // const [offsetPositions, setOffsetPositions] = useState<number[]>([]);
-
-  // useEffect(() => {
-  //   const rabbisContent = main.current?.querySelectorAll(".rabbis-section");
-
-  //   if (!rabbisContent?.length) {
-  //     setOffsetPositions([]);
-  //     return;
-  //   }
-
-  //   setOffsetPositions(
-  //     Array.from(rabbisContent, (section) => GetRightPosition(section)),
-  //   );
-  // }, [isAllAnimationComplete]);
-
-  // // Arrow Button Click Handler
-  // useEffect(() => {
-  //   console.log(offsetPositions);
-  //   if (activeSection < offsetPositions.length) {
-  //     const offSetRight =
-  //       Number(offsetPositions[activeSection]) -
-  //       Number(offsetPositions[0] - 100);
-  //     window.scrollTo({
-  //       top: offSetRight,
-  //       behavior: "smooth",
-  //     });
-  //   }
-  // }, [activeSection]);
   const [activePostion, setActivePosition] = useState(0);
   useEffect(() => {
     const mainWidth =
@@ -387,10 +475,9 @@ export default function Page() {
         setActivePosition(maxScroll);
       }
     }
-    window.scrollTo({
-      top: activePostion,
-      behavior: "smooth",
-    });
+    window.scrollTo(0, activePostion);
+    console.log(mainWidth);
+    console.log(activePostion);
   }, [activePostion]);
 
   useGSAP(() => {
@@ -412,90 +499,113 @@ export default function Page() {
       });
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto mb-4" />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!rabbisPageData) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <p className="text-gray-600">
+            The requested rabbi post could not be found.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div ref={main} id="main" className="relative">
-      <LoadingEffect animated={setAnimationPlayed} />
-      <Header animationStatus={isAllAnimationComplete} />
-      <SmoothWrapper>
-        <main
-          ref={page}
-          id="page"
-          dir="ltr"
-          className="main relative overflow-hidden z-10 opacity-0"
-        >
-          <div
-            ref={panel}
-            id="panel-wrapper"
-            className="w-screen h-screen flex items-end justify-end"
+    rabbisPageData && (
+      <div ref={main} id="main" className="relative">
+        <LoadingEffect animated={setAnimationPlayed} />
+        <Header animationStatus={isAllAnimationComplete} />
+        <SmoothWrapper>
+          <main
+            ref={page}
+            id="page"
+            dir="ltr"
+            className="main relative overflow-hidden z-10 opacity-0"
           >
             <div
-              ref={wrapper}
-              id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[400vw] h-screen items-center will-change-transform`}
+              ref={panel}
+              id="panel-wrapper"
+              className="w-screen h-screen flex items-end justify-end"
             >
-              <section
-                className={`min-w-[15vw] will-change-transform`}
-              ></section>
-              <RabbisSection
-                rabbisContent={RabbisSection1}
-                className={
-                  "will-change-transform rabbis-section-1 active-section"
-                }
-              />
-              <section
-                className={`min-w-[10vw] will-change-transform`}
-              ></section>
-              <RabbisSection
-                rabbisContent={RabbisSection2}
-                className={"will-change-transform rabbis-section-2"}
-              />
-              <section
-                className={`min-w-[10vw] will-change-transform`}
-              ></section>
-              <RabbisSection
-                rabbisContent={RabbisSection3}
-                className={"will-change-transform rabbis-section-3"}
-              />
-              <section
-                className={`min-w-[15vw] will-change-transform`}
-              ></section>
+              <div
+                ref={wrapper}
+                id="section-wrapper"
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+              >
+                <section
+                  className={`rabbis-sections w-[${sectionWidth}vw] min-w-[${sectionWidth}vw] will-change-transform flex justify-baseline flex-row-reverse items-center gap-x-[10vw] px-[12vw] h-full`}
+                >
+                  {rabbisPageData?.map((section: any, index: number) => (
+                    <RabbisSection
+                      key={index}
+                      rabbisContent={[section]}
+                      className={`will-change-transform rabbis-section-${index + 1}`}
+                    />
+                  ))}
+                </section>
+              </div>
             </div>
-          </div>
-        </main>
-        <Footer className={"relative z-20"} />
-      </SmoothWrapper>
-      <div
-        ref={ArrowButtonRef}
-        className="rabbis-arrow-wrapper fixed top-0 left-0 z-50 h-screen w-[20vw]"
-      >
-        <div className="rabbis-arrow w-full h-full flex items-center justify-center bg-linear-to-r from-black to-[rgba(0,0,0,0)] opacity-0">
-          <button
-            onClick={() =>
-              setActivePosition(activePostion + window.innerWidth / 2)
-            }
-            className="next-button w-20 h-20 border-2 border-[#C3A13F] rounded-full bg-black p-5 cursor-pointer"
-          >
-            <ArrowLeftIcon2 />
-          </button>
-        </div>
-      </div>
-      <div
-        ref={waveLine}
-        className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
-      >
+          </main>
+          <Footer className={"relative z-20"} />
+        </SmoothWrapper>
         <div
-          ref={waveMask}
-          style={{
-            maskImage: `url(${Wave.src})`,
-          }}
-          className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+          ref={ArrowButtonRef}
+          className="rabbis-arrow-wrapper fixed top-0 left-0 z-50 h-screen w-[20vw]"
+        >
+          <div className="rabbis-arrow w-full h-full flex items-center justify-center bg-linear-to-r from-black to-[rgba(0,0,0,0)] opacity-0">
+            <button
+              onClick={() =>
+                setActivePosition(activePostion + window.innerWidth * 0.5)
+              }
+              className="next-button w-20 h-20 border-2 border-[#C3A13F] rounded-full bg-black p-5 cursor-pointer"
+            >
+              <ArrowLeftIcon2 />
+            </button>
+          </div>
+        </div>
+        <div
+          ref={waveLine}
+          className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
         >
           <div
-            ref={progress}
-            className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#0a0a0a] z-10"
-          ></div>
+            ref={waveMask}
+            style={{
+              maskImage: `url(${Wave.src})`,
+            }}
+            className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+          >
+            <div
+              ref={progress}
+              className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#0a0a0a] z-10"
+            ></div>
+          </div>
         </div>
       </div>
-    </div>
+    )
   );
 }

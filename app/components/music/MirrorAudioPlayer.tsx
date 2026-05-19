@@ -11,9 +11,8 @@ import SearchIcon2 from "@/app/assets/icons/SearchIcon2";
 import AudioPlayer2 from "@/app/ui/AudioPlayer2";
 import parse from "html-react-parser";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
 import AlbumImage from "../../assets/images/album-image.jpg";
 import PlayerBG from "../../assets/images/mirros-bg.jpg";
@@ -95,18 +94,12 @@ export default function MirrorAudioPlayer(props: ChildProps) {
 
   // State
   const musicPageData = (props.data as MusicItem) || {};
-  useEffect(() => {
-    console.log("Music Player Data:", musicPageData);
-  }, [musicPageData]);
+
   const [activeMusic, setActiveMusic] = useState({
     tabIndex: 0,
     musicIndex: 0,
-    title: `${
-      musicPageData?.album?.music_category[props.activeTab].musics[0].title
-    }`,
-    link: `${
-      musicPageData?.album?.music_category[props.activeTab].musics[0].music?.url
-    }`,
+    title: `${musicPageData?.album?.music_category[0].musics[0].title}`,
+    link: `${musicPageData?.album?.music_category[0].musics[0].music?.url}`,
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInfinityActive, setIsInfinityActive] = useState(false);
@@ -115,6 +108,35 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   const [musicDurations, setMusicDurations] = useState<Record<string, string>>(
     {},
   );
+  const [isAlbumTextExpanded, setIsAlbumTextExpanded] = useState(false);
+
+  // Calculate line count and truncate album text to 4 lines
+  const albumText =
+    musicPageData?.album?.music_category?.[props.activeTab]?.album_text || "";
+  const { lineCount: albumTextLineCount, truncatedAlbumText } = useMemo(() => {
+    // Strip HTML tags to count actual content lines
+    const plainText = albumText
+      .replace(/<[^>]*>/g, "") // Remove HTML tags
+      .trim();
+    const lines = plainText
+      .split("\n")
+      .filter((line: string) => line.trim() !== "");
+    const count = lines.length;
+
+    if (count > 4) {
+      // Rejoin first 4 lines
+      const first4Lines = lines.slice(0, 4).join("\n");
+      return { lineCount: count, truncatedAlbumText: first4Lines };
+    }
+    return { lineCount: count, truncatedAlbumText: plainText };
+  }, [albumText]);
+
+  const shouldShowAlbumReadMore = albumTextLineCount > 4;
+
+  // Handle album text read more click
+  const handleAlbumTextReadMore = () => {
+    setIsAlbumTextExpanded(!isAlbumTextExpanded);
+  };
 
   const currentMusicList =
     musicPageData?.allAlbums?.[props.activeMusicFolder]?.album
@@ -489,7 +511,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
         </button>
 
         <div className="player-content flex items-start w-full h-full gap-x-[4.4vw]">
-          <div className="player-widgets w-92.5 min-w-92.5">
+          <div className="player-widgets w-[20%]">
             <div className="album-widget w-full h-full px-3.5 py-4.5 pb-8 bg-linear-to-b from-[#ffffff15] to-[#ffffff08] backdrop-blur-lg rounded-3xl drop-shadow-[0_21px_70px_0_rgba(0,0,0,0.55)]">
               {/* Album thumb */}
               <div className="album-thumb w-full h-83.5 rounded-[20] overflow-hidden relative">
@@ -533,7 +555,10 @@ export default function MirrorAudioPlayer(props: ChildProps) {
               <div className="album-result mt-3 flex flex-col gap-y-2 max-h-37 overflow-y-auto">
                 {musicPageData?.allAlbums?.map((item: any, index: number) => (
                   <div
-                    onClick={() => props.setActiveMusicFolder(index)}
+                    onClick={() => {
+                      props.setActiveMusicFolder(index);
+                      props.setActiveTab(0);
+                    }}
                     key={index}
                     className={`text-[#F4EDDD] text-[18px] leading-[100%] ${props.activeMusicFolder === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.10)] rounded-2xl text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300`}
                   >
@@ -556,7 +581,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
               </div>
             </div>
           </div>
-          <div className="player-left w-full flex flex-col gap-y-[7vh]">
+          <div className="player-left w-[calc(80%-4.4vw)] flex flex-col gap-y-[7vh]">
             <div className="player-content flex flex-col gap-y-[2vh]">
               <h2 className="text-[#C3A13F] text-[55px] leading-[75%]">
                 {parse(musicPageData?.introduction?.album_title || "")}
@@ -568,14 +593,14 @@ export default function MirrorAudioPlayer(props: ChildProps) {
 
             <div className="player-content-tabs flex flex-col gap-y-5">
               {/* Tab headers */}
-              <div className="tab-head flex gap-x-6">
+              <div className="tab-head flex gap-x-6 max-w-full">
                 {musicPageData?.album?.music_category?.map(
                   (item: any, index: number) => (
                     <div
                       key={index}
                       data-key={index}
                       onClick={() => props.setActiveTab(index)}
-                      className={`single-tab-head text-[#ffffff] text-[24px] leading-[100%] ${props.activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer w-1/4 transition-all duration-300 ${props.activeTab === index && "active-tab"}`}
+                      className={`single-tab-head min-w-60 w-auto text-[#ffffff] text-[24px] leading-[100%] ${props.activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300 ${props.activeTab === index && "active-tab"}`}
                     >
                       <p>{parse(item.album_title || "")}</p>
                       <span className="icon w-3">
@@ -592,15 +617,16 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                   <div data-index={props.activeTab} className="tab-content">
                     <div className="text text-[18px] leading-[120%] max-w-191.25">
                       {parse(
-                        musicPageData?.album?.music_category[props.activeTab]
-                          ?.album_text || "",
+                        isAlbumTextExpanded ? albumText : truncatedAlbumText,
                       )}
-                      <Link
-                        href={"/"}
-                        className="text-[14px] leading-[100%] text-[#E5C15A] mr-2"
-                      >
-                        קרא עוד...
-                      </Link>
+                      {shouldShowAlbumReadMore && (
+                        <button
+                          onClick={handleAlbumTextReadMore}
+                          className="read-more text-[14px] leading-[100%] text-[#E5C15A] mr-2 cursor-pointer hover:opacity-70 transition-opacity"
+                        >
+                          {isAlbumTextExpanded ? "הסתר..." : "קרא עוד..."}
+                        </button>
+                      )}
                     </div>
 
                     {/* Music list */}

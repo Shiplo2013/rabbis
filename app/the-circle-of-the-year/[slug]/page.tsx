@@ -382,7 +382,7 @@ export default function Page() {
         window.removeEventListener("mousemove", handleMouseMove);
       };
     }
-  }, [pageDataFetched]);
+  }, [pathname, pageDataFetched]);
 
   // Set Body Overflow Hidden
   useEffect(() => {

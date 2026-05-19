@@ -58,7 +58,7 @@ export default function ContentSection(props: ChildProps) {
         </div>
 
         {contentData?.blockquote && (
-          <div className="rabbis-text1 text-[70px] leading-[75%] text-[#57717A] w-[55vw] min-w-[55vw] px-[5.4vw] py-[5vh] text-right">
+          <div className="rabbis-text1 text-[55px] leading-[75%] text-[#57717A] w-[55vw] min-w-[55vw] px-[5.4vw] py-[5vh] text-right">
             <h3>{parse(contentData?.blockquote)}</h3>
           </div>
         )}

@@ -14,6 +14,8 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   sectionData: SingleCyclePictureData[];
+  activeCategory: number;
+  setActiveCategory: (index: number) => void;
 }
 
 export default function CyclePicturesSection(props: ChildProps) {
@@ -69,7 +71,15 @@ export default function CyclePicturesSection(props: ChildProps) {
               >
                 <div className="year-month-categories pl-10 pr-2.5">
                   {Years.map((item, index) => {
-                    return <GetHebrewYear key={index} year={item} />;
+                    return (
+                      <GetHebrewYear
+                        key={index}
+                        index={index}
+                        year={item}
+                        activeCategory={props.activeCategory}
+                        setActiveCategory={props.setActiveCategory}
+                      />
+                    );
                   })}
                 </div>
               </SimpleBar>

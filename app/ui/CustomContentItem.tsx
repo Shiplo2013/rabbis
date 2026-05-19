@@ -4,9 +4,13 @@ import ThemeButton from "./ThemeButton";
 
 interface CustomContentItemProps {
   data: any;
+  postLoading?: boolean;
 }
 
-export default function CustomContentItem({ data }: CustomContentItemProps) {
+export default function CustomContentItem({
+  data,
+  postLoading,
+}: CustomContentItemProps) {
   const parsedData = data || {};
 
   return (
@@ -44,6 +48,14 @@ export default function CustomContentItem({ data }: CustomContentItemProps) {
           hoverBgColor="bg-black"
         />
       </div>
+
+      {postLoading && (
+        <div className="flex h-full items-center justify-center absolute top-0 left-0 w-full z-40 bg-[#FBF4E6]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

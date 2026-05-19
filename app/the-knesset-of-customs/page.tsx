@@ -2,11 +2,6 @@
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import PostImage1 from "../assets/images/community-post1.jpg";
-import PostImage2 from "../assets/images/community-post2.jpg";
-import PostImage3 from "../assets/images/community-post3.jpg";
-import PostImage4 from "../assets/images/community-post4.jpg";
-import PostImage5 from "../assets/images/community-post5.jpg";
 import IntroBG from "../assets/images/intro-bg-10.jpg";
 import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
@@ -28,66 +23,19 @@ export default function Page() {
   // Selectors
   const [knessetPageData, setKnessetPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [postLoading, setPostLoading] = useState(true);
   // Router Path
   const pathname = usePathname();
 
-  // Page Data
-  const IntroData1 = [
-    {
-      title: `כנסת המנהגים`,
-      content: `הישיבה הקדושה משמרת בקרבה מסורות ומנהגים הלכתיים הנהוגים בה מימי סלבודקא ועד היום הזה. במדור זה קובצו מנהגים ייחודיים לישיבה ומסורותיה ההלכתיות, אשר עברו מדור לדור ונשתמרו בקפידה, כעדות חיה לרוחה, לדרכה ולנאמנותה ליסודות שנקבעו מראשיתה בהרר קודש.`,
-    },
-  ];
-  // Rabbis Data
-  const CommunitesPostCat1 = [
-    {
-      sectionTitle: `פתח תקווה`,
-      sectionContent: [
-        {
-          title: `חברון שירת ריבה`,
-          content: `שכונת יוצאי חברון-גני הדר`,
-          image: PostImage1,
-        },
-        {
-          title: `חברון היכל יחזקאל`,
-          content: `מרכז העיר`,
-          image: PostImage2,
-        },
-        {
-          title: `חברון צעירים`,
-          content: `שכונת הדר גנים`,
-          image: PostImage3,
-        },
-      ],
-    },
-  ];
-  const CommunitesPostCat2 = [
-    {
-      sectionTitle: `בני ברק`,
-      sectionContent: [
-        {
-          title: `בית הכנסת הגדול בני ברק`,
-          content: `חניכי ישיבת חברון`,
-          image: PostImage4,
-        },
-        {
-          title: `מרכז העיר`,
-          content: `חברון סמטת האר"י`,
-          image: PostImage5,
-        },
-        {
-          title: `חברון מהרש"ל`,
-          content: `מרכז העיר`,
-          image: PostImage5,
-        },
-      ],
-    },
-  ];
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
+  const [submittedSearch, setSubmittedSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   // Vertical Section
   const [verticalSection, setVerticalSection] =
     useState<gsap.core.Timeline | null>(null);
@@ -110,7 +58,20 @@ export default function Page() {
         const response = await fetch("/api/the-knesset-of-customs", {
           cache: "no-store",
         });
-        const response2 = await fetch("/api/the-knesset-of-customs/posts", {
+        const response3 = await fetch(
+          "/api/the-knesset-of-customs/categories",
+          {
+            cache: "no-store",
+          },
+        );
+        const normalizedSearch = submittedSearch.trim();
+        const normalizedCategory = selectedCategory?.trim();
+        const postsUrl = normalizedSearch
+          ? `/api/the-knesset-of-customs/posts?search=${encodeURIComponent(normalizedSearch)}${normalizedCategory ? `&knesset_cat=${encodeURIComponent(normalizedCategory)}` : ""}`
+          : normalizedCategory
+            ? `/api/the-knesset-of-customs/posts?knesset_cat=${encodeURIComponent(normalizedCategory)}`
+            : "/api/the-knesset-of-customs/posts";
+        const response2 = await fetch(postsUrl, {
           cache: "no-store",
         });
 
@@ -122,14 +83,33 @@ export default function Page() {
           throw new Error("Failed to load the knesset of customs posts data.");
         }
 
+        if (!response3.ok) {
+          throw new Error(
+            "Failed to load the knesset of customs categories data.",
+          );
+        }
+
         const data = await response.json();
         const data2 = await response2.json();
+        const data3 = await response3.json();
 
         if (isMounted) {
-          setKnessetPageData({ pageData: data, postsData: data2 });
+          setKnessetPageData({
+            pageData: data,
+            postsData: data2,
+            categoriesData: data3,
+          });
         }
       } catch (error) {
         console.error(error);
+        if (isMounted) {
+          setError("Failed to load the knesset of customs page data.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+          setPostLoading(false);
+        }
       }
     };
 
@@ -138,7 +118,7 @@ export default function Page() {
     return () => {
       isMounted = false;
     };
-  }, [pathname]);
+  }, [pathname, submittedSearch, selectedCategory]);
 
   useEffect(() => {
     if (!knessetPageData) {
@@ -146,7 +126,6 @@ export default function Page() {
     }
     if (animationPlayed) {
       setPageDataFetched(true);
-      console.log("Page Data: ", knessetPageData);
 
       const updateSectionWidth = () => {
         const newSectionWidth =
@@ -171,6 +150,13 @@ export default function Page() {
   useGSAP(() => {
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
       setPageContentAnimation();
+    }
+    // Return
+  }, [pageDataFetched]);
+
+  // Page Section Animation
+  useGSAP(() => {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       // Overflow body
       const scurbScale = 2;
 
@@ -402,7 +388,7 @@ export default function Page() {
           start: () => {
             return window.innerWidth * 0.3;
           },
-          toggleActions: "restart pause resume reverse",
+          //toggleActions: "restart pause resume reverse",
         },
       });
     }
@@ -503,6 +489,42 @@ export default function Page() {
       });
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!knessetPageData) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <p className="text-gray-600">
+            The requested rabbi post could not be found.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     knessetPageData && (
       <div ref={main} id="main" className="relative">
@@ -546,6 +568,12 @@ export default function Page() {
                   extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
                   animWidthText={1}
                   data={knessetPageData?.postsData}
+                  categories={knessetPageData?.categoriesData?.terms || []}
+                  activeCategory={selectedCategory}
+                  onCategorySelect={setSelectedCategory}
+                  onSearchSubmit={setSubmittedSearch}
+                  setPostLoading={setPostLoading}
+                  postLoading={postLoading}
                 />
               </div>
             </div>

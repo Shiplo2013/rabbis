@@ -863,14 +863,18 @@ export default function Page() {
                   }}
                   autoHide={false}
                 >
-                  <div className="title mb-[5vh]">
-                    <h3 className="text-[55px] leading-[70%] text-[#D1A941] font-bold">
-                      {parse(post?.acf?.popup_1?.title || "")}
-                    </h3>
-                  </div>
-                  <div className="content text-[21px] leading-[1.4em] text-black">
-                    {parse(post?.acf?.popup_1?.text || "")}
-                  </div>
+                  {post?.acf?.popup_1?.title && (
+                    <div className="title mb-[5vh]">
+                      <h3 className="text-[55px] leading-[70%] text-[#D1A941] font-bold">
+                        {parse(post?.acf?.popup_1?.title || "")}
+                      </h3>
+                    </div>
+                  )}
+                  {post?.acf?.popup_1?.text && (
+                    <div className="content text-[21px] leading-[1.4em] text-black">
+                      {parse(post?.acf?.popup_1?.text || "")}
+                    </div>
+                  )}
                 </SimpleBar>
               </div>
               <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">
@@ -904,54 +908,62 @@ export default function Page() {
                       {parse(post?.acf?.popup_2?.title || "")}
                     </h3>
                   </div>
-                  <div className="book-image mb-9.5">
-                    <div className="w-77 h-auto">
-                      <Image
-                        className="w-full h-full object-cover object-center"
-                        src={post?.acf?.popup_2?.image_1?.url || ""}
-                        alt="Book Image"
-                        width={400}
-                        height={400}
-                        blurDataURL={CreateShimmerDataUrl(400, 400)}
-                        placeholder="blur"
-                        loading="lazy"
-                      />
+                  {post?.acf?.popup_2?.image_1 && (
+                    <div className="book-image mb-9.5">
+                      <div className="w-77 h-auto">
+                        <Image
+                          className="w-full h-full object-cover object-center"
+                          src={post?.acf?.popup_2?.image_1?.url || ""}
+                          alt="Book Image"
+                          width={400}
+                          height={400}
+                          blurDataURL={CreateShimmerDataUrl(400, 400)}
+                          placeholder="blur"
+                          loading="lazy"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="content text-[21px] leading-[1.4em] text-black mb-10">
-                    <div className="title mb-7">
-                      <h4 className="text-[34px] leading-[70%] font-medium">
-                        {parse(post?.acf?.popup_2?.text_group_1?.title || "")}
-                      </h4>
+                  )}
+                  {post?.acf?.popup_2?.text_group_1 && (
+                    <div className="content text-[21px] leading-[1.4em] text-black mb-10">
+                      <div className="title mb-7">
+                        <h4 className="text-[34px] leading-[70%] font-medium">
+                          {parse(post?.acf?.popup_2?.text_group_1?.title || "")}
+                        </h4>
+                      </div>
+                      <div className="text flex flex-col gap-y-4">
+                        {parse(post?.acf?.popup_2?.text_group_1?.text || "")}
+                      </div>
                     </div>
-                    <div className="text flex flex-col gap-y-4">
-                      {parse(post?.acf?.popup_2?.text_group_1?.text || "")}
+                  )}
+                  {post?.acf?.popup_2?.image_2 && (
+                    <div className="book-image mb-9.5">
+                      <div className="w-77 h-auto">
+                        <Image
+                          className="w-full h-full object-cover object-center"
+                          src={post?.acf?.popup_2?.image_2?.url || ""}
+                          alt="Book Image"
+                          width={400}
+                          height={400}
+                          blurDataURL={CreateShimmerDataUrl(400, 400)}
+                          placeholder="blur"
+                          loading="lazy"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="book-image mb-9.5">
-                    <div className="w-77 h-auto">
-                      <Image
-                        className="w-full h-full object-cover object-center"
-                        src={post?.acf?.popup_2?.image_2?.url || ""}
-                        alt="Book Image"
-                        width={400}
-                        height={400}
-                        blurDataURL={CreateShimmerDataUrl(400, 400)}
-                        placeholder="blur"
-                        loading="lazy"
-                      />
+                  )}
+                  {post?.acf?.popup_2?.text_group_2 && (
+                    <div className="content text-[21px] leading-[1.4em] text-black">
+                      <div className="title mb-7">
+                        <h4 className="text-[34px] leading-[70%] font-medium">
+                          {parse(post?.acf?.popup_2?.text_group_2?.title || "")}
+                        </h4>
+                      </div>
+                      <div className="text flex flex-col gap-y-4">
+                        {parse(post?.acf?.popup_2?.text_group_2?.text || "")}
+                      </div>
                     </div>
-                  </div>
-                  <div className="content text-[21px] leading-[1.4em] text-black">
-                    <div className="title mb-7">
-                      <h4 className="text-[34px] leading-[70%] font-medium">
-                        {parse(post?.acf?.popup_2?.text_group_2?.title || "")}
-                      </h4>
-                    </div>
-                    <div className="text flex flex-col gap-y-4">
-                      {parse(post?.acf?.popup_2?.text_group_2?.text || "")}
-                    </div>
-                  </div>
+                  )}
                 </SimpleBar>
               </div>
               <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">

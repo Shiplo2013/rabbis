@@ -7,37 +7,35 @@ import { useState } from "react";
 interface SidebarProps {
   activeCategory: string | null;
   onCategorySelect: (id: string) => void;
+  categories?: Array<{ id: number; name: string }>;
   searchQuery: string;
   onSearchChange: (value: string) => void;
+  onSearchSubmit?: (value: string) => void;
+  setPostLoading?: (value: boolean) => void;
 }
 
 export default function Sidebar({
   activeCategory,
   onCategorySelect,
+  categories,
   searchQuery,
   onSearchChange,
+  onSearchSubmit,
+  setPostLoading,
 }: SidebarProps) {
   // Menu State
   const [menuOpen, setMenuOpen] = useState(true);
 
-  const catData = [
-    {
-      name: `חגים`,
-      id: `category1`,
-    },
-    {
-      name: `פרשת שבוע`,
-      id: `category2`,
-    },
-    {
-      name: `לימוד`,
-      id: `category3`,
-    },
-    {
-      name: `בינה`,
-      id: `category4`,
-    },
-  ];
+  const catData = categories || [];
+
+  const handleSearchSubmit = () => {
+    if (onSearchSubmit) {
+      onSearchSubmit(searchQuery);
+    }
+    if (setPostLoading) {
+      setPostLoading(true);
+    }
+  };
 
   return (
     <div className="sheet-sidebar-wrapper text-[#1A1A1A]">
@@ -50,8 +48,18 @@ export default function Sidebar({
           placeholder="חיפוש חופשי"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleSearchSubmit();
+            }
+          }}
         />
-        <button className="cursor-pointer absolute top-1.5 left-1.75">
+        <button
+          type="button"
+          onClick={handleSearchSubmit}
+          className="cursor-pointer absolute top-1.5 left-1.75"
+        >
           <SearchIcon />
         </button>
       </div>
@@ -79,9 +87,14 @@ export default function Sidebar({
               <li key={index}>
                 <button
                   data-category={item.id}
-                  onClick={() => onCategorySelect(item.id)}
+                  onClick={() => {
+                    onCategorySelect(String(item.id));
+                    if (setPostLoading) {
+                      setPostLoading(true);
+                    }
+                  }}
                   className={`transition-all duration-300 cursor-pointer ${
-                    activeCategory === item.id
+                    activeCategory === String(item.id)
                       ? "text-[#D1A941]"
                       : "hover:text-[#999999]"
                   }`}

@@ -22,14 +22,14 @@ export default function Page() {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(300);
+  const [sectionWidth, setSectionWidth] = useState(200);
   // Router Path
   const pathname = usePathname();
 
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(300);
-  const [sectionWidth, setSectionWidth] = useState(200);
   // Vertical Section
   const [verticalSection, setVerticalSection] =
     useState<gsap.core.Timeline | null>(null);

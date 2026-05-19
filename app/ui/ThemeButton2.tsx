@@ -11,11 +11,12 @@ interface ChildProps {
   svgIcon?: React.ReactNode;
   fontSize?: string;
   svgIconClass: string;
+  onClick?: () => void;
 }
 
 export default function ThemeButton2(props: ChildProps) {
   return (
-    <div className="theme-button overflow-hidden">
+    <div className="theme-button overflow-hidden" onClick={props?.onClick}>
       <div
         className={`group flex items-center ${props?.icon !== undefined ? "pl-18" : ""} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[28px]"} ${props?.extraClass} backface-hidden`}
       >

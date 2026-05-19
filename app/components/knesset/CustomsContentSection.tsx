@@ -7,31 +7,21 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   data: any;
+  categories?: Array<{ id: number; name: string }>;
+  activeCategory?: string | null;
+  onCategorySelect?: (id: string | null) => void;
+  onSearchSubmit?: (value: string) => void;
+  setPostLoading?: (value: boolean) => void;
+  postLoading?: boolean;
 }
 
 export default function CustomsContentSection(props: ChildProps) {
   // Selector
   const scrollbarRef = useRef<HTMLDivElement>(null);
-  // Active category filter (null = show all)
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   // Search query
   const [searchQuery, setSearchQuery] = useState("");
-  // Section Data
-  const Years = ["תשפ״ו", "תשפ״ה", "תשפ״ד", "תשפ״ג"];
   const sectionData = props.data || [];
-
-  const filteredData = sectionData?.posts?.filter((item: any) => {
-    const matchesCategory = activeCategory
-      ? item.category === activeCategory
-      : true;
-    const q = searchQuery.trim().toLowerCase();
-    const matchesSearch = q
-      ? item.title.toLowerCase().includes(q) ||
-        item.excerpt.toLowerCase().includes(q) ||
-        item.quote.toLowerCase().includes(q)
-      : true;
-    return matchesCategory && matchesSearch;
-  });
+  const categoriesData = props.categories || [];
   //
   return (
     <section
@@ -41,17 +31,26 @@ export default function CustomsContentSection(props: ChildProps) {
       <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[5.8vw]">
         <div className="sheet-sidebar w-54.5 min-w-[11.35vw] h-full will-change-transform overflow-hidden">
           <Sidebar
-            activeCategory={activeCategory}
-            onCategorySelect={(id) =>
-              setActiveCategory((prev) => (prev === id ? null : id))
-            }
+            activeCategory={props.activeCategory || null}
+            categories={categoriesData}
+            onCategorySelect={(id) => {
+              if (props.onCategorySelect) {
+                props.onCategorySelect(id);
+              }
+            }}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
+            onSearchSubmit={props.onSearchSubmit}
+            setPostLoading={props.setPostLoading}
           />
         </div>
         <div className="sheet-content flex items-stretch gap-x-[3.2vw] will-change-transform">
           {sectionData?.posts?.map((item: any, index: number) => (
-            <CustomContentItem key={index} data={item} />
+            <CustomContentItem
+              key={index}
+              data={item}
+              postLoading={props.postLoading}
+            />
           ))}
           <div className="subscribe-form bg-[#000000] text-white px-[2.5vw] py-[3.7vh] w-[26.35vw] flex items-center flex-col justify-center will-change-transform">
             <div className="subscribe-form-wrapper">

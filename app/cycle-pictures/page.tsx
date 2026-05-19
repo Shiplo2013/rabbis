@@ -23,6 +23,7 @@ if (typeof window !== "undefined") {
 export default function Page() {
   // Router Path
   const pathname = usePathname();
+  const [activeCategory, setActiveCategory] = useState(0);
   // Page Data
   const IntroData1 = [
     {
@@ -423,6 +424,8 @@ export default function Page() {
                 extraClass="min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
                 animWidthText={1}
                 sectionData={PicturesContent}
+                activeCategory={activeCategory}
+                setActiveCategory={setActiveCategory}
               />
             </div>
           </div>
