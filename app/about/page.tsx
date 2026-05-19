@@ -42,7 +42,7 @@ export default async function About() {
   const totalPages = pages.length;
 
   return (
-    <main className="relative pb-10 pt-10 lg:pt-0 lg:mt-[-3%]">
+    <main className="relative pb-10 pt-10 lg:pt-0">
       <div className="t40-container w-full">
         {totalPages > 0 ? (
           <div>

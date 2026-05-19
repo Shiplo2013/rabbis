@@ -3,8 +3,8 @@ import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { useRef } from "react";
+import SimpleBar from "simplebar-react";
 import AlbumIcon1 from "../../assets/images/album-icon1.png";
 import AlbumIcon2 from "../../assets/images/album-icon2.png";
 import FloatImageBorder from "../../assets/images/float-image3.png";
@@ -213,34 +213,49 @@ export default function TerribleDaysSection(props: ChildProps) {
           </div>
         </div>
         <div className="terrible-content w-[77vw] h-full flex items-center justify-center relative p-[8vh_5vw]">
-          <div className="content-wrapper relative flex gap-x-[4.6vw]">
-            <div className="content-right w-1/2">
-              <h3 className="title text-[35px] leading-[85%] text-right">
-                {parse(pageData?.acf?.content_section?.title || "")}
-              </h3>
-              <div className="text text-[21px] leading-[150%]">
-                {parse(pageData?.acf?.content_section?.text_1 || "")}
-              </div>
+          <div className="content-wrapper scroll-bar-content relative flex gap-x-[4.6vw] w-full items-start">
+            <div className="content-right w-full">
+              <SimpleBar
+                style={{
+                  maxHeight: "70vh",
+                  paddingRight: 20,
+                  marginRight: -20,
+                }}
+                autoHide={true}
+              >
+                <h3 className="title text-[35px] leading-[85%] text-right">
+                  {parse(pageData?.acf?.content_section?.title || "")}
+                </h3>
+                <div className="text text-[21px] leading-[150%]">
+                  {parse(pageData?.acf?.content_section?.text_1 || "")}
+                </div>
+              </SimpleBar>
             </div>
-            <div className="content-left w-1/2 text-[21px] leading-[150%] text-right">
-              <div className="text">
-                {parse(pageData?.acf?.content_section?.text_2 || "")}
+            <div className="content-left w-full text-[21px] leading-[150%] text-right relative max-h-[60vh]">
+              <SimpleBar
+                style={{
+                  maxHeight: "60vh",
+                  paddingRight: 20,
+                  marginRight: -20,
+                }}
+                autoHide={false}
+              >
+                <div className="text">
+                  {parse(pageData?.acf?.content_section?.text_2 || "")}
+                </div>
+              </SimpleBar>
+              <div className="float-image absolute left-0 bottom-0 w-62.25 h-39.75 -ml-22.5 -mb-10">
+                <Image
+                  className="float-image w-full object-contain object-center h-full"
+                  src={FloatImageBorder?.src}
+                  width="249"
+                  height="159"
+                  blurDataURL={CreateShimmerDataUrl(249, 159)}
+                  placeholder={"blur"}
+                  loading="lazy"
+                  alt="Turntable"
+                />
               </div>
-              <Link className="text-black font-bold mt-2 block" href={"/"}>
-                קרא עוד...
-              </Link>
-            </div>
-            <div className="float-image absolute left-0 bottom-0 w-62.25 h-39.75 -ml-22.5 mb-[11%]">
-              <Image
-                className="float-image w-full object-contain object-center h-full"
-                src={FloatImageBorder?.src}
-                width="249"
-                height="159"
-                blurDataURL={CreateShimmerDataUrl(249, 159)}
-                placeholder={"blur"}
-                loading="lazy"
-                alt="Turntable"
-              />
             </div>
           </div>
         </div>
@@ -256,7 +271,7 @@ export default function TerribleDaysSection(props: ChildProps) {
                 <div
                   key={index}
                   onClick={() => handleAlbumClick(index)}
-                  className="music-album group flex flex-col gap-y-3 cursor-pointer"
+                  className="music-album group flex flex-col gap-y-3 cursor-pointer max-w-[12.5vw] w-full items-center justify-center"
                 >
                   <div className="icon w-[12.5vw] h-auto relative">
                     <div className="icon-default w-full h-full relative group-hover:opacity-0 group-hover:scale-90 transition-all duration-200 ease-in-out">

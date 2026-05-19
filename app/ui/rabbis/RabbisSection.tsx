@@ -10,7 +10,7 @@ interface ChildProps {
 
 export default function RabbisSection(props: ChildProps) {
   return (
-    <section dir="rtl" className={`rabbis-section ${props.className}`}>
+    <div dir="rtl" className={`rabbis-section ${props.className}`}>
       <div className="rabbis-section-title mb-10.5">
         <h2 className="text-[55px] leading-[0.7em] text-(--theme-color)">
           {props?.rabbisContent?.[0]?.sectionTitle}
@@ -21,6 +21,6 @@ export default function RabbisSection(props: ChildProps) {
           <SingleRabbis key={index} title={item.title} image={item.image} />
         ))}
       </div>
-    </section>
+    </div>
   );
 }

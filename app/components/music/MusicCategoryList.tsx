@@ -22,6 +22,11 @@ export default function MusicCategoryList(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const catList = props.data as any[];
+  // Item Click Handler
+  const handleClick = (index: number) => {
+    props.setActiveMusicItem(index);
+    window.scrollTo(0, window.innerWidth * 1.45);
+  };
   // Section Animation
   useGSAP(
     () => {
@@ -102,7 +107,7 @@ export default function MusicCategoryList(props: ChildProps) {
                 <div
                   key={index}
                   data-index={index}
-                  onClick={() => props.setActiveMusicItem(index)}
+                  onClick={() => handleClick(index)}
                   className={`music-cat border-t border-[#F4EDDD] py-[3vh] cursor-pointer text-center ${
                     props.activeMusicItem === index ? "active" : ""
                   }`}

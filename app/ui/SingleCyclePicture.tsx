@@ -94,7 +94,7 @@ export default function SingleCyclePicture(props: ChildProps) {
           >
             <button
               type="button"
-              className="w-30 h-30 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
+              className="w-30 h-30 p-4 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
             >
               <ViewIcon2 />
             </button>
