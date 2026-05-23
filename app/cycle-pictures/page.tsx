@@ -2,7 +2,6 @@
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import PicturesImage from "../assets/images/cycle-image1.jpg";
 import IntroBG from "../assets/images/intro-bg-10.jpg";
 import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
@@ -21,34 +20,21 @@ if (typeof window !== "undefined") {
 }
 
 export default function Page() {
+  // Selectors
+  const [picturesPageData, setPicturesPageData] = useState<null | any>(null);
+  const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(300);
+  const [sectionWidth, setSectionWidth] = useState(200);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   // Router Path
   const pathname = usePathname();
   const [activeCategory, setActiveCategory] = useState(0);
   // Page Data
-  const IntroData1 = [
-    {
-      title: `תמונות<br/>מחזור`,
-      content: `לורם איפסום דולור סיט אמט, קונסקטורר אדיפיסינג אלית הועניב היושבב שערש שמחויט - שלושע ותלברו חשלו שעותלשך וחאית נובש ערששף.`,
-    },
-  ];
-  // Pictures Data
-  const PicturesContent = [
-    {
-      title: `ועד ק״ל`,
-      image: PicturesImage,
-      link: "/",
-    },
-    {
-      title: `ועד ק״ל`,
-      image: PicturesImage,
-      link: "/",
-    },
-    {
-      title: `ועד ק״ל`,
-      image: "",
-      link: "/",
-    },
-  ];
+  const IntroData1 = {
+    title: `תמונות<br/>מחזור`,
+    content: `לורם איפסום דולור סיט אמט, קונסקטורר אדיפיסינג אלית הועניב היושבב שערש שמחויט - שלושע ותלברו חשלו שעותלשך וחאית נובש ערששף.`,
+  };
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -65,9 +51,92 @@ export default function Page() {
   const waveMask = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
 
+  // Get Page Data From backend
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPicturesPageData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/cycle-pictures", {
+          cache: "no-store",
+        });
+        const response2 = await fetch("/api/cycle-pictures/posts?per_page=3", {
+          cache: "no-store",
+        });
+        const response3 = await fetch("/api/cycle-pictures/categories", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load rabbis page data.");
+        }
+
+        if (!response2.ok) {
+          throw new Error("Failed to load rabbis posts data.");
+        }
+
+        if (!response3.ok) {
+          throw new Error("Failed to load committee categories data.");
+        }
+
+        const data = await response.json();
+        const posts = await response2.json();
+        const categories = await response3.json();
+
+        if (isMounted) {
+          setPicturesPageData({
+            introduction: data?.acf?.introduction || [],
+            posts: posts || [],
+            parentCategories: categories?.parents || [],
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        setError("Failed to load pictures page data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPicturesPageData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!picturesPageData) {
+      return;
+    }
+    if (animationPlayed) {
+      setPageDataFetched(true);
+    }
+  }, [picturesPageData, animationPlayed]);
+
+  useEffect(() => {
+    if (!picturesPageData) {
+      return;
+    }
+    // Update Section Width on Data Change
+    const updateSectionWidth = () => {
+      const newSectionWidth = 210;
+
+      setSectionWidth(newSectionWidth);
+      setContainerWidth(newSectionWidth + 100);
+    };
+
+    updateSectionWidth();
+    window.addEventListener("resize", updateSectionWidth);
+    return () => {
+      window.removeEventListener("resize", updateSectionWidth);
+    };
+  }, [picturesPageData]);
+
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       setPageContentAnimation();
       // Overflow body
       const scurbScale = 2;
@@ -117,166 +186,162 @@ export default function Page() {
         verticalSection.kill();
       }
     };
-  }, [pathname]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
-  useGSAP(
-    () => {
-      if (typeof window !== "undefined" && panel) {
-        document.fonts.ready.then(() => {
-          // Selectors
-          const headerLeft = main.current?.querySelector(".header-left");
-          const headerRight = main.current?.querySelector(".header-right");
-          const rabbisContent =
-            main.current?.querySelectorAll(".rabbis-section");
-          rabbisContent?.forEach((section) => {
-            section.classList.add("opacity-0");
+  useGSAP(() => {
+    if (typeof window !== "undefined" && panel.current && main.current) {
+      document.fonts.ready.then(() => {
+        // Selectors
+        const headerLeft = main.current?.querySelector(".header-left");
+        const headerRight = main.current?.querySelector(".header-right");
+        const rabbisContent = main.current?.querySelectorAll(".rabbis-section");
+        rabbisContent?.forEach((section) => {
+          section.classList.add("opacity-0");
+        });
+        // Banner Button
+        const introTitle = main.current?.querySelector(
+          ".first-intro .intro-title",
+        );
+        // Banner Button
+        const introContent = main.current?.querySelector(
+          ".first-intro .intro-content",
+        );
+        const bannerBackgroundOverlay = main.current?.querySelector(
+          ".first-intro .intro-background .intro-bg-mask",
+        );
+        // Split Title 1
+        let splitTitle;
+        if (introTitle) {
+          splitTitle = BigTitleSplitLines(introTitle);
+          gsap.set(introTitle, {
+            perspective: 400,
           });
-          // Banner Button
-          const introTitle = main.current?.querySelector(
-            ".first-intro .intro-title",
-          );
-          // Banner Button
-          const introContent = main.current?.querySelector(
-            ".first-intro .intro-content",
-          );
-          const bannerBackgroundOverlay = main.current?.querySelector(
-            ".first-intro .intro-background .intro-bg-mask",
-          );
-          // Split Title 1
-          let splitTitle;
-          if (introTitle) {
-            splitTitle = BigTitleSplitLines(introTitle);
-            gsap.set(introTitle, {
-              perspective: 400,
-            });
-            gsap.set(splitTitle, {
-              yPercent: 150,
-              opacity: 0,
-            });
-          }
-          // Split Title 2
-          let splitContent;
-          if (introContent) {
-            splitContent = TextSplitLines(introContent);
-            gsap.set(introContent, {
-              perspective: 400,
-            });
-            gsap.set(splitContent, {
-              yPercent: 150,
-              opacity: 0,
-            });
-          }
-          // Set localStorage variable
-          const userVisit = localStorage.getItem("hasVisited");
-          if (userVisit === "true" && animationPlayed) {
-            // Timeline
-            const tl = gsap.timeline({
-              onComplete: () => {
-                // Set Animation Played to true
-                setIsAllAnimationComplete(true);
-                rabbisContent?.forEach((section) => {
-                  section.classList.add("opacity-100");
-                });
-              },
-            });
-            if (main.current) {
-              tl.to(main.current, {
-                opacity: 1,
-                ease: "none",
-                duration: 0.5,
-                delay: 0,
+          gsap.set(splitTitle, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Split Title 2
+        let splitContent;
+        if (introContent) {
+          splitContent = TextSplitLines(introContent);
+          gsap.set(introContent, {
+            perspective: 400,
+          });
+          gsap.set(splitContent, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Set localStorage variable
+        const userVisit = localStorage.getItem("hasVisited");
+        if (userVisit === "true" && animationPlayed) {
+          // Timeline
+          const tl = gsap.timeline({
+            onComplete: () => {
+              // Set Animation Played to true
+              setIsAllAnimationComplete(true);
+              rabbisContent?.forEach((section) => {
+                section.classList.add("opacity-100");
               });
-            }
-            if (headerLeft) {
-              tl.to(headerLeft, {
+            },
+          });
+          if (main.current) {
+            tl.to(main.current, {
+              opacity: 1,
+              ease: "none",
+              duration: 0.5,
+              delay: 0,
+            });
+          }
+          if (headerLeft) {
+            tl.to(headerLeft, {
+              opacity: 1,
+              ease: "none",
+              duration: 1,
+            });
+          }
+          if (headerRight) {
+            tl.to(
+              headerRight,
+              {
                 opacity: 1,
                 ease: "none",
                 duration: 1,
-              });
-            }
-            if (headerRight) {
-              tl.to(
-                headerRight,
-                {
-                  opacity: 1,
-                  ease: "none",
-                  duration: 1,
-                },
-                "-=1",
-              );
-            }
-            if (page.current) {
-              tl.to(
-                page.current,
-                {
-                  opacity: 1,
-                  ease: "none",
-                  duration: 1,
-                },
-                "-=1",
-              );
-            }
-            if (introTitle && splitTitle) {
-              tl.to(
-                splitTitle,
-                {
-                  yPercent: 0,
-                  opacity: 1,
-                  duration: 3,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                },
-                "-=1.5",
-              );
-            }
-            if (introContent && splitContent) {
-              tl.to(
-                splitContent,
-                {
-                  yPercent: 0,
-                  opacity: 1,
-                  duration: 3,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
-            // Wave Line Animation
-            if (waveMask.current) {
-              tl.to(
-                waveMask.current,
-                {
-                  translateY: 0,
-                  opacity: 1,
-                  ease: "expo.inOut",
-                  duration: 3,
-                  delay: 0,
-                },
-                "-=2.5",
-              );
-            }
-            if (bannerBackgroundOverlay) {
-              tl.to(
-                bannerBackgroundOverlay,
-                {
-                  translateY: "-100%",
-                  delay: 0,
-                  duration: 3,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
+              },
+              "-=1",
+            );
           }
-        });
-      }
-    },
-    { scope: main, dependencies: [animationPlayed, pathname] },
-  );
+          if (page.current) {
+            tl.to(
+              page.current,
+              {
+                opacity: 1,
+                ease: "none",
+                duration: 1,
+              },
+              "-=1",
+            );
+          }
+          if (introTitle && splitTitle) {
+            tl.to(
+              splitTitle,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=1.5",
+            );
+          }
+          if (introContent && splitContent) {
+            tl.to(
+              splitContent,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+          // Wave Line Animation
+          if (waveMask.current) {
+            tl.to(
+              waveMask.current,
+              {
+                translateY: 0,
+                opacity: 1,
+                ease: "expo.inOut",
+                duration: 3,
+                delay: 0,
+              },
+              "-=2.5",
+            );
+          }
+          if (bannerBackgroundOverlay) {
+            tl.to(
+              bannerBackgroundOverlay,
+              {
+                translateY: "-100%",
+                delay: 0,
+                duration: 3,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+        }
+      });
+    }
+  }, [pathname, pageDataFetched]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
@@ -382,73 +447,112 @@ export default function Page() {
       });
     };
   }, []);
-  return (
-    <div ref={main} id="main" className="relative">
-      <LoadingEffect animated={setAnimationPlayed} />
-      <Header animationStatus={isAllAnimationComplete} />
-      <SmoothWrapper>
-        <main
-          ref={page}
-          id="page"
-          dir="ltr"
-          className="main relative overflow-hidden z-10 opacity-0"
-        >
-          <div
-            ref={panel}
-            id="panel-wrapper"
-            className="w-screen h-screen flex items-end justify-end"
-          >
-            <div
-              ref={wrapper}
-              id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[320vw] h-screen items-center will-change-transform`}
-            >
-              <Introduction
-                animated={isAllAnimationComplete}
-                animationStatus={isAllAnimationComplete}
-                bgImage={IntroBG}
-                bgOverlay={""}
-                data={IntroData1}
-                extraClass={
-                  "first-intro panel-section will-change-transform min-w-screen w-screen"
-                }
-                panel={panel}
-                bgPosition=""
-                overlayClass="bg-[#000000] opacity-0"
-                bgClass=""
-                audioControl={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
-              <CyclePicturesSection
-                extraClass="min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
-                animWidthText={1}
-                sectionData={PicturesContent}
-                activeCategory={activeCategory}
-                setActiveCategory={setActiveCategory}
-              />
-            </div>
-          </div>
-        </main>
-        <Footer className={"relative z-20"} />
-      </SmoothWrapper>
-      <div
-        ref={waveLine}
-        className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
-      >
-        <div
-          ref={waveMask}
-          style={{
-            maskImage: `url(${Wave.src})`,
-          }}
-          className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
-        >
-          <div
-            ref={progress}
-            className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#1A1A1A] z-10"
-          ></div>
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto mb-4" />
+          <p>Loading...</p>
         </div>
       </div>
-    </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!picturesPageData) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Pictures Not Found</h1>
+          <p className="text-gray-600">
+            The requested pictures could not be found.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    picturesPageData && (
+      <div ref={main} id="main" className="relative">
+        <LoadingEffect animated={setAnimationPlayed} />
+        <Header animationStatus={isAllAnimationComplete} />
+        <SmoothWrapper>
+          <main
+            ref={page}
+            id="page"
+            dir="ltr"
+            className="main relative overflow-hidden z-10 opacity-0"
+          >
+            <div
+              ref={panel}
+              id="panel-wrapper"
+              className="w-screen h-screen flex items-end justify-end"
+            >
+              <div
+                ref={wrapper}
+                id="section-wrapper"
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+              >
+                <Introduction
+                  animated={isAllAnimationComplete}
+                  animationStatus={isAllAnimationComplete}
+                  bgImage={IntroBG}
+                  bgOverlay={""}
+                  data={picturesPageData.introduction}
+                  extraClass={
+                    "first-intro panel-section will-change-transform min-w-screen w-screen"
+                  }
+                  panel={panel}
+                  bgPosition=""
+                  overlayClass="bg-[#000000] opacity-0"
+                  bgClass=""
+                  audioControl={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+                <CyclePicturesSection
+                  extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
+                  animWidthText={1}
+                  sectionData={picturesPageData.posts}
+                  parentCategories={picturesPageData.parentCategories}
+                  activeCategory={activeCategory}
+                  setActiveCategory={setActiveCategory}
+                />
+              </div>
+            </div>
+          </main>
+          <Footer className={"relative z-20"} />
+        </SmoothWrapper>
+        <div
+          ref={waveLine}
+          className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
+        >
+          <div
+            ref={waveMask}
+            style={{
+              maskImage: `url(${Wave.src})`,
+            }}
+            className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+          >
+            <div
+              ref={progress}
+              className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#1A1A1A] z-10"
+            ></div>
+          </div>
+        </div>
+      </div>
+    )
   );
 }

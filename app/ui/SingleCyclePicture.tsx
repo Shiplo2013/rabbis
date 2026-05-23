@@ -6,17 +6,37 @@ import Link from "next/link";
 import { useState } from "react";
 import ViewIcon2 from "../assets/icons/ViewIcon2";
 import Frame from "../assets/images/pictures-frame.png";
+import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 
 interface ChildProps {
   key: number;
-  data: {
-    title: string;
-    image: any;
-    link: string;
-  };
+  data: any;
+}
+
+function getImageSrc(image: any) {
+  if (!image) {
+    return "";
+  }
+
+  if (typeof image === "string") {
+    return image;
+  }
+
+  return (
+    image?.sizes?.large?.url ||
+    image?.sizes?.full?.url ||
+    image?.url ||
+    image?.src ||
+    ""
+  );
 }
 
 export default function SingleCyclePicture(props: ChildProps) {
+  // Section Data
+  const SingleData = props.data || {};
+  const imageSrc = getImageSrc(SingleData?.acf?.image);
+
+  // Lightbox State
   const [lightboxController, setLightboxController] = useState({
     toggler: false,
     slide: 1,
@@ -31,10 +51,11 @@ export default function SingleCyclePicture(props: ChildProps) {
 
   return (
     <div className="single-cycle-picture w-[44.27vw] will-change-transform">
-      {props.data.image && (
+      {imageSrc && (
         <FsLightbox
           toggler={lightboxController.toggler}
-          sources={[props.data.image?.src]}
+          sources={[imageSrc]}
+          types={["image"]}
           slide={lightboxController.slide}
         />
       )}
@@ -52,14 +73,17 @@ export default function SingleCyclePicture(props: ChildProps) {
             alt="Graduates"
           />
           <div className="cycle-content-wrapper absolute top-0 left-0 z-10 w-full h-full overflow-hidden flex items-center justify-center">
-            {props.data.image ? (
+            {imageSrc ? (
               <div className="picture-image absolute top-5 left-5 right-5 bottom-5 z-10 w-auto h-auto">
                 <Image
                   className="w-full object-cover object-center h-full relative z-10 will-change-transform"
-                  src={props.data.image?.src}
+                  src={imageSrc}
                   width="855"
                   height="547"
-                  blurDataURL={props.data.image?.blurDataURL}
+                  blurDataURL={
+                    CreateShimmerDataUrl(855, 547) ||
+                    SingleData?.acf?.image?.blurDataURL
+                  }
                   placeholder={"blur"}
                   loading="lazy"
                   alt="Graduates"
@@ -75,7 +99,7 @@ export default function SingleCyclePicture(props: ChildProps) {
                   נשמח שתיצור איתנו קשר
                 </p>
                 <Link
-                  href={"/"}
+                  href={"/contact"}
                   className="border-b border-[#D1A941] hover:border-[#ffffff] hover:text-white transition-all duration-300"
                 >
                   לחץ כאן
@@ -84,27 +108,29 @@ export default function SingleCyclePicture(props: ChildProps) {
             )}
           </div>
 
-          <div
-            className={`picture-view absolute top-0 left-0 w-full h-full flex items-center justify-center z-40 bg-[#00000080] transition-all duration-500 opacity-0 invisible group-hover:opacity-100 group-hover:visible`}
-            onClick={() => {
-              if (props.data.image) {
-                openLightbox();
-              }
-            }}
-          >
-            <button
-              type="button"
-              className="w-30 h-30 p-4 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
+          {imageSrc && (
+            <div
+              className={`picture-view absolute top-0 left-0 w-full h-full flex items-center justify-center z-40 bg-[#00000080] transition-all duration-500 opacity-0 invisible group-hover:opacity-100 group-hover:visible`}
+              onClick={() => {
+                if (imageSrc) {
+                  openLightbox();
+                }
+              }}
             >
-              <ViewIcon2 />
-            </button>
-          </div>
+              <button
+                type="button"
+                className="w-30 h-30 p-4 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
+              >
+                <ViewIcon2 />
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
       <div className="cycle-title mt-[5.8vh]">
         <h2 className="text-[55px] text-[#D1A941] leading-[70%] text-center">
-          {parse(props.data?.title)}
+          {parse(SingleData?.title)}
         </h2>
       </div>
     </div>

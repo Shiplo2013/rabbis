@@ -1,40 +1,41 @@
-import { StaticImageData } from "next/image";
+import parse from "html-react-parser";
 import SingleZatzelGraduate from "./SingleZatzelGraduate";
 
-interface PostData {
+interface ZatzelPost {
   title: string;
-  content: string;
-  image: StaticImageData;
+  image: any;
+  yearOfDeath: string;
+}
+interface PostData {
+  sectionTitle: string;
+  sectionContent: ZatzelPost[];
 }
 
 interface ChildProps {
   className: string;
-  postsContent: {
-    catTitle: string;
-    catPosts: PostData[];
-  };
+  dataIndex: number;
+  postsContent: PostData;
 }
 
 export default function ZatzelPostCat(props: ChildProps) {
+  const zatzelCatData = props.postsContent;
   return (
     <section
       dir="rtl"
+      data-index={props.dataIndex}
       className={`zatzel-cat-section ${props.className} will-change-transform`}
     >
       <div className="zatzel-cat-title mb-10.5">
         <h2 className="text-[55px] leading-[0.7em] text-(--theme-color)">
-          {props?.postsContent?.catTitle}
+          {parse(zatzelCatData?.sectionTitle || "כותרת קטגוריה")}
         </h2>
       </div>
       <div className="posts-wrapper h-auto flex gap-[5vw]">
-        {props?.postsContent?.catPosts.map((item, index) => (
-          <SingleZatzelGraduate
-            key={index}
-            title={item.title}
-            content={item.content}
-            image={item.image}
-          />
-        ))}
+        {zatzelCatData?.sectionContent?.map(
+          (item: ZatzelPost, index: number) => (
+            <SingleZatzelGraduate key={index} dataIndex={index} data={item} />
+          ),
+        )}
       </div>
     </section>
   );

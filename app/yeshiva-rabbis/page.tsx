@@ -2,14 +2,6 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ArrowLeftIcon2 from "../assets/icons/ArrowLeftIcon2";
-import Rabbis1 from "../assets/images/rabbis1.jpg";
-import Rabbis2 from "../assets/images/rabbis2.jpg";
-import Rabbis3 from "../assets/images/rabbis3.jpg";
-import Rabbis4 from "../assets/images/rabbis4.jpg";
-import Rabbis5 from "../assets/images/rabbis5.jpg";
-import Rabbis6 from "../assets/images/rabbis6.jpg";
-import Rabbis7 from "../assets/images/rabbis7.jpg";
-import Rabbis8 from "../assets/images/rabbis8.jpg";
 import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -27,7 +19,6 @@ if (typeof window !== "undefined") {
 export default function Page() {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
-  const [rabbisSectionsData, setRabbisSectionsData] = useState<any[]>([]);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
@@ -35,59 +26,6 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   // Router Path
   const pathname = usePathname();
-  const fallbackRabbisSections = [
-    {
-      sectionTitle: "ראשי הישיבה",
-      sectionContent: [
-        {
-          title: `מרן ראש הישיבה<br/> הגאון רבי פרבשטיין משה<br/> מרדכי שליט״א`,
-          image: Rabbis1,
-        },
-        {
-          title: `מרן ראש הישיבההגאון רבי שלמה כץ שליט"א`,
-          image: Rabbis2,
-        },
-        {
-          title: `מרן ראש הישיבההגאון רבי יוסף חברוני שליט"א`,
-          image: Rabbis3,
-        },
-      ],
-    },
-    {
-      sectionTitle: "מנהל רוחני",
-      sectionContent: [
-        {
-          title: `מרן המשגיחהגאון רבי חיים יצחק קפלן שליט"א`,
-          image: Rabbis4,
-        },
-      ],
-    },
-    {
-      sectionTitle: "רמים",
-      sectionContent: [
-        {
-          title: `הגאון רבי אברהם לויסון שליט"א`,
-          image: Rabbis5,
-        },
-        {
-          title: `הגאון רבי איתן יפהן שליט"א`,
-          image: Rabbis5,
-        },
-        {
-          title: `הגאון רבי חיים אהרון רלבג שליט"א`,
-          image: Rabbis6,
-        },
-        {
-          title: `הגאון רבי  נחום  בר חיים שליט"א`,
-          image: Rabbis7,
-        },
-        {
-          title: `הגאון רבי חנוך הרטמן שליט"א`,
-          image: Rabbis8,
-        },
-      ],
-    },
-  ];
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -155,13 +93,7 @@ export default function Page() {
             const sectionContent = (sectionPostsData?.posts || []).map(
               (post: any) => ({
                 title: post?.acf?.title || post?.title || "",
-                image: {
-                  src:
-                    post?.acf?.image?.url ||
-                    post?.acf?.thumbnail?.url ||
-                    Rabbis1.src,
-                  blurDataURL: post?.acf?.image?.blurDataURL,
-                },
+                image: post?.acf?.thumbnail || null,
               }),
             );
 
@@ -173,9 +105,7 @@ export default function Page() {
         );
 
         if (isMounted) {
-          setRabbisPageData(
-            mappedSections.length ? mappedSections : fallbackRabbisSections,
-          );
+          setRabbisPageData(mappedSections.length ? mappedSections : []);
         }
       } catch (error) {
         console.error(error);
@@ -235,33 +165,43 @@ export default function Page() {
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
-            gsap.to(progress.current, { width: `${100 * self.progress}%` });
+            if (progress.current) {
+              gsap.to(progress.current, { width: `${100 * self.progress}%` });
+            }
             if (self.progress > 0.97) {
-              gsap.to(waveLine.current, {
-                opacity: 0,
-                duration: 0.1,
-                delay: 0,
-              });
+              if (waveLine.current) {
+                gsap.to(waveLine.current, {
+                  opacity: 0,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
             } else {
-              gsap.to(waveLine.current, {
-                opacity: 1,
-                duration: 0.1,
-                delay: 0,
-              });
+              if (waveLine.current) {
+                gsap.to(waveLine.current, {
+                  opacity: 1,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
             }
             // Arrow Button
             if (self.progress > 0.9) {
-              gsap.to(ArrowButtonRef.current, {
-                opacity: 0,
-                duration: 0.1,
-                delay: 0,
-              });
+              if (ArrowButtonRef.current) {
+                gsap.to(ArrowButtonRef.current, {
+                  opacity: 0,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
             } else {
-              gsap.to(ArrowButtonRef.current, {
-                opacity: 1,
-                duration: 0.1,
-                delay: 0,
-              });
+              if (ArrowButtonRef.current) {
+                gsap.to(ArrowButtonRef.current, {
+                  opacity: 1,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
             }
           },
         },
@@ -467,18 +407,15 @@ export default function Page() {
 
   const [activePostion, setActivePosition] = useState(0);
   useEffect(() => {
-    const mainWidth =
-      main.current?.querySelector("#section-wrapper")?.clientWidth;
-    if (mainWidth) {
-      const maxScroll = mainWidth - window.innerWidth;
+    if (containerWidth) {
+      const maxScroll = (containerWidth / 100) * 1920;
       if (activePostion > maxScroll) {
         setActivePosition(maxScroll);
+      } else {
+        window.scrollTo(0, activePostion);
       }
     }
-    window.scrollTo(0, activePostion);
-    console.log(mainWidth);
-    console.log(activePostion);
-  }, [activePostion]);
+  }, [activePostion, containerWidth]);
 
   useGSAP(() => {
     // Page Overflow Hidden

@@ -1,40 +1,49 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import parse from "html-react-parser";
 import Image from "next/image";
-import Link from "next/link";
 
-interface ChildProps {
+interface PostData {
   title: string;
-  content: string;
   image: any;
+  yearOfDeath: string;
+}
+interface ChildProps {
+  data: PostData;
+  dataIndex: number;
 }
 
 export default function SingleZatzelGraduate(props: ChildProps) {
+  const ItemData = props.data;
   return (
     <div
       dir="ltr"
-      className="single-zatzel-post group min-w-97.25 w-97.25 backface-hidden will-change-transform"
+      data-index={props.dataIndex}
+      className="single-zatzel-post group min-w-97.25 w-97.25 backface-hidden will-change-transform cursor-pointer"
     >
-      <Link href="/">
-        <div className="post-image w-full h-101.5 mb-8.5 relative overflow-hidden backface-hidden">
-          <Image
-            className="w-full object-cover object-center h-full relative z-10 group-hover:scale-105 transition-transform duration-500 ease-in-out backface-hidden"
-            src={props?.image?.src}
-            width="389"
-            height="406"
-            blurDataURL={props?.image?.blurDataURL}
-            placeholder={"blur"}
-            loading="lazy"
-            alt="Rabbis"
-          />
-          <div className="post-image-overlay absolute top-0 left-0 w-[calc(100%+10px)] h-full bg-[#1a1a1a] z-20 -ml-2.5 backface-hidden"></div>
-        </div>
-        <div className="post-text text-[28px] text-(--theme-color) leading-[0.9em] text-right">
-          <h5 className="post-excerpt font-extralight mb-2">
-            {parse(props?.content)}
-          </h5>
-          <h2 className="post-title">{parse(props?.title)}</h2>
-        </div>
-      </Link>
+      <div className="post-image w-full h-101.5 mb-8.5 relative overflow-hidden backface-hidden">
+        <Image
+          className="w-full object-cover object-center h-full relative z-10 group-hover:scale-105 transition-transform duration-500 ease-in-out backface-hidden"
+          src={ItemData?.image?.url || ItemData?.image?.src}
+          width="389"
+          height="406"
+          blurDataURL={
+            ItemData?.image?.blurDataURL || CreateShimmerDataUrl(389, 406)
+          }
+          placeholder={"blur"}
+          loading="lazy"
+          alt="Rabbis"
+        />
+        <div className="post-image-overlay absolute top-0 left-0 w-[calc(100%+10px)] h-full bg-[#1a1a1a] z-20 -ml-2.5 backface-hidden"></div>
+      </div>
+      <div className="post-text text-[28px] text-(--theme-color) leading-[0.9em] text-right">
+        <h2 className="post-title font-extralight mb-2">
+          {parse(ItemData?.title || "כותרת פוסט")}
+        </h2>
+        <p className="post-excerpt">
+          <span>שנת פטירה:</span>{" "}
+          {parse(ItemData?.yearOfDeath) || `כ"ו בסיוון ה'תשע"א `}
+        </p>
+      </div>
     </div>
   );
 }

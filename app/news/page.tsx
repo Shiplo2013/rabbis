@@ -324,16 +324,16 @@ export default function Page() {
     // Animations
     if (sidebar) {
       gsap.from(sidebar, {
-        xPercent: 100,
+        yPercent: 100,
         opacity: 0,
-        ease: "expo.inOut",
-        duration: 3,
-        delay: -1,
+        ease: "none",
+        duration: 1,
+        delay: 0,
         scrollTrigger: {
           start: () => {
             return window.innerWidth * 0.3;
           },
-          toggleActions: "restart pause resume reverse",
+          //toggleActions: "restart pause resume reverse",
         },
       });
     }

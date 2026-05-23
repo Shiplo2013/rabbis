@@ -18,6 +18,7 @@ function Loading(props: { animated: (value: boolean) => void }) {
 
   // GSAP Animation
   useGSAP(() => {
+    //console.log("Starting loading animation...");
     // Timeline
     let tl = gsap.timeline({
       onComplete: function () {
