@@ -4,16 +4,11 @@ import SingleCyclePicture from "@/app/ui/SingleCyclePicture";
 import { useEffect, useRef } from "react";
 import SimpleBar from "simplebar-react";
 
-interface SingleCyclePictureData {
-  title: string;
-  image: any;
-  link: string;
-}
-
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
-  sectionData: SingleCyclePictureData[];
+  sectionData: any;
+  parentCategories?: any;
   activeCategory: number;
   setActiveCategory: (index: number) => void;
 }
@@ -22,34 +17,23 @@ export default function CyclePicturesSection(props: ChildProps) {
   // Selector
   const scrollbarRef = useRef<HTMLDivElement>(null);
   // Section Data
-  const Years = [
-    "ועד קכ״ט",
-    "ועד קל׳",
-    "ועד קל״א",
-    "ועד קל״ב",
-    "ועד קל״ג",
-    "ועד קל״ד",
-    "ועד קל״ה",
-    "ועד קל״ו",
-    "ועד קל״ז",
-    "ועד קל״ח",
-    "ועד קל״ט",
-  ];
+  const SectionData = props.sectionData || [];
+  const years = props.parentCategories || [];
   // Section Animation
   useEffect(() => {
     const selectYears = scrollbarRef.current?.querySelectorAll(".year-month");
-    if (selectYears) {
+    if (selectYears && selectYears.length > 0) {
       selectYears[0].querySelector(".months")?.classList.remove("hidden");
       selectYears[0].querySelector(".months")?.classList.add("flex");
     }
-  }, []);
+  }, [years.length]);
   return (
     <section
       dir="rtl"
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
       <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[10vw]">
-        <div className="sheet-sidebar w-54.5 h-full will-change-transform overflow-hidden">
+        <div className="sheet-sidebar min-w-50 w-50 h-full will-change-transform overflow-hidden">
           <div className="sheet-sidebar-wrapper">
             <div className="search-group relative mb-[3.6vh]">
               <input
@@ -70,7 +54,7 @@ export default function CyclePicturesSection(props: ChildProps) {
                 data-simplebar-direction="rtl"
               >
                 <div className="year-month-categories pl-10 pr-2.5">
-                  {Years.map((item, index) => {
+                  {years.map((item: any, index: number) => {
                     return (
                       <GetHebrewYear
                         key={index}
@@ -87,11 +71,11 @@ export default function CyclePicturesSection(props: ChildProps) {
           </div>
         </div>
         <div className="sheet-content flex items-center gap-x-[10vw] will-change-transform">
-          {props.sectionData?.map((item, index) => (
+          {SectionData?.posts?.map((item: any, index: number) => (
             <SingleCyclePicture key={index} data={item} />
           ))}
         </div>
-        <div className="sheet-readmore">
+        <div className="sheet-readmore min-w-35">
           <button className="text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500">
             טען עוד
           </button>

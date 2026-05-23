@@ -13,13 +13,13 @@ export default function SingleRabbis(props: ChildProps) {
       <div className="rabbis-image w-full h-86 mb-8.5 relative overflow-hidden">
         <Image
           className="w-full object-cover object-center h-full relative z-10"
-          src={props?.image?.src}
+          src={
+            props?.image?.sizes?.yeshiva_rabbis_thumb || props?.image?.src || ""
+          }
           width="336"
           height="334"
-          blurDataURL={
-            props?.image?.blurDataURL || CreateShimmerDataUrl(336, 334)
-          }
-          placeholder={props?.image?.blurDataURL ? "blur" : "empty"}
+          blurDataURL={CreateShimmerDataUrl(336, 334)}
+          placeholder={"blur"}
           loading="lazy"
           alt="Rabbis"
         />

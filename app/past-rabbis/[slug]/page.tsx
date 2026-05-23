@@ -155,6 +155,13 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
 
+  // Animation State
+  const [animationPlayed, setAnimationPlayed] = useState(false);
+  const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+  // Vertical Section
+  const [verticalSection, setVerticalSection] =
+    useState<gsap.core.Timeline | null>(null);
+
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
@@ -188,7 +195,6 @@ export default function Page() {
         console.error(error);
       } finally {
         setIsLoading(false);
-        setPageDataFetched(true);
       }
     };
 
@@ -199,12 +205,15 @@ export default function Page() {
     };
   }, [slug]);
 
-  // Animation State
-  const [animationPlayed, setAnimationPlayed] = useState(false);
-  const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
-  // Vertical Section
-  const [verticalSection, setVerticalSection] =
-    useState<gsap.core.Timeline | null>(null);
+  // Page Data Loade
+  useEffect(() => {
+    if (!post) {
+      return;
+    }
+    if (animationPlayed) {
+      setPageDataFetched(true);
+    }
+  }, [post, animationPlayed]);
 
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);
@@ -509,7 +518,7 @@ export default function Page() {
   useEffect(() => {
     if (isAllAnimationComplete) {
       // Body Overflow Hidden
-      document.body.classList.remove("!overflow-hidden", "overflow-hidden");
+      document.body.classList.remove("!overflow-hidden");
       document.body.classList.add("!overflow-auto");
       verticalSection?.pause();
     } else {
@@ -661,6 +670,21 @@ export default function Page() {
         document.body.classList.add("!overflow-auto");
       });
     }
+    // Set content height
+    if (popupContent.current) {
+      setContentHeight(popupContent?.current?.offsetHeight || 0);
+    }
+  }, [pathname, pageDataFetched]);
+  // Play Card Popup Animation
+  useGSAP(() => {
+    activeCardPopup ? cardPopupTimeline.play() : cardPopupTimeline.reverse();
+  }, [activeCardPopup]);
+  // Play Book Popup Animation
+  useGSAP(() => {
+    activeBookPopup ? bookPopupTimeline.play() : bookPopupTimeline.reverse();
+  }, [activeBookPopup]);
+
+  useGSAP(() => {
     // Page Overflow Hidden
     document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
@@ -678,19 +702,7 @@ export default function Page() {
         },
       });
     };
-    // Set content height
-    if (popupContent.current) {
-      setContentHeight(popupContent?.current?.offsetHeight || 0);
-    }
-  }, [pathname, pageDataFetched]);
-  // Play Card Popup Animation
-  useGSAP(() => {
-    activeCardPopup ? cardPopupTimeline.play() : cardPopupTimeline.reverse();
-  }, [activeCardPopup]);
-  // Play Book Popup Animation
-  useGSAP(() => {
-    activeBookPopup ? bookPopupTimeline.play() : bookPopupTimeline.reverse();
-  }, [activeBookPopup]);
+  }, []);
 
   if (isLoading) {
     return (

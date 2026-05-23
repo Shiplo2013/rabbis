@@ -1,4 +1,6 @@
 "use client";
+import ArrowLeftCalender from "@/app/assets/icons/ArrowLeftCalender";
+import ArrowRightCalender from "@/app/assets/icons/ArrowRightCalender";
 import CalenderIcon from "@/app/assets/icons/CalenderIcon";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -8,10 +10,76 @@ const hebrewCalendarFormatter = new Intl.DateTimeFormat("he-u-ca-hebrew", {
   day: "numeric",
 });
 
-const monthLabelFormatter = new Intl.DateTimeFormat("he-IL", {
-  year: "numeric",
+const hebrewMonthFormatter = new Intl.DateTimeFormat("he-u-ca-hebrew", {
   month: "long",
 });
+
+const hebrewYearFormatter = new Intl.DateTimeFormat("he-u-ca-hebrew", {
+  year: "numeric",
+});
+
+const hebrewYearNumericFormatter = new Intl.DateTimeFormat("en-u-ca-hebrew", {
+  year: "numeric",
+});
+
+const hebrewOnes = ["", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט"];
+const hebrewTens = ["", "י", "כ", "ל"];
+const hebrewHundreds = ["", "ק", "ר", "ש", "ת", "תק", "תר", "תש", "תת", "תתק"];
+const hebrewYearTens = ["", "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ"];
+
+function formatHebrewDayValue(day: number) {
+  if (day <= 0 || day > 31) {
+    return String(day);
+  }
+
+  if (day <= 9) {
+    return hebrewOnes[day];
+  }
+
+  if (day === 15) {
+    return "טו";
+  }
+
+  if (day === 16) {
+    return "טז";
+  }
+
+  const tens = Math.floor(day / 10);
+  const ones = day % 10;
+  return `${hebrewTens[tens]}${hebrewOnes[ones]}`;
+}
+
+function formatHebrewYearText(gregorianYear: number) {
+  const numericYear = Number(
+    hebrewYearNumericFormatter.format(new Date(gregorianYear, 8, 1)),
+  );
+
+  if (Number.isNaN(numericYear)) {
+    return hebrewYearFormatter.format(new Date(gregorianYear, 8, 1));
+  }
+
+  const shortYear = numericYear % 1000;
+  const hundreds = Math.floor(shortYear / 100);
+  const tensOnes = shortYear % 100;
+  const tens = Math.floor(tensOnes / 10);
+  const ones = tensOnes % 10;
+
+  let lastTwo = `${hebrewYearTens[tens]}${hebrewOnes[ones]}`;
+  if (tensOnes === 15) {
+    lastTwo = "טו";
+  }
+  if (tensOnes === 16) {
+    lastTwo = "טז";
+  }
+
+  let text = `${hebrewHundreds[hundreds]}${lastTwo}`;
+
+  if (text.length > 1) {
+    text = `${text.slice(0, -1)}״${text.slice(-1)}`;
+  }
+
+  return text;
+}
 
 function getMonthDays(baseDate: Date) {
   const year = baseDate.getFullYear();
@@ -44,6 +112,32 @@ export default function SidebarSearch() {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const monthDays = useMemo(() => getMonthDays(viewMonth), [viewMonth]);
+  const monthOptions = useMemo(() => {
+    const options = Array.from({ length: 12 }, (_, index) => ({
+      value: index,
+      label: hebrewMonthFormatter.format(
+        new Date(viewMonth.getFullYear(), index, 15),
+      ),
+    }));
+
+    const tishreiIndex = options.findIndex((option) =>
+      option.label.includes("תשרי"),
+    );
+
+    if (tishreiIndex <= 0) {
+      return options;
+    }
+
+    return [...options.slice(tishreiIndex), ...options.slice(0, tishreiIndex)];
+  }, [viewMonth]);
+
+  const yearOptions = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    return Array.from({ length: 11 }, (_, index) => currentYear - 5 + index);
+  }, []);
+
+  const getHebrewYearLabel = (yearValue: number) =>
+    formatHebrewYearText(Number(yearValue));
 
   const selectedValue = selectedDate
     ? hebrewCalendarFormatter.format(selectedDate)
@@ -81,6 +175,18 @@ export default function SidebarSearch() {
     setPickerOpen(false);
   };
 
+  const setMonth = (monthIndex: number) => {
+    setViewMonth(
+      (prevMonth) => new Date(prevMonth.getFullYear(), Number(monthIndex), 1),
+    );
+  };
+
+  const setYear = (yearValue: number) => {
+    setViewMonth(
+      (prevMonth) => new Date(Number(yearValue), prevMonth.getMonth(), 1),
+    );
+  };
+
   return (
     <div ref={wrapperRef} className="search-group relative mb-[3vh]">
       <input
@@ -101,39 +207,80 @@ export default function SidebarSearch() {
         <CalenderIcon />
       </button>
       {pickerOpen && (
-        <div className="absolute top-[calc(100%+10px)] right-0 z-50 w-full min-w-80 bg-[#111111] border border-[#D1A94166] text-[#EEECDD] p-3">
-          <div className="flex items-center justify-between mb-3">
+        <div className="absolute top-full right-0 z-50 w-107.5 max-w-[95vw] rounded-[18px] border border-[#ffffff] bg-[#F3E8D5] p-6 shadow-[0_12px_35px_#000E3340]">
+          <div className="flex items-center justify-between mb-6">
             <button
               type="button"
               onClick={goToPreviousMonth}
-              className="px-2 py-1 border border-[#D1A94166] hover:bg-[#D1A9411A]"
+              className="h-12 w-12 rounded-full bg-[#FFFFFF] text-black hover:bg-white text-[30px] leading-none flex items-center justify-center cursor-pointer"
+              aria-label="חודש קודם"
             >
-              הקודם
+              <span className="w-2.5 h-auto block">
+                <ArrowRightCalender />
+              </span>
             </button>
-            <span className="text-[18px] text-[#D1A941]">
-              {monthLabelFormatter.format(viewMonth)}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <label className="sr-only" htmlFor="calendar-month-select">
+                חודש
+              </label>
+              <select
+                id="calendar-month-select"
+                value={viewMonth.getMonth()}
+                onChange={(event) => setMonth(Number(event.target.value))}
+                className="h-11 w-20 rounded-lg border border-[#1D4ED8] bg-[#F5F4F0] px-2 text-[44px] font-medium leading-none text-[#1E1E1E] focus:outline-none focus:ring-0"
+              >
+                {monthOptions.map((monthOption) => (
+                  <option key={monthOption.value} value={monthOption.value}>
+                    {monthOption.label}
+                  </option>
+                ))}
+              </select>
+
+              <label className="sr-only" htmlFor="calendar-year-select">
+                שנה
+              </label>
+              <select
+                id="calendar-year-select"
+                value={viewMonth.getFullYear()}
+                onChange={(event) => setYear(Number(event.target.value))}
+                className="h-11 w-24 rounded-lg border border-[#DAD7D0] bg-[#F5F4F0] px-2 text-[44px] font-medium leading-none text-[#1E1E1E] focus:outline-none focus:ring-0"
+              >
+                {yearOptions.map((yearOption) => (
+                  <option key={yearOption} value={yearOption}>
+                    {getHebrewYearLabel(yearOption)}
+                  </option>
+                ))}
+              </select>
+            </div>
             <button
               type="button"
               onClick={goToNextMonth}
-              className="px-2 py-1 border border-[#D1A94166] hover:bg-[#D1A9411A]"
+              className="h-12 w-12 rounded-full bg-[#EFEFEA] text-black hover:bg-white text-[30px] leading-none flex items-center justify-center"
+              aria-label="חודש הבא"
             >
-              הבא
+              <span className="w-2 h-auto block">
+                <ArrowLeftCalender />
+              </span>
             </button>
           </div>
-          <div className="grid grid-cols-7 gap-1 text-center text-[13px] mb-2 text-[#D1A941B2]">
-            <span>ב</span>
-            <span>ג</span>
-            <span>ד</span>
-            <span>ה</span>
+          <div className="grid grid-cols-7 gap-2 text-center text-[30px] mb-4 text-[#212121] leading-none">
+            <span>ז</span>
             <span>ו</span>
-            <span>ש</span>
+            <span>ה</span>
+            <span>ד</span>
+            <span>ג</span>
+            <span>ב</span>
             <span>א</span>
           </div>
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-2">
             {monthDays.map((dateCell, index) => {
               if (!dateCell) {
-                return <span key={`empty-${index}`} className="h-10" />;
+                return (
+                  <span
+                    key={`empty-${index}`}
+                    className="h-12 w-12 rounded-md bg-transparent"
+                  />
+                );
               }
 
               const isSelected =
@@ -147,14 +294,14 @@ export default function SidebarSearch() {
                   key={dateCell.toISOString()}
                   type="button"
                   onClick={() => selectDate(dateCell)}
-                  className={`h-10 text-[14px] border ${isSelected ? "bg-[#D1A941] text-black border-[#D1A941]" : "border-[#D1A94133] hover:bg-[#D1A9411A]"}`}
+                  className={`h-12 w-12 rounded-md text-[32px] leading-none ${isSelected ? "bg-[#C6A035] text-[#101010]" : "bg-[#ECECEA] text-[#212121] hover:bg-[#E5E2DB]"}`}
                 >
-                  {dateCell.getDate()}
+                  {formatHebrewDayValue(dateCell.getDate())}
                 </button>
               );
             })}
           </div>
-          <div className="text-[12px] text-[#EEECDD99] mt-3 text-right">
+          <div className="text-[12px] text-[#504C45] mt-3 text-right">
             התאריך יוצג בפורמט עברי בעת הבחירה
           </div>
         </div>

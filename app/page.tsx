@@ -113,6 +113,7 @@ export default function Home() {
 
         if (isMounted) {
           setHomePageData(data);
+          console.log("Home page data loaded:", data);
         }
       } catch (error) {
         console.error(error);

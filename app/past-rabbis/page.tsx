@@ -82,11 +82,20 @@ export default function Page() {
     };
   }, [pathname]);
 
+  // Page Data Loade
+  useEffect(() => {
+    if (!rabbisPageData) {
+      return;
+    }
+    if (animationPlayed) {
+      setPageDataFetched(true);
+    }
+  }, [rabbisPageData, animationPlayed]);
+
   useEffect(() => {
     if (!rabbisPageData?.pageData || !rabbisPageData?.posts) {
       return;
     }
-    setPageDataFetched(true);
 
     const updateSectionWidth = () => {
       const newSectionWidth =
@@ -103,7 +112,7 @@ export default function Page() {
     return () => {
       window.removeEventListener("resize", updateSectionWidth);
     };
-  }, [rabbisPageData]);
+  }, [rabbisPageData?.pageData, rabbisPageData?.posts]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -156,7 +165,7 @@ export default function Page() {
         verticalSection.kill();
       }
     };
-  }, [pageDataFetched]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
@@ -312,7 +321,7 @@ export default function Page() {
         }
       });
     }
-  }, [pageDataFetched]);
+  }, [pathname, pageDataFetched]);
 
   // Set Page Content Animation
   useGSAP(() => {
@@ -362,7 +371,7 @@ export default function Page() {
         }
       });
     }
-  }, [pageDataFetched]);
+  }, [pathname, pageDataFetched]);
 
   // Set Body Overflow Hidden
   useEffect(() => {

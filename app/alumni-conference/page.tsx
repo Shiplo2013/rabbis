@@ -2,7 +2,6 @@
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import PicturesImage from "../assets/images/cycle-image1.jpg";
 import IntroBG from "../assets/images/intro-bg-10.jpg";
 import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
@@ -21,36 +20,18 @@ if (typeof window !== "undefined") {
 }
 
 export default function Page() {
+  // Selectors
+  const [alumniConferenceData, setAlumniConferenceData] = useState<null | any>(
+    null,
+  );
+  const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(300);
+  const [sectionWidth, setSectionWidth] = useState(200);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   // Router Path
   const pathname = usePathname();
-  // Page Data
-  const IntroData1 = [
-    {
-      title: `כנס<br/>הבוגרים`,
-      content: "",
-    },
-  ];
-  // Pictures Data
-  const PicturesContent = [
-    {
-      title: `ועד ק״ל`,
-      content: `יש לך את תמונת המחזור של ועד ק״ל?<br/>נשמח שתיצור איתנו קשר`,
-      image: PicturesImage,
-      link: "/",
-    },
-    {
-      title: `ועד ק״ל`,
-      content: `יש לך את תמונת המחזור של ועד ק״ל?<br/>נשמח שתיצור איתנו קשר`,
-      image: PicturesImage,
-      link: "/",
-    },
-    {
-      title: `ועד ק״ל`,
-      content: `יש לך את תמונת המחזור של ועד ק״ל?<br/>נשמח שתיצור איתנו קשר`,
-      image: PicturesImage,
-      link: "/",
-    },
-  ];
+
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -67,9 +48,83 @@ export default function Page() {
   const waveMask = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
 
+  // Get Page Data From backend
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadZatzelGraduatesPageData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/alumni-conference", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load alumni conference page data.");
+        }
+
+        const data = await response.json();
+
+        if (isMounted) {
+          setAlumniConferenceData(data);
+        }
+      } catch (error) {
+        console.error(error);
+        setError("Failed to load alumni conference page data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadZatzelGraduatesPageData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!alumniConferenceData) {
+      return;
+    }
+    if (animationPlayed) {
+      setPageDataFetched(true);
+    }
+  }, [alumniConferenceData, animationPlayed]);
+
+  // Update Section Width on Data Change
+  useEffect(() => {
+    if (!alumniConferenceData) {
+      return;
+    }
+    // Update Section Width on Data Change
+    const updateSectionWidth = () => {
+      let countPostWidth = 0;
+      alumniConferenceData.acf?.image_gallery?.map((item: any) => {
+        if (item?.size === "landscape") {
+          countPostWidth += 39.4;
+        } else if (item?.size === "portrait") {
+          countPostWidth += 26.56;
+        }
+        return item;
+      })?.length || 0;
+      console.log("Count Post Width:", countPostWidth);
+      const newSectionWidth = countPostWidth + 18.5 + 9.89 + 42.5;
+
+      setSectionWidth(newSectionWidth);
+      setContainerWidth(newSectionWidth + 100);
+    };
+
+    updateSectionWidth();
+    window.addEventListener("resize", updateSectionWidth);
+    return () => {
+      window.removeEventListener("resize", updateSectionWidth);
+    };
+  }, [alumniConferenceData]);
+
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       setPageContentAnimation();
       // Overflow body
       const scurbScale = 2;
@@ -119,170 +174,166 @@ export default function Page() {
         verticalSection.kill();
       }
     };
-  }, [pathname]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
-  useGSAP(
-    () => {
-      if (typeof window !== "undefined" && panel) {
-        document.fonts.ready.then(() => {
-          // Selectors
-          const headerLeft = main.current?.querySelector(".header-left");
-          const headerRight = main.current?.querySelector(".header-right");
-          const rabbisContent =
-            main.current?.querySelectorAll(".rabbis-section");
-          rabbisContent?.forEach((section) => {
-            section.classList.add("opacity-0");
+  useGSAP(() => {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+      document.fonts.ready.then(() => {
+        // Selectors
+        const headerLeft = main.current?.querySelector(".header-left");
+        const headerRight = main.current?.querySelector(".header-right");
+        const rabbisContent = main.current?.querySelectorAll(".rabbis-section");
+        rabbisContent?.forEach((section) => {
+          section.classList.add("opacity-0");
+        });
+        // Banner Button
+        const introTitle = main.current?.querySelector(
+          ".first-intro .intro-title",
+        );
+        // Banner Button
+        const introContent = main.current?.querySelector(
+          ".first-intro .intro-content",
+        );
+        const bannerBackgroundOverlay = main.current?.querySelector(
+          ".first-intro .intro-background .intro-bg-mask",
+        );
+        // Split Title 1
+        let splitTitle;
+        if (introTitle) {
+          splitTitle = BigTitleSplitLines(introTitle);
+          gsap.set(introTitle, {
+            perspective: 400,
           });
-          // Banner Button
-          const introTitle = main.current?.querySelector(
-            ".first-intro .intro-title",
-          );
-          // Banner Button
-          const introContent = main.current?.querySelector(
-            ".first-intro .intro-content",
-          );
-          const bannerBackgroundOverlay = main.current?.querySelector(
-            ".first-intro .intro-background .intro-bg-mask",
-          );
-          // Split Title 1
-          let splitTitle;
-          if (introTitle) {
-            splitTitle = BigTitleSplitLines(introTitle);
-            gsap.set(introTitle, {
-              perspective: 400,
-            });
-            gsap.set(splitTitle, {
-              yPercent: 150,
-              opacity: 0,
-            });
-          }
-          // Split Title 2
-          let splitContent;
-          if (introContent) {
-            splitContent = TextSplitLines(introContent);
-            gsap.set(introContent, {
-              perspective: 400,
-            });
-            gsap.set(splitContent, {
-              yPercent: 150,
-              opacity: 0,
-            });
-          }
-          // Set localStorage variable
-          const userVisit = localStorage.getItem("hasVisited");
-          if (userVisit === "true" && animationPlayed) {
-            // Timeline
-            const tl = gsap.timeline({
-              onComplete: () => {
-                // Set Animation Played to true
-                setIsAllAnimationComplete(true);
-                rabbisContent?.forEach((section) => {
-                  section.classList.add("opacity-100");
-                });
-              },
-            });
-            if (main.current) {
-              tl.to(main.current, {
-                opacity: 1,
-                ease: "none",
-                duration: 0.5,
-                delay: 0,
+          gsap.set(splitTitle, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Split Title 2
+        let splitContent;
+        if (introContent) {
+          splitContent = TextSplitLines(introContent);
+          gsap.set(introContent, {
+            perspective: 400,
+          });
+          gsap.set(splitContent, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Set localStorage variable
+        const userVisit = localStorage.getItem("hasVisited");
+        if (userVisit === "true" && animationPlayed) {
+          // Timeline
+          const tl = gsap.timeline({
+            onComplete: () => {
+              // Set Animation Played to true
+              setIsAllAnimationComplete(true);
+              rabbisContent?.forEach((section) => {
+                section.classList.add("opacity-100");
               });
-            }
-            if (headerLeft) {
-              tl.to(headerLeft, {
+            },
+          });
+          if (main.current) {
+            tl.to(main.current, {
+              opacity: 1,
+              ease: "none",
+              duration: 0.5,
+              delay: 0,
+            });
+          }
+          if (headerLeft) {
+            tl.to(headerLeft, {
+              opacity: 1,
+              ease: "none",
+              duration: 1,
+            });
+          }
+          if (headerRight) {
+            tl.to(
+              headerRight,
+              {
                 opacity: 1,
                 ease: "none",
                 duration: 1,
-              });
-            }
-            if (headerRight) {
-              tl.to(
-                headerRight,
-                {
-                  opacity: 1,
-                  ease: "none",
-                  duration: 1,
-                },
-                "-=1",
-              );
-            }
-            if (page.current) {
-              tl.to(
-                page.current,
-                {
-                  opacity: 1,
-                  ease: "none",
-                  duration: 1,
-                },
-                "-=1",
-              );
-            }
-            if (introTitle && splitTitle) {
-              tl.to(
-                splitTitle,
-                {
-                  yPercent: 0,
-                  opacity: 1,
-                  duration: 3,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                },
-                "-=1.5",
-              );
-            }
-            if (introContent && splitContent) {
-              tl.to(
-                splitContent,
-                {
-                  yPercent: 0,
-                  opacity: 1,
-                  duration: 3,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
-            // Wave Line Animation
-            if (waveMask.current) {
-              tl.to(
-                waveMask.current,
-                {
-                  translateY: 0,
-                  opacity: 1,
-                  ease: "expo.inOut",
-                  duration: 3,
-                  delay: 0,
-                },
-                "-=2.5",
-              );
-            }
-            if (bannerBackgroundOverlay) {
-              tl.to(
-                bannerBackgroundOverlay,
-                {
-                  translateY: "-100%",
-                  delay: 0,
-                  duration: 3,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
+              },
+              "-=1",
+            );
           }
-        });
-      }
-    },
-    { scope: main, dependencies: [animationPlayed, pathname] },
-  );
+          if (page.current) {
+            tl.to(
+              page.current,
+              {
+                opacity: 1,
+                ease: "none",
+                duration: 1,
+              },
+              "-=1",
+            );
+          }
+          if (introTitle && splitTitle) {
+            tl.to(
+              splitTitle,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=1.5",
+            );
+          }
+          if (introContent && splitContent) {
+            tl.to(
+              splitContent,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+          // Wave Line Animation
+          if (waveMask.current) {
+            tl.to(
+              waveMask.current,
+              {
+                translateY: 0,
+                opacity: 1,
+                ease: "expo.inOut",
+                duration: 3,
+                delay: 0,
+              },
+              "-=2.5",
+            );
+          }
+          if (bannerBackgroundOverlay) {
+            tl.to(
+              bannerBackgroundOverlay,
+              {
+                translateY: "-100%",
+                delay: 0,
+                duration: 3,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+        }
+      });
+    }
+  }, [pathname, pageDataFetched]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       // Page Content Animation
       const conferenceRef = main.current?.querySelector(".conference-content");
       const conferenceContent = conferenceRef?.querySelectorAll(
@@ -413,71 +464,115 @@ export default function Page() {
       });
     };
   }, []);
-  return (
-    <div ref={main} id="main" className="relative">
-      <LoadingEffect animated={setAnimationPlayed} />
-      <Header animationStatus={isAllAnimationComplete} />
-      <SmoothWrapper>
-        <main
-          ref={page}
-          id="page"
-          dir="ltr"
-          className="main relative overflow-hidden z-10 opacity-0"
-        >
-          <div
-            ref={panel}
-            id="panel-wrapper"
-            className="w-screen h-screen flex items-end justify-end"
-          >
-            <div
-              ref={wrapper}
-              id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[550vw] h-screen items-center will-change-transform`}
-            >
-              <Introduction
-                animated={isAllAnimationComplete}
-                animationStatus={isAllAnimationComplete}
-                bgImage={IntroBG}
-                bgOverlay={""}
-                data={IntroData1}
-                extraClass={
-                  "first-intro panel-section will-change-transform min-w-screen w-screen"
-                }
-                panel={panel}
-                bgPosition=""
-                overlayClass="bg-[#000000] opacity-0"
-                bgClass=""
-                audioControl={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
-              <ConferenceContentSection
-                extraClass="min-w-[440vw] w-[440vw] h-screen panel-section will-change-transform py-[5vw] px-[9.25vw]"
-                animWidthText={1}
-                sectionData={PicturesContent}
-              />
-            </div>
-          </div>
-        </main>
-        <Footer className={"relative z-20"} />
-      </SmoothWrapper>
-      <div
-        ref={waveLine}
-        className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
-      >
-        <div
-          ref={waveMask}
-          style={{
-            maskImage: `url(${Wave.src})`,
-          }}
-          className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
-        >
-          <div
-            ref={progress}
-            className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#1A1A1A] z-10"
-          ></div>
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto mb-4" />
+          <p>Loading...</p>
         </div>
       </div>
-    </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!alumniConferenceData) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <p className="text-gray-600">
+            The requested rabbi post could not be found.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    alumniConferenceData && (
+      <div ref={main} id="main" className="relative">
+        <LoadingEffect animated={setAnimationPlayed} />
+        <Header animationStatus={isAllAnimationComplete} />
+        <SmoothWrapper>
+          <main
+            ref={page}
+            id="page"
+            dir="ltr"
+            className="main relative overflow-hidden z-10 opacity-0"
+          >
+            <div
+              ref={panel}
+              id="panel-wrapper"
+              className="w-screen h-screen flex items-end justify-end"
+            >
+              <div
+                ref={wrapper}
+                id="section-wrapper"
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+              >
+                <Introduction
+                  animated={isAllAnimationComplete}
+                  animationStatus={isAllAnimationComplete}
+                  bgImage={IntroBG}
+                  bgOverlay={""}
+                  data={{
+                    title: alumniConferenceData?.acf?.intro_title,
+                    content: "",
+                  }}
+                  extraClass={
+                    "first-intro panel-section will-change-transform min-w-screen w-screen"
+                  }
+                  panel={panel}
+                  bgPosition=""
+                  overlayClass="bg-[#000000] opacity-0"
+                  bgClass=""
+                  audioControl={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+                <ConferenceContentSection
+                  extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[9.25vw]`}
+                  animWidthText={1}
+                  sectionData={{
+                    gallery: alumniConferenceData?.acf?.image_gallery,
+                    sectionText: alumniConferenceData?.content?.rendered,
+                  }}
+                />
+              </div>
+            </div>
+          </main>
+          <Footer className={"relative z-20"} />
+        </SmoothWrapper>
+        <div
+          ref={waveLine}
+          className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
+        >
+          <div
+            ref={waveMask}
+            style={{
+              maskImage: `url(${Wave.src})`,
+            }}
+            className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+          >
+            <div
+              ref={progress}
+              className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#1A1A1A] z-10"
+            ></div>
+          </div>
+        </div>
+      </div>
+    )
   );
 }
