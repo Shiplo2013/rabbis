@@ -23,10 +23,12 @@ interface ChildProps {
   overlayClass: string;
   bgPosition: string;
   bgClass: string;
-  data: IntroContent[];
+  data: IntroContent;
 }
 
 export default function Introduction(props: ChildProps) {
+  // Section Data
+  const IntroData = props.data || "";
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   return (
@@ -66,15 +68,15 @@ export default function Introduction(props: ChildProps) {
       >
         <div className="intro-wrapper text-right flex flex-col items-end gap-x-[3.75vw] w-full px-[10vw]">
           <h1 className="intro-title 2xl:text-[170px] xl:text-[150px] lg:text-[130px] md:text-[110px] sm:text-[90px] text-[#AC832E] leading-[0.6em] overflow-hidden relative z-20 py-7.5 font-bold">
-            {parse(props.data[0]?.title)}
+            {parse(IntroData.title)}
           </h1>
           <div className="donation-button place-self-start overflow-hidden">
             <ThemeButton
-              buttonLink={props.data[0]?.button.link}
+              buttonLink={IntroData?.button.link}
               svgIconClass={""}
               extraClass="bg-[#D4AF37] py-1.25 px-7 rounded-none"
               fontSize="2xl:text-[35px] xl:text-[30px] lg:text-[25px] md:text-[20px] sm:text-[15px]"
-              text={props.data[0]?.button.text}
+              text={IntroData?.button.text}
               textColor="text-black"
               hoverBgColor="bg-black"
               hoverTextColor="group-hover:text-[#D4AF37]"

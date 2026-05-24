@@ -7,8 +7,6 @@ import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
-import Video1Poster from "../assets/images/donation-video1.jpg";
-import Video2Poster from "../assets/images/donation-video2.jpg";
 import DonationContentSection from "../components/donation/DonationContentSection";
 import Introduction from "../components/donation/Introduction";
 import LoadingEffect from "../components/LoadingEffect";
@@ -23,35 +21,15 @@ if (typeof window !== "undefined") {
 }
 
 export default function Page() {
+  const [donationPageData, setDonationPageData] = useState<null | any>(null);
+  const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(300);
+  const [sectionWidth, setSectionWidth] = useState(200);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   // Router Path
   const pathname = usePathname();
-  // Page Data
-  const IntroData = [
-    {
-      title: `היה שותף<br/>לקול התורה`,
-      button: {
-        text: "התחל בתרומה",
-        link: "/",
-      },
-    },
-  ];
-  // Pictures Data
-  const PageContent = {
-    video1: {
-      poster: Video1Poster,
-      link: "http://dovp7.sg-host.com/wp-content/uploads/2026/04/Nature-videos.mp4",
-    },
-    content1: `<p>קול התורה הנשמע בישיבת חברון אינו קול של שעה זהו קול של דורות. קול שהחל לפני שנות דור, ממשיך להדהד בעוצמה עד היום, ומחזיק את העולם כולו בכוח התורה.</p><p>בכל רגע ורגע עוסקים הוגי התורה בין כתליה בעמל ובהתמדה, בבניין עולם הרוח של כלל ישראל. אין סגולה כתורה ואין זכות גדולה מלהיות שותף בהחזקתה.</p>`,
-    content2: `<p>בין אם ביום היארצייט, בעת שמחה, נישואין, בבקשה לישועה, לברכה, לפרנסה או לרפואה החיבור לתורה הוא מקור הברכה, התחבר לעץ החיים.</p><p>זכה להיות ממחזיקי התורה, ותתברך בכל הברכות הנצורות בתורה למחזיקיה ותומכיה.</p><p>תרומתך לישיבת חברון היא שותפות חיה ונצחית בקול התורה שמאיר את העולם. ישיבת חברון היא הרבה מעבר לבית מדרש אחד. זהו מפעל תורה אדיר ממדים, הכולל אלפי לומדים בחורים ואברכים העוסקים יומם ולילה בעמלה של תורה, בבניין עולם הרוח של כלל ישראל.</p>`,
-    video2: {
-      poster: Video2Poster,
-      link: "http://dovp7.sg-host.com/wp-content/uploads/2026/04/Nature-videos.mp4",
-    },
-    content3: {
-      title: `החזקת מפעל תורה בסדר גודל כזה דורשת משאבים עצומים:`,
-      text: `אחזקת בתי המדרש, כוללים, פנימיות, מערך רוחני וחינוכי, ותמיכה מינימלית בלומדים המקדישים את חייהם לתורה. ולמרות המאמץ הבלתי פוסק - אין הקומץ משביע את הארי. ההוצאות גדלות משנה לשנה, והצרכים מרובים, בעוד שהמשאבים הקיימים אינם מספיקים כדי לשאת בעול לבדם. ללא שותפות רחבה של אוהבי תורה ומחזיקיה, קשה להמשיך ולהעמיד את עולם התורה על תלו בעוצמה הראויה לו. התרומה לישיבת חברון איננה נדבה גרידא, היא שותפות של ממש. שותפות בהעמדת אלפי לומדים על תלמודם, ובהבטחת המשך קול התורה הנשמע בישיבה לדורות הבאים. כל תרומה, קטנה כגדולה, מצטרפת לבניין הגדול ומחזקת את עמודי התורה. זוהי זכות שאין לה שיעור להיות ממחזיקי התורה, וליטול חלק חי ופעיל בהחזקת העולם כולו.`,
-    },
-  };
+
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -68,9 +46,74 @@ export default function Page() {
   const waveMask = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
 
+  // Get Page Data From backend
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadDonationPageData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/donation", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load donation page data.");
+        }
+
+        const data = await response.json();
+
+        if (isMounted) {
+          setDonationPageData(data);
+        }
+      } catch (error) {
+        console.error(error);
+        setError("Failed to load donation page data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDonationPageData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!donationPageData) {
+      return;
+    }
+    if (animationPlayed) {
+      setPageDataFetched(true);
+      console.log("Donation Page Data:", donationPageData);
+    }
+  }, [donationPageData, animationPlayed]);
+
+  useEffect(() => {
+    if (!donationPageData) {
+      return;
+    }
+    // Update Section Width on Data Change
+    const updateSectionWidth = () => {
+      // const newSectionWidth =
+      //   testimonialsPageData?.acf?.testimonials?.length * (itemWidths / 19.2) +
+      //   donationPageData?.acf?.testimonials?.length * 10;
+      // setSectionWidth(newSectionWidth);
+      // setContainerWidth(newSectionWidth + 39.7);
+    };
+
+    updateSectionWidth();
+    window.addEventListener("resize", updateSectionWidth);
+    return () => {
+      window.removeEventListener("resize", updateSectionWidth);
+    };
+  }, [donationPageData]);
+
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       setPageContentAnimation();
       // Overflow body
       const scurbScale = 2;
@@ -120,171 +163,168 @@ export default function Page() {
         verticalSection.kill();
       }
     };
-  }, [pathname]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
-  useGSAP(
-    () => {
-      if (typeof window !== "undefined" && panel) {
-        document.fonts.ready.then(() => {
-          // Selectors
-          const headerLeft = main.current?.querySelector(".header-left");
-          const headerRight = main.current?.querySelector(".header-right");
-          // Banner Button
-          const introTitle = main.current?.querySelector(
-            ".first-intro .intro-title",
-          );
-          // Banner Button
-          const introButtonWrap = main.current?.querySelector(
-            ".first-intro .donation-button",
-          );
-          const introButton = main.current?.querySelector(
-            ".first-intro .donation-button .theme-button",
-          );
-          const bannerBackgroundOverlay = main.current?.querySelector(
-            ".first-intro .intro-background .intro-bg-mask",
-          );
-          // Donation Video
-          const donationVideoWrapper = main.current?.querySelector(
-            ".donation-content .donation-video1",
-          );
-          // Split Title 1
-          let splitTitle;
-          if (introTitle) {
-            splitTitle = BigTitleSplitLines(introTitle);
-            gsap.set(introTitle, {
-              perspective: 400,
-            });
-            gsap.set(splitTitle, {
-              yPercent: 150,
-              opacity: 0,
+  useGSAP(() => {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+      document.fonts.ready.then(() => {
+        // Selectors
+        const headerLeft = main.current?.querySelector(".header-left");
+        const headerRight = main.current?.querySelector(".header-right");
+        // Banner Button
+        const introTitle = main.current?.querySelector(
+          ".first-intro .intro-title",
+        );
+        // Banner Button
+        const introButtonWrap = main.current?.querySelector(
+          ".first-intro .donation-button",
+        );
+        const introButton = main.current?.querySelector(
+          ".first-intro .donation-button .theme-button",
+        );
+        const bannerBackgroundOverlay = main.current?.querySelector(
+          ".first-intro .intro-background .intro-bg-mask",
+        );
+        // Donation Video
+        const donationVideoWrapper = main.current?.querySelector(
+          ".donation-content .donation-video1",
+        );
+        // Split Title 1
+        let splitTitle;
+        if (introTitle) {
+          splitTitle = BigTitleSplitLines(introTitle);
+          gsap.set(introTitle, {
+            perspective: 400,
+          });
+          gsap.set(splitTitle, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        if (introButton) {
+          gsap.set(introButton, {
+            yPercent: 100,
+            opacity: 0,
+          });
+        }
+        // Set localStorage variable
+        const userVisit = localStorage.getItem("hasVisited");
+        if (userVisit === "true" && animationPlayed) {
+          // Timeline
+          const tl = gsap.timeline({
+            onComplete: () => {
+              // Set Animation Played to true
+              setIsAllAnimationComplete(true);
+            },
+          });
+          if (main.current) {
+            tl.to(main.current, {
+              opacity: 1,
+              ease: "none",
+              duration: 0.5,
+              delay: 0,
             });
           }
-          if (introButton) {
-            gsap.set(introButton, {
-              yPercent: 100,
-              opacity: 0,
+          if (headerLeft) {
+            tl.to(headerLeft, {
+              opacity: 1,
+              ease: "none",
+              duration: 1,
             });
           }
-          // Set localStorage variable
-          const userVisit = localStorage.getItem("hasVisited");
-          if (userVisit === "true" && animationPlayed) {
-            // Timeline
-            const tl = gsap.timeline({
-              onComplete: () => {
-                // Set Animation Played to true
-                setIsAllAnimationComplete(true);
-              },
-            });
-            if (main.current) {
-              tl.to(main.current, {
-                opacity: 1,
-                ease: "none",
-                duration: 0.5,
-                delay: 0,
-              });
-            }
-            if (headerLeft) {
-              tl.to(headerLeft, {
+          if (headerRight) {
+            tl.to(
+              headerRight,
+              {
                 opacity: 1,
                 ease: "none",
                 duration: 1,
-              });
-            }
-            if (headerRight) {
-              tl.to(
-                headerRight,
-                {
-                  opacity: 1,
-                  ease: "none",
-                  duration: 1,
-                },
-                "-=1",
-              );
-            }
-            if (page.current) {
-              tl.to(
-                page.current,
-                {
-                  opacity: 1,
-                  ease: "none",
-                  duration: 1,
-                },
-                "-=1",
-              );
-            }
-            if (introTitle && splitTitle) {
-              tl.to(
-                splitTitle,
-                {
-                  yPercent: 0,
-                  opacity: 1,
-                  duration: 3,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                },
-                "-=1.5",
-              );
-            }
-            if (introButton) {
-              tl.to(
-                introButton,
-                {
-                  yPercent: 0,
-                  opacity: 1,
-                  duration: 3,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
-            // Wave Line Animation
-            if (waveMask.current) {
-              tl.to(
-                waveMask.current,
-                {
-                  translateY: 0,
-                  opacity: 1,
-                  ease: "expo.inOut",
-                  duration: 3,
-                  delay: 0,
-                },
-                "-=2.5",
-              );
-            }
-            if (bannerBackgroundOverlay) {
-              tl.to(
-                bannerBackgroundOverlay,
-                {
-                  translateY: "-100%",
-                  delay: 0,
-                  duration: 3,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
-            if (donationVideoWrapper) {
-              tl.to(
-                donationVideoWrapper,
-                {
-                  x: "12vw",
-                  delay: 0,
-                  duration: 3,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
+              },
+              "-=1",
+            );
           }
-        });
-      }
-    },
-    { scope: main, dependencies: [animationPlayed, pathname] },
-  );
+          if (page.current) {
+            tl.to(
+              page.current,
+              {
+                opacity: 1,
+                ease: "none",
+                duration: 1,
+              },
+              "-=1",
+            );
+          }
+          if (introTitle && splitTitle) {
+            tl.to(
+              splitTitle,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=1.5",
+            );
+          }
+          if (introButton) {
+            tl.to(
+              introButton,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+          // Wave Line Animation
+          if (waveMask.current) {
+            tl.to(
+              waveMask.current,
+              {
+                translateY: 0,
+                opacity: 1,
+                ease: "expo.inOut",
+                duration: 3,
+                delay: 0,
+              },
+              "-=2.5",
+            );
+          }
+          if (bannerBackgroundOverlay) {
+            tl.to(
+              bannerBackgroundOverlay,
+              {
+                translateY: "-100%",
+                delay: 0,
+                duration: 3,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+          if (donationVideoWrapper) {
+            tl.to(
+              donationVideoWrapper,
+              {
+                x: "12vw",
+                delay: 0,
+                duration: 3,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+        }
+      });
+    }
+  }, [pathname, pageDataFetched]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
@@ -542,72 +582,135 @@ export default function Page() {
       });
     };
   }, []);
-  return (
-    <div ref={main} id="main" className="relative">
-      <LoadingEffect animated={setAnimationPlayed} />
-      <Header animationStatus={isAllAnimationComplete} />
-      <SmoothWrapper>
-        <main
-          ref={page}
-          id="page"
-          dir="ltr"
-          className="main relative overflow-hidden z-10 opacity-0"
-        >
-          <div
-            ref={panel}
-            id="panel-wrapper"
-            className="w-screen h-screen flex items-end justify-end"
-          >
-            <div
-              ref={wrapper}
-              id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[380vw] h-screen items-center will-change-transform`}
-            >
-              <Introduction
-                animated={isAllAnimationComplete}
-                animationStatus={isAllAnimationComplete}
-                bgImage={IntroBG}
-                bgOverlay={""}
-                data={IntroData}
-                extraClass={
-                  "first-intro panel-section will-change-transform min-w-screen w-screen"
-                }
-                panel={panel}
-                bgPosition=""
-                overlayClass="bg-[#000000] opacity-0"
-                bgClass=""
-                audioControl={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
-              <DonationContentSection
-                extraClass="min-w-[280vw] w-[280vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
-                animWidthText={1}
-                sectionData={PageContent}
-              />
-            </div>
-          </div>
-        </main>
-        <Footer className={"relative z-20"} />
-      </SmoothWrapper>
-      <div
-        ref={waveLine}
-        className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
-      >
-        <div
-          ref={waveMask}
-          style={{
-            maskImage: `url(${Wave.src})`,
-          }}
-          className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
-        >
-          <div
-            ref={progress}
-            className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#1A1A1A] z-10"
-          ></div>
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto mb-4" />
+          <p>Loading...</p>
         </div>
       </div>
-      <FixedPlayButton />
-    </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!donationPageData) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Testimonials Not Found</h1>
+          <p className="text-gray-600">
+            The requested testimonials could not be found.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    donationPageData && (
+      <div ref={main} id="main" className="relative">
+        <LoadingEffect animated={setAnimationPlayed} />
+        <Header animationStatus={isAllAnimationComplete} />
+        <SmoothWrapper>
+          <main
+            ref={page}
+            id="page"
+            dir="ltr"
+            className="main relative overflow-hidden z-10 opacity-0"
+          >
+            <div
+              ref={panel}
+              id="panel-wrapper"
+              className="w-screen h-screen flex items-end justify-end"
+            >
+              <div
+                ref={wrapper}
+                id="section-wrapper"
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[380vw] h-screen items-center will-change-transform`}
+              >
+                <Introduction
+                  animated={isAllAnimationComplete}
+                  animationStatus={isAllAnimationComplete}
+                  bgImage={IntroBG}
+                  bgOverlay={""}
+                  data={{
+                    title: donationPageData?.acf?.page_title,
+                    button: {
+                      text: donationPageData?.acf?.donation_button_text,
+                      link: donationPageData?.acf?.donation_button_link,
+                    },
+                  }}
+                  extraClass={
+                    "first-intro panel-section will-change-transform min-w-screen w-screen"
+                  }
+                  panel={panel}
+                  bgPosition=""
+                  overlayClass="bg-[#000000] opacity-0"
+                  bgClass=""
+                  audioControl={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+                <DonationContentSection
+                  extraClass="min-w-[280vw] w-[280vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
+                  animWidthText={1}
+                  sectionData={{
+                    video1: {
+                      poster: donationPageData?.acf?.video_1?.poster,
+                      source: donationPageData?.acf?.video_1?.source,
+                    },
+                    content1: donationPageData?.acf?.text_1,
+                    content2: donationPageData?.acf?.text_2,
+                    video2: {
+                      poster: donationPageData?.acf?.video_2?.poster,
+                      source: donationPageData?.acf?.video_2?.source,
+                    },
+                    content3: {
+                      title: donationPageData?.acf?.content?.title,
+                      text: donationPageData?.acf?.content?.text,
+                    },
+                    button: {
+                      text: donationPageData?.acf?.donation_button_text,
+                      link: donationPageData?.acf?.donation_button_link,
+                    },
+                  }}
+                />
+              </div>
+            </div>
+          </main>
+          <Footer className={"relative z-20"} />
+        </SmoothWrapper>
+        <div
+          ref={waveLine}
+          className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
+        >
+          <div
+            ref={waveMask}
+            style={{
+              maskImage: `url(${Wave.src})`,
+            }}
+            className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+          >
+            <div
+              ref={progress}
+              className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#1A1A1A] z-10"
+            ></div>
+          </div>
+        </div>
+        <FixedPlayButton />
+      </div>
+    )
   );
 }

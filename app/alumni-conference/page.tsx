@@ -134,7 +134,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 6.5,
+          end: "+=" + window.innerWidth * (containerWidth / 100),
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -162,7 +162,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 6.5 - 500),
+          end: "+=" + (window.innerWidth * (containerWidth / 100) - 500),
           scrub: scurbScale,
         },
       });
