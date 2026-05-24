@@ -30,11 +30,6 @@ export default function Page() {
   // Router Path
   const pathname = usePathname();
   const [activeCategory, setActiveCategory] = useState(0);
-  // Page Data
-  const IntroData1 = {
-    title: `תמונות<br/>מחזור`,
-    content: `לורם איפסום דולור סיט אמט, קונסקטורר אדיפיסינג אלית הועניב היושבב שערש שמחויט - שלושע ותלברו חשלו שעותלשך וחאית נובש ערששף.`,
-  };
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -121,7 +116,7 @@ export default function Page() {
     }
     // Update Section Width on Data Change
     const updateSectionWidth = () => {
-      const newSectionWidth = 210;
+      const newSectionWidth = 200;
 
       setSectionWidth(newSectionWidth);
       setContainerWidth(newSectionWidth + 100);
@@ -146,7 +141,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 3.7,
+          end: "+=" + window.innerWidth * (containerWidth / 100),
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -174,7 +169,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 3.7 - 500),
+          end: "+=" + (window.innerWidth * (containerWidth / 100) - 500),
           scrub: scurbScale,
         },
       });

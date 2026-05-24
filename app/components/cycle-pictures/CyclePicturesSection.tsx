@@ -75,11 +75,11 @@ export default function CyclePicturesSection(props: ChildProps) {
             <SingleCyclePicture key={index} data={item} />
           ))}
         </div>
-        <div className="sheet-readmore min-w-35">
+        {/* <div className="sheet-readmore min-w-35">
           <button className="text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500">
             טען עוד
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );
