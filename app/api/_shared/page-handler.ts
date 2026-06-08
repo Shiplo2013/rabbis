@@ -1,19 +1,7 @@
 import { NextResponse } from "next/server";
 
-const GRAPHQL_ENDPOINT = "https://dovp7.sg-host.com/graphql";
 const WORDPRESS_PAGES_ENDPOINT =
   "https://dovp7.sg-host.com/wp-json/wp/v2/pages";
-
-type PageNode = {
-  id: string;
-  databaseId: number;
-  slug: string;
-  uri: string;
-  link: string;
-  title: string;
-  content: string | null;
-  modified: string;
-};
 
 type RestPage = {
   id: number;
@@ -24,21 +12,6 @@ type RestPage = {
   modified?: string;
   acf: Record<string, unknown> | unknown[] | null;
 };
-
-const PAGE_GRAPHQL_QUERY = `
-  query PageByUri($uri: ID!) {
-    page(id: $uri, idType: URI) {
-      id
-      databaseId
-      slug
-      uri
-      link
-      title
-      content
-      modified
-    }
-  }
-`;
 
 function normalizePath(path: string) {
   return `/${path.replace(/^\/+|\/+$/g, "")}/`;
@@ -73,53 +46,23 @@ export function createWordPressPageHandler(options: {
 
   return async function GET() {
     try {
-      const restUrl = `${WORDPRESS_PAGES_ENDPOINT}?acf_format=standard&slug=${encodeURIComponent(restSlug)}&_fields=id,slug,link,title,content,acf`;
+      const restUrl = `${WORDPRESS_PAGES_ENDPOINT}?acf_format=standard&slug=${encodeURIComponent(restSlug)}&_fields=id,slug,link,title,content,modified,acf`;
 
-      const [graphResponse, restResponse] = await Promise.all([
-        fetch(GRAPHQL_ENDPOINT, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            query: PAGE_GRAPHQL_QUERY,
-            variables: { uri },
-          }),
-          cache: "no-store",
-        }),
-        fetch(restUrl, {
-          cache: "no-store",
-        }),
-      ]);
+      const restResponse = await fetch(restUrl, {
+        cache: "no-store",
+      });
 
-      let graphPage: PageNode | undefined;
-
-      if (graphResponse.ok) {
-        const graphData = (await graphResponse.json()) as {
-          data?: { page?: PageNode };
-          errors?: Array<{ message: string }>;
-        };
-
-        if (!graphData.errors?.length && graphData.data?.page) {
-          graphPage = graphData.data.page;
-        }
-      }
-
-      if (!restResponse.ok && !graphPage) {
+      if (!restResponse.ok) {
         return NextResponse.json(
           { error: `Failed to fetch ${pageName} data from WordPress.` },
           { status: restResponse.status },
         );
       }
 
-      let restPage: RestPage | undefined;
+      const pages = (await restResponse.json()) as RestPage[];
+      const restPage = pickRestPageByUri(pages, uri);
 
-      if (restResponse.ok) {
-        const pages = (await restResponse.json()) as RestPage[];
-        restPage = pickRestPageByUri(pages, uri);
-      }
-
-      if (!restPage && !graphPage) {
+      if (!restPage) {
         return NextResponse.json(
           { error: `${pageName} was not found in WordPress.` },
           { status: 404 },
@@ -127,27 +70,21 @@ export function createWordPressPageHandler(options: {
       }
 
       const mergedPage = {
-        id: graphPage?.databaseId ?? restPage?.id,
-        slug: graphPage?.slug ?? restPage?.slug,
-        link: graphPage?.link ?? restPage?.link,
+        id: restPage.id,
+        slug: restPage.slug,
+        link: restPage.link,
         title: {
-          rendered: graphPage?.title ?? restPage?.title.rendered ?? "",
+          rendered: restPage.title.rendered ?? "",
         },
         content: {
           rendered:
-            graphPage?.content ??
-            (typeof restPage?.content?.rendered === "string"
+            typeof restPage.content?.rendered === "string"
               ? restPage.content.rendered
-              : ""),
+              : "",
         },
-        modified: graphPage?.modified ?? restPage?.modified,
-        acf: restPage?.acf ?? null,
-        source:
-          graphPage && restPage
-            ? "graphql+rest-acf"
-            : graphPage
-              ? "graphql"
-              : "rest",
+        modified: restPage.modified,
+        acf: restPage.acf ?? null,
+        source: "rest",
       };
 
       return NextResponse.json(mergedPage);

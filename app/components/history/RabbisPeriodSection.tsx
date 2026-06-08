@@ -2,8 +2,9 @@ import GetRightPosition from "@/app/ui/GetRightPosition";
 import ImageRevealWithParallaxBG from "@/app/ui/ImageRevealWithParallaxBG";
 import RabbisSlider from "@/app/ui/RabbisSlider";
 import ThemeButton2 from "@/app/ui/ThemeButton2";
+import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
-import { RefObject, useRef } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import contentBG from "../../assets/images/history-section-bg.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
@@ -17,6 +18,78 @@ interface ChildProps {
   panel?: RefObject<HTMLDivElement | null>;
   activeMenu?: boolean;
   activeMenuFunction?: (state: boolean) => void;
+  data: any;
+  rabbisData?: (data: SlideItem[]) => void;
+}
+
+type RabbiPost = {
+  id: number;
+  slug: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  acf: Record<string, unknown> | unknown[] | null;
+};
+
+type SlideItem = {
+  buttonText: string;
+  title: string;
+  subtitle: string;
+  thumbnail: any;
+  text: string;
+  buttonLink?: string;
+};
+
+function parsePastRabbis(input: unknown): unknown[] {
+  if (Array.isArray(input)) {
+    return input;
+  }
+
+  if (typeof input === "string") {
+    try {
+      const parsed = JSON.parse(input);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+}
+
+function extractPostId(item: unknown): number | undefined {
+  if (typeof item === "number") {
+    return Number.isFinite(item) ? item : undefined;
+  }
+
+  if (typeof item === "string") {
+    const parsed = Number(item);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+
+  if (item && typeof item === "object") {
+    const candidate = (item as Record<string, unknown>).ID;
+    const fallback = (item as Record<string, unknown>).id;
+    const value = candidate ?? fallback;
+
+    if (typeof value === "number") {
+      return Number.isFinite(value) ? value : undefined;
+    }
+
+    if (typeof value === "string") {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : undefined;
+    }
+  }
+
+  return undefined;
+}
+
+function stripHtml(value: string) {
+  return value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export default function RabbisPeriodSection(props: ChildProps) {
@@ -27,6 +100,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
   const button = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const slider = useRef<HTMLDivElement>(null);
+  const [slideData, setSlideData] = useState<SlideItem[]>([]);
   // Section Ref
   const timeline = props.panel;
   // Get Offset Top of Timeline
@@ -34,51 +108,98 @@ export default function RabbisPeriodSection(props: ChildProps) {
     return timeline?.current ? timeline.current.offsetTop : 0;
   };
 
-  // Section Data
-  const SlideData = [
-    {
-      buttonText: "",
-      title: "",
-      subtitle: "",
-      text: "",
-    },
-    {
-      buttonText: "",
-      title: "",
-      subtitle: "",
-      text: "",
-    },
-    {
-      buttonText: "",
-      title: "",
-      subtitle: "",
-      text: "",
-    },
-    {
-      buttonText: "",
-      title: "",
-      subtitle: "",
-      text: "",
-    },
-    {
-      buttonText: "",
-      title: "",
-      subtitle: "",
-      text: "",
-    },
-    {
-      buttonText: "",
-      title: "",
-      subtitle: "",
-      text: "",
-    },
-  ];
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPastRabbis = async () => {
+      const rawItems = parsePastRabbis(props?.data?.past_rabbis);
+      const ids = rawItems
+        .map(extractPostId)
+        .filter((id): id is number => typeof id === "number");
+
+      if (!ids.length) {
+        if (isMounted) {
+          setSlideData([]);
+        }
+        return;
+      }
+
+      const uniqueIds = [...new Set(ids)];
+      const params = new URLSearchParams({
+        include: uniqueIds.join(","),
+        per_page: String(uniqueIds.length),
+        orderby: "include",
+        order: "asc",
+      });
+
+      try {
+        const response = await fetch(
+          `/api/past-rabbis/posts?${params.toString()}`,
+          {
+            cache: "no-store",
+          },
+        );
+
+        if (!response.ok) {
+          if (isMounted) {
+            setSlideData([]);
+          }
+          return;
+        }
+
+        const data = (await response.json()) as { posts?: RabbiPost[] };
+        const posts = Array.isArray(data.posts) ? data.posts : [];
+        const orderIndex = new Map(uniqueIds.map((id, index) => [id, index]));
+        const sortedPosts = [...posts].sort((a, b) => {
+          const aIndex = orderIndex.get(a.id) ?? Number.MAX_SAFE_INTEGER;
+          const bIndex = orderIndex.get(b.id) ?? Number.MAX_SAFE_INTEGER;
+          return aIndex - bIndex;
+        });
+
+        const mappedSlides: SlideItem[] = sortedPosts.map((post) => {
+          const acf = (post.acf ?? {}) as Record<string, unknown>;
+          const title =
+            typeof acf?.title === "string" ? acf.title : post.title || "";
+          const subtitle = typeof acf.time === "string" ? acf.time : "";
+          const thumbnail = acf.thumbnail || null;
+
+          return {
+            buttonText: "הרחב קריאה",
+            title,
+            subtitle,
+            thumbnail,
+            text: "מייסד וראש הישיבה. מראשי תנועת המוסר ידוע בכינויו הסבא מסלבודקה.",
+            buttonLink: post.slug
+              ? `/past-rabbis/${post.slug}`
+              : "/past-rabbis",
+          };
+        });
+
+        if (isMounted) {
+          setSlideData(mappedSlides);
+          if (props.panel?.current?.className == "timeline1") {
+            props.rabbisData?.(mappedSlides);
+          }
+        }
+      } catch {
+        if (isMounted) {
+          setSlideData([]);
+        }
+      }
+    };
+
+    loadPastRabbis();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [props?.data?.past_rabbis]);
 
   // Section Animation
-  useGSAP(
-    () => {
-      document.fonts.ready.then(() => {
-        // Section Title 1
+  useGSAP(() => {
+    document.fonts.ready.then(() => {
+      // Section Title 1
+      if (title.current) {
         gsap.set(title.current, { opacity: 1 });
         let splititle;
         SplitText.create(title.current, {
@@ -108,7 +229,9 @@ export default function RabbisPeriodSection(props: ChildProps) {
             return splititle;
           },
         });
-        // Section Slider
+      }
+      // Section Slider
+      if (slideData.length > 0 && slider.current) {
         gsap.from(slider.current, {
           yPercent: 50,
           opacity: 0,
@@ -126,12 +249,14 @@ export default function RabbisPeriodSection(props: ChildProps) {
             toggleActions: "restart pause play reverse",
           },
         });
-        // Section Button
-        gsap.from(button.current, {
-          yPercent: 100,
-          opacity: 0,
-          duration: 2,
-          delay: -0.5,
+      }
+      // Section Button
+      if (button.current) {
+        gsap.to(button.current, {
+          yPercent: 0,
+          opacity: 1,
+          duration: 1,
+          delay: 0,
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
@@ -144,10 +269,9 @@ export default function RabbisPeriodSection(props: ChildProps) {
             toggleActions: "restart pause play reverse",
           },
         });
-      });
-    },
-    { scope: wrapper, dependencies: [pathname] },
-  );
+      }
+    });
+  }, [slideData, pathname]);
 
   return (
     <section
@@ -168,6 +292,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
           ref={button}
           onClick={() => {
             props.activeMenuFunction?.(!props.activeMenu);
+            props.rabbisData?.(slideData);
           }}
           className="period-button absolute top-[7.8vh] left-[12.7vw] cursor-pointer"
         >
@@ -184,15 +309,17 @@ export default function RabbisPeriodSection(props: ChildProps) {
           dir="ltr"
           className="period-title absolute top-[9.5vh] right-[9vw]"
         >
-          <h2
-            ref={title}
-            className="text-[45px] leading-[0.7em] text-[#FBF4E6]"
-          >
-            הרבנים בתקופת תרל"ז - תרע"ד
-          </h2>
+          {props?.data?.title && (
+            <h2
+              ref={title}
+              className="text-[45px] leading-[0.7em] text-[#FBF4E6]"
+            >
+              {parse(props?.data?.title || "")}
+            </h2>
+          )}
         </div>
         <div ref={slider} className="period-slider max-w-155">
-          <RabbisSlider data={SlideData} />
+          {slideData.length > 0 && <RabbisSlider data={slideData} />}
         </div>
       </div>
     </section>

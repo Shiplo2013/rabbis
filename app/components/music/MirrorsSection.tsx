@@ -2,13 +2,16 @@
 
 import ArrowLeftIcon from "@/app/assets/icons/ArrowLeftIcon";
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
+import FsLightbox from "fslightbox-react";
 import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useMemo, useRef, useState } from "react";
+import Album1 from "../../assets/images/album-icon1.png";
+import Album2 from "../../assets/images/album-icon2.png";
 import BgImage from "../../assets/images/mirros-bg.jpg";
-import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
+import { gsap, ScrollSmoother, ScrollTrigger, useGSAP } from "../../ui/plugins";
 // import required modules
 
 if (typeof window !== "undefined") {
@@ -25,18 +28,59 @@ interface ChildProps {
 export default function MirrorsSection(props: ChildProps) {
   // Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const imageTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const pathname = usePathname();
   // Use State
   const pageData = props.data || {};
   const nextPost = props.nextPost || {};
+
+  // Lightbox State
+  const [toggler, setToggler] = useState(false);
+
+  const videos = Array.isArray(pageData?.videos) ? pageData.videos : [];
+  const videoSources = useMemo(
+    () => videos.map((item: any) => item?.video?.url).filter(Boolean),
+    [videos],
+  );
+  const videoTypes = useMemo(() => videos.map(() => "video"), [videos]);
+
+  const updateThumbStates = (progress: number) => {
+    const thumbs = wrapper.current?.querySelectorAll(
+      ".image-thumb > .slide-thumb",
+    );
+    if (!thumbs?.length) {
+      return;
+    }
+
+    // When the whole animation finishes, remove active from all thumbs.
+    if (progress >= 0.999) {
+      thumbs.forEach((thumb) => {
+        thumb.classList.remove("active-thumb");
+        thumb.classList.add("opacity-50");
+      });
+      return;
+    }
+
+    const total = thumbs.length;
+    const activeIndex = Math.min(
+      total - 1,
+      Math.max(0, Math.floor(progress * total)),
+    );
+
+    thumbs.forEach((thumb, index) => {
+      const isActive = index === activeIndex;
+      thumb.classList.toggle("active-thumb", isActive);
+      thumb.classList.toggle("opacity-50", !isActive);
+    });
+  };
+
   // Section Animation
   useGSAP(
     () => {
       const slider = wrapper.current?.querySelector(".mirror-slider");
       const slides = slider?.querySelectorAll(".image-slider>.singel-slide");
-      const thumbs = slider?.querySelectorAll(".image-thumb>.slide-thumb");
       // Slider Timeline
-      const lt = gsap.timeline({
+      const imageTimeline = gsap.timeline({
         ease: "none",
         scrollTrigger: {
           start: () => {
@@ -47,64 +91,14 @@ export default function MirrorsSection(props: ChildProps) {
           },
           scrub: 2,
           onUpdate: (self) => {
-            const update = self.progress * 100;
-            //console.log(update);
-            const thumb1 = wrapper.current?.querySelector(
-              `.image-thumb > .thumb-image-1`,
-            );
-            const thumb2 = wrapper.current?.querySelector(
-              `.image-thumb > .thumb-image-2`,
-            );
-            const thumb3 = wrapper.current?.querySelector(
-              `.image-thumb > .thumb-image-3`,
-            );
-            const thumb4 = wrapper.current?.querySelector(
-              `.image-thumb > .thumb-image-4`,
-            );
-            if (update < 5) {
-              (thumb1?.previousSibling as HTMLElement)?.classList.remove(
-                "opacity-50",
-              );
-            }
-            if (update > 5 && 25 > update) {
-              (thumb1?.previousSibling as HTMLElement)?.classList.add(
-                "opacity-50",
-              );
-              thumb1?.classList.remove("opacity-50");
-            } else {
-              thumb1?.classList.add("opacity-50");
-            }
-            if (update > 25 && 49 > update) {
-              (thumb2?.previousSibling as HTMLElement)?.classList.add(
-                "opacity-50",
-              );
-              thumb2?.classList.remove("opacity-50");
-            } else {
-              thumb2?.classList.add("opacity-50");
-            }
-            if (update > 50 && 75 > update) {
-              (thumb3?.previousSibling as HTMLElement)?.classList.add(
-                "opacity-50",
-              );
-              thumb3?.classList.remove("opacity-50");
-            } else {
-              thumb3?.classList.add("opacity-50");
-            }
-            if (update > 76 && 100 > update) {
-              (thumb4?.previousSibling as HTMLElement)?.classList.add(
-                "opacity-50",
-              );
-              thumb4?.classList.remove("opacity-50");
-            } else {
-              thumb4?.classList.add("opacity-50");
-            }
+            updateThumbStates(self.progress);
           },
         },
       });
       if (slides) {
         slides?.forEach((element, index) => {
           if (index !== 0) {
-            lt.to(element, {
+            imageTimeline.to(element, {
               duration: 1,
               clipPath: "inset(0%)",
               ease: "power1.out",
@@ -112,9 +106,53 @@ export default function MirrorsSection(props: ChildProps) {
           }
         });
       }
+
+      imageTimelineRef.current = imageTimeline;
+      updateThumbStates(0);
+
+      return () => {
+        imageTimelineRef.current = null;
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, pageData] },
   );
+
+  const handleThumbClick = (index: number) => {
+    const timeline = imageTimelineRef.current;
+    const totalSlides = pageData?.images?.length || 0;
+
+    if (!timeline || totalSlides <= 1) {
+      return;
+    }
+
+    const maxIndex = Math.max(totalSlides - 1, 1);
+    const targetProgress = Math.min(1, Math.max(0, index / maxIndex));
+
+    // Jump animation to the selected image segment.
+    timeline.progress(targetProgress);
+    updateThumbStates(targetProgress);
+
+    // Sync page scroll to timeline progress so scroll position and animation match.
+    const scrollTrigger = timeline.scrollTrigger;
+    if (!scrollTrigger) {
+      return;
+    }
+
+    const targetScroll =
+      scrollTrigger.start +
+      (scrollTrigger.end - scrollTrigger.start) * targetProgress;
+
+    const smoother = ScrollSmoother.get();
+    if (smoother) {
+      smoother.scrollTo(targetScroll, true);
+      return;
+    }
+
+    window.scrollTo({
+      top: targetScroll,
+      behavior: "smooth",
+    });
+  };
   return (
     <section
       ref={wrapper}
@@ -153,7 +191,7 @@ export default function MirrorsSection(props: ChildProps) {
                 >
                   <Image
                     className="slide-image w-full object-cover object-center h-full"
-                    src={item?.url || item?.src}
+                    src={item?.sizes?.large || item?.src}
                     width="540"
                     height="660"
                     blurDataURL={CreateShimmerDataUrl(540, 660)}
@@ -165,16 +203,55 @@ export default function MirrorsSection(props: ChildProps) {
               );
             })}
           </div>
-          <div className="image-thumb absolute bottom-0 right-[5%] flex flex-col gap-y-3">
+          {pageData?.videos?.length > 0 && (
+            <div className="video-gallery absolute bottom-[0%] right-20 z-20">
+              {videoSources.length > 0 && (
+                <FsLightbox
+                  key={`videos-${videoSources.length}`}
+                  toggler={toggler}
+                  sources={videoSources}
+                  types={videoTypes}
+                />
+              )}
+              <button
+                onClick={() => setToggler(!toggler)}
+                className="video-popup cursor-pointer w-25 h-auto flex items-center justify-center flex-col group text-[18px]"
+              >
+                <div className="icon w-full h-auto flex items-center justify-center relative">
+                  <div className="static duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-90">
+                    <Image
+                      className="w-full h-full object-contain object-center"
+                      src={Album2.src}
+                      width={100}
+                      height={100}
+                      alt="Album Icon"
+                    />
+                  </div>
+                  <div className="hover absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-110">
+                    <Image
+                      className="w-full h-full object-contain object-center"
+                      src={Album1.src}
+                      width={100}
+                      height={100}
+                      alt="Album Icon"
+                    />
+                  </div>
+                </div>
+                <span className="text">גלריית וידאו</span>
+              </button>
+            </div>
+          )}
+          <div className="image-thumb absolute bottom-0 right-0 flex flex-col gap-y-3">
             {pageData.images?.map((item: any, index: number) => {
               return (
                 <div
                   key={index}
-                  className={`slide-thumb thumb-image-${index} w-15 h-15 transition-none ${index !== 0 && "opacity-50"}`}
+                  onClick={() => handleThumbClick(index)}
+                  className={`slide-thumb thumb-image-${index} w-15 h-15 transition-none ${index !== 0 && "opacity-50"} cursor-pointer`}
                 >
                   <Image
                     className="thumb-image w-full object-cover object-center h-full"
-                    src={item?.url || item?.src}
+                    src={item?.sizes?.thumbnail || item?.src}
                     width="60"
                     height="60"
                     blurDataURL={CreateShimmerDataUrl(60, 60)}

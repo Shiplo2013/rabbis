@@ -76,7 +76,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                   return (
                     getTimelineOffset() +
                     GetRightPosition(image) -
-                    window.innerWidth * 1.7
+                    window.innerWidth * 1.8
                   );
                 },
                 toggleActions: "restart pause play reverse",
@@ -107,7 +107,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                         return (
                           getTimelineOffset() +
                           GetRightPosition(title) -
-                          window.innerWidth * 1.7
+                          window.innerWidth * 1.8
                         );
                       },
                       toggleActions: "restart pause resume reverse",
@@ -139,7 +139,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                         return (
                           getTimelineOffset() +
                           GetRightPosition(text) -
-                          window.innerWidth * 1.7
+                          window.innerWidth * 1.8
                         );
                       },
                       toggleActions: "restart pause resume reverse",

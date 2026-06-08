@@ -1,4 +1,5 @@
 "use client";
+import parse from "html-react-parser";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import "swiper/css";
@@ -13,7 +14,13 @@ import RabbisThumb from "../assets/images/rabbis-thumb.jpg";
 import ThemeButton from "./ThemeButton";
 
 interface ChildProps {
-  data: { buttonText: string; title: string; subtitle: string; text: string }[];
+  data: {
+    buttonText: string;
+    title: string;
+    subtitle: string;
+    text: string;
+    buttonLink?: string;
+  }[];
 }
 
 export default function RabbisSlider(props: ChildProps) {
@@ -26,6 +33,7 @@ export default function RabbisSlider(props: ChildProps) {
     setIsBeginning(s.isBeginning);
     setIsEnd(s.isEnd);
   };
+
   return (
     <div className="relative flex flex-col gap-5">
       <Swiper
@@ -43,14 +51,19 @@ export default function RabbisSlider(props: ChildProps) {
           },
         }}
       >
-        {props?.data?.map((item, index) => {
+        {props?.data?.map((item: any, index: number) => {
           return (
             <SwiperSlide key={index}>
               <div className="rabbis-wrapper relative min-w-140 flex flex-col items-center justify-center group">
                 <div className="rabbis-thumb w-80 h-87.5 relative z-10">
                   <Image
                     className="w-full object-cover object-center h-full"
-                    src={RabbisThumb.src}
+                    src={
+                      item?.sizes?.past_rabbis_thumb ||
+                      item?.thumbnail?.url ||
+                      item?.thumbnail?.src ||
+                      RabbisThumb.src
+                    }
                     width={"320"}
                     height={"350"}
                     alt="Rabbis Thumb"
@@ -62,25 +75,29 @@ export default function RabbisSlider(props: ChildProps) {
                 <div className="rabbis-content w-full flex flex-col items-center justify-center gap-y-5 relative z-20 -mt-6.5">
                   <ThemeButton
                     extraClass="rounded-none px-5 py-1.5 max-w-37"
-                    text="הרחב קריאה"
+                    text={item?.buttonText || "הרחב קריאה"}
                     bgColor="bg-[#D1A941]"
                     textColor="text-[#000000]"
                     hoverBgColor="bg-[#ffffff]"
                     fontSize="text-[18px]"
                     svgIconClass={""}
+                    buttonLink={item?.buttonLink || "/past-rabbis"}
                   />
                   <div className="content leading-[1em] text-[#D1A941] flex justify-center flex-col items-center gap-y-2">
-                    <h3 className="text-[28px]">רבי נתן צבי פינקל</h3>
-                    <h5 className="text-[18px]">
-                      שימש בישיבה: תר"מ - כ"ט שבט תרפ"ז
-                    </h5>
+                    {item?.title && (
+                      <h3 className="text-[28px]">
+                        {parse(item?.title || "")}
+                      </h3>
+                    )}
+                    {item?.subtitle && (
+                      <h5 className="text-[18px]">
+                        {parse(item?.subtitle || "")}
+                      </h5>
+                    )}
                   </div>
                 </div>
                 <div className="text-[20px] text-[#D1A941] text-center absolute top-[27%] z-30 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <p>
-                    מייסד וראש הישיבה. מראשי תנועת המוסר ידוע בכינויו הסבא
-                    מסלבודקה.
-                  </p>
+                  <p>{parse(item?.text || "")}</p>
                 </div>
               </div>
             </SwiperSlide>

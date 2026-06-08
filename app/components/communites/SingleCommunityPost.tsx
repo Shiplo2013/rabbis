@@ -34,7 +34,7 @@ export default function SingleCommunityPost(props: ChildProps) {
             loading="lazy"
             alt="Rabbis"
           />
-          <div className="post-image-overlay absolute top-0 left-0 w-[calc(100%+10px)] h-full bg-black z-20 -ml-2.5"></div>
+          {/* <div className="post-image-overlay absolute top-0 left-0 w-[calc(100%+10px)] h-full bg-black z-20 -ml-2.5"></div> */}
         </div>
         <div className="post-text text-[28px] text-(--theme-color) leading-[0.9em] text-right">
           <h2 className="post-title font-extralight mb-4">

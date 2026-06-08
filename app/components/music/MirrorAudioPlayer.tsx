@@ -14,6 +14,9 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
+import "swiper/css";
+import { Mousewheel } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import AlbumImage from "../../assets/images/album-image.jpg";
 import PlayerBG from "../../assets/images/mirros-bg.jpg";
 import { gsap, useGSAP } from "../../ui/plugins";
@@ -593,22 +596,31 @@ export default function MirrorAudioPlayer(props: ChildProps) {
 
             <div className="player-content-tabs flex flex-col gap-y-5">
               {/* Tab headers */}
-              <div className="tab-head flex gap-x-6 max-w-full">
-                {musicPageData?.album?.music_category?.map(
-                  (item: any, index: number) => (
-                    <div
-                      key={index}
-                      data-key={index}
-                      onClick={() => props.setActiveTab(index)}
-                      className={`single-tab-head min-w-60 w-auto text-[#ffffff] text-[24px] leading-[100%] ${props.activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300 ${props.activeTab === index && "active-tab"}`}
-                    >
-                      <p>{parse(item.album_title || "")}</p>
-                      <span className="icon w-3">
-                        <ArrowLeft extraClass="fill-white" />
-                      </span>
-                    </div>
-                  ),
-                )}
+              <div className="tab-head max-w-full">
+                <Swiper
+                  modules={[Mousewheel]}
+                  slidesPerView="auto"
+                  spaceBetween={24}
+                  mousewheel={{ forceToAxis: true, releaseOnEdges: false }}
+                  className="tab-head-swiper"
+                >
+                  {musicPageData?.album?.music_category?.map(
+                    (item: any, index: number) => (
+                      <SwiperSlide key={index} className="w-auto!">
+                        <div
+                          data-key={index}
+                          onClick={() => props.setActiveTab(index)}
+                          className={`single-tab-head min-w-60 w-auto text-[#ffffff] text-[24px] leading-[100%] ${props.activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300 ${props.activeTab === index && "active-tab"}`}
+                        >
+                          <p>{parse(item.album_title || "")}</p>
+                          <span className="icon w-3">
+                            <ArrowLeft extraClass="fill-white" />
+                          </span>
+                        </div>
+                      </SwiperSlide>
+                    ),
+                  )}
+                </Swiper>
               </div>
 
               {/* Tab content */}
@@ -661,10 +673,12 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                                     link: item?.music?.url,
                                   });
                                 }}
-                                className={`single-music flex items-center justify-between ${isActive ? "bg-[rgba(0,0,0,0.8)] active-music" : "bg-[rgba(0,0,0,0.4)]"} py-4 px-5 rounded-full relative cursor-pointer hover:bg-[rgba(0,0,0,0.8)] transition-all duration-300`}
+                                className={`single-music flex items-center justify-between gap-4 ${isActive ? "bg-[rgba(0,0,0,0.8)] active-music" : "bg-[rgba(0,0,0,0.4)]"} py-4 px-5 rounded-full relative cursor-pointer hover:bg-[rgba(0,0,0,0.8)] transition-all duration-300`}
                               >
                                 <div className="title flex items-center gap-x-8">
-                                  <PlayIcon2 />
+                                  <div className="icon min-w-8">
+                                    <PlayIcon2 />
+                                  </div>
                                   <h5 className="text-[24px] leading-[1.2em]">
                                     {parse(item?.title || "")}
                                   </h5>

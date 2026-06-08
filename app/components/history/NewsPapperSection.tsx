@@ -1,4 +1,5 @@
 "use client";
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import ImageRevealWithParallaxBG from "@/app/ui/ImageRevealWithParallaxBG";
 import TextSplitLines from "@/app/ui/TextSplitLines";
 import parse from "html-react-parser";
@@ -20,6 +21,7 @@ interface ChildProps {
   animWidthText: number;
   bgImage: any;
   panel: RefObject<HTMLDivElement | null>;
+  data: any;
 }
 
 export default function NewsPapperSection(props: ChildProps) {
@@ -34,10 +36,18 @@ export default function NewsPapperSection(props: ChildProps) {
   const [draggingImage, setDraggingImage] = useState<1 | 2 | 3 | null>(null);
 
   // Section Data
-  const text1 = `מלחמת העולם הראשונה טלטלה את מוסדות תבל והרעידה את כל מערכי החיים הרגילים. עולם התורה נפגע שבעתיים, כאשר הישיבות הקדושות ששכנו באזורים מוכי קרבות נאלצו לסגור את שעריהן ולנוע מזרחה, בחיפוש אחר מקום מבטחים שבו יוכלו להמשיך ללמוד באין מפריע. תקופה זו הייתה מאתגרת ורבת תהפוכות במיוחד עבור ישיבת סלבודקא כנסת ישראל.`;
-  const text2 = `מיקומה הגיאוגרפי של סלבודקא, פרברה של קובנה השוכנת בטבורו של איזור מוקף מבצרים רבים, אילצו את ראשי הישיבה, תלמידיה ורבניה לעקור מארץ מגוריהם, לשאת את ארון הספרים על שכמם ולנדוד במסעות מפרכים דרך ערים וגבולות, אף בתנאי קור ורעב, גם תוך חשד תמידי מפני גזירות השלטון או פלישות צבאות ונפנופי חרב המלחמה.`;
-  const smallText = `ואולם, דווקא מתוך המשבר נולדה עמידה רוחנית מרשימה: בני הישיבה לא עזבו את תלמודם, לא חדלו מתפילה ובכל מקום שנעצרו בו, הקימו בית מדרש חדש, זמני ככל שיהיה אך הרוח הגדולה פועמת בו כמו בבית המדרש הישן.<br/>התחנה הראשונה לנדודיה היתה בעיר מינסק, שם נרשמו מפגשי תורה מרתקים עם בתי מדרש מגוונים ואסכולות מחשבות שונות. בעיר זו התרחש גם המפגש ההיסטורי בין מרן ה"חזון איש" למרן "הסבא מסלבודקא" זצ"ל. בלימוד מעמיק ובשיח תורני נלבנו יחדיו דרכים ושיטות בעבודת ה', ברוח המוסר ובגדלות התורה.`;
-  const bigText = `בהמשך, עקרה הישיבה לאוקראינה, שם התבססה מספר שנים בעיר קרמנצ'וג. תקופה זו הייתה בבחינת "תורה שלמדי באף"  אף על רקע הטלטלות, האתגרים והאתגרים הרבים, לא חדלה הישיבה ממלאכתה הרוחנית. קול התורה לא שקט, אלא הלך והתחזק, גם בימי צר ומצוק עד לסיום המלחמה בשנת תרע"ט אז שבה הישיבה לכור מחצבתה סלבודקא.`;
+  const text1 =
+    props.data?.content_1 ||
+    `מלחמת העולם הראשונה טלטלה את מוסדות תבל והרעידה את כל מערכי החיים הרגילים. עולם התורה נפגע שבעתיים, כאשר הישיבות הקדושות ששכנו באזורים מוכי קרבות נאלצו לסגור את שעריהן ולנוע מזרחה, בחיפוש אחר מקום מבטחים שבו יוכלו להמשיך ללמוד באין מפריע. תקופה זו הייתה מאתגרת ורבת תהפוכות במיוחד עבור ישיבת סלבודקא כנסת ישראל.`;
+  const text2 =
+    props?.data?.content_2 ||
+    `מיקומה הגיאוגרפי של סלבודקא, פרברה של קובנה השוכנת בטבורו של איזור מוקף מבצרים רבים, אילצו את ראשי הישיבה, תלמידיה ורבניה לעקור מארץ מגוריהם, לשאת את ארון הספרים על שכמם ולנדוד במסעות מפרכים דרך ערים וגבולות, אף בתנאי קור ורעב, גם תוך חשד תמידי מפני גזירות השלטון או פלישות צבאות ונפנופי חרב המלחמה.`;
+  const smallText =
+    props?.data?.content_3 ||
+    `ואולם, דווקא מתוך המשבר נולדה עמידה רוחנית מרשימה: בני הישיבה לא עזבו את תלמודם, לא חדלו מתפילה ובכל מקום שנעצרו בו, הקימו בית מדרש חדש, זמני ככל שיהיה אך הרוח הגדולה פועמת בו כמו בבית המדרש הישן.<br/>התחנה הראשונה לנדודיה היתה בעיר מינסק, שם נרשמו מפגשי תורה מרתקים עם בתי מדרש מגוונים ואסכולות מחשבות שונות. בעיר זו התרחש גם המפגש ההיסטורי בין מרן ה"חזון איש" למרן "הסבא מסלבודקא" זצ"ל. בלימוד מעמיק ובשיח תורני נלבנו יחדיו דרכים ושיטות בעבודת ה', ברוח המוסר ובגדלות התורה.`;
+  const bigText =
+    props?.data?.content_4 ||
+    `בהמשך, עקרה הישיבה לאוקראינה, שם התבססה מספר שנים בעיר קרמנצ'וג. תקופה זו הייתה בבחינת "תורה שלמדי באף"  אף על רקע הטלטלות, האתגרים והאתגרים הרבים, לא חדלה הישיבה ממלאכתה הרוחנית. קול התורה לא שקט, אלא הלך והתחזק, גם בימי צר ומצוק עד לסיום המלחמה בשנת תרע"ט אז שבה הישיבה לכור מחצבתה סלבודקא.`;
 
   // Seciton Animation
   useGSAP(
@@ -262,79 +272,91 @@ export default function NewsPapperSection(props: ChildProps) {
       >
         <div className="news-section-right w-[70%] flex flex-col gap-y-[9.6vh]">
           <div className="news-section-images flex justify-center relative">
-            <Draggable
-              nodeRef={image1Ref}
-              onStart={() => setDraggingImage(1)}
-              onStop={() => setDraggingImage(null)}
-            >
-              <div
-                ref={image1Ref}
-                className="image1 w-137 h-93.5 absolute right-0 bottom-0 rotate-[9.24deg] translate-x-[2vw] translate-y-[1vh] cursor-grab active:cursor-grabbing select-none"
-                style={{ zIndex: draggingImage === 1 ? 50 : undefined }}
-                onDoubleClick={(e) => e.preventDefault()}
+            {props?.data?.image_1 && (
+              <Draggable
+                nodeRef={image1Ref}
+                onStart={() => setDraggingImage(1)}
+                onStop={() => setDraggingImage(null)}
               >
-                <Image
-                  className="w-full object-cover object-center h-full user-select-none"
-                  src={image1.src}
-                  width={548}
-                  height={374}
-                  draggable={false}
-                  loading="lazy"
-                  placeholder="blur"
-                  blurDataURL={image1?.blurDataURL}
-                  alt="Image 1"
-                />
-              </div>
-            </Draggable>
+                <div
+                  ref={image1Ref}
+                  className="image1 w-137 h-93.5 absolute right-0 bottom-0 rotate-[9.24deg] translate-x-[2vw] translate-y-[1vh] cursor-grab active:cursor-grabbing select-none"
+                  style={{ zIndex: draggingImage === 1 ? 50 : undefined }}
+                  onDoubleClick={(e) => e.preventDefault()}
+                >
+                  <Image
+                    className="w-full object-cover object-center h-full user-select-none"
+                    src={props?.data?.image_1?.large?.url || image1.src}
+                    width={548}
+                    height={374}
+                    draggable={false}
+                    loading="lazy"
+                    placeholder="blur"
+                    blurDataURL={
+                      image1?.blurDataURL || CreateShimmerDataUrl(548, 374)
+                    }
+                    alt="Image 1"
+                  />
+                </div>
+              </Draggable>
+            )}
 
-            <Draggable
-              nodeRef={image2Ref}
-              onStart={() => setDraggingImage(2)}
-              onStop={() => setDraggingImage(null)}
-            >
-              <div
-                ref={image2Ref}
-                className={`image2 w-139.5 h-93 relative -translate-x-[2vw] cursor-grab active:cursor-grabbing select-none`}
-                style={{ zIndex: draggingImage === 2 ? 50 : undefined }}
-                onDoubleClick={(e) => e.preventDefault()}
+            {props?.data?.image_2 && (
+              <Draggable
+                nodeRef={image2Ref}
+                onStart={() => setDraggingImage(2)}
+                onStop={() => setDraggingImage(null)}
               >
-                <Image
-                  className="w-full object-cover object-center h-full user-select-none"
-                  src={image2.src}
-                  width={558}
-                  height={372}
-                  draggable={false}
-                  loading="lazy"
-                  placeholder="blur"
-                  blurDataURL={image2?.blurDataURL}
-                  alt="Image 2"
-                />
-              </div>
-            </Draggable>
-            <Draggable
-              nodeRef={image3Ref}
-              onStart={() => setDraggingImage(3)}
-              onStop={() => setDraggingImage(null)}
-            >
-              <div
-                ref={image3Ref}
-                className={`image3 w-104.75 h-76 absolute top-0 left-0 -translate-x-[5vw] translate-y-[1.75vh] cursor-grab active:cursor-grabbing select-none`}
-                style={{ zIndex: draggingImage === 3 ? 50 : undefined }}
-                onDoubleClick={(e) => e.preventDefault()}
+                <div
+                  ref={image2Ref}
+                  className={`image2 w-139.5 h-93 relative -translate-x-[2vw] cursor-grab active:cursor-grabbing select-none`}
+                  style={{ zIndex: draggingImage === 2 ? 50 : undefined }}
+                  onDoubleClick={(e) => e.preventDefault()}
+                >
+                  <Image
+                    className="w-full object-cover object-center h-full user-select-none"
+                    src={props?.data?.image_2?.large?.url || image2.src}
+                    width={558}
+                    height={372}
+                    draggable={false}
+                    loading="lazy"
+                    placeholder="blur"
+                    blurDataURL={
+                      image2?.blurDataURL || CreateShimmerDataUrl(558, 372)
+                    }
+                    alt="Image 2"
+                  />
+                </div>
+              </Draggable>
+            )}
+            {props?.data?.image_3 && (
+              <Draggable
+                nodeRef={image3Ref}
+                onStart={() => setDraggingImage(3)}
+                onStop={() => setDraggingImage(null)}
               >
-                <Image
-                  className="w-full object-cover object-center h-full user-select-none"
-                  src={image3.src}
-                  width={548}
-                  height={374}
-                  draggable={false}
-                  loading="lazy"
-                  placeholder="blur"
-                  blurDataURL={image3?.blurDataURL}
-                  alt="Image 3"
-                />
-              </div>
-            </Draggable>
+                <div
+                  ref={image3Ref}
+                  className={`image3 w-104.75 h-76 absolute top-0 left-0 -translate-x-[5vw] translate-y-[1.75vh] cursor-grab active:cursor-grabbing select-none`}
+                  style={{ zIndex: draggingImage === 3 ? 50 : undefined }}
+                  onDoubleClick={(e) => e.preventDefault()}
+                >
+                  <Image
+                    className="w-full object-cover object-center h-full user-select-none"
+                    src={props?.data?.image_3?.large?.url || image3.src}
+                    width={548}
+                    height={374}
+                    draggable={false}
+                    loading="lazy"
+                    placeholder="blur"
+                    blurDataURL={
+                      image3?.blurDataURL || CreateShimmerDataUrl(548, 374)
+                    }
+                    alt="Image 3"
+                  />
+                </div>
+              </Draggable>
+            )}
           </div>
           <div
             dir="ltr"

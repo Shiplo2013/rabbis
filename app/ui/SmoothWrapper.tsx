@@ -1,5 +1,4 @@
 "use client";
-import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { gsap, ScrollSmoother, ScrollTrigger, useGSAP } from "./plugins";
 
@@ -10,33 +9,42 @@ export default function SmoothWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  const main = useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      const existingSmoother = ScrollSmoother.get();
-      if (existingSmoother) {
-        existingSmoother.kill();
+      const wrapper = wrapperRef.current;
+      const content = contentRef.current;
+
+      if (!wrapper || !content) {
+        return;
       }
 
-      const smoother = ScrollSmoother.create({
-        smooth: 0.1,
-        effects: true,
-        smoothTouch: 0.5,
-        //normalizeScroll: true,
-      });
+      // Keep a single smoother instance per mounted wrapper.
+      let smoother = ScrollSmoother.get();
+      if (!smoother) {
+        smoother = ScrollSmoother.create({
+          wrapper,
+          content,
+          smooth: 0.1,
+          effects: true,
+          smoothTouch: 0.5,
+          //normalizeScroll: true,
+        });
+      }
 
       return () => {
-        smoother.kill();
+        smoother?.kill();
+        ScrollTrigger.clearScrollMemory();
       };
     },
-    { scope: main, dependencies: [pathname] },
+    { scope: wrapperRef },
   );
 
   return (
-    <div ref={main} id="smooth-wrapper">
-      <div id="smooth-content">{children}</div>
+    <div ref={wrapperRef}>
+      <div ref={contentRef}>{children}</div>
     </div>
   );
 }

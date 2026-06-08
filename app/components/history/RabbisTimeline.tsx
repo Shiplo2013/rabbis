@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import ParallaxBackground from "@/app/ui/ParallaxBackground";
 import parse from "html-react-parser";
@@ -19,6 +20,7 @@ interface ChildProps {
   animWidthText: number;
   bgImage: any;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 export default function RabbisTimeline(props: ChildProps) {
   // Navigation
@@ -33,20 +35,21 @@ export default function RabbisTimeline(props: ChildProps) {
   // Section Data
   const RabbisData = [
     {
-      image: rabbisImage1,
-      text: `שנת תרמ״א:<br/>מינוי רבי דב צבי הלר כמשגיח`,
+      image: props?.data?.[0]?.image?.medium || rabbisImage1,
+      text:
+        props?.data?.[0]?.title || `שנת תרמ״א:<br/>מינוי רבי דב צבי הלר כמשגיח`,
     },
     {
-      image: rabbisImage2,
-      text: `שנת תר"ן:<br/>מינוי רבי יצחק מפוניבז'`,
+      image: props?.data?.[1]?.image?.medium || rabbisImage2,
+      text: props?.data?.[1]?.title || `שנת תר"ן:<br/>מינוי רבי יצחק מפוניבז'`,
     },
     {
-      image: rabbisImage3,
-      text: `שנת תרנ"ד:<br/>מינוי הגרמ"מ אפשטיין`,
+      image: props?.data?.[2]?.image?.medium || rabbisImage3,
+      text: props?.data?.[2]?.title || `שנת תרנ"ד:<br/>מינוי הגרמ"מ אפשטיין`,
     },
     {
-      image: rabbisImage4,
-      text: `שנת תרנ"ד:<br/>מינוי הגרא"ז מלצר`,
+      image: props?.data?.[3]?.image?.medium || rabbisImage4,
+      text: props?.data?.[3]?.title || `שנת תרנ"ד:<br/>מינוי הגרא"ז מלצר`,
     },
   ];
   // Section Animation
@@ -57,6 +60,7 @@ export default function RabbisTimeline(props: ChildProps) {
       items?.forEach((item, index) => {
         const image = item.querySelector(".image");
         const title = item.querySelector(".title>h4");
+        if (!image || !title) return;
         // Rubbis Image
         gsap.set(image, {
           x: -100,
@@ -115,6 +119,7 @@ export default function RabbisTimeline(props: ChildProps) {
     },
     { scope: wrapper, dependencies: [pathname] },
   );
+
   return (
     <section
       ref={wrapper}
@@ -131,30 +136,34 @@ export default function RabbisTimeline(props: ChildProps) {
       />
       <div className="section-row w-full h-full flex px-[15.5vw] py-[5vh] items-center justify-center relative z-30">
         <div className="rabbis-timeline flex gap-x-[20vw]">
-          {RabbisData.map((item, index) => (
-            <div
-              key={index}
-              className="current-rubbis w-64.5 flex flex-col gap-y-[5.5vh]"
-            >
-              <div className="image w-64.5 h-76.25">
-                <Image
-                  className="w-full object-cover object-center h-full relative z-10"
-                  src={item?.image?.src}
-                  width="258"
-                  height="305"
-                  blurDataURL={item?.image?.blurDataURL}
-                  placeholder={"blur"}
-                  loading="lazy"
-                  alt="Rabbis Image"
-                />
+          {props?.data?.map(
+            (item: { image: any; title: string }, index: number) => (
+              <div
+                key={index}
+                className="current-rubbis w-64.5 flex flex-col gap-y-[5.5vh]"
+              >
+                <div className="image w-64.5 h-76.25">
+                  <Image
+                    className="w-full object-cover object-center h-full relative z-10"
+                    src={item?.image?.sizes?.medium || item?.image?.src}
+                    width="258"
+                    height="305"
+                    blurDataURL={
+                      item?.image?.blurDataURL || CreateShimmerDataUrl(258, 305)
+                    }
+                    placeholder={"blur"}
+                    loading="lazy"
+                    alt="Rabbis Image"
+                  />
+                </div>
+                <div dir="ltr" className="title mt-auto text-right">
+                  <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6]">
+                    {parse(item.title || "")}
+                  </h4>
+                </div>
               </div>
-              <div dir="ltr" className="title mt-auto text-right">
-                <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6]">
-                  {parse(item.text)}
-                </h4>
-              </div>
-            </div>
-          ))}
+            ),
+          )}
         </div>
         <div className="timeline h-2.25 w-10/12 bg-[#C3A13F] absolute top-[59vh] right-[17vw]"></div>
       </div>

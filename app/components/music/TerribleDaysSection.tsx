@@ -271,7 +271,7 @@ export default function TerribleDaysSection(props: ChildProps) {
                 <div
                   key={index}
                   onClick={() => handleAlbumClick(index)}
-                  className="music-album group flex flex-col gap-y-3 cursor-pointer max-w-[12.5vw] w-full items-center justify-center"
+                  className="music-album group flex flex-col gap-y-3 cursor-pointer max-w-[12.5vw] w-full items-center justify-top"
                 >
                   <div className="icon w-[12.5vw] h-auto relative">
                     <div className="icon-default w-full h-full relative group-hover:opacity-0 group-hover:scale-90 transition-all duration-200 ease-in-out">
