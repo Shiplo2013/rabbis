@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -18,6 +19,7 @@ interface ChildProps {
   rightShape: boolean;
   leftShape: boolean;
   panel?: RefObject<HTMLDivElement | null>;
+  data: any;
 }
 
 export default function TitleSection(props: ChildProps) {
@@ -34,7 +36,7 @@ export default function TitleSection(props: ChildProps) {
     return timeline?.current ? timeline.current.offsetTop : 0;
   };
   // Content
-  const Title = `רבנים<br/> בתקופה<br/> זו`;
+  const Title = props?.data?.title || `רבנים<br/> בתקופה<br/> זו`;
   useGSAP(
     () => {
       // Section Title 2
@@ -120,10 +122,16 @@ export default function TitleSection(props: ChildProps) {
         >
           <Image
             className="avatar-image w-full object-cover object-center h-full"
-            src={TitleImage?.src}
+            src={
+              props.data?.image?.url ||
+              props?.data?.image?.src ||
+              TitleImage?.src
+            }
             width="247"
             height="247"
-            blurDataURL={TitleImage?.blurDataURL}
+            blurDataURL={
+              CreateShimmerDataUrl(247, 247) || TitleImage?.blurDataURL
+            }
             placeholder={"blur"}
             loading="lazy"
             alt="Shape"

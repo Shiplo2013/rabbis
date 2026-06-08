@@ -22,7 +22,7 @@ interface ChildProps {
   overlayClass: string;
   bgPosition: string;
   bgClass: string;
-  data: { title: string; subtitle: string }[];
+  data: { title: string; subtitle: string };
   timeline?: string;
 }
 
@@ -43,7 +43,7 @@ export default function IntroductionContent(props: ChildProps) {
       if (typeof window !== "undefined" && wrapper.current) {
         document.fonts.ready.then(() => {
           // Section Title
-          if (title.current && props.data[0].title !== "") {
+          if (title.current && props?.data?.title !== "") {
             gsap.set(title.current, { opacity: 1 });
             let splititle;
             SplitText.create(title.current, {
@@ -53,7 +53,7 @@ export default function IntroductionContent(props: ChildProps) {
               mask: "lines",
               onSplit: (self) => {
                 splititle = gsap.from(self.lines, {
-                  duration: 2,
+                  duration: 1,
                   yPercent: 100,
                   opacity: 0,
                   stagger: 0.05,
@@ -63,7 +63,7 @@ export default function IntroductionContent(props: ChildProps) {
                       return (
                         getTimelineOffset() +
                         GetRightPosition(wrapper.current) +
-                        window.innerWidth / 2
+                        window.innerWidth * 0.3
                       );
                     },
                     toggleActions: "restart pause play reverse",
@@ -74,7 +74,7 @@ export default function IntroductionContent(props: ChildProps) {
             });
           }
           // Section Subtitle
-          if (subtitle.current && props.data[0].subtitle !== "") {
+          if (subtitle.current && props?.data?.subtitle !== "") {
             gsap.set(subtitle.current, { opacity: 1 });
             let splitSubtitle;
             SplitText.create(subtitle.current, {
@@ -84,7 +84,7 @@ export default function IntroductionContent(props: ChildProps) {
               mask: "lines",
               onSplit: (self) => {
                 splitSubtitle = gsap.from(self.lines, {
-                  duration: 2,
+                  duration: 1,
                   yPercent: 120,
                   stagger: 0.025,
                   ease: "expo.out",
@@ -93,7 +93,7 @@ export default function IntroductionContent(props: ChildProps) {
                       return (
                         getTimelineOffset() +
                         GetRightPosition(wrapper.current) +
-                        window.innerWidth / 2
+                        window.innerWidth * 0.3
                       );
                     },
                     toggleActions: "restart pause play reverse",
@@ -141,18 +141,22 @@ export default function IntroductionContent(props: ChildProps) {
       )}
       <div dir="ltr" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-center">
-          <h1
-            ref={title}
-            className="text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5"
-          >
-            {parse(props.data[0].title)}
-          </h1>
-          <h4
-            ref={subtitle}
-            className="overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30"
-          >
-            {parse(props.data[0].subtitle)}
-          </h4>
+          {props?.data?.title && (
+            <h1
+              ref={title}
+              className="text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5"
+            >
+              {parse(props?.data?.title)}
+            </h1>
+          )}
+          {props?.data?.subtitle && (
+            <h4
+              ref={subtitle}
+              className="overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30"
+            >
+              {parse(props?.data?.subtitle)}
+            </h4>
+          )}
         </div>
       </div>
     </section>

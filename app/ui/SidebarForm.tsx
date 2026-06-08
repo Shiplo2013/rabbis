@@ -3,11 +3,12 @@ import ArrowLeftCalender from "@/app/assets/icons/ArrowLeftCalender";
 import ArrowRightCalender from "@/app/assets/icons/ArrowRightCalender";
 import CalenderIcon from "@/app/assets/icons/CalenderIcon";
 import MonthCaret from "@/app/assets/icons/MonthCaret";
+import UserIcon from "@/app/assets/icons/UserIcon";
 import YearCaret from "@/app/assets/icons/YearCaret";
 import { HDate, gematriya } from "@hebcal/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export default function SidebarSearch() {
+export default function SidebarForm() {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
@@ -145,7 +146,7 @@ export default function SidebarSearch() {
           type="text"
           id="search-by-date"
           name="Search-By-Date"
-          placeholder={`חיפוש לפי תאריך`}
+          placeholder="חיפוש לפי תאריך"
           value={selectedDateLabel}
           readOnly
           onClick={() => setIsDatePickerOpen((prev) => !prev)}
@@ -266,6 +267,18 @@ export default function SidebarSearch() {
             </div>
           </div>
         )}
+      </div>
+      <div className="search-group relative">
+        <input
+          className="text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full pl-8"
+          type="text"
+          id="search-by-user"
+          name="Search-By-User"
+          placeholder={`חיפוש לפי שם`}
+        />
+        <button className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2">
+          <UserIcon />
+        </button>
       </div>
     </>
   );

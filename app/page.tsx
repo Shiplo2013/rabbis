@@ -36,7 +36,7 @@ type HomePageApiResponse = {
   slug: string;
   link: string;
   title: { rendered: string };
-  acf: Record<string, unknown> | unknown[] | null;
+  acf: any | HomePageAcf | null;
 };
 
 type HomePageAcf = {
@@ -78,12 +78,249 @@ type HomePageAcf = {
 };
 
 export default function Home() {
+  // Static Data
+  const staticData = {
+    id: 0,
+    slug: "/",
+    link: "/",
+    title: { rendered: "Home" },
+    acf: {
+      banner_section: {
+        title_1: "ישיבת",
+        title_2: "חברון",
+        title_3: " כנסת ישראל",
+        subtitle: "מאה חמישים שנות תורה, מוסר וגדלות האדם",
+        audio_music: {
+          id: 73,
+          title: "Adrift Among Infinite Stars",
+          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/02/music.mp3",
+        },
+        banner_background: {
+          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/home-banner.jpg",
+        },
+      },
+      intro_section: {
+        title: "להחיות רוח שפלים ולהחיות לב נדכאים",
+      },
+      home_section_1: {
+        text_slider: {
+          text_slide_1: `<p>כאשר שאל מרן הסבא מסלבודקא את רבי ישראל סלנטר: מהי המטרה העיקרית שאתה רואה בייסוד מוסד קדוש זה?</p>
+<p>ענה לו רבי ישראל: <strong>&#8220;להחיות רוח שפלים ולהחיות לב נדכאים&#8221;</strong></p>
+`,
+          text_slide_2: `<p>להרים רוחם של המבקשים לגדול, לטעת בעמקי הלב כוחות חיים חדשים. וכך הניח רבי ישראל את היסוד: ישיבה איננה רק מקום לימוד, אלא בית היוצר לנשמות; מקום שבו מעוררים את השפל לרוממות, ואת הנדכא, לחיים של גדלות האדם.</p>
+`,
+        },
+        community_posts: [
+          {
+            ID: 418,
+            post_author: "1",
+            post_date: "2026-05-16 11:39:40",
+            post_date_gmt: "2026-05-16 11:39:40",
+            post_content: "",
+            post_title: "יוצאי חברון שיח אליעזר",
+            post_excerpt: "",
+            post_status: "publish",
+            comment_status: "closed",
+            ping_status: "closed",
+            post_password: "",
+            post_name:
+              "%d7%99%d7%95%d7%a6%d7%90%d7%99-%d7%97%d7%91%d7%a8%d7%95%d7%9f-%d7%a9%d7%99%d7%97-%d7%90%d7%9c%d7%99%d7%a2%d7%96%d7%a8",
+            to_ping: "",
+            pinged: "",
+            post_modified: "2026-05-24 20:07:10",
+            post_modified_gmt: "2026-05-24 20:07:10",
+            post_content_filtered: "",
+            post_parent: 0,
+            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=418",
+            menu_order: 0,
+            post_type: "communities",
+            post_mime_type: "",
+            comment_count: "0",
+            filter: "raw",
+          },
+          {
+            ID: 412,
+            post_author: "1",
+            post_date: "2026-05-16 11:37:21",
+            post_date_gmt: "2026-05-16 11:37:21",
+            post_content: "",
+            post_title: "חברון",
+            post_excerpt: "",
+            post_status: "publish",
+            comment_status: "closed",
+            ping_status: "closed",
+            post_password: "",
+            post_name: "%d7%a1%d7%9e%d7%98%d7%aa-%d7%94%d7%90%d7%a8%d7%99",
+            to_ping: "",
+            pinged: "",
+            post_modified: "2026-05-24 18:47:37",
+            post_modified_gmt: "2026-05-24 18:47:37",
+            post_content_filtered: "",
+            post_parent: 0,
+            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=412",
+            menu_order: 0,
+            post_type: "communities",
+            post_mime_type: "",
+            comment_count: "0",
+            filter: "raw",
+          },
+          {
+            ID: 408,
+            post_author: "1",
+            post_date: "2026-05-16 11:36:42",
+            post_date_gmt: "2026-05-16 11:36:42",
+            post_content: "",
+            post_title: "חניכי חברון",
+            post_excerpt: "",
+            post_status: "publish",
+            comment_status: "closed",
+            ping_status: "closed",
+            post_password: "",
+            post_name:
+              "%d7%97%d7%a0%d7%99%d7%9b%d7%99-%d7%97%d7%91%d7%a8%d7%95%d7%9f",
+            to_ping: "",
+            pinged: "",
+            post_modified: "2026-05-24 18:09:32",
+            post_modified_gmt: "2026-05-24 18:09:32",
+            post_content_filtered: "",
+            post_parent: 0,
+            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=408",
+            menu_order: 0,
+            post_type: "communities",
+            post_mime_type: "",
+            comment_count: "0",
+            filter: "raw",
+          },
+          {
+            ID: 370,
+            post_author: "1",
+            post_date: "2026-05-16 09:04:44",
+            post_date_gmt: "2026-05-16 09:04:44",
+            post_content: "",
+            post_title: "חניכי ישיבת חברון",
+            post_excerpt: "",
+            post_status: "publish",
+            comment_status: "closed",
+            ping_status: "closed",
+            post_password: "",
+            post_name:
+              "%d7%91%d7%a0%d7%99-%d7%91%d7%a8%d7%a7-%d7%91%d7%99%d7%aa-%d7%9b%d7%a0%d7%a1%d7%aa-%d7%94%d7%92%d7%93%d7%95%d7%9c",
+            to_ping: "",
+            pinged: "",
+            post_modified: "2026-05-24 17:58:02",
+            post_modified_gmt: "2026-05-24 17:58:02",
+            post_content_filtered: "",
+            post_parent: 0,
+            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=370",
+            menu_order: 0,
+            post_type: "communities",
+            post_mime_type: "",
+            comment_count: "0",
+            filter: "raw",
+          },
+          {
+            ID: 416,
+            post_author: "1",
+            post_date: "2026-05-16 11:38:14",
+            post_date_gmt: "2026-05-16 11:38:14",
+            post_content: "",
+            post_title: "קהילת יוצאי חברון",
+            post_excerpt: "",
+            post_status: "publish",
+            comment_status: "closed",
+            ping_status: "closed",
+            post_password: "",
+            post_name: "%d7%a8%d7%9e%d7%95%d7%aa-%d7%90",
+            to_ping: "",
+            pinged: "",
+            post_modified: "2026-05-24 19:45:02",
+            post_modified_gmt: "2026-05-24 19:45:02",
+            post_content_filtered: "",
+            post_parent: 0,
+            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=416",
+            menu_order: 0,
+            post_type: "communities",
+            post_mime_type: "",
+            comment_count: "0",
+            filter: "raw",
+          },
+          {
+            ID: 414,
+            post_author: "1",
+            post_date: "2026-05-16 11:37:49",
+            post_date_gmt: "2026-05-16 11:37:49",
+            post_content: "",
+            post_title: 'חניכי ישיבת חברון – "זכרון מאיר"',
+            post_excerpt: "",
+            post_status: "publish",
+            comment_status: "closed",
+            ping_status: "closed",
+            post_password: "",
+            post_name:
+              "%d7%a7%d7%94%d7%99%d7%9c%d7%aa-%d7%96%d7%9b%d7%a8%d7%95%d7%9f-%d7%9e%d7%90%d7%99%d7%a8",
+            to_ping: "",
+            pinged: "",
+            post_modified: "2026-05-24 19:17:38",
+            post_modified_gmt: "2026-05-24 19:17:38",
+            post_content_filtered: "",
+            post_parent: 0,
+            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=414",
+            menu_order: 0,
+            post_type: "communities",
+            post_mime_type: "",
+            comment_count: "0",
+            filter: "raw",
+          },
+        ],
+        background_image: {
+          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/section-image.jpg",
+        },
+      },
+      home_section_2: {
+        image: {
+          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/section-image2.jpg",
+        },
+        title: "סבא<br/> קדישא",
+        foating_image: {
+          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/kaddisha.jpg",
+        },
+        text: `<p>הסבא מסלבודקא מחולל ומייסד הישיבה שהצמיח ברוממותו דורות של תלמידים נעלים, עיצב נפשות ברוח גדלות האדם ומאז ועד היום ניכרת השפעתו בכל בית מדרש הנושא את רוחו ומורשתו</p>
+`,
+      },
+      home_section_3: {
+        image: {
+          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/juniper.jpg",
+        },
+        title: "עוז<br/>רוח",
+        text_1: "<p>מרן רבי משה מרדכי אפשטיין זצוק&#8221;ל</p>",
+        text_2:
+          "<p>הנהיג את הישיבה במסירות נפש מופלאה בתקופות סוערות, והנחיל לתלמידיו מושגים נעלים של עיון התורה ועמלה.</p>",
+        background_image: {
+          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/section-bg.jpg",
+        },
+      },
+      home_section_4: {
+        content: `<p>מיום היווסדה נושאת הישיבה הקדושה את רוח הרוממות והגדלות שנטעו מייסדיה.<br />
+היא ממשיכה עד היום להבעיר את שלהבת התורה והמוסר בלב אלפי תלמידיה ובוגריה.<br />
+דרכה המיוחדת &#8211; המשלבת גדלות, עומק, בהירות ושאר רוח &#8211; מלווה את הצועדים בדרכה ומעמידה שדרת תלמידי חכמים נאמנים למורשתה.</p>`,
+        background_image: {
+          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/section-bg2.jpg",
+        },
+      },
+    },
+  };
   // Selector
   const main = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLDivElement>(null);
   const wishButton = useRef<HTMLDivElement>(null);
+  const audioButton = useRef<HTMLDivElement>(null);
   // Audo Player
-  const [homePageData, setHomePageData] = useState<any | HomePageAcf>(null);
+  const [homePageData, setHomePageData] = useState<HomePageApiResponse | null>(
+    null,
+  );
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const audio = useRef<HTMLAudioElement>(null);
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
@@ -98,6 +335,7 @@ export default function Home() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadHomePageData = async () => {
       try {
@@ -106,17 +344,20 @@ export default function Home() {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to load home page data.");
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        const data = await response.json();
+        const data = fetchError ? staticData : await response.json();
 
         if (isMounted) {
           setHomePageData(data);
-          console.log("Home page data loaded:", data);
         }
       } catch (error) {
         console.error(error);
+        setError("Failed to load home page data.");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -128,7 +369,7 @@ export default function Home() {
   }, [pathname]);
 
   useEffect(() => {
-    if (!homePageData?.acf) {
+    if (!homePageData) {
       return;
     }
     if (animationPlayed) {
@@ -169,6 +410,10 @@ export default function Home() {
       // Banner Button
       if (bannerButton) {
         gsap.set(bannerButton, { opacity: 0, y: 20 });
+      }
+      // Audio Button
+      if (audioButton.current) {
+        //gsap.set(audioButton.current, { opacity: 0, y: 20 });
       }
       // Split Title 1
       let splitTitle1;
@@ -345,7 +590,7 @@ export default function Home() {
         }
       }
     });
-  }, [pageDataFetched]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Container width
   //const [contWidth, setContWidth] = useState(0);
@@ -391,6 +636,22 @@ export default function Home() {
 
   // Page Content Animation
   useGSAP(() => {
+    // Audio Button
+    if (audioButton.current) {
+      gsap.to(audioButton.current, {
+        scrollTrigger: {
+          start: () => {
+            return window.innerWidth;
+          },
+          toggleActions: "restart pause play reverse",
+        },
+        opacity: 1,
+        y: 0,
+        ease: "none",
+        duration: 0.5,
+        delay: 0,
+      });
+    }
     // Wish Button
     if (wishButton.current) {
       gsap.to(wishButton.current, {
@@ -472,19 +733,58 @@ export default function Home() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
-      gsap.to(main.current, {
-        opacity: 0,
-        duration: 0.1,
-      });
-      gsap.to(page.current, {
-        opacity: 0,
-        duration: 0,
-        onComplete: () => {
-          window.scrollTo(0, 0);
-        },
-      });
+      if (main.current) {
+        gsap.to(main.current, {
+          opacity: 0,
+          duration: 0.1,
+        });
+      }
+      if (page.current) {
+        gsap.to(page.current, {
+          opacity: 0,
+          duration: 0,
+          onComplete: () => {
+            window.scrollTo(0, 0);
+          },
+        });
+      }
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!homePageData) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <p className="text-gray-600">
+            The requested rabbi post could not be found.
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     homePageData && (
       <div ref={main} id="main" className="relative">
@@ -568,7 +868,7 @@ export default function Home() {
         />
         <div
           ref={wishButton}
-          className="wish-button fixed p-5 bottom-0 right-15 z-50 opacity-0 invisible"
+          className="wish-button fixed p-5 bottom-0 right-40 z-50 opacity-0 invisible"
         >
           <ThemeButton
             extraClass="w-13 h-13 flex item-center justify-center"
@@ -578,6 +878,23 @@ export default function Home() {
             svgIcon={<WishIcon className="group-hover:stroke-[#ffffff]" />}
             svgIconClass={""}
           />
+        </div>
+        <div
+          ref={audioButton}
+          onClick={togglePlayPause}
+          className="equalizer-button flex gap-2 items-center fixed py-1 px-3 bottom-5 right-20 z-40 cursor-pointer bg-[#c3a23fb0] text-[#000000] opacity-0 hover:opacity-100 translate-y-5 rounded-full"
+        >
+          <span>{isPlaying ? "ON" : "OFF"}</span>
+          <div className="equalizer flex items-end justify-center gap-0.5 h-4">
+            {[0.2, 0.4, 0.6, 0.8, 1.0].map((delay, index) => (
+              <div
+                key={index}
+                className={`w-0.5 h-full bg-[#000000] rounded-full transition-all ${
+                  isPlaying ? `equalizer-animation` : "scale-30"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     )

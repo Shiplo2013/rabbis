@@ -2,6 +2,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { RefObject, useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
+import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 import GetRightPosition from "./GetRightPosition";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -27,25 +28,27 @@ export default function SingleImageSection(props: ChildProps) {
   useGSAP(
     () => {
       // Section Image
-      gsap.set(image.current, { scale: 1.2 });
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          start: () => {
-            return (
-              getTimelineOffset() +
-              GetRightPosition(image.current) -
-              window.innerWidth * 0.2
-            );
+      if (image.current) {
+        gsap.set(image.current, { scale: 1.2 });
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            start: () => {
+              return (
+                getTimelineOffset() +
+                GetRightPosition(image.current) -
+                window.innerWidth * 0.2
+              );
+            },
+            toggleActions: "restart pause play reverse",
           },
-          toggleActions: "restart pause play reverse",
-        },
-      });
-      tl.to(image.current, {
-        scale: 1,
-        ease: "easeIn",
-        duration: 0.5,
-        delay: 0,
-      });
+        });
+        tl.to(image.current, {
+          scale: 1,
+          ease: "easeIn",
+          duration: 0.5,
+          delay: 0,
+        });
+      }
     },
     { scope: wrapper, dependencies: [pathname] },
   );
@@ -61,10 +64,16 @@ export default function SingleImageSection(props: ChildProps) {
         <div ref={image} className="w-full h-full relative z-10">
           <Image
             className="w-full object-cover object-center h-full"
-            src={props?.image?.src}
+            src={
+              props?.image?.sizes?.large ||
+              props?.image?.url ||
+              props?.image?.src
+            }
             width={"614"}
             height={"921"}
-            blurDataURL={props?.image?.blurDataURL}
+            blurDataURL={
+              CreateShimmerDataUrl(614, 921) || props?.image?.blurDataURL
+            }
             placeholder={"blur"}
             loading="lazy"
             alt="Image Background"

@@ -13,29 +13,27 @@ interface RabbisHamburgerMenuProps {
   data?: any;
   activeMenu?: boolean;
   activeMenuFunction?: (state: boolean) => void;
+  data2?: PastRabbis[];
 }
 
-type MenuPost = {
-  id?: number;
-  title?: string;
-  slug?: string;
-  acf?: {
-    title?: string;
-    thumbnail?: { url?: string; src?: string };
-  };
+type PastRabbis = {
+  buttonText: string;
+  title: string;
+  subtitle: string;
+  thumbnail: any;
+  text: string;
+  buttonLink?: string;
 };
 
-export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
+export default function RabbisHamburgerMenuHome(
+  props: RabbisHamburgerMenuProps,
+) {
   // Selector
   const hamurgerMenu = useRef<HTMLDivElement>(null);
   const menuOverlay = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const pathname = usePathname();
-  const allPosts: MenuPost[] = Array.isArray(props.data)
-    ? props.data
-    : Array.isArray(props.data?.posts)
-      ? props.data.posts
-      : [];
+  const allPosts = props.data2 || ([] as PastRabbis[]);
 
   // Menu State
   const [menuTimeline] = useState(
@@ -154,7 +152,7 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
         "-=2",
       );
     }
-    if (menuItemsImage) {
+    if (menuItemsImage?.length) {
       menuTimeline.fromTo(
         menuItemsImage,
         {
@@ -223,9 +221,9 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
             </h3>
           </div>
           <div className="rabbis-burger-menu flex flex-col gap-y-[4.7vh] h-[65vh] overflow-y-auto pr-2">
-            {allPosts.map((item: MenuPost, index: number) => (
+            {allPosts.map((item: PastRabbis, index: number) => (
               <Link
-                href={item.slug ? `/past-rabbis/${item.slug}` : "#"}
+                href={item.buttonLink || "#"}
                 key={index}
                 className="burger-menu-item group flex gap-x-2.5"
               >
@@ -233,14 +231,10 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
                   <div className="image-inner w-full h-full group-hover:scale-110 transition-all duration-300 grayscale group-hover:grayscale-0">
                     <Image
                       className="w-full h-full object-cover object-center"
-                      src={
-                        item?.acf?.thumbnail?.url ||
-                        item?.acf?.thumbnail?.src ||
-                        ""
-                      }
+                      src={item?.thumbnail?.url || item?.thumbnail?.src || ""}
                       width={122}
                       height={125}
-                      alt={item?.acf?.title || "Rabbi image"}
+                      alt={item?.title || "Rabbi image"}
                     />
                   </div>
                 </div>
@@ -248,9 +242,7 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
                   dir="ltr"
                   className="title text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
                 >
-                  <p className="text">
-                    {parse(item?.title || item?.acf?.title || "")}
-                  </p>
+                  <p className="text">{parse(item?.title || "")}</p>
                 </div>
               </Link>
             ))}

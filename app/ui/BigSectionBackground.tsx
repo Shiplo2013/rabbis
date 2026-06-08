@@ -33,7 +33,7 @@ export default function BigSectionBackground(props: ChildProps) {
     () => {
       if (props.animatePosition !== 0) {
         // Banner Background
-        gsap.set(background.current, { scale: 1.2, x: "30vw" });
+        gsap.set(background.current, { scale: 1.2, x: "20vw" });
         gsap.to(background.current, {
           x: "-30vw",
           ease: "none",

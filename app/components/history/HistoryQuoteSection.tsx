@@ -32,52 +32,55 @@ export default function HistoryQuoteSection(props: ChildProps) {
     () => {
       document.fonts.ready.then(() => {
         // Section Text
-        gsap.set(quote.current, { opacity: 1, x: "-10vw" });
-        let splititle;
-        SplitText.create(quote.current, {
-          type: "lines",
-          linesClass: "line direction-rtl",
-          autoSplit: true,
-          mask: "lines",
-          onSplit: (self) => {
-            splititle = gsap.from(self.lines, {
-              duration: 0.7,
-              yPercent: 100,
-              opacity: 0,
-              stagger: 0.03,
-              ease: "expo.out",
-              scrollTrigger: {
-                start: () => {
-                  return (
-                    getTimelineOffset() +
-                    GetRightPosition(quote.current) +
-                    window.innerWidth * 0.3
-                  );
+        if (quote.current) {
+          gsap.set(quote.current, { opacity: 1, x: "-10vw" });
+          const texts = quote.current.querySelectorAll("p");
+          let splititle;
+          SplitText.create(texts, {
+            type: "lines",
+            linesClass: "line direction-rtl",
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              splititle = gsap.from(self.lines, {
+                duration: 0.7,
+                yPercent: 100,
+                opacity: 0,
+                stagger: 0.03,
+                ease: "expo.out",
+                scrollTrigger: {
+                  start: () => {
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(quote.current) +
+                      window.innerWidth * 0.1
+                    );
+                  },
+                  toggleActions: "restart pause play reverse",
                 },
-                toggleActions: "restart pause play reverse",
-              },
-            });
-            return splititle;
-          },
-        });
-        // Section Box
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(quote.current) -
-                window.innerWidth
-              );
+              });
+              return splititle;
             },
-            end: () => "+=" + window.innerWidth * 2,
-            scrub: 2,
-          },
-        });
-        tl.to(quote.current, {
-          x: "15vw",
-          ease: "none",
-        });
+          });
+          // Section Box
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              start: () => {
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(quote.current) -
+                  window.innerWidth
+                );
+              },
+              end: () => "+=" + window.innerWidth * 2,
+              scrub: 2,
+            },
+          });
+          tl.to(quote.current, {
+            x: "15vw",
+            ease: "none",
+          });
+        }
       });
     },
     { scope: wrapper, dependencies: [pathname] },
@@ -95,7 +98,7 @@ export default function HistoryQuoteSection(props: ChildProps) {
         <div
           ref={quote}
           dir="ltr"
-          className={`bg-[#E2D7C3] w-full text-[#000000] text-[45px] leading-[0.8em] px-[5vw] py-[5vh] flex flex-col min-h-[46.8vh] justify-center  text-right ${props.boxClass}`}
+          className={`bg-[#E2D7C3] w-full text-[#000000] text-[45px] leading-[0.8em] px-[5vw] py-[5vh] flex flex-col min-h-[46.8vh] justify-center  text-right ${props.boxClass} [&>p:not(:last-child)]:mb-[3vh]`}
         >
           {parse(props?.data[0]?.content)}
         </div>

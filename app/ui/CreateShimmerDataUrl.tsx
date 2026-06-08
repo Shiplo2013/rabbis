@@ -1,25 +1,24 @@
-const toBase64 = (str: string) =>
-  typeof window === "undefined"
-    ? Buffer.from(str).toString("base64")
-    : window.btoa(str);
+function CreateShimmerDataUrl(width: number, height: number): string {
+  const canvas =
+    typeof document !== "undefined" ? document.createElement("canvas") : null;
+  if (!canvas) return "";
 
-const CreateShimmerDataUrl = (w: number, h: number) => {
-  const shimmer = `
-    <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="g">
-          <stop stop-color="#e7dcc6" offset="20%" />
-          <stop stop-color="#f6efe3" offset="50%" />
-          <stop stop-color="#e7dcc6" offset="70%" />
-        </linearGradient>
-      </defs>
-      <rect width="${w}" height="${h}" fill="#e7dcc6" />
-      <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-      <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1.2s" repeatCount="indefinite"  />
-    </svg>
-  `;
+  canvas.width = width;
+  canvas.height = height;
 
-  return `data:image/svg+xml;base64,${toBase64(shimmer)}`;
-};
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return "";
+
+  // Create a shimmer gradient
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, "#000000");
+  gradient.addColorStop(0.5, "#333333");
+  gradient.addColorStop(1, "#000000");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  return canvas.toDataURL();
+}
 
 export default CreateShimmerDataUrl;

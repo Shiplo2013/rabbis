@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -20,7 +21,7 @@ interface ChildProps {
   overlayClass: string;
   bgPosition: string;
   bgClass: string;
-  data: { title: string; subtitle: string }[];
+  data: { title: string; subtitle: string; background: any; overlay: any };
   timeline?: string;
 }
 
@@ -125,9 +126,9 @@ export default function Introduction2(props: ChildProps) {
       className={`${props.extraClass} overflow-hidden relative h-screen bg-black`}
       data-scroll-section={props.animWidthText}
     >
-      {props.bgImage !== "" && (
+      {props.data?.background && (
         <IntroductionBackground
-          bgImage={props.bgImage}
+          bgImage={props.data.background || props.bgImage}
           overlayClass={props.overlayClass}
           imagePosition={props.bgPosition}
           bgClass={props.bgClass}
@@ -136,14 +137,29 @@ export default function Introduction2(props: ChildProps) {
           timeline={props.timeline}
         />
       )}
-      {props.bgOverlay !== "" && (
+      {props.data?.overlay && (
         <div className="absolute top-0 left-0 w-full h-full z-20">
           <Image
             className={`w-full object-contain h-full relative`}
-            src={props?.bgOverlay?.src}
-            width={`${props?.bgOverlay?.width > 1920 ? props?.bgOverlay?.width : "1920"}`}
-            height={`${props?.bgOverlay?.width > 1080 ? props?.bgOverlay?.width : "1080"}`}
-            blurDataURL={props?.bgOverlay?.blurDataURL}
+            src={
+              props?.data?.overlay?.src ||
+              props?.data?.overlay?.url ||
+              props?.bgOverlay.src ||
+              ""
+            }
+            width={`${props?.data?.overlay?.width > 1920 ? props?.data?.overlay?.width : "1920"}`}
+            height={`${props?.data?.overlay?.height > 1080 ? props?.data?.overlay?.height : "1080"}`}
+            blurDataURL={
+              props?.data?.overlay?.blurDataURL ||
+              CreateShimmerDataUrl(
+                props?.data?.overlay?.width > 1920
+                  ? props?.data?.overlay?.width
+                  : 1920,
+                props?.data?.overlay?.height > 1080
+                  ? props?.data?.overlay?.height
+                  : 1080,
+              )
+            }
             placeholder={"blur"}
             loading="lazy"
             alt="Introduction Background Overlay"
@@ -152,18 +168,22 @@ export default function Introduction2(props: ChildProps) {
       )}
       <div dir="ltr" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-center">
-          <h1
-            ref={title}
-            className="text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5"
-          >
-            {parse(props.data[0].title)}
-          </h1>
-          <h4
-            ref={subtitle}
-            className="overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30"
-          >
-            {parse(props.data[0].subtitle)}
-          </h4>
+          {props?.data?.title && (
+            <h1
+              ref={title}
+              className="text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5"
+            >
+              {parse(props?.data?.title)}
+            </h1>
+          )}
+          {props?.data?.subtitle && (
+            <h4
+              ref={subtitle}
+              className="overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30"
+            >
+              {parse(props?.data?.subtitle)}
+            </h4>
+          )}
         </div>
       </div>
     </section>

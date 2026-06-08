@@ -218,7 +218,7 @@ export default function MoveToJerusalem(props: ChildProps) {
           </div>
           <div
             dir="ltr"
-            className="section-text 2xl:text-[21px] xl:text-[18px] sm:text-[16px] leading-[1.4em] text-[#FBF4E6] w-[26.3vw] text-right"
+            className="section-text 2xl:text-[21px] xl:text-[18px] sm:text-[16px] leading-[1.4em] text-[#FBF4E6] min-w-[26.3vw] w-[26.3vw] text-right"
           >
             <p>{parse(moveToJerusalemText)}</p>
           </div>

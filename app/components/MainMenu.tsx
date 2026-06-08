@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useMemo, useState } from "react";
 import CloseIcon from "../assets/icons/CloseIcon";
 import Search from "../assets/icons/Search";
 import bagImage from "../assets/images/main-menu-bg.jpg";
@@ -15,6 +19,93 @@ export default function MainMenu({
   hideMenu,
   timeLine,
 }: MainMenuProps) {
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchMessage, setSearchMessage] = useState("");
+
+  const pageIndex = useMemo(
+    () => [
+      { label: "דף הבית", path: "/" },
+      { label: "לבקר בהיכלו", path: "/visit-temple" },
+      { label: "דברי הימים", path: "/chronicles" },
+      { label: "רבני הישיבה", path: "/yeshiva-rabbis" },
+      { label: "מועדים וזמנים", path: "/the-circle-of-the-year" },
+      { label: "צור קשר", path: "/contact" },
+      { label: "תרומות", path: "/donation" },
+      { label: "כנסת הבוגרים", path: "/yeshiva-graduates" },
+      { label: "קהילות", path: "/communities" },
+      { label: "גליונות - ביטאון", path: "/communities/sheets" },
+      { label: "בוגרים זצ״ל", path: "/zatzel-graduates" },
+      { label: "כנס הבוגרים", path: "/alumni-conference" },
+      { label: "תמונות מחזור", path: "/cycle-pictures" },
+      { label: "כנסת המנהגים", path: "/the-knesset-of-customs" },
+      { label: "חדשות", path: "/news" },
+    ],
+    [],
+  );
+
+  const navigateAndClose = (path: string) => {
+    hideMenu(false);
+    setQuery("");
+    setSearchMessage("");
+    router.push(path);
+  };
+
+  const handleSearch = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) {
+      return;
+    }
+
+    const normalized = trimmedQuery.toLowerCase();
+    const pageMatch = pageIndex.find((item) =>
+      item.label.toLowerCase().includes(normalized),
+    );
+
+    if (pageMatch) {
+      navigateAndClose(pageMatch.path);
+      return;
+    }
+
+    setIsSearching(true);
+    setSearchMessage("");
+
+    try {
+      const response = await fetch(
+        `/api/search?q=${encodeURIComponent(trimmedQuery)}`,
+        {
+          cache: "no-store",
+        },
+      );
+
+      if (!response.ok) {
+        setSearchMessage("שגיאה בחיפוש, נסה שוב.");
+        return;
+      }
+
+      const data = (await response.json()) as {
+        results?: Array<{ path: string }>;
+      };
+
+      const firstResult = Array.isArray(data.results)
+        ? data.results[0]
+        : undefined;
+      if (firstResult?.path) {
+        navigateAndClose(firstResult.path);
+        return;
+      }
+
+      setSearchMessage("לא נמצאו תוצאות.");
+    } catch {
+      setSearchMessage("שגיאה בחיפוש, נסה שוב.");
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   const SUBMENU = [
     { id: 1, title: "שם הרב", link: "#" },
     { id: 2, title: "שם הרב", link: "#" },
@@ -240,16 +331,29 @@ export default function MainMenu({
             <p className="text-[26px] text-[#D1A941] mb-5 leading-[1em]">
               חפש באתר
             </p>
-            <div className="search relative h-10 bg-[#FDF9F5] w-50 flex justify-stretch">
+            <form
+              className="search relative h-10 bg-[#FDF9F5] w-50 flex justify-stretch"
+              onSubmit={handleSearch}
+            >
               <input
                 className="w-full h-full border outline-0 text-black pl-8 text-[18px] leading-[1em] p-2"
                 type="text"
                 placeholder=""
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                disabled={isSearching}
               />
-              <button className="absolute left-2 top-1/2 -translate-y-1/2">
+              <button
+                className="absolute left-2 top-1/2 -translate-y-1/2 disabled:opacity-50"
+                type="submit"
+                disabled={isSearching}
+              >
                 <Search />
               </button>
-            </div>
+            </form>
+            {searchMessage ? (
+              <p className="text-[14px] text-[#E2D7C3] mt-2">{searchMessage}</p>
+            ) : null}
           </div>
         </div>
       </div>

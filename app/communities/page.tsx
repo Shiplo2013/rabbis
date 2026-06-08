@@ -8,7 +8,6 @@ import Introduction from "../components/communites/Introduction";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LoadingEffect from "../components/LoadingEffect";
-import GetRightPosition from "../ui/GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 import SmoothWrapper from "../ui/SmoothWrapper";
 import TextSplitLines from "../ui/TextSplitLines";
@@ -25,55 +24,108 @@ export default function Page() {
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
 
+    const fetchJsonWithRetry = async (url: string, retries = 2) => {
+      let attempt = 0;
+
+      while (attempt <= retries) {
+        try {
+          const response = await fetch(url, { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error(`Request failed: ${response.status}`);
+          }
+          return await response.json();
+        } catch (err) {
+          if (attempt === retries) {
+            throw err;
+          }
+          attempt += 1;
+        }
+      }
+
+      throw new Error("Unreachable");
+    };
+
     const loadCommunityPageData = async () => {
       try {
-        const response = await fetch("/api/communities", {
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to load community page data.");
+        if (isMounted) {
+          setError(null);
         }
 
-        const data = await response.json();
+        const data = await fetchJsonWithRetry("/api/communities");
         // Second Response
-        const categories = data?.acf?.select_categories ?? [];
+        const categories = Array.isArray(data?.acf?.select_categories)
+          ? data.acf.select_categories
+          : [];
+
+        const validCategories = categories.filter((category: any) =>
+          Boolean(category?.term_id),
+        );
 
         const postsByCategory = await Promise.all(
-          categories.map(async (category: any) => {
+          validCategories.map(async (category: any) => {
             const categoryId = category?.term_id;
             const categoryTitle = category?.name;
-            const response = await fetch(
-              `/api/communities/posts?communities_cat=${categoryId}&per_page=20`,
-              { cache: "no-store" },
-            );
+            try {
+              const result = (await fetchJsonWithRetry(
+                `/api/communities/posts?communities_cat=${categoryId}&per_page=20`,
+              )) as { posts?: any[] };
 
-            if (!response.ok) {
-              throw new Error(
-                `Failed to load posts for category ${categoryId}`,
+              return {
+                categoryId,
+                categoryTitle,
+                posts: Array.isArray(result.posts) ? result.posts : [],
+              };
+            } catch {
+              console.warn(
+                `Failed to load posts for category ${categoryId} (${categoryTitle ?? "unknown"})`,
               );
+              return null;
             }
-
-            const result = await response.json();
-
-            return {
-              categoryId,
-              categoryTitle,
-              posts: result.posts,
-            };
           }),
         );
 
+        const successfulCategories = postsByCategory.filter(
+          (
+            item,
+          ): item is { categoryId: any; categoryTitle: any; posts: any[] } =>
+            item !== null,
+        );
+
+        const failedCount =
+          validCategories.length - successfulCategories.length;
+
+        // Do not block the page when only some categories fail.
+        // Show an error only if we had valid categories and none of them loaded.
+        if (
+          isMounted &&
+          validCategories.length > 0 &&
+          successfulCategories.length === 0
+        ) {
+          setError(`Failed to load posts for all categories (${failedCount}).`);
+        }
+
         if (isMounted) {
-          setCommunityPageData({ pageData: data, postsData: postsByCategory });
+          setCommunityPageData({
+            pageData: data,
+            postsData: successfulCategories,
+          });
         }
       } catch (error) {
         console.error(error);
+        if (isMounted) {
+          // Keep the page usable even when upstream APIs fail temporarily.
+          setCommunityPageData({ pageData: null, postsData: [] });
+          setError(null);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -130,7 +182,6 @@ export default function Page() {
   // Page Section Animation
   useGSAP(() => {
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
-      setPageContentAnimation();
       // Overflow body
       const scurbScale = 2;
 
@@ -190,10 +241,6 @@ export default function Page() {
     // Selectors
     const headerLeft = main.current?.querySelector(".header-left");
     const headerRight = main.current?.querySelector(".header-right");
-    const rabbisContent = main.current?.querySelectorAll(".rabbis-section");
-    rabbisContent?.forEach((section) => {
-      section.classList.add("opacity-0");
-    });
     // Banner Button
     const introTitle = main.current?.querySelector(".first-intro .intro-title");
     // Banner Button
@@ -235,9 +282,6 @@ export default function Page() {
         onComplete: () => {
           // Set Animation Played to true
           setIsAllAnimationComplete(true);
-          rabbisContent?.forEach((section) => {
-            section.classList.add("opacity-100");
-          });
         },
       });
       if (main.current) {
@@ -335,114 +379,114 @@ export default function Page() {
   }, [pageDataFetched]);
 
   // Set Page Content Animation
-  const setPageContentAnimation = () => {
-    document.fonts.ready.then(() => {
-      // Page Content Animation
-      const rabbisContent = main.current?.querySelectorAll(
-        ".community-cat-section",
-      );
-      if (rabbisContent) {
-        rabbisContent.forEach((section) => {
-          const sectionTitle = section.querySelector(".community-cat-title h2");
-          const sectionItems = section.querySelectorAll(
-            ".single-community-post",
-          );
-          if (sectionTitle) {
-            const splitTitle = TextSplitLines(sectionTitle);
-            gsap.set(splitTitle, {
-              perspective: 400,
-            });
-            gsap.set(splitTitle, {
-              yPercent: 150,
-              opacity: 0,
-            });
-            gsap.to(splitTitle, {
-              yPercent: 0,
-              opacity: 1,
-              delay: 0,
-              stagger: 0.05,
-              ease: "expo.inOut",
-              duration: 1.5,
-              scrollTrigger: {
-                start: () => {
-                  return GetRightPosition(section) - window.innerWidth * 0.5;
-                },
-                toggleActions: "restart pause resume reverse",
-              },
-            });
-          }
-          if (sectionItems) {
-            sectionItems.forEach((item) => {
-              const postTitle = item.querySelector(".post-text .post-title");
-              const postExcerpt = item.querySelector(
-                ".post-text .post-location",
-              );
-              const postOverlay = item.querySelector(".post-image-overlay");
-              // Post Title
-              const postExcerptSplit = TextSplitLines(postExcerpt);
-              gsap.set(postExcerpt, {
-                perspective: 400,
-              });
-              gsap.set(postExcerptSplit, {
-                yPercent: 150,
-                opacity: 0,
-              });
-              gsap.to(postExcerptSplit, {
-                yPercent: 0,
-                opacity: 1,
-                delay: 0,
-                stagger: 0.05,
-                ease: "expo.inOut",
-                duration: 1.5,
-                scrollTrigger: {
-                  start: () => {
-                    return GetRightPosition(item) - window.innerWidth * 0.5;
-                  },
-                  toggleActions: "restart pause resume reverse",
-                },
-              });
-              // Post Title
-              const postTitleSplit = TextSplitLines(postTitle);
-              gsap.set(postTitle, {
-                perspective: 400,
-              });
-              gsap.set(postTitleSplit, {
-                yPercent: 150,
-                opacity: 0,
-              });
-              gsap.to(postTitleSplit, {
-                yPercent: 0,
-                opacity: 1,
-                delay: 0,
-                stagger: 0.05,
-                ease: "expo.inOut",
-                duration: 1.5,
-                scrollTrigger: {
-                  start: () => {
-                    return GetRightPosition(item) - window.innerWidth * 0.5;
-                  },
-                  toggleActions: "restart pause resume reverse",
-                },
-              });
-              // Image Overlay
-              gsap.to(postOverlay, {
-                yPercent: -100,
-                ease: "expo.inOut",
-                duration: 1.5,
-                delay: 0,
-                scrollTrigger: {
-                  start: () => {
-                    return GetRightPosition(item) - window.innerWidth * 0.5;
-                  },
-                  toggleActions: "restart pause resume reverse",
-                },
-              });
-            });
-          }
-        });
-      }
-    });
-  };
+  // const setPageContentAnimation = () => {
+  //   document.fonts.ready.then(() => {
+  //     // Page Content Animation
+  //     const rabbisContent = main.current?.querySelectorAll(
+  //       ".community-cat-section",
+  //     );
+  //     if (rabbisContent) {
+  //       rabbisContent.forEach((section) => {
+  //         const sectionTitle = section.querySelector(".community-cat-title h2");
+  //         const sectionItems = section.querySelectorAll(
+  //           ".single-community-post",
+  //         );
+  //         if (sectionTitle) {
+  //           const splitTitle = TextSplitLines(sectionTitle);
+  //           gsap.set(splitTitle, {
+  //             perspective: 400,
+  //           });
+  //           gsap.set(splitTitle, {
+  //             yPercent: 150,
+  //             opacity: 0,
+  //           });
+  //           gsap.to(splitTitle, {
+  //             yPercent: 0,
+  //             opacity: 1,
+  //             delay: 0,
+  //             stagger: 0.05,
+  //             ease: "expo.inOut",
+  //             duration: 1.5,
+  //             scrollTrigger: {
+  //               start: () => {
+  //                 return GetRightPosition(section) - window.innerWidth;
+  //               },
+  //               toggleActions: "restart pause resume reverse",
+  //             },
+  //           });
+  //         }
+  //         if (sectionItems) {
+  //           sectionItems.forEach((item) => {
+  //             const postTitle = item.querySelector(".post-text .post-title");
+  //             const postExcerpt = item.querySelector(
+  //               ".post-text .post-location",
+  //             );
+  //             const postOverlay = item.querySelector(".post-image-overlay");
+  //             // Post Title
+  //             const postExcerptSplit = TextSplitLines(postExcerpt);
+  //             gsap.set(postExcerpt, {
+  //               perspective: 400,
+  //             });
+  //             gsap.set(postExcerptSplit, {
+  //               yPercent: 150,
+  //               opacity: 0,
+  //             });
+  //             gsap.to(postExcerptSplit, {
+  //               yPercent: 0,
+  //               opacity: 1,
+  //               delay: 0,
+  //               stagger: 0.05,
+  //               ease: "expo.inOut",
+  //               duration: 1.5,
+  //               scrollTrigger: {
+  //                 start: () => {
+  //                   return GetRightPosition(item) - window.innerWidth;
+  //                 },
+  //                 toggleActions: "restart pause resume reverse",
+  //               },
+  //             });
+  //             // Post Title
+  //             const postTitleSplit = TextSplitLines(postTitle);
+  //             gsap.set(postTitle, {
+  //               perspective: 400,
+  //             });
+  //             gsap.set(postTitleSplit, {
+  //               yPercent: 150,
+  //               opacity: 0,
+  //             });
+  //             gsap.to(postTitleSplit, {
+  //               yPercent: 0,
+  //               opacity: 1,
+  //               delay: 0,
+  //               stagger: 0.05,
+  //               ease: "expo.inOut",
+  //               duration: 1.5,
+  //               scrollTrigger: {
+  //                 start: () => {
+  //                   return GetRightPosition(item) - window.innerWidth;
+  //                 },
+  //                 toggleActions: "restart pause resume reverse",
+  //               },
+  //             });
+  //             // Image Overlay
+  //             gsap.to(postOverlay, {
+  //               yPercent: -100,
+  //               ease: "expo.inOut",
+  //               duration: 1.5,
+  //               delay: 0,
+  //               scrollTrigger: {
+  //                 start: () => {
+  //                   return GetRightPosition(item) - window.innerWidth;
+  //                 },
+  //                 toggleActions: "restart pause resume reverse",
+  //               },
+  //             });
+  //           });
+  //         }
+  //       });
+  //     }
+  //   });
+  // };
 
   // Set Body Overflow Hidden
   useEffect(() => {
@@ -478,6 +522,29 @@ export default function Page() {
       });
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     communityPageData && (
       <div ref={main} id="main" className="relative">

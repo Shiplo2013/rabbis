@@ -1,6 +1,7 @@
 import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
 import { useRef } from "react";
+import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 import GetRightPosition from "./GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "./plugins";
 
@@ -52,7 +53,7 @@ export default function BackgroundImage(props: ChildProps) {
         src={props?.bgImage?.url}
         width="1920"
         height="1080"
-        blurDataURL={props?.bgImage?.sizes?.medium}
+        blurDataURL={CreateShimmerDataUrl(1920, 1080)}
         placeholder={"blur"}
         loading="lazy"
         alt="Section Background"

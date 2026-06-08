@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -14,6 +15,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  data: any;
 }
 export default function MarkOfTheRoad(props: ChildProps) {
   // Navigation
@@ -27,140 +29,152 @@ export default function MarkOfTheRoad(props: ChildProps) {
   const image1 = useRef<HTMLImageElement>(null);
   const image2 = useRef<HTMLImageElement>(null);
   //Section Data
-  const title = `ציוני<br/>דרך`;
-  const secTitle = `שנת תרל"ז:<br/>ייסוד כולל קובנה לאברכים`;
-  const secTitle2 = `שנת תרמ"ב:<br/>יסוד הישיבה לבחורים`;
+  const title = props.data?.title || `ציוני<br/>דרך`;
+  const secTitle =
+    props?.data?.content_1?.title || `שנת תרל"ז:<br/>ייסוד כולל קובנה לאברכים`;
+  const secTitle2 =
+    props?.data?.content_2?.title || `שנת תרמ"ב:<br/>יסוד הישיבה לבחורים`;
 
   // Section Animation
   useGSAP(
     () => {
       // Section Moving Image
-      gsap.set(imageMove.current, { x: 200 });
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * props.animWidthText - 0.8;
+      if (imageMove.current) {
+        gsap.set(imageMove.current, { x: 200 });
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * props.animWidthText - 0.8;
+            },
+            end: () => "+=" + window.innerWidth * 1.5,
+            scrub: 2,
           },
-          end: () => "+=" + window.innerWidth * 1.5,
-          scrub: 2,
-        },
-      });
-      tl.to(imageMove.current, {
-        x: -200,
-        ease: "easeIn",
-      });
-
+        });
+        tl.to(imageMove.current, {
+          x: -200,
+          ease: "easeIn",
+        });
+      }
       // Section Image 1
-      gsap.set(image1.current, { y: 300, opacity: 0 });
-      gsap.to(image1.current, {
-        y: 0,
-        opacity: 1,
-        duration: 2,
-        delay: -0.5,
-        ease: "expo.inOut",
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * (props.animWidthText + 0.2);
+      if (image1.current) {
+        gsap.set(image1.current, { y: 300, opacity: 0 });
+        gsap.to(image1.current, {
+          y: 0,
+          opacity: 1,
+          duration: 2,
+          delay: -0.5,
+          ease: "expo.inOut",
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * (props.animWidthText + 0.2);
+            },
+            toggleActions: "restart pause play reverse",
           },
-          toggleActions: "restart pause play reverse",
-        },
-      });
+        });
+      }
 
       // Section Image 2
-      gsap.set(image2.current, { y: 300, opacity: 0 });
-      gsap.to(image2.current, {
-        y: 0,
-        opacity: 1,
-        duration: 2,
-        delay: -0.5,
-        ease: "expo.inOut",
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * (props.animWidthText + 0.9);
+      if (image2.current) {
+        gsap.set(image2.current, { y: 300, opacity: 0 });
+        gsap.to(image2.current, {
+          y: 0,
+          opacity: 1,
+          duration: 2,
+          delay: -0.5,
+          ease: "expo.inOut",
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * (props.animWidthText + 0.9);
+            },
+            toggleActions: "restart pause play reverse",
           },
-          toggleActions: "restart pause play reverse",
-        },
-      });
-
+        });
+      }
       document.fonts.ready.then(() => {
         // Section Title 1
-        gsap.set(titleRef.current, { opacity: 1 });
-        let splititle;
-        SplitText.create(titleRef.current, {
-          type: "lines",
-          linesClass: "line direction-rtl",
-          autoSplit: true,
-          mask: "lines",
-          onSplit: (self) => {
-            splititle = gsap.from(self.lines, {
-              duration: 2,
-              yPercent: 100,
-              opacity: 0,
-              delay: -0.5,
-              stagger: 0.02,
-              ease: "expo.inOut",
-              scrollTrigger: {
-                start: () => {
-                  return window.innerWidth * props.animWidthText;
+        if (titleRef.current) {
+          gsap.set(titleRef.current, { opacity: 1 });
+          let splititle;
+          SplitText.create(titleRef.current, {
+            type: "lines",
+            linesClass: "line direction-rtl",
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              splititle = gsap.from(self.lines, {
+                duration: 2,
+                yPercent: 100,
+                opacity: 0,
+                delay: -0.5,
+                stagger: 0.02,
+                ease: "expo.inOut",
+                scrollTrigger: {
+                  start: () => {
+                    return window.innerWidth * props.animWidthText;
+                  },
+                  toggleActions: "restart pause play reverse",
                 },
-                toggleActions: "restart pause play reverse",
-              },
-            });
-            return splititle;
-          },
-        });
+              });
+              return splititle;
+            },
+          });
+        }
         // Section Text 1
-        gsap.set(text1.current, { opacity: 1 });
-        let splitext1;
-        SplitText.create(text1.current, {
-          type: "lines",
-          linesClass: "line direction-rtl",
-          autoSplit: true,
-          mask: "lines",
-          onSplit: (self) => {
-            splitext1 = gsap.from(self.lines, {
-              duration: 1,
-              yPercent: 100,
-              opacity: 0,
-              delay: 0,
-              stagger: 0.02,
-              ease: "expo.inOut",
-              scrollTrigger: {
-                start: () => {
-                  return window.innerWidth * (props.animWidthText + 0.5);
+        if (text1.current) {
+          gsap.set(text1.current, { opacity: 1 });
+          let splitext1;
+          SplitText.create(text1.current, {
+            type: "lines",
+            linesClass: "line direction-rtl",
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              splitext1 = gsap.from(self.lines, {
+                duration: 1,
+                yPercent: 100,
+                opacity: 0,
+                delay: 0,
+                stagger: 0.02,
+                ease: "expo.inOut",
+                scrollTrigger: {
+                  start: () => {
+                    return window.innerWidth * (props.animWidthText + 0.5);
+                  },
+                  toggleActions: "restart pause play reverse",
                 },
-                toggleActions: "restart pause play reverse",
-              },
-            });
-            return splitext1;
-          },
-        });
+              });
+              return splitext1;
+            },
+          });
+        }
         // Section Text 2
-        gsap.set(text2.current, { opacity: 1 });
-        let splitext2;
-        SplitText.create(text2.current, {
-          type: "lines",
-          linesClass: "line direction-rtl",
-          autoSplit: true,
-          mask: "lines",
-          onSplit: (self) => {
-            splitext2 = gsap.from(self.lines, {
-              duration: 1,
-              yPercent: 100,
-              opacity: 0,
-              delay: 0,
-              stagger: 0.02,
-              ease: "expo.inOut",
-              scrollTrigger: {
-                start: () => {
-                  return window.innerWidth * (props.animWidthText + 1.1);
+        if (text2.current) {
+          gsap.set(text2.current, { opacity: 1 });
+          let splitext2;
+          SplitText.create(text2.current, {
+            type: "lines",
+            linesClass: "line direction-rtl",
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              splitext2 = gsap.from(self.lines, {
+                duration: 1,
+                yPercent: 100,
+                opacity: 0,
+                delay: 0,
+                stagger: 0.02,
+                ease: "expo.inOut",
+                scrollTrigger: {
+                  start: () => {
+                    return window.innerWidth * (props.animWidthText + 1.1);
+                  },
+                  toggleActions: "restart pause play reverse",
                 },
-                toggleActions: "restart pause play reverse",
-              },
-            });
-            return splitext2;
-          },
-        });
+              });
+              return splitext2;
+            },
+          });
+        }
       });
     },
     { scope: wrapper, dependencies: [pathname] },
@@ -181,37 +195,48 @@ export default function MarkOfTheRoad(props: ChildProps) {
             ref={titleRef}
             className="text-[161px] leading-[0.7em] text-(--theme-color) text-right"
           >
-            {parse(title)}
+            {parse(title || "")}
           </h2>
         </div>
         <div className="section-content flex items-center gap-x-[2.6vw] w-48.5vw">
-          <div ref={image1} className="image w-110.5 h-111.5 relative">
-            <Image
-              className="w-full object-cover object-center h-full"
-              src={markImage1.src}
-              width={"442"}
-              height={"446"}
-              blurDataURL={markImage1?.blurDataURL}
-              placeholder={"blur"}
-              loading="lazy"
-              alt={"Section Image"}
-            />
-            <div
-              ref={imageMove}
-              className="over-image absolute w-82.5 h-85 top-0 right-0 -mt-[8.9vh] -mr-[6.6vw]"
-            >
+          {props?.data?.content_1 && (
+            <div ref={image1} className="image w-110.5 h-111.5 relative">
               <Image
                 className="w-full object-cover object-center h-full"
-                src={markImage2.src}
-                width={"329"}
-                height={"340"}
-                blurDataURL={markImage2?.blurDataURL}
+                src={
+                  props?.data?.content_1?.image?.sizes?.large || markImage1.src
+                }
+                width={"442"}
+                height={"446"}
+                blurDataURL={
+                  CreateShimmerDataUrl(442, 446) || markImage1?.blurDataURL
+                }
                 placeholder={"blur"}
                 loading="lazy"
                 alt={"Section Image"}
               />
+              <div
+                ref={imageMove}
+                className="over-image absolute w-82.5 h-85 top-0 right-0 -mt-[8.9vh] -mr-[6.6vw]"
+              >
+                <Image
+                  className="w-full object-cover object-center h-full"
+                  src={
+                    props?.data?.content_1?.floating_image?.sizes?.large ||
+                    markImage2.src
+                  }
+                  width={"329"}
+                  height={"340"}
+                  blurDataURL={
+                    CreateShimmerDataUrl(329, 340) || markImage2?.blurDataURL
+                  }
+                  placeholder={"blur"}
+                  loading="lazy"
+                  alt={"Section Image"}
+                />
+              </div>
             </div>
-          </div>
+          )}
           <div dir="ltr" className="title">
             <h4
               ref={text1}
@@ -225,10 +250,14 @@ export default function MarkOfTheRoad(props: ChildProps) {
           <div ref={image2} className="image w-134.75 h-103.75">
             <Image
               className="w-full object-cover object-center h-full"
-              src={markImage3.src}
+              src={
+                props?.data?.content_2?.image?.sizes?.large || markImage3.src
+              }
               width={"539"}
               height={"415"}
-              blurDataURL={markImage3?.blurDataURL}
+              blurDataURL={
+                CreateShimmerDataUrl(539, 415) || markImage3?.blurDataURL
+              }
               placeholder={"blur"}
               loading="lazy"
               alt={"Section Image"}

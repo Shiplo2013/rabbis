@@ -127,7 +127,7 @@ export default function LambOfferingSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(notification) +
-                window.innerWidth * 0.3
+                window.innerWidth * 0.2
               );
             },
             toggleActions: "restart pause play reverse",
@@ -153,7 +153,7 @@ export default function LambOfferingSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(notification) +
-                window.innerWidth * 0.3
+                window.innerWidth * 0.2
               );
             },
             toggleActions: "restart pause play reverse",
@@ -203,8 +203,8 @@ export default function LambOfferingSection(props: ChildProps) {
       //       start: () => {
       //         return (
       //           getTimelineOffset() +
-      //           GetRightPosition(imageContainer) -
-      //           window.innerWidth * 0.8
+      //           GetRightPosition(imagesAll) -
+      //           window.innerWidth * 0.2
       //         );
       //       },
       //       end: () => "+=" + window.innerWidth * 2,
@@ -382,30 +382,24 @@ export default function LambOfferingSection(props: ChildProps) {
               />
             </div>
           </Draggable>
-          <Draggable
-            nodeRef={image2Ref}
-            onStart={() => setDraggingImage(2)}
-            onStop={() => setDraggingImage(null)}
+          <div
+            ref={image2Ref}
+            className="image2 notification-button w-[26.25vw] h-[38.54vh] relative z-30 cursor-pointer select-none touch-none"
+            style={{ zIndex: draggingImage === 2 ? 50 : undefined }}
+            onDoubleClick={(e) => e.preventDefault()}
           >
-            <div
-              ref={image2Ref}
-              className="image2 w-[26.25vw] h-[38.54vh] relative z-30 cursor-grab active:cursor-grabbing select-none touch-none"
-              style={{ zIndex: draggingImage === 2 ? 50 : undefined }}
-              onDoubleClick={(e) => e.preventDefault()}
-            >
-              <Image
-                className="w-full object-cover object-center h-full user-select-none"
-                src={LambImage2?.src}
-                width={"644"}
-                height={"425"}
-                draggable={false}
-                blurDataURL={LambImage2?.blurDataURL}
-                placeholder={"blur"}
-                loading="lazy"
-                alt={"Section Image"}
-              />
-            </div>
-          </Draggable>
+            <Image
+              className="w-full object-cover object-center h-full user-select-none"
+              src={LambImage2?.src}
+              width={"644"}
+              height={"425"}
+              draggable={false}
+              blurDataURL={LambImage2?.blurDataURL}
+              placeholder={"blur"}
+              loading="lazy"
+              alt={"Section Image"}
+            />
+          </div>
           <Draggable
             nodeRef={image3Ref}
             onStart={() => setDraggingImage(3)}

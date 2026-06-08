@@ -167,7 +167,7 @@ export default function ImageRevealWithParallaxBG(props: ChildProps) {
         antialias: true,
         alpha: true,
       });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1));
       renderer.setSize(mount.clientWidth, mount.clientHeight);
       renderer.domElement.style.position = "absolute";
       renderer.domElement.style.inset = "0";
