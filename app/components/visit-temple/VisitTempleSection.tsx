@@ -9,6 +9,10 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   sectionData?: SectionData | {};
+  activeTab?: number;
+  setActiveTab?: (index: number) => void;
+  sectionWidth?: number;
+  tabGalleryData?: any;
 }
 
 export default function VisitTempleSection(props: ChildProps) {
@@ -16,6 +20,8 @@ export default function VisitTempleSection(props: ChildProps) {
   const sectionData = props.sectionData as SectionData;
   const videoSectionData = sectionData.videoSection || {};
   const tabSectionData = sectionData.templeTabs || {};
+  const activeTab = props.activeTab ?? 0;
+  const setActiveTab = props.setActiveTab ?? (() => {});
 
   return (
     <section
@@ -25,13 +31,17 @@ export default function VisitTempleSection(props: ChildProps) {
       <div className="visit-temple-wrapper flex w-full h-full">
         <VideoSection
           extraClass="video-item w-[25.6vw] min-w-50 will-change-transform"
-          animWidthText={props.animWidthText}
+          animWidthText={0.1}
           data={videoSectionData}
         />
         <TempleTabs
-          extraClass="w-[205vw] will-change-transform"
+          extraClass="will-change-transform"
           animWidthText={props.animWidthText}
           data={tabSectionData}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          sectionWidth={props.sectionWidth}
+          tabGalleryData={props.tabGalleryData}
         />
       </div>
     </section>

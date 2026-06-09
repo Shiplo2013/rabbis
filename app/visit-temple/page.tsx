@@ -5,6 +5,7 @@ import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LoadingEffect from "../components/LoadingEffect";
+import GallerySection from "../components/visit-temple/GallerySection";
 import Introduction from "../components/visit-temple/Introduction";
 import VisitTempleSection from "../components/visit-temple/VisitTempleSection";
 import BigTitleSplitLines from "../ui/BigTitleSplitLines";
@@ -32,15 +33,120 @@ type VisitTempleAcf = {
       subtitle?: string;
       text?: string;
       gallery_images?: any[];
+      gallery?: any[];
+      videos?: any[];
     },
   ];
 };
+
+type GalleryOrientation = "portrait" | "landscape" | "square" | "unknown";
+
+type GalleryAnalysisItem = {
+  tabIndex: number;
+  itemIndex: number;
+  src: string;
+  width: number | null;
+  height: number | null;
+  orientation: GalleryOrientation;
+};
+
+type GalleryAnalysisByTab = {
+  tabIndex: number;
+  images: GalleryAnalysisItem[];
+};
+
+function detectOrientation(
+  width: number | null,
+  height: number | null,
+): GalleryOrientation {
+  if (!width || !height || width <= 0 || height <= 0) {
+    return "unknown";
+  }
+
+  if (width === height) {
+    return "square";
+  }
+
+  return width > height ? "landscape" : "portrait";
+}
+
+function readGalleryDimensions(item: any): {
+  width: number | null;
+  height: number | null;
+} {
+  const widthCandidates = [
+    item?.sizes?.large?.width,
+    item?.sizes?.medium?.width,
+    item?.width,
+    item?.media_details?.sizes?.large?.width,
+    item?.media_details?.width,
+  ];
+
+  const heightCandidates = [
+    item?.sizes?.large?.height,
+    item?.sizes?.medium?.height,
+    item?.height,
+    item?.media_details?.sizes?.large?.height,
+    item?.media_details?.height,
+  ];
+
+  const width =
+    widthCandidates.find(
+      (value): value is number =>
+        typeof value === "number" && Number.isFinite(value) && value > 0,
+    ) ?? null;
+
+  const height =
+    heightCandidates.find(
+      (value): value is number =>
+        typeof value === "number" && Number.isFinite(value) && value > 0,
+    ) ?? null;
+
+  return { width, height };
+}
+
+function buildGalleryAnalysisByTab(
+  visitTempleAcf: VisitTempleAcf,
+): GalleryAnalysisByTab[] {
+  const tabs = Array.isArray(visitTempleAcf?.temple_tabs)
+    ? visitTempleAcf.temple_tabs
+    : [];
+
+  return tabs.map((tab: any, tabIndex: number) => {
+    const gallery = Array.isArray(tab?.gallery) ? tab.gallery : [];
+
+    const images = gallery.map((item: any, itemIndex: number) => {
+      const { width, height } = readGalleryDimensions(item);
+      return {
+        tabIndex,
+        itemIndex,
+        src: item?.sizes?.large || item?.url || "",
+        width,
+        height,
+        orientation: detectOrientation(width, height),
+      };
+    });
+
+    return {
+      tabIndex,
+      images,
+    };
+  });
+}
 
 export default function Page() {
   // Router Path
   const pathname = usePathname();
   const [visitTempleData, setVisitTempleData] = useState<any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [sectionWidth, setSectionWidth] = useState(100);
+  const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState(0);
+  const [tabGalleryData, setTabGalleryData] = useState<GalleryAnalysisByTab[]>(
+    [],
+  );
 
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
@@ -79,6 +185,9 @@ export default function Page() {
         }
       } catch (error) {
         console.error(error);
+        setError("Failed to load visit temple page data.");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -93,13 +202,16 @@ export default function Page() {
     if (!visitTempleData?.acf) {
       return;
     }
+
+    const galleryAnalysisByTab = buildGalleryAnalysisByTab(visitTempleData.acf);
+    setTabGalleryData(galleryAnalysisByTab);
     setPageDataFetched(true);
-    console.log(visitTempleData);
   }, [visitTempleData]);
 
   // Page Section Animation
   useGSAP(() => {
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
+      setPageContentAnimation();
       // Overflow body
       const scurbScale = 2;
 
@@ -108,7 +220,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerHeight * 5,
+          end: "+=" + window.innerWidth * (containerWidth / 100),
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -136,7 +248,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerHeight * 5 - 100),
+          end: "+=" + window.innerWidth * (containerWidth / 100),
           scrub: scurbScale,
         },
       });
@@ -152,6 +264,7 @@ export default function Page() {
 
   // Load Page
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
       document.fonts.ready.then(() => {
         // Selectors
@@ -191,7 +304,6 @@ export default function Page() {
             onComplete: () => {
               // Set Animation Played to true
               setIsAllAnimationComplete(true);
-              setPageContentAnimation();
             },
           });
           if (main.current) {
@@ -285,9 +397,14 @@ export default function Page() {
               "-=2.5",
             );
           }
+          animations.push(tl);
         }
       });
     }
+
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
   }, [pageDataFetched]);
 
   // Set Page Content Animation
@@ -326,25 +443,61 @@ export default function Page() {
     };
   }, [isAllAnimationComplete]);
 
+  // Active Tab Change Animation
+  useEffect(() => {
+    gsap.to(window, {
+      scrollTo: window.innerWidth * 2,
+      duration: 0.5,
+      ease: "power3.inOut",
+    });
+  }, [activeTab]);
+
   useGSAP(() => {
     // Page Overflow Hidden
     document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
-      gsap.to(main.current, {
-        opacity: 0,
-        duration: 0.1,
-      });
-      gsap.to(page.current, {
-        opacity: 0,
-        duration: 0,
-        onComplete: () => {
-          window.scrollTo(0, 0);
-        },
-      });
+      if (main.current) {
+        gsap.to(main.current, {
+          opacity: 0,
+          duration: 0.1,
+        });
+      }
+      if (page.current) {
+        gsap.to(page.current, {
+          opacity: 0,
+          duration: 0,
+          onComplete: () => {
+            window.scrollTo(0, 0);
+          },
+        });
+      }
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     visitTempleData && (
       <div ref={main} id="main" className="relative">
@@ -365,7 +518,7 @@ export default function Page() {
               <div
                 ref={wrapper}
                 id="section-wrapper"
-                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[330vw] h-screen items-center will-change-transform`}
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
               >
                 <Introduction
                   animated={isAllAnimationComplete}
@@ -385,16 +538,29 @@ export default function Page() {
                   }}
                 />
                 <VisitTempleSection
-                  extraClass="w-[230vw] panel-section will-change-transform"
-                  animWidthText={0.2}
+                  extraClass={`w-[${sectionWidth}vw] panel-section will-change-transform`}
+                  animWidthText={0.8}
                   sectionData={{
                     videoSection: visitTempleData?.acf?.video_section,
                     templeTabs: visitTempleData?.acf?.temple_tabs,
                   }}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                  sectionWidth={sectionWidth}
+                  tabGalleryData={tabGalleryData}
                 />
               </div>
             </div>
           </main>
+          <GallerySection
+            tabGalleryData={tabGalleryData}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            tabData={visitTempleData?.acf?.temple_tabs[activeTab]}
+            tabDataHead={visitTempleData?.acf?.temple_tabs?.map((tab: any) => ({
+              tab_title: tab.tab_title,
+            }))}
+          />
           <Footer className={"relative z-20"} />
         </SmoothWrapper>
         <div
