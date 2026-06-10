@@ -1,7 +1,7 @@
 "use client";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import IntroBG from "../assets/images/intro-bg-10.jpg";
 import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
@@ -18,6 +18,27 @@ import TextSplitLines from "../ui/TextSplitLines";
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
+
+type ImageOrientation = "portrait" | "landscape";
+
+const getImageOrientation = (item: any): ImageOrientation | null => {
+  if (!item || typeof item !== "object") {
+    return null;
+  }
+
+  if (item?.size === "portrait" || item?.size === "landscape") {
+    return item.size;
+  }
+
+  const width = Number(item?.width ?? item?.media_details?.width);
+  const height = Number(item?.height ?? item?.media_details?.height);
+
+  if (!Number.isFinite(width) || !Number.isFinite(height) || height === 0) {
+    return null;
+  }
+
+  return width >= height ? "landscape" : "portrait";
+};
 
 export default function Page() {
   // Selectors
@@ -47,6 +68,22 @@ export default function Page() {
   const waveLine = useRef<HTMLDivElement>(null);
   const waveMask = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
+
+  const galleryImageSizes = useMemo<ImageOrientation[]>(() => {
+    const gallery = Array.isArray(alumniConferenceData?.acf?.gallery)
+      ? alumniConferenceData.acf.gallery
+      : Array.isArray(alumniConferenceData?.acf?.image_gallery)
+        ? alumniConferenceData.acf.image_gallery
+        : [];
+
+    const orientations: Array<ImageOrientation | null> =
+      gallery.map(getImageOrientation);
+
+    return orientations.filter(
+      (size: ImageOrientation | null): size is ImageOrientation =>
+        Boolean(size),
+    );
+  }, [alumniConferenceData]);
 
   // Get Page Data From backend
   useEffect(() => {
@@ -87,6 +124,7 @@ export default function Page() {
     if (!alumniConferenceData) {
       return;
     }
+
     if (animationPlayed) {
       setPageDataFetched(true);
     }
@@ -97,18 +135,19 @@ export default function Page() {
     if (!alumniConferenceData) {
       return;
     }
+
     // Update Section Width on Data Change
     const updateSectionWidth = () => {
       let countPostWidth = 0;
-      alumniConferenceData.acf?.image_gallery?.map((item: any) => {
-        if (item?.size === "landscape") {
+
+      galleryImageSizes.forEach((size) => {
+        if (size === "landscape") {
           countPostWidth += 39.4;
-        } else if (item?.size === "portrait") {
+        } else if (size === "portrait") {
           countPostWidth += 26.56;
         }
-        return item;
-      })?.length || 0;
-      console.log("Count Post Width:", countPostWidth);
+      });
+
       const newSectionWidth = countPostWidth + 18.5 + 9.89 + 42.5;
 
       setSectionWidth(newSectionWidth);
@@ -120,14 +159,22 @@ export default function Page() {
     return () => {
       window.removeEventListener("resize", updateSectionWidth);
     };
-  }, [alumniConferenceData]);
+  }, [alumniConferenceData, pageDataFetched, galleryImageSizes]);
 
   // Page Section Animation
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
+    let cleanupPageContentAnimation: (() => void) | undefined;
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
-      setPageContentAnimation();
+      cleanupPageContentAnimation = setPageContentAnimation();
       // Overflow body
       const scurbScale = 2;
+      const progressSetter = progress.current
+        ? gsap.quickSetter(progress.current, "width", "%")
+        : null;
+      const waveOpacitySetter = waveLine.current
+        ? gsap.quickSetter(waveLine.current, "opacity")
+        : null;
 
       // Vertical Section
       const timeline = gsap.timeline({
@@ -138,46 +185,42 @@ export default function Page() {
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
-            gsap.to(progress.current, { width: `${100 * self.progress}%` });
-            if (self.progress > 0.97) {
-              gsap.to(waveLine.current, {
-                opacity: 0,
-                duration: 0.1,
-                delay: 0,
-              });
-            } else {
-              gsap.to(waveLine.current, {
-                opacity: 1,
-                duration: 0.1,
-                delay: 0,
-              });
+            if (progressSetter) {
+              progressSetter(100 * self.progress);
+            }
+            if (waveOpacitySetter) {
+              waveOpacitySetter(self.progress > 0.97 ? 0 : 1);
             }
           },
         },
       });
-      timeline.to(wrapper.current, {
-        x: () =>
-          wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: panel.current,
-          start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * (containerWidth / 100) - 500),
-          scrub: scurbScale,
-        },
-      });
-      setVerticalSection(timeline);
+      if (wrapper.current) {
+        timeline.to(wrapper.current, {
+          x: () =>
+            wrapper.current
+              ? wrapper.current.offsetWidth - window.innerWidth
+              : 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: panel.current,
+            start: panel.current?.offsetTop,
+            end: "+=" + (window.innerWidth * (containerWidth / 100) - 500),
+            scrub: scurbScale,
+          },
+        });
+      }
+      animations.push(timeline);
     }
     // Return
     return () => {
-      if (verticalSection) {
-        verticalSection.kill();
-      }
+      cleanupPageContentAnimation?.();
+      animations.forEach((anim) => anim.kill());
     };
   }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
       document.fonts.ready.then(() => {
         // Selectors
@@ -224,7 +267,7 @@ export default function Page() {
         }
         // Set localStorage variable
         const userVisit = localStorage.getItem("hasVisited");
-        if (userVisit === "true" && animationPlayed) {
+        if (userVisit === "true" && animationPlayed && pageDataFetched) {
           // Timeline
           const tl = gsap.timeline({
             onComplete: () => {
@@ -326,26 +369,33 @@ export default function Page() {
               "-=2.5",
             );
           }
+          animations.push(tl);
         }
       });
     }
+    // Return
+    return () => {
+      animations.forEach((anim) => anim.kill());
+    };
   }, [pathname, pageDataFetched]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
+    const animations: gsap.core.Animation[] = [];
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
       // Page Content Animation
       const conferenceRef = main.current?.querySelector(".conference-content");
       const conferenceContent = conferenceRef?.querySelectorAll(
         ".conference-content-wrapper>p",
       );
+      const imageGallery = main.current?.querySelector(".conference-gallery");
       const GalleryImages = main.current?.querySelectorAll(
         ".conference-gallery .single-gallery",
       );
 
       // Animations
       if (conferenceRef) {
-        gsap.from(conferenceRef, {
+        const conferenceAnim = gsap.from(conferenceRef, {
           xPercent: -50,
           opacity: 0,
           ease: "slow(0.1,1,false)",
@@ -358,6 +408,23 @@ export default function Page() {
             toggleActions: "restart pause resume reverse",
           },
         });
+        animations.push(conferenceAnim);
+      }
+      // Image Gallery Animation
+      if (imageGallery) {
+        const galleryAnim = gsap.from(imageGallery, {
+          opacity: 0,
+          ease: "slow(0.1,1,false)",
+          duration: 1.5,
+          delay: 0,
+          scrollTrigger: {
+            start: () => {
+              return GetRightPosition(imageGallery) - window.innerWidth * 0.8;
+            },
+            toggleActions: "restart pause resume reverse",
+          },
+        });
+        animations.push(galleryAnim);
       }
       // Text
       document.fonts.ready.then(() => {
@@ -372,7 +439,7 @@ export default function Page() {
             yPercent: 150,
             opacity: 0,
           });
-          gsap.to(splitContent, {
+          const splitContentAnim = gsap.to(splitContent, {
             yPercent: 0,
             opacity: 1,
             duration: 3,
@@ -386,36 +453,27 @@ export default function Page() {
               toggleActions: "restart pause resume reverse",
             },
           });
+          animations.push(splitContentAnim);
         }
       });
       // Contents
       if (GalleryImages) {
+        // Gallery Image Animation
         GalleryImages.forEach((item, index) => {
           // Custom Content Item
           if (item) {
-            gsap.from(item, {
-              opacity: 0,
-              ease: "slow(0.1,1,false)",
-              duration: 1.5,
-              delay: 0,
-              scrollTrigger: {
-                start: () => {
-                  return window.innerWidth + index * 0.5;
-                },
-                toggleActions: "restart pause resume reverse",
-              },
-            });
             // Item BG Animation
             const image = item.querySelector(".single-gallery-image");
             if (image) {
               // Banner Background
-              gsap.set(image, { scale: 1.2, x: "15vw" });
-              gsap.to(image, {
+              gsap.set(image, { scale: 1.2, x: "10vw" });
+              const imageAnim = gsap.to(image, {
                 x: "-10vw",
                 ease: "none",
                 scrollTrigger: {
+                  trigger: image,
                   start: () => {
-                    return GetRightPosition(item) - window.innerWidth * 0.5;
+                    return GetRightPosition(image) - window.innerWidth * 0.5;
                   },
                   end: () => {
                     return "+=" + window.innerWidth * 2.5;
@@ -423,11 +481,17 @@ export default function Page() {
                   scrub: 2,
                 },
               });
+              animations.push(imageAnim);
             }
           }
         });
       }
     }
+
+    // Return
+    return () => {
+      animations.forEach((anim) => anim.kill());
+    };
   };
 
   // Set Body Overflow Hidden
@@ -446,22 +510,36 @@ export default function Page() {
   }, [isAllAnimationComplete]);
 
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     // Page Overflow Hidden
     document.body.classList.remove("!overflow-auto");
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
-      gsap.to(main.current, {
-        opacity: 0,
-        duration: 0.1,
-      });
-      gsap.to(page.current, {
-        opacity: 0,
-        duration: 0,
-        onComplete: () => {
-          window.scrollTo(0, 0);
-        },
-      });
+      if (main.current) {
+        const mainAnim = gsap.to(main.current, {
+          opacity: 0,
+          duration: 0.1,
+        });
+        animations.push(mainAnim);
+      }
+      if (page.current) {
+        const pageAnim = gsap.to(page.current, {
+          opacity: 0,
+          duration: 0,
+          onComplete: () => {
+            window.scrollTo(0, 0);
+          },
+        });
+        animations.push(pageAnim);
+      }
+    };
+
+    return () => {
+      // Kill animations
+      animations.forEach((anim) => anim.kill());
+      // Reset onbeforeunload
+      window.onbeforeunload = null;
     };
   }, []);
 
@@ -546,9 +624,11 @@ export default function Page() {
                   extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[9.25vw]`}
                   animWidthText={1}
                   sectionData={{
-                    gallery: alumniConferenceData?.acf?.image_gallery,
+                    gallery: alumniConferenceData?.acf?.gallery,
                     sectionText: alumniConferenceData?.content?.rendered,
+                    videos: alumniConferenceData?.acf?.videos,
                   }}
+                  galleryImageSizes={galleryImageSizes}
                 />
               </div>
             </div>

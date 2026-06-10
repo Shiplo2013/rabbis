@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import TempleTabs from "./TempleTabs";
 import VideoSection from "./VideoSection";
 
@@ -23,10 +22,6 @@ export default function VisitTempleSection(props: ChildProps) {
   const tabSectionData = sectionData.templeTabs || {};
   const activeTab = props.activeTab ?? 0;
   const setActiveTab = props.setActiveTab ?? (() => {});
-
-  useEffect(() => {
-    console.log("VisitTempleSection Rendered", props.tabGalleryData);
-  }, [props.tabGalleryData]);
 
   return (
     <section
