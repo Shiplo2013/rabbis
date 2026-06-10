@@ -1,23 +1,29 @@
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import parse from "html-react-parser";
 import Image from "next/image";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import contentBg from "../../assets/images/text-frame.png";
 
 interface SingleCyclePictureData {
   gallery: any;
   sectionText: string;
+  galleryImageSizes?: any;
 }
 
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
   sectionData: SingleCyclePictureData;
+  galleryImageSizes?: any;
 }
 
 export default function ConferenceContentSection(props: ChildProps) {
   // Selector
   const scrollbarRef = useRef<HTMLDivElement>(null);
+  const imageBlurPlaceholder = useMemo(
+    () => CreateShimmerDataUrl(1920, 1080),
+    [],
+  );
   // Section Data
   const SectionData = props?.sectionData;
   return (
@@ -48,7 +54,8 @@ export default function ConferenceContentSection(props: ChildProps) {
         </div>
         <div className="conference-gallery flex items-center will-change-transform">
           {SectionData?.gallery?.map((item: any, index: number) => {
-            if (item.size === "landscape") {
+            const dimensions = props.galleryImageSizes?.[index];
+            if (dimensions === "landscape") {
               return (
                 <div
                   key={index}
@@ -59,22 +66,17 @@ export default function ConferenceContentSection(props: ChildProps) {
                   >
                     <Image
                       className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
-                      src={item?.image?.sizes?.large || item?.image?.src}
+                      src={item?.sizes?.large || item?.image?.src}
                       width={
-                        window.innerWidth > 1920
-                          ? item?.image?.sizes?.large?.width ||
-                            item?.image?.width
-                          : "1920"
+                        item?.sizes?.large?.width || item?.image?.width || 1920
                       }
                       height={
-                        window.innerHeight > 1080
-                          ? item?.image?.sizes?.large?.height ||
-                            item?.image?.height
-                          : "1080"
+                        item?.sizes?.large?.height ||
+                        item?.image?.height ||
+                        1080
                       }
                       blurDataURL={
-                        CreateShimmerDataUrl(1920, 1080) ||
-                        item?.image?.blurDataURL
+                        item?.image?.blurDataURL || imageBlurPlaceholder
                       }
                       placeholder={"blur"}
                       loading="lazy"
@@ -94,22 +96,17 @@ export default function ConferenceContentSection(props: ChildProps) {
                   >
                     <Image
                       className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
-                      src={item?.image?.sizes?.large || item?.image?.src}
+                      src={item?.sizes?.large || item?.image?.src}
                       width={
-                        window.innerWidth > 1920
-                          ? item?.image?.sizes?.large?.width ||
-                            item?.image?.width
-                          : "1920"
+                        item?.sizes?.large?.width || item?.image?.width || 1920
                       }
                       height={
-                        window.innerHeight > 1080
-                          ? item?.image?.sizes?.large?.height ||
-                            item?.image?.height
-                          : "1080"
+                        item?.sizes?.large?.height ||
+                        item?.image?.height ||
+                        1080
                       }
                       blurDataURL={
-                        CreateShimmerDataUrl(1920, 1080) ||
-                        item?.image?.blurDataURL
+                        item?.image?.blurDataURL || imageBlurPlaceholder
                       }
                       placeholder={"blur"}
                       loading="lazy"

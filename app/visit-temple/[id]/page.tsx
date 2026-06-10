@@ -203,19 +203,38 @@ export default function Page() {
     if (!visitTempleData?.acf) {
       return;
     }
-    const galleryAnalysisByTab = buildGalleryAnalysisByTab(visitTempleData.acf);
-    setTabGalleryData(galleryAnalysisByTab);
-    let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10;
-    galleryAnalysisByTab[activeTab]?.images.forEach((tab) => {
-      if (tab.orientation === "landscape") {
-        minSectionWidth += 32;
-      } else {
-        minSectionWidth += 22;
-      }
-    });
-    setSectionWidth(minSectionWidth);
-    setContainerWidth(minSectionWidth + 100);
-    setPageDataFetched(true);
+    if (animationPlayed) {
+      setPageDataFetched(true);
+    }
+  }, [visitTempleData, animationPlayed]);
+
+  useEffect(() => {
+    if (!visitTempleData?.acf) {
+      return;
+    }
+    // Update Section Width on Data Change
+    const updateSectionWidth = () => {
+      const galleryAnalysisByTab = buildGalleryAnalysisByTab(
+        visitTempleData.acf,
+      );
+      setTabGalleryData(galleryAnalysisByTab);
+      let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10;
+      galleryAnalysisByTab[activeTab]?.images.forEach((tab) => {
+        if (tab.orientation === "landscape") {
+          minSectionWidth += 32;
+        } else {
+          minSectionWidth += 22;
+        }
+      });
+      setSectionWidth(minSectionWidth);
+      setContainerWidth(minSectionWidth + 100);
+    };
+
+    updateSectionWidth();
+    window.addEventListener("resize", updateSectionWidth);
+    return () => {
+      window.removeEventListener("resize", updateSectionWidth);
+    };
   }, [visitTempleData]);
 
   // Page Section Animation
@@ -270,7 +289,7 @@ export default function Page() {
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [pathname, pageDataFetched, activeTab, containerWidth]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
