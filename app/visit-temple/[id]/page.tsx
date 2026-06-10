@@ -1,4 +1,5 @@
 "use client";
+import TabMenu from "@/app/components/visit-temple/TabMenu";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Wave from "../../assets/images/wave.svg";
@@ -600,6 +601,10 @@ export default function Page() {
           </main>
           <Footer className={"relative z-20"} />
         </SmoothWrapper>
+        <TabMenu
+          data={visitTempleData?.acf?.temple_tabs}
+          activeTab={activeTab}
+        />
         <div
           ref={waveLine}
           className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
