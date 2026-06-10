@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LoadingEffect from "../components/LoadingEffect";
 import Introduction from "../components/visit-temple/Introduction";
+import TabMenu from "../components/visit-temple/TabMenu";
 import VisitTempleSection from "../components/visit-temple/VisitTempleSection";
 import BigTitleSplitLines from "../ui/BigTitleSplitLines";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
@@ -578,6 +579,10 @@ export default function Page() {
           </main>
           <Footer className={"relative z-20"} />
         </SmoothWrapper>
+        <TabMenu
+          data={visitTempleData?.acf?.temple_tabs}
+          activeTab={activeTab}
+        />
         <div
           ref={waveLine}
           className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"

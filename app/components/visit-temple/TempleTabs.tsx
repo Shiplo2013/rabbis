@@ -23,7 +23,6 @@ interface TabsData {
   title?: string;
   subtitle?: string;
   text?: string;
-  gallery_images?: any;
   videos?: any;
   gallery?: any;
 }
@@ -165,7 +164,7 @@ export default function TempleTabs(props: ChildProps) {
                 </div>
 
                 {tabsData[activeTab]?.videos?.length > 0 && (
-                  <div className="video-gallery">
+                  <div className="video-gallery relative w-25 h-auto flex z-50">
                     {videoSources.length > 0 && (
                       <FsLightbox
                         key={`videos-${videoSources.length}`}
@@ -219,7 +218,7 @@ export default function TempleTabs(props: ChildProps) {
                               className="single-gallery will-change-transform w-[32vw] h-[40vh] overflow-hidden"
                             >
                               <div
-                                className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
+                                className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%] cursor-none pointer-events-none`}
                               >
                                 <Image
                                   className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
