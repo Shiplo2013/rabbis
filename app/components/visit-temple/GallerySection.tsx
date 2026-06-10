@@ -30,8 +30,6 @@ export default function GallerySection(props: GallerySectionProps) {
 
       const scurbScale = 2;
 
-      console.log(galleryRef.current ? galleryRef.current.offsetHeight : 0);
-
       // Sticky Section
       if (!gallerySectionRef.current) return;
 
