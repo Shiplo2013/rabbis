@@ -1,15 +1,15 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import Wave from "../assets/images/wave.svg";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import LoadingEffect from "../components/LoadingEffect";
-import Introduction from "../components/visit-temple/Introduction";
-import VisitTempleSection from "../components/visit-temple/VisitTempleSection";
-import BigTitleSplitLines from "../ui/BigTitleSplitLines";
-import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
-import SmoothWrapper from "../ui/SmoothWrapper";
+import Wave from "../../assets/images/wave.svg";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import LoadingEffect from "../../components/LoadingEffect";
+import Introduction from "../../components/visit-temple/Introduction";
+import VisitTempleSection from "../../components/visit-temple/VisitTempleSection";
+import BigTitleSplitLines from "../../ui/BigTitleSplitLines";
+import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
+import SmoothWrapper from "../../ui/SmoothWrapper";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -136,13 +136,15 @@ function buildGalleryAnalysisByTab(
 export default function Page() {
   // Router Path
   const pathname = usePathname();
+  const params = useParams();
+  const id = params?.id as string;
   const [visitTempleData, setVisitTempleData] = useState<any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(id ? parseInt(id) : 0);
   const [tabGalleryData, setTabGalleryData] = useState<GalleryAnalysisByTab[]>(
     [],
   );
@@ -459,8 +461,9 @@ export default function Page() {
   // Active Tab Change Animation
   useEffect(() => {
     const animations: gsap.core.Animation[] = [];
+
     const scrollAnimation = gsap.to(window, {
-      scrollTo: window.innerWidth * 0.5,
+      scrollTo: window.innerWidth * 1.4,
       duration: 0.5,
       ease: "power3.inOut",
     });
@@ -468,7 +471,7 @@ export default function Page() {
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [activeTab]);
+  }, [isAllAnimationComplete]);
 
   useGSAP(() => {
     const animations: gsap.core.Animation[] = [];

@@ -5,6 +5,7 @@ import Wave from "../assets/images/wave.svg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LoadingEffect from "../components/LoadingEffect";
+import GallerySection from "../components/visit-temple/GallerySection";
 import Introduction from "../components/visit-temple/Introduction";
 import VisitTempleSection from "../components/visit-temple/VisitTempleSection";
 import BigTitleSplitLines from "../ui/BigTitleSplitLines";
@@ -138,7 +139,7 @@ export default function Page() {
   const pathname = usePathname();
   const [visitTempleData, setVisitTempleData] = useState<any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [sectionWidth, setSectionWidth] = useState(200);
+  const [sectionWidth, setSectionWidth] = useState(100);
   const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -201,24 +202,14 @@ export default function Page() {
     if (!visitTempleData?.acf) {
       return;
     }
+
     const galleryAnalysisByTab = buildGalleryAnalysisByTab(visitTempleData.acf);
     setTabGalleryData(galleryAnalysisByTab);
-    let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10;
-    galleryAnalysisByTab[activeTab]?.images.forEach((tab) => {
-      if (tab.orientation === "landscape") {
-        minSectionWidth += 32;
-      } else {
-        minSectionWidth += 22;
-      }
-    });
-    setSectionWidth(minSectionWidth);
-    setContainerWidth(minSectionWidth + 100);
     setPageDataFetched(true);
   }, [visitTempleData]);
 
   // Page Section Animation
   useGSAP(() => {
-    const animations: gsap.core.Animation[] = [];
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
       setPageContentAnimation();
       // Overflow body
@@ -261,14 +252,15 @@ export default function Page() {
           scrub: scurbScale,
         },
       });
-      animations.push(timeline);
+      setVerticalSection(timeline);
     }
     // Return
-
     return () => {
-      animations.forEach((animation) => animation.kill());
+      if (verticalSection) {
+        verticalSection.kill();
+      }
     };
-  }, [pathname, pageDataFetched, activeTab, containerWidth]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
@@ -417,11 +409,10 @@ export default function Page() {
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
-    const animations: gsap.core.Animation[] = [];
     // Page Content Animation
     const introImage = main.current?.querySelector(".first-intro .intro-image");
     if (introImage) {
-      const introImageAnimation = gsap.to(introImage, {
+      gsap.to(introImage, {
         x: "-30vw",
         ease: "none",
         scrollTrigger: {
@@ -434,11 +425,7 @@ export default function Page() {
           scrub: 2,
         },
       });
-      animations.push(introImageAnimation);
     }
-    return () => {
-      animations.forEach((animation) => animation.kill());
-    };
   };
 
   // Set Body Overflow Hidden
@@ -458,45 +445,34 @@ export default function Page() {
 
   // Active Tab Change Animation
   useEffect(() => {
-    const animations: gsap.core.Animation[] = [];
-    const scrollAnimation = gsap.to(window, {
-      scrollTo: window.innerWidth * 0.5,
+    gsap.to(window, {
+      scrollTo: window.innerWidth * 2,
       duration: 0.5,
       ease: "power3.inOut",
     });
-    animations.push(scrollAnimation);
-    return () => {
-      animations.forEach((animation) => animation.kill());
-    };
   }, [activeTab]);
 
   useGSAP(() => {
-    const animations: gsap.core.Animation[] = [];
     // Page Overflow Hidden
     document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
       if (main.current) {
-        const mainAnimation = gsap.to(main.current, {
+        gsap.to(main.current, {
           opacity: 0,
           duration: 0.1,
         });
-        animations.push(mainAnimation);
       }
       if (page.current) {
-        const pageAnimation = gsap.to(page.current, {
+        gsap.to(page.current, {
           opacity: 0,
           duration: 0,
           onComplete: () => {
             window.scrollTo(0, 0);
           },
         });
-        animations.push(pageAnimation);
       }
-    };
-    return () => {
-      animations.forEach((animation) => animation.kill());
     };
   }, []);
 
@@ -576,6 +552,15 @@ export default function Page() {
               </div>
             </div>
           </main>
+          <GallerySection
+            tabGalleryData={tabGalleryData}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            tabData={visitTempleData?.acf?.temple_tabs[activeTab]}
+            tabDataHead={visitTempleData?.acf?.temple_tabs?.map((tab: any) => ({
+              tab_title: tab.tab_title,
+            }))}
+          />
           <Footer className={"relative z-20"} />
         </SmoothWrapper>
         <div
