@@ -124,6 +124,7 @@ export default function Page() {
     if (!alumniConferenceData) {
       return;
     }
+
     if (animationPlayed) {
       setPageDataFetched(true);
     }
@@ -418,7 +419,7 @@ export default function Page() {
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageGallery) - window.innerWidth * 0.5;
+              return GetRightPosition(imageGallery) - window.innerWidth * 0.8;
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -625,6 +626,7 @@ export default function Page() {
                   sectionData={{
                     gallery: alumniConferenceData?.acf?.gallery,
                     sectionText: alumniConferenceData?.content?.rendered,
+                    videos: alumniConferenceData?.acf?.videos,
                   }}
                   galleryImageSizes={galleryImageSizes}
                 />

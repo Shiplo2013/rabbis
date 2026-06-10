@@ -1,13 +1,16 @@
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
+import FsLightbox from "fslightbox-react";
 import parse from "html-react-parser";
 import Image from "next/image";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
+import Album1 from "../../assets/images/album-icon1.png";
+import Album2 from "../../assets/images/album-icon2.png";
 import contentBg from "../../assets/images/text-frame.png";
 
 interface SingleCyclePictureData {
-  gallery: any;
-  sectionText: string;
-  galleryImageSizes?: any;
+  gallery?: any;
+  sectionText?: string;
+  videos?: any;
 }
 
 interface ChildProps {
@@ -26,6 +29,17 @@ export default function ConferenceContentSection(props: ChildProps) {
   );
   // Section Data
   const SectionData = props?.sectionData;
+
+  // Lightbox State
+  const [toggler, setToggler] = useState(false);
+
+  const videos = Array.isArray(SectionData?.videos) ? SectionData.videos : [];
+  const videoSources = useMemo(
+    () => videos.map((item: any) => item?.video?.url).filter(Boolean),
+    [videos],
+  );
+  const videoTypes = useMemo(() => videos.map(() => "video"), [videos]);
+
   return (
     <section
       dir="rtl"
@@ -52,6 +66,45 @@ export default function ConferenceContentSection(props: ChildProps) {
             {parse(SectionData?.sectionText || "")}
           </div>
         </div>
+
+        {SectionData?.videos?.length > 0 && (
+          <div className="video-gallery">
+            {videoSources.length > 0 && (
+              <FsLightbox
+                key={`videos-${videoSources.length}`}
+                toggler={toggler}
+                sources={videoSources}
+                types={videoTypes}
+              />
+            )}
+            <button
+              onClick={() => setToggler(!toggler)}
+              className="video-popup cursor-pointer w-25 min-w-25 h-auto flex items-center justify-center flex-col group text-[18px]"
+            >
+              <div className="icon w-full h-auto flex items-center justify-center relative">
+                <div className="static duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-90">
+                  <Image
+                    className="w-full h-full object-contain object-center"
+                    src={Album2.src}
+                    width={100}
+                    height={100}
+                    alt="Album Icon"
+                  />
+                </div>
+                <div className="hover absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-110">
+                  <Image
+                    className="w-full h-full object-contain object-center"
+                    src={Album1.src}
+                    width={100}
+                    height={100}
+                    alt="Album Icon"
+                  />
+                </div>
+              </div>
+              <span className="text">גלריית וידאו</span>
+            </button>
+          </div>
+        )}
         <div className="conference-gallery flex items-center will-change-transform">
           {SectionData?.gallery?.map((item: any, index: number) => {
             const dimensions = props.galleryImageSizes?.[index];
