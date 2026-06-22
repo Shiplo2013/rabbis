@@ -1,5 +1,10 @@
 import { usePathname } from "next/navigation";
-import { useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import PixelIcon1 from "../assets/icons/PixelIcon1";
 import PixelIcon2 from "../assets/icons/PixelIcon2";
 import PixelIcon3 from "../assets/icons/PixelIcon3";
@@ -15,6 +20,12 @@ interface ChildProps {
   data: { poster: any; source: any };
 }
 
+const getMediaUrl = (value: any) => {
+  if (!value) return "";
+  if (typeof value === "string") return value;
+  return value.url || value.src || value?.sizes?.medium_large || "";
+};
+
 export default function DonationVideo(props: ChildProps) {
   // Section Data
   const videoData = props.data || {};
@@ -22,8 +33,48 @@ export default function DonationVideo(props: ChildProps) {
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const { contextSafe } = useGSAP();
   const [videoPlay, setVideoPlay] = useState(true);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+  const posterUrl = getMediaUrl(videoData?.poster);
+  const sourceUrl = getMediaUrl(videoData?.source);
+
+  useEffect(() => {
+    const wrapperElement = wrapper.current;
+
+    if (!wrapperElement) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setShouldLoadVideo(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "300px 0px" },
+    );
+
+    observer.observe(wrapperElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    const videoElement = videoRef.current;
+
+    if (!videoElement || !shouldLoadVideo) return;
+
+    // Ensure autoplay starts as soon as the lazy source is attached.
+    const playPromise = videoElement.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {
+        // Ignore autoplay blocking errors from strict browser policies.
+      });
+    }
+  }, [videoPlay, shouldLoadVideo]);
   // Play/Pause Video on click
   const handleClickEvent = (e: any) => {
     const video = e.currentTarget.querySelector("video");
@@ -96,19 +147,19 @@ export default function DonationVideo(props: ChildProps) {
       className={`${props.extraClass} group video-player bg-black flex items-center relative z-20 cursor-pointer`}
     >
       <video
+        ref={videoRef}
         width="100%"
-        poster={
-          videoData?.poster?.sizes?.medium_large || videoData?.poster?.url
-        }
+        poster={posterUrl}
         className="w-full h-full object-cover object-center will-change-transform backface-hidden"
-        autoPlay
+        autoPlay={shouldLoadVideo}
+        playsInline
         muted
         loop={true}
+        preload={shouldLoadVideo ? "metadata" : "none"}
       >
-        <source
-          src={videoData?.source?.url || videoData?.source?.src}
-          type="video/mp4"
-        />
+        {shouldLoadVideo && sourceUrl ? (
+          <source src={sourceUrl} type="video/mp4" />
+        ) : null}
         Your browser does not support the video tag.
       </video>
       <div className="video-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform opacity-40 group-hover:opacity-20 transition-all duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)] backface-hidden pointer-events-none"></div>

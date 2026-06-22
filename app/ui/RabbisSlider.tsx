@@ -13,6 +13,42 @@ import SwipeRight from "../assets/icons/SwipeRight";
 import RabbisThumb from "../assets/images/rabbis-thumb.jpg";
 import ThemeButton from "./ThemeButton";
 
+function resolveNestedImageUrl(value: unknown): string | undefined {
+  if (typeof value === "string" && value.trim()) {
+    return value.trim();
+  }
+
+  if (!value || typeof value !== "object") {
+    return undefined;
+  }
+
+  const record = value as Record<string, unknown>;
+  const directValue = record.url ?? record.src ?? record.source_url;
+
+  if (typeof directValue === "string" && directValue.trim()) {
+    return directValue.trim();
+  }
+
+  return (
+    resolveNestedImageUrl(record.full) ||
+    resolveNestedImageUrl(record.large) ||
+    resolveNestedImageUrl(record.medium_large) ||
+    resolveNestedImageUrl(record.medium) ||
+    resolveNestedImageUrl(record.thumbnail) ||
+    resolveNestedImageUrl(record.sizes) ||
+    resolveNestedImageUrl(record.media_details) ||
+    undefined
+  );
+}
+
+function resolveImageSrc(image: unknown, fallback: string) {
+  if (typeof image === "string" && image.trim()) {
+    return image.trim();
+  }
+
+  return resolveNestedImageUrl(image) || fallback;
+}
+
 interface ChildProps {
   data: {
     buttonText: string;
@@ -58,12 +94,10 @@ export default function RabbisSlider(props: ChildProps) {
                 <div className="rabbis-thumb w-80 h-87.5 relative z-10">
                   <Image
                     className="w-full object-cover object-center h-full"
-                    src={
-                      item?.sizes?.past_rabbis_thumb ||
-                      item?.thumbnail?.url ||
-                      item?.thumbnail?.src ||
-                      RabbisThumb.src
-                    }
+                    src={resolveImageSrc(
+                      item?.sizes?.past_rabbis_thumb ?? item?.thumbnail ?? item,
+                      RabbisThumb.src,
+                    )}
                     width={"320"}
                     height={"350"}
                     alt="Rabbis Thumb"

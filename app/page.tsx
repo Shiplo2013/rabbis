@@ -733,21 +733,18 @@ export default function Home() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
-      if (main.current) {
-        gsap.to(main.current, {
-          opacity: 0,
-          duration: 0.1,
-        });
-      }
-      if (page.current) {
-        gsap.to(page.current, {
-          opacity: 0,
-          duration: 0,
-          onComplete: () => {
-            window.scrollTo(0, 0);
-          },
-        });
-      }
+      setIsLoading(true);
+      gsap.to(main.current, {
+        opacity: 0,
+        duration: 0.1,
+      });
+      gsap.to(page.current, {
+        opacity: 0,
+        duration: 0,
+        onComplete: () => {
+          window.scrollTo(0, 0);
+        },
+      });
     };
   }, []);
 

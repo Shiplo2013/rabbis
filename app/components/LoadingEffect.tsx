@@ -32,12 +32,16 @@ function LoadingEffect(props: { animated: (value: boolean) => void }) {
   useEffect(() => {
     // Set localStorage variable
     const userVisit = localStorage.getItem("hasVisited");
-    if (userVisit == null || userVisit == "false") {
+    if ((userVisit == null || userVisit == "false") && pathname === "/") {
       //localStorage.setItem("hasVisited", "true");
       setIsFirstVisit(true);
     } else {
       props.animated(true);
       setIsFirstVisit(false);
+    }
+    if (pathname !== "/") {
+      props.animated(true);
+      localStorage.setItem("hasVisited", "true");
     }
   }, [pathname]);
   // loadin is true

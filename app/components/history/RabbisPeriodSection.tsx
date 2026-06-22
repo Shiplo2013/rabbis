@@ -1,5 +1,5 @@
+import BackgroundImage2 from "@/app/ui/BackgroundImage2";
 import GetRightPosition from "@/app/ui/GetRightPosition";
-import ImageRevealWithParallaxBG from "@/app/ui/ImageRevealWithParallaxBG";
 import RabbisSlider from "@/app/ui/RabbisSlider";
 import ThemeButton2 from "@/app/ui/ThemeButton2";
 import parse from "html-react-parser";
@@ -108,6 +108,13 @@ export default function RabbisPeriodSection(props: ChildProps) {
     return timeline?.current ? timeline.current.offsetTop : 0;
   };
 
+  // useEffect(() => {
+  //   console.log(
+  //     "RabbisPeriodSection: props.data.past_rabbis",
+  //     props?.data?.past_rabbis,
+  //   );
+  // }, [props?.data?.past_rabbis, props.data]);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -193,10 +200,11 @@ export default function RabbisPeriodSection(props: ChildProps) {
     return () => {
       isMounted = false;
     };
-  }, [props?.data?.past_rabbis]);
+  }, [props?.data?.past_rabbis, props.data]);
 
   // Section Animation
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     document.fonts.ready.then(() => {
       // Section Title 1
       if (title.current) {
@@ -226,13 +234,14 @@ export default function RabbisPeriodSection(props: ChildProps) {
                 toggleActions: "restart pause play reverse",
               },
             });
+            animations.push(splititle);
             return splititle;
           },
         });
       }
       // Section Slider
       if (slideData.length > 0 && slider.current) {
-        gsap.from(slider.current, {
+        const sliderAnimation = gsap.from(slider.current, {
           yPercent: 50,
           opacity: 0,
           duration: 2,
@@ -249,10 +258,11 @@ export default function RabbisPeriodSection(props: ChildProps) {
             toggleActions: "restart pause play reverse",
           },
         });
+        animations.push(sliderAnimation);
       }
       // Section Button
       if (button.current) {
-        gsap.to(button.current, {
+        const buttonAnimation = gsap.to(button.current, {
           yPercent: 0,
           opacity: 1,
           duration: 1,
@@ -269,8 +279,14 @@ export default function RabbisPeriodSection(props: ChildProps) {
             toggleActions: "restart pause play reverse",
           },
         });
+        animations.push(buttonAnimation);
       }
     });
+
+    // Cleanup function to kill animations on unmount or dependency change
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
   }, [slideData, pathname]);
 
   return (
@@ -280,11 +296,16 @@ export default function RabbisPeriodSection(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
       data-scroll-section={props.animWidthText}
     >
-      <ImageRevealWithParallaxBG
+      {/* <ImageRevealWithParallaxBG
         bgImage={contentBG}
         overlayLeft={true}
         overlayLeftColor={"#0a0a0a"}
         animatePosition={props.animWidthText - 0.3}
+        panel={props.panel}
+      /> */}
+      <BackgroundImage2
+        bgImage={contentBG}
+        start={props.animWidthText - 0.3}
         panel={props.panel}
       />
       <div className="period-content-wrapper flex items-center justify-center w-full h-full relative z-20 pr-[10vw] pl-[10vw] pt-[6vh]">

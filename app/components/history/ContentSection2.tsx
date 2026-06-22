@@ -1,4 +1,4 @@
-import ImageRevealWithParallaxBG from "@/app/ui/ImageRevealWithParallaxBG";
+import BackgroundImage2 from "@/app/ui/BackgroundImage2";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -13,6 +13,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   data: any;
+  loadAnimation: boolean;
 }
 
 export default function ContentSection2(props: ChildProps) {
@@ -37,114 +38,138 @@ export default function ContentSection2(props: ChildProps) {
         `<p>סלבודקא שימשה כמרכזה של תנועת המוסר, וממנה התפשטה השפעתה לרוב הישיבות ברחבי רוסיה ופולין. יסודותיה של התנועה נטועים עמוק בשיטת הנהגתו וברוחו הגדולה של רבי ישראל מסלנט זצ"ל.</p><p>ראשיתו של מפעל אדירים זה בשנת תרל"ז (1877), עם ייסודו של 'כולל אברכים' בקובנה. הכולל, אשר היוה חידוש בזמנו פעל בנשיאותו של רבי ישראל מסלנט, שימש כמסגרת תורנית לעילויים וגדולי תורה ברוח תנועת המוסר. בין פועליו הבולטים היה רבי נתן צבי פינקל, אברך צעיר ואיש חזון, שפעל במסגרת זו ללא לאות להגדיל תורה ולהאדירה. כעבור שלוש שנים, יזם רבי נתן צבי את הרחבת המוסד גם עבור בני הנעורים, ופנה להיוועץ בדבר עם רבי ישראל.</p><p>בתשובתו, הורה לו רבי ישראל כי המטרה המרכזית שעליה יש להתמקד בהקמת הישיבה היא "לְהַחֲיוֹת רוּחַ שְׁפָלִים וּלְהַחֲיוֹת לֵב נִדְכָּאִים".</p>`,
     },
   ];
+  // Section Animation
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     document.fonts.ready.then(() => {
       // Section Title 1
-      gsap.set(heading.current, { opacity: 1 });
-      let splititle;
-      SplitText.create(heading.current, {
-        type: "lines",
-        linesClass: "line direction-rtl",
-        autoSplit: true,
-        mask: "lines",
-        onSplit: (self) => {
-          splititle = gsap.from(self.lines, {
-            duration: 3,
-            yPercent: 100,
-            opacity: 0,
-            delay: -1,
-            stagger: 0.02,
-            ease: "expo.inOut",
-            scrollTrigger: {
-              start: () => {
-                return window.innerWidth * props.animWidthText;
+      if (heading.current) {
+        gsap.set(heading.current, { opacity: 1 });
+        let splititle;
+        SplitText.create(heading.current, {
+          type: "lines",
+          linesClass: "line direction-rtl",
+          autoSplit: true,
+          mask: "lines",
+          onSplit: (self) => {
+            splititle = gsap.from(self.lines, {
+              duration: 3,
+              yPercent: 100,
+              opacity: 0,
+              delay: -1,
+              stagger: 0.02,
+              ease: "expo.inOut",
+              scrollTrigger: {
+                start: () => {
+                  return window.innerWidth * props.animWidthText;
+                },
+                toggleActions: "restart pause play reverse",
               },
-              toggleActions: "restart pause play reverse",
-            },
-          });
-          return splititle;
-        },
-      });
+            });
+            animations.push(splititle);
+            return splititle;
+          },
+        });
+      }
       // Section Content 1
-      gsap.set(content1.current, { opacity: 1 });
-      let spContent1;
-      SplitText.create(content1.current, {
-        type: "lines",
-        linesClass: "line direction-rtl",
-        autoSplit: true,
-        mask: "lines",
-        onSplit: (self) => {
-          spContent1 = gsap.from(self.lines, {
-            duration: 3,
-            yPercent: 100,
-            opacity: 0,
-            delay: -1,
-            stagger: 0.02,
-            ease: "expo.inOut",
-            scrollTrigger: {
-              start: () => {
-                return window.innerWidth * props.animWidthText;
+      if (content1.current) {
+        gsap.set(content1.current, { opacity: 1 });
+        let spContent1;
+        SplitText.create(content1.current, {
+          type: "lines",
+          linesClass: "line direction-rtl",
+          autoSplit: true,
+          mask: "lines",
+          onSplit: (self) => {
+            spContent1 = gsap.from(self.lines, {
+              duration: 3,
+              yPercent: 100,
+              opacity: 0,
+              delay: -1,
+              stagger: 0.02,
+              ease: "expo.inOut",
+              scrollTrigger: {
+                start: () => {
+                  return window.innerWidth * props.animWidthText;
+                },
+                toggleActions: "restart pause play reverse",
               },
-              toggleActions: "restart pause play reverse",
-            },
-          });
-          return spContent1;
-        },
-      });
+            });
+            animations.push(spContent1);
+            return spContent1;
+          },
+        });
+      }
       // Section Content 2
-      gsap.set(content2.current, { opacity: 1 });
-      let spContent2;
-      SplitText.create(content2.current, {
-        type: "lines",
-        linesClass: "line direction-rtl",
-        autoSplit: false,
-        mask: "lines",
-        onSplit: (self) => {
-          spContent2 = gsap.from(self.lines, {
-            duration: 3,
-            yPercent: 100,
-            opacity: 0,
-            delay: -1,
-            stagger: 0.02,
-            ease: "expo.inOut",
-            scrollTrigger: {
-              start: () => {
-                return window.innerWidth * (props.animWidthText + 0.2);
+      if (content2.current) {
+        gsap.set(content2.current, { opacity: 1 });
+        let spContent2;
+        SplitText.create(content2.current, {
+          type: "lines",
+          linesClass: "line direction-rtl",
+          autoSplit: false,
+          mask: "lines",
+          onSplit: (self) => {
+            spContent2 = gsap.from(self.lines, {
+              duration: 3,
+              yPercent: 100,
+              opacity: 0,
+              delay: -1,
+              stagger: 0.02,
+              ease: "expo.inOut",
+              scrollTrigger: {
+                start: () => {
+                  return window.innerWidth * (props.animWidthText + 0.2);
+                },
+                toggleActions: "restart pause play reverse",
               },
-              toggleActions: "restart pause play reverse",
-            },
-          });
-          return spContent2;
-        },
-      });
+            });
+            animations.push(spContent2);
+            return spContent2;
+          },
+        });
+      }
     });
-  }, [pathname]);
+
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
+  }, [pathname, props.loadAnimation, props.data]);
   return (
     <section
       className={`${props.extraClass} flex items-center justify-center flex-col relative overflow-hidden`}
     >
-      <ImageRevealWithParallaxBG
+      {/* <ImageRevealWithParallaxBG
         bgImage={contentBG}
         overlayLeft={false}
         overlayLeftColor={""}
         animatePosition={1}
-      />
+      /> */}
+      {props.loadAnimation && (
+        <BackgroundImage2
+          bgImage={contentBG}
+          start={props.animWidthText - 0.5}
+          panel={null}
+        />
+      )}
       <div className="w-full h-full flex items-center justify-center flex-row-reverse text-[21px] text-[#3D3B37] gap-x-[7.5vw] px-[10.4vw] relative z-20">
         <div className="w-1/2">
           <div className="text-[44px] leading-[1em] mb-5 w-full">
-            <h2
-              ref={heading}
-              className="hiscont-title overflow-hidden w-full mix-blend-difference"
-            >
-              {sectionData[0].title}
-            </h2>
+            {props.loadAnimation && (
+              <h2
+                ref={heading}
+                className="hiscont-title overflow-hidden w-full mix-blend-difference"
+              >
+                {sectionData[0].title}
+              </h2>
+            )}
           </div>
           <div ref={content1} className="w-full">
-            {parse(sectionData[0].text1)}
+            {props?.loadAnimation && parse(sectionData[0].text1)}
           </div>
         </div>
         <div ref={content2} className="w-1/2">
-          {parse(sectionData[0].text2)}
+          {props?.loadAnimation && parse(sectionData[0].text2)}
         </div>
       </div>
     </section>

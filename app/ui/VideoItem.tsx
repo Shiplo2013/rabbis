@@ -13,6 +13,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
+  data?: any;
 }
 
 export default function VideoItem(props: ChildProps) {
@@ -22,8 +23,12 @@ export default function VideoItem(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const videoWrap = useRef<HTMLDivElement>(null);
   const videoButton = useRef<HTMLDivElement>(null);
+  // Use Gsap
+  const { contextSafe } = useGSAP({ scope: wrapper });
   // Data
-  const video = "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
+  const video =
+    props?.data?.video?.url ||
+    "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
   const videoData = {
     poster: {
       url: thumb.src,
@@ -35,9 +40,15 @@ export default function VideoItem(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
+
       const video = wrapper.current?.querySelector(".section-overlay");
-      if (video) {
-        gsap.to(video, {
+      if (video && video.textContent?.length !== 0) {
+        const animation = gsap.to(video, {
           duration: 2,
           translateY: "-100%",
           ease: "expo.inOut",
@@ -49,9 +60,14 @@ export default function VideoItem(props: ChildProps) {
             toggleActions: "restart pause resume reverse",
           },
         });
+        animations.push(animation);
       }
+      // Return animations
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
 
   // video element selector
@@ -59,7 +75,7 @@ export default function VideoItem(props: ChildProps) {
   const videoOverlay = wrapper.current?.querySelector(".video-overlay");
   const buttonIcon = videoButton.current?.querySelector(".button-icon>svg");
   // video button handler
-  const handleButtonClick = () => {
+  const handleButtonClick = contextSafe(() => {
     if (videoElement) {
       if (videoElement.paused) {
         wrapper.current?.classList.add("z-50");
@@ -131,7 +147,7 @@ export default function VideoItem(props: ChildProps) {
         wrapper.current?.classList.add("z-20");
       }
     }
-  };
+  });
   return (
     <div
       ref={wrapper}

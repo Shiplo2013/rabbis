@@ -1,9 +1,9 @@
 "use client";
-import FsLightbox from "fslightbox-react";
 import parse from "html-react-parser";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ViewIcon2 from "../assets/icons/ViewIcon2";
 import Frame from "../assets/images/pictures-frame.png";
 import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
@@ -12,6 +12,10 @@ interface ChildProps {
   key: number;
   data: any;
 }
+
+const FsLightbox = dynamic(() => import("fslightbox-react"), {
+  ssr: false,
+}) as any;
 
 function getImageSrc(image: any) {
   if (!image) {
@@ -35,26 +39,82 @@ export default function SingleCyclePicture(props: ChildProps) {
   // Section Data
   const SingleData = props.data || {};
   const imageSrc = getImageSrc(SingleData?.acf?.image);
+  const lightboxImageSrc =
+    SingleData?.acf?.image?.sizes?.xlarge?.url ||
+    SingleData?.acf?.image?.sizes?.large?.url ||
+    SingleData?.acf?.image?.url ||
+    SingleData?.acf?.image?.src ||
+    "";
 
   // Lightbox State
   const [lightboxController, setLightboxController] = useState({
     toggler: false,
     slide: 1,
   });
+  const [isLightboxMounted, setIsLightboxMounted] = useState(false);
+
+  const warmupLightbox = () => {
+    if (typeof window !== "undefined") {
+      import("fslightbox-react");
+    }
+
+    if (lightboxImageSrc && typeof window !== "undefined") {
+      const preloadImage = new window.Image();
+      preloadImage.src = lightboxImageSrc;
+    }
+
+    setIsLightboxMounted(true);
+  };
 
   const openLightbox = () => {
+    warmupLightbox();
     setLightboxController((prev) => ({
       toggler: !prev.toggler,
       slide: 1,
     }));
   };
 
+  useEffect(() => {
+    if (!imageSrc) {
+      return;
+    }
+
+    const runWarmup = () => {
+      warmupLightbox();
+    };
+
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      const idleId = (
+        window as Window & {
+          requestIdleCallback: (
+            callback: IdleRequestCallback,
+            options?: IdleRequestOptions,
+          ) => number;
+          cancelIdleCallback: (id: number) => void;
+        }
+      ).requestIdleCallback(runWarmup, { timeout: 3000 });
+
+      return () => {
+        (
+          window as Window & {
+            cancelIdleCallback: (id: number) => void;
+          }
+        ).cancelIdleCallback(idleId);
+      };
+    }
+
+    const timeoutId = setTimeout(runWarmup, 1200);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [imageSrc, lightboxImageSrc]);
+
   return (
     <div className="single-cycle-picture w-[44.27vw] will-change-transform">
-      {imageSrc && (
+      {imageSrc && isLightboxMounted && (
         <FsLightbox
           toggler={lightboxController.toggler}
-          sources={[imageSrc]}
+          sources={[lightboxImageSrc]}
           types={["image"]}
           slide={lightboxController.slide}
         />
@@ -77,7 +137,10 @@ export default function SingleCyclePicture(props: ChildProps) {
               <div className="picture-image absolute top-5 left-5 right-5 bottom-5 z-10 w-auto h-auto">
                 <Image
                   className="w-full object-cover object-center h-full relative z-10 will-change-transform"
-                  src={imageSrc}
+                  src={
+                    SingleData?.acf?.image?.sizes?.large ||
+                    SingleData?.acf?.image?.url
+                  }
                   width="855"
                   height="547"
                   blurDataURL={
@@ -111,6 +174,7 @@ export default function SingleCyclePicture(props: ChildProps) {
           {imageSrc && (
             <div
               className={`picture-view absolute top-0 left-0 w-full h-full flex items-center justify-center z-40 bg-[#00000080] transition-all duration-500 opacity-0 invisible group-hover:opacity-100 group-hover:visible`}
+              onMouseEnter={warmupLightbox}
               onClick={() => {
                 if (imageSrc) {
                   openLightbox();

@@ -12,6 +12,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 
 export default function OnlyTextSection2(props: ChildProps) {
@@ -29,13 +30,19 @@ export default function OnlyTextSection2(props: ChildProps) {
   // Section data
   const textData = [
     {
-      text: `<p>בשנת תשנ"ז נחנך ברוב פאר והדר היכל הישיבה החדש והמפואר המסוגל להכיל כ1500 לומדים. במעמד חנוכת הבית השתתפו גדולי הדור, ראשי הישיבה, ואלפי בוגריה הישיבה מכל הדורות, שבאו להשתתף ביום חגה של הישיבה ההולכת ופורחת למימדים חדשים באיכות ובכמות. חנוכת היכל בית המדרש החדש סימלה תחילתה של תקופה חדשה, וזאת מיד לאחר פטירתו של ראש הישיבה הגר"א פרבשטיין זצ"ל, ומנויים של ראשי הישיבה שליט"א. וכך שרשרת הזהב שהחלה בסלבודקא, המשיכה בחברון, ועברה לירושלים בשכונת גאולה, ומשם לגבעת מרדכי, ממשיכה להוסיף עוד חוליות, בדמות תלמידים רבים הצועדים לאורה ובדרכה ומבקשים להסתופף בצילה הגדול.</p>`,
+      text:
+        props.data ||
+        `<p>בשנת תשנ"ז נחנך ברוב פאר והדר היכל הישיבה החדש והמפואר המסוגל להכיל כ1500 לומדים. במעמד חנוכת הבית השתתפו גדולי הדור, ראשי הישיבה, ואלפי בוגריה הישיבה מכל הדורות, שבאו להשתתף ביום חגה של הישיבה ההולכת ופורחת למימדים חדשים באיכות ובכמות. חנוכת היכל בית המדרש החדש סימלה תחילתה של תקופה חדשה, וזאת מיד לאחר פטירתו של ראש הישיבה הגר"א פרבשטיין זצ"ל, ומנויים של ראשי הישיבה שליט"א. וכך שרשרת הזהב שהחלה בסלבודקא, המשיכה בחברון, ועברה לירושלים בשכונת גאולה, ומשם לגבעת מרדכי, ממשיכה להוסיף עוד חוליות, בדמות תלמידים רבים הצועדים לאורה ובדרכה ומבקשים להסתופף בצילה הגדול.</p>`,
     },
   ];
 
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
       // Selector
       const smallText = wrapper.current?.querySelector(".small-text");
       // Animation
@@ -66,13 +73,19 @@ export default function OnlyTextSection2(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(text);
               return text;
             },
           });
         }
       });
+
+      // Return animations
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
   return (
     <section

@@ -1,4 +1,5 @@
 "use client";
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import ParallaxBackgroundBigSection from "@/app/ui/ParallaxBackgroundBigSection";
 import parse from "html-react-parser";
@@ -26,6 +27,7 @@ interface ChildProps {
   animWidthText: number;
   bgImage: any;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 function RabbisTimeline2(props: ChildProps) {
   // Navigation
@@ -38,65 +40,65 @@ function RabbisTimeline2(props: ChildProps) {
   };
 
   // Section Data
-  const RabbisData = [
+  const RabbisData = props.data?.section_content || [
     {
       type: "history",
       image: rabbisImage5,
-      text: `שנת תר"ץ:<br/>מינוי רבי מאיר חדש כמשגיח`,
+      title: `שנת תר"ץ:<br/>מינוי רבי מאיר חדש כמשגיח`,
       size: "portrait",
     },
     {
       type: "history",
       image: rabbisImage6,
-      text: `שנת תרצ"ד:<br/>פטירת רבי משה מרדכי אפשטיין`,
+      title: `שנת תרצ"ד:<br/>פטירת רבי משה מרדכי אפשטיין`,
       size: "portrait",
     },
     {
       type: "history",
       image: rabbisImage7,
-      text: `שנת תרצ"ד:<br/>מינוי רבי אהרן כהן ורבי משה חברוני לראשי ישיבה`,
+      title: `שנת תרצ"ד:<br/>מינוי רבי אהרן כהן ורבי משה חברוני לראשי ישיבה`,
       size: "landscape",
     },
     {
       type: "history",
       image: rabbisImage8,
-      text: `שנת תרצ"ו:<br/>פטירת רבי  אריה יהודה לייב חסמן`,
+      title: `שנת תרצ"ו:<br/>פטירת רבי  אריה יהודה לייב חסמן`,
       size: "portrait",
     },
     {
       type: "history",
       image: rabbisImage9,
-      text: `שנת תרצ"ט:<br/> כניסה לבניין החדש`,
+      title: `שנת תרצ"ט:<br/> כניסה לבניין החדש`,
       size: "landscape",
     },
     {
       type: "history",
       image: rabbisImage10,
-      text: `שנת תש"ז:<br/>מינוי רבי שמחה זיסל ברוידא ורבי אברהם יהודה פרבשטיין לרמי"ם`,
+      title: `שנת תש"ז:<br/>מינוי רבי שמחה זיסל ברוידא ורבי אברהם יהודה פרבשטיין לרמי"ם`,
       size: "landscape",
     },
     {
       type: "history",
       image: rabbisImage11,
-      text: `שנת תש"ח:<br/>הקמת סניף זמני לישיבה בראשות ראש הישיבה רבי אהרן כהן ב'היכל התלמוד' בתל אביב`,
+      title: `שנת תש"ח:<br/>הקמת סניף זמני לישיבה בראשות ראש הישיבה רבי אהרן כהן ב'היכל התלמוד' בתל אביב`,
       size: "landscape",
     },
     {
       type: "notification",
       image: bookIcon,
-      text: `ירושלים מופגזת ונצורה - מכתב חיזוק מרבי יחזקאל סרנא`,
+      title: `ירושלים מופגזת ונצורה - מכתב חיזוק מרבי יחזקאל סרנא`,
       size: "small",
     },
     {
       type: "history",
       image: rabbisImage12,
-      text: `שנת תש"כ: <br/>מינוי הרב יצחק חברוני להנהלת הישיבה ולימים מונה לנשיא הישיבה.`,
+      title: `שנת תש"כ: <br/>מינוי הרב יצחק חברוני להנהלת הישיבה ולימים מונה לנשיא הישיבה.`,
       size: "landscape",
     },
     {
       type: "history",
       image: rabbisImage13,
-      text: `שנת תשכ"ב:<br/>הנחת אבן הפינה לישיבה בגבעת מרדכי`,
+      title: `שנת תשכ"ב:<br/>הנחת אבן הפינה לישיבה בגבעת מרדכי`,
       size: "landscape",
     },
   ];
@@ -104,6 +106,10 @@ function RabbisTimeline2(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
       // Selector
       const secTitle = wrapper?.current?.querySelector(".rabbis-title>h2");
       const sectionItems = wrapper?.current?.querySelectorAll(
@@ -112,7 +118,7 @@ function RabbisTimeline2(props: ChildProps) {
       // Section Title
       document.fonts.ready.then(() => {
         // Section Title
-        if (secTitle) {
+        if (secTitle && secTitle?.textContent?.length !== 0) {
           gsap.set(secTitle, { opacity: 1 });
           let splititle;
           SplitText.create(secTitle, {
@@ -138,6 +144,7 @@ function RabbisTimeline2(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(splititle);
               return splititle;
             },
           });
@@ -145,7 +152,7 @@ function RabbisTimeline2(props: ChildProps) {
       });
 
       // Section Items
-      if (sectionItems) {
+      if (sectionItems && sectionItems.length > 0) {
         sectionItems?.forEach((item, index) => {
           const image = item.querySelector(".image");
           const title = item.querySelector(".title>h4");
@@ -156,7 +163,7 @@ function RabbisTimeline2(props: ChildProps) {
               y: 100,
               opacity: 0,
             });
-            gsap.to(item, {
+            const itemAnimation = gsap.to(item, {
               y: 0,
               opacity: 1,
               duration: 1,
@@ -172,6 +179,7 @@ function RabbisTimeline2(props: ChildProps) {
                 toggleActions: "restart pause play reverse",
               },
             });
+            animations.push(itemAnimation);
             // Notification Icon
             gsap.set(notificationIcon, {
               y: 20,
@@ -179,7 +187,7 @@ function RabbisTimeline2(props: ChildProps) {
               rotate: -15,
               opacity: 0,
             });
-            gsap.to(notificationIcon, {
+            const notificationIconAnimation = gsap.to(notificationIcon, {
               y: 0,
               x: 0,
               rotate: 0,
@@ -198,6 +206,7 @@ function RabbisTimeline2(props: ChildProps) {
                 toggleActions: "restart pause play reverse",
               },
             });
+            animations.push(notificationIconAnimation);
           } else {
             // Item Image
             if (image) {
@@ -205,7 +214,7 @@ function RabbisTimeline2(props: ChildProps) {
                 x: -100,
                 opacity: 0,
               });
-              gsap.to(image, {
+              const imageAnimation = gsap.to(image, {
                 x: 0,
                 opacity: 1,
                 duration: 1,
@@ -221,11 +230,12 @@ function RabbisTimeline2(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(imageAnimation);
             }
             // Rubbis Title
             document.fonts.ready.then(() => {
               // Section Title 1
-              if (title) {
+              if (title && title?.textContent?.length !== 0) {
                 gsap.set(title, { opacity: 1 });
                 let splititle;
                 SplitText.create(title, {
@@ -251,6 +261,7 @@ function RabbisTimeline2(props: ChildProps) {
                         toggleActions: "restart pause play reverse",
                       },
                     });
+                    animations.push(splititle);
                     return splititle;
                   },
                 });
@@ -259,8 +270,13 @@ function RabbisTimeline2(props: ChildProps) {
           }
         });
       }
+
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props?.data] },
   );
 
   return (
@@ -278,13 +294,11 @@ function RabbisTimeline2(props: ChildProps) {
       <div className="section-row w-full h-full flex px-[10vw] py-[10vh] items-center justify-start relative z-30 gap-x-[8vw]">
         <div dir="ltr" className="rabbis-title self-end text-right mb-[3vh]">
           <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F]">
-            ציוני
-            <br />
-            דרך
+            {parse(props?.data?.title || `ציוני<br /> דרך`)}
           </h2>
         </div>
         <div className="rabbis-timeline flex gap-x-[20vw] relative">
-          {RabbisData.map((item, index) => {
+          {RabbisData.map((item: any, index: number) => {
             //console.log(item);
             if (item.type === "notification") {
               return (
@@ -295,7 +309,7 @@ function RabbisTimeline2(props: ChildProps) {
                   <div className="notify-icon w-50.5 h-33.75 absolute top-0 left-0 -translate-x-1/2">
                     <Image
                       className="w-full object-cover object-center h-full"
-                      src={item?.image?.src || ""}
+                      src={item?.image?.url || item?.image?.src || ""}
                       width={"202"}
                       height={"135"}
                       //blurDataURL={item?.image?.blurDataURL || ""}
@@ -304,9 +318,9 @@ function RabbisTimeline2(props: ChildProps) {
                       alt={"Book Icon"}
                     />
                   </div>
-                  <p className="text-[20px] leading-[1.25em] text-right">
-                    {parse(item?.text)}
-                  </p>
+                  <div className="text-[20px] leading-[1.25em] text-right">
+                    {parse(item?.title || "")}
+                  </div>
                 </div>
               );
             } else {
@@ -319,10 +333,15 @@ function RabbisTimeline2(props: ChildProps) {
                     <div className="image w-64.5 h-76.25">
                       <Image
                         className="w-full object-cover object-center h-full relative z-10"
-                        src={item.image.src}
+                        src={
+                          item?.image?.sizes?.medium || item?.image?.src || ""
+                        }
                         width="258"
                         height="305"
-                        blurDataURL={item.image.blurDataURL}
+                        blurDataURL={
+                          CreateShimmerDataUrl(258, 305) ||
+                          item?.image?.blurDataURL
+                        }
                         placeholder={"blur"}
                         loading="lazy"
                         alt="Rabbis Image"
@@ -332,10 +351,15 @@ function RabbisTimeline2(props: ChildProps) {
                     <div className="image w-111.5 h-76.25">
                       <Image
                         className="w-full object-cover object-center h-full relative z-10"
-                        src={item?.image?.src}
+                        src={
+                          item?.image?.sizes?.medium || item?.image?.src || ""
+                        }
                         width="446"
                         height="305"
-                        blurDataURL={item?.image.blurDataURL}
+                        blurDataURL={
+                          CreateShimmerDataUrl(446, 305) ||
+                          item?.image?.blurDataURL
+                        }
                         placeholder={"blur"}
                         loading="lazy"
                         alt="Rabbis Image"
@@ -344,7 +368,7 @@ function RabbisTimeline2(props: ChildProps) {
                   )}
                   <div dir="ltr" className="title mt-auto text-right">
                     <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6]">
-                      {parse(item?.text)}
+                      {parse(item?.title || "")}
                     </h4>
                   </div>
                 </div>

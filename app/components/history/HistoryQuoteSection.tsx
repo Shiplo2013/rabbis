@@ -30,6 +30,7 @@ export default function HistoryQuoteSection(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
       document.fonts.ready.then(() => {
         // Section Text
         if (quote.current) {
@@ -59,6 +60,7 @@ export default function HistoryQuoteSection(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(splititle);
               return splititle;
             },
           });
@@ -80,10 +82,15 @@ export default function HistoryQuoteSection(props: ChildProps) {
             x: "15vw",
             ease: "none",
           });
+          animations.push(tl);
         }
       });
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
   return (
     <section

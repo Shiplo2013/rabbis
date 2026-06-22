@@ -7,6 +7,7 @@ if (typeof window !== "undefined") {
 
 export default function NotificationPopup() {
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     const popup = document.querySelector(".notification-popup");
     const openBtn = document?.querySelectorAll(".notification-button");
     const closeBtn = popup?.querySelector(".close-notification");
@@ -15,11 +16,21 @@ export default function NotificationPopup() {
       gsap.set(popup, { opacity: 0, visibility: "hidden" });
 
       const showPopup = () => {
-        gsap.to(popup, { opacity: 1, visibility: "visible", duration: 0.5 });
+        const show = gsap.to(popup, {
+          opacity: 1,
+          visibility: "visible",
+          duration: 0.5,
+        });
+        animations.push(show);
       };
 
       const hidePopup = () => {
-        gsap.to(popup, { opacity: 0, visibility: "hidden", duration: 0.5 });
+        const hide = gsap.to(popup, {
+          opacity: 0,
+          visibility: "hidden",
+          duration: 0.5,
+        });
+        animations.push(hide);
       };
 
       openBtn?.forEach((btn) => btn.addEventListener("click", showPopup));
@@ -32,6 +43,7 @@ export default function NotificationPopup() {
         //clearTimeout(timer);
         openBtn?.forEach((btn) => btn.removeEventListener("click", showPopup));
         closeBtn?.removeEventListener("click", hidePopup);
+        animations.forEach((animation) => animation.kill());
       };
     }
   }, []);

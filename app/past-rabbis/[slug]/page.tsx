@@ -920,22 +920,32 @@ export default function Page() {
                       {parse(post?.acf?.popup_2?.title || "")}
                     </h3>
                   </div>
-                  {post?.acf?.popup_2?.image_1 && (
-                    <div className="book-image mb-9.5">
-                      <div className="w-77 h-auto">
-                        <Image
-                          className="w-full h-full object-cover object-center"
-                          src={post?.acf?.popup_2?.image_1?.url || ""}
-                          alt="Book Image"
-                          width={400}
-                          height={400}
-                          blurDataURL={CreateShimmerDataUrl(400, 400)}
-                          placeholder="blur"
-                          loading="lazy"
-                        />
+                  {(() => {
+                    const popupImage1Src =
+                      post?.acf?.popup_2?.image_1?.url ||
+                      post?.acf?.popup_2?.image_1?.src;
+
+                    if (!popupImage1Src) {
+                      return null;
+                    }
+
+                    return (
+                      <div className="book-image mb-9.5">
+                        <div className="w-77 h-auto">
+                          <Image
+                            className="w-full h-full object-cover object-center"
+                            src={popupImage1Src}
+                            alt="Book Image"
+                            width={400}
+                            height={400}
+                            blurDataURL={CreateShimmerDataUrl(400, 400)}
+                            placeholder="blur"
+                            loading="lazy"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    );
+                  })()}
                   {post?.acf?.popup_2?.text_group_1 && (
                     <div className="content text-[21px] leading-[1.4em] text-black mb-10">
                       <div className="title mb-7">
@@ -948,22 +958,32 @@ export default function Page() {
                       </div>
                     </div>
                   )}
-                  {post?.acf?.popup_2?.image_2 && (
-                    <div className="book-image mb-9.5">
-                      <div className="w-77 h-auto">
-                        <Image
-                          className="w-full h-full object-cover object-center"
-                          src={post?.acf?.popup_2?.image_2?.url || ""}
-                          alt="Book Image"
-                          width={400}
-                          height={400}
-                          blurDataURL={CreateShimmerDataUrl(400, 400)}
-                          placeholder="blur"
-                          loading="lazy"
-                        />
+                  {(() => {
+                    const popupImage2Src =
+                      post?.acf?.popup_2?.image_2?.url ||
+                      post?.acf?.popup_2?.image_2?.src;
+
+                    if (!popupImage2Src) {
+                      return null;
+                    }
+
+                    return (
+                      <div className="book-image mb-9.5">
+                        <div className="w-77 h-auto">
+                          <Image
+                            className="w-full h-full object-cover object-center"
+                            src={popupImage2Src}
+                            alt="Book Image"
+                            width={400}
+                            height={400}
+                            blurDataURL={CreateShimmerDataUrl(400, 400)}
+                            placeholder="blur"
+                            loading="lazy"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    );
+                  })()}
                   {post?.acf?.popup_2?.text_group_2 && (
                     <div className="content text-[21px] leading-[1.4em] text-black">
                       <div className="title mb-7">

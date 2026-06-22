@@ -15,6 +15,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 
 export default function SingleVideoSection(props: ChildProps) {
@@ -29,7 +30,9 @@ export default function SingleVideoSection(props: ChildProps) {
     return timeline?.current ? timeline.current.offsetTop : 0;
   };
   // Data
-  const video = "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
+  const video =
+    props.data?.url ||
+    "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
   const videoData = {
     poster: {
       url: thumb.src,
@@ -41,35 +44,46 @@ export default function SingleVideoSection(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
-      const video = wrapper.current?.querySelector(".section-overlay");
-      if (video) {
-        gsap.to(video, {
-          duration: 2,
-          translateY: "-100%",
-          ease: "expo.inOut",
-          delay: -0.5,
-          scrollTrigger: {
-            start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(video) -
-                window.innerWidth * 0.3
-              );
+      const animations: gsap.core.Animation[] = [];
+
+      if (window !== undefined && wrapper.current) {
+        // video element selector
+        const video = wrapper.current?.querySelector(".section-overlay");
+        if (video) {
+          gsap.to(video, {
+            duration: 2,
+            translateY: "-100%",
+            ease: "expo.inOut",
+            delay: -0.5,
+            scrollTrigger: {
+              start: () => {
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(video) -
+                  window.innerWidth * 0.3
+                );
+              },
+              toggleActions: "restart pause play reverse",
             },
-            toggleActions: "restart pause play reverse",
-          },
-        });
+          });
+        }
       }
+
+      // Return animations
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
 
   // video element selector
   const videoElement = wrapper.current?.querySelector("video");
   const videoOverlay = wrapper.current?.querySelector(".video-overlay");
   const buttonIcon = videoButton.current?.querySelector(".button-icon>svg");
+  const { contextSafe } = useGSAP({ scope: wrapper });
   // video button handler
-  const handleButtonClick = () => {
+  const handleButtonClick = contextSafe(() => {
     if (videoElement) {
       if (videoElement.paused) {
         if (videoOverlay) {
@@ -137,7 +151,7 @@ export default function SingleVideoSection(props: ChildProps) {
         }
       }
     }
-  };
+  });
   return (
     <section
       ref={wrapper}

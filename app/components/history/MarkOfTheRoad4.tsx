@@ -1,4 +1,5 @@
 import BigSectionBackground from "@/app/ui/BigSectionBackground";
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -18,6 +19,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 
 export default function MarkOfTheRoad2(props: ChildProps) {
@@ -54,19 +56,26 @@ export default function MarkOfTheRoad2(props: ChildProps) {
   // Section Aniamtion
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
+
+      // Section Content Animation
       const items = wrapper.current?.querySelectorAll(".section-content");
-      if (items) {
+      if (items && items.length > 0) {
         items?.forEach((item) => {
           const image = item.querySelector(".image");
           const title = item.querySelector(".title>h4");
           const text = item.querySelector(".title>.text");
           // Rubbis Image
-          if (image) {
+          if (image && image?.textContent?.length !== 0) {
             gsap.set(image, {
               y: 100,
               opacity: 0,
             });
-            gsap.to(image, {
+            const animation = gsap.to(image, {
               y: 0,
               opacity: 1,
               duration: 1.5,
@@ -82,11 +91,12 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                 toggleActions: "restart pause play reverse",
               },
             });
+            animations.push(animation);
           }
           // Rubbis Title
           document.fonts.ready.then(() => {
             // Section Title
-            if (title) {
+            if (title && title?.textContent?.length !== 0) {
               gsap.set(title, { opacity: 1 });
               let splititle;
               SplitText.create(title, {
@@ -113,12 +123,13 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                       toggleActions: "restart pause resume reverse",
                     },
                   });
+                  animations.push(splititle);
                   return splititle;
                 },
               });
             }
             // Section Text
-            if (text) {
+            if (text && text?.textContent?.length !== 0) {
               gsap.set(text, { opacity: 1 });
               let splitext;
               SplitText.create(text, {
@@ -145,6 +156,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                       toggleActions: "restart pause resume reverse",
                     },
                   });
+                  animations.push(splitext);
                   return splitext;
                 },
               });
@@ -173,9 +185,15 @@ export default function MarkOfTheRoad2(props: ChildProps) {
           x: "30vw",
           ease: "none",
         });
+        animations.push(tl);
       }
+
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
 
   return (
@@ -201,10 +219,16 @@ export default function MarkOfTheRoad2(props: ChildProps) {
             <div className="image w-[27.8vw] h-[38.3vh]">
               <Image
                 className="w-full object-cover object-center h-full"
-                src={sectionData[0]?.image?.src}
+                src={
+                  props?.data?.content_1?.image?.large ||
+                  sectionData[0]?.image?.src
+                }
                 width={"534"}
                 height={"356"}
-                blurDataURL={sectionData[0]?.image?.blurDataURL}
+                blurDataURL={
+                  CreateShimmerDataUrl(534, 356) ||
+                  sectionData[0]?.image?.blurDataURL
+                }
                 placeholder={"blur"}
                 loading="lazy"
                 alt={"Section Image"}
@@ -214,9 +238,8 @@ export default function MarkOfTheRoad2(props: ChildProps) {
               dir="ltr"
               className="title w-[24vw] text-[30px] text-black leading-[90%] text-right"
             >
-              <h4 className="font-bold">{parse(sectionData[0]?.title)}</h4>
               <div className="text">
-                <p>{parse(sectionData[0]?.text)}</p>
+                {parse(props?.data?.content_1?.title || sectionData[0]?.text)}
               </div>
             </div>
           </div>
@@ -225,18 +248,23 @@ export default function MarkOfTheRoad2(props: ChildProps) {
               dir="ltr"
               className="title w-full text-[30px] text-black leading-[90%] text-right"
             >
-              <h4 className="font-bold">{parse(sectionData[1]?.title)}</h4>
               <div className="text text-right">
-                <p>{parse(sectionData[1]?.text)}</p>
+                {parse(props?.data?.content_2?.title || sectionData[1]?.title)}
               </div>
             </div>
             <div className="image w-full h-[50vh]">
               <Image
                 className="w-full object-cover object-center h-full"
-                src={sectionData[1]?.image?.src}
+                src={
+                  props?.data?.content_2?.image?.large ||
+                  sectionData[1]?.image?.src
+                }
                 width={"346"}
                 height={"462"}
-                blurDataURL={sectionData[1]?.image?.blurDataURL}
+                blurDataURL={
+                  CreateShimmerDataUrl(346, 462) ||
+                  sectionData[1]?.image?.blurDataURL
+                }
                 placeholder={"blur"}
                 loading="lazy"
                 alt={"Section Image"}
@@ -247,10 +275,16 @@ export default function MarkOfTheRoad2(props: ChildProps) {
             <div className="image w-full h-[58.5vh]">
               <Image
                 className="w-full object-cover object-center h-full"
-                src={sectionData[2]?.image?.src}
+                src={
+                  props?.data?.content_3?.image?.large ||
+                  sectionData[2]?.image?.src
+                }
                 width={"815"}
                 height={"544"}
-                blurDataURL={sectionData[2]?.image?.blurDataURL}
+                blurDataURL={
+                  CreateShimmerDataUrl(815, 544) ||
+                  sectionData[2]?.image?.blurDataURL
+                }
                 placeholder={"blur"}
                 loading="lazy"
                 alt={"Section Image"}

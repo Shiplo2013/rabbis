@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import {
   default as arrowSectionBG,
   default as arrowSectionBG2,
@@ -74,10 +74,14 @@ export default function Page() {
   const pathname = usePathname();
   const [chroniclesPageData, setChroniclesPageData] = useState<any | []>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(300);
-  const [sectionWidth, setSectionWidth] = useState(200);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadTimeline1, setLoadTimeline1] = useState(true);
+  const [loadTimeline2, setLoadTimeline2] = useState(false);
+  const [loadTimeline3, setLoadTimeline3] = useState(false);
+  const [loadTimeline4, setLoadTimeline4] = useState(false);
+  const [loadTimeline5, setLoadTimeline5] = useState(false);
+  const [loadTimeline6, setLoadTimeline6] = useState(false);
 
   // Static Data Fallback
   const staticData = {};
@@ -90,7 +94,11 @@ export default function Page() {
     const loadChroniclesPageData = async () => {
       try {
         const response = await fetch("/api/chronicles", {
+          //next: { revalidate: 3000 },
           cache: "no-store",
+          headers: {
+            Accept: "application/json",
+          },
         });
 
         if (!response.ok) {
@@ -123,7 +131,7 @@ export default function Page() {
       return;
     }
     setPageDataFetched(true);
-    console.log("Chronicles page data set for animation:", chroniclesPageData);
+    //console.log("Chronicles page data:", chroniclesPageData);
     //console.log(chroniclesPageData?.acf?.timeline_1?.introduction?.subtitle);
 
     // const updateSectionWidth = () => {
@@ -173,6 +181,62 @@ export default function Page() {
   const isHistoryHidden = useRef(false);
   const isHeaderLeftHidden = useRef(false);
   const [listOfRabbis, SetListOfRabbis] = useState<any[]>([]);
+
+  // Get Offset Top of Timeline
+  function getOffsetTop(selector: string) {
+    const element = document.querySelector(selector);
+    if (!element) return 0;
+    const offsetTop = element.getBoundingClientRect().top + window.scrollY;
+    return offsetTop;
+  }
+
+  // useEffect(() => {
+  //   // Show button when page is scrolled past 300px
+  //   const toggleVisibility = () => {
+  //     const scrolled = window.scrollY;
+  //     let timeline1Top =
+  //       getOffsetTop(timeline1Ref.current ? `#timeline1` : "") -
+  //       window.innerWidth;
+  //     let timeline2Top =
+  //       getOffsetTop(timeline2Ref.current ? `#timeline2` : "") -
+  //       window.innerWidth;
+  //     let timeline3Top =
+  //       getOffsetTop(timeline3Ref.current ? `#timeline3` : "") -
+  //       window.innerWidth;
+  //     let timeline4Top =
+  //       getOffsetTop(timeline4Ref.current ? `#timeline4` : "") -
+  //       window.innerWidth;
+  //     let timeline5Top =
+  //       getOffsetTop(timeline5Ref.current ? `#timeline5` : "") -
+  //       window.innerWidth;
+  //     let timeline6Top =
+  //       getOffsetTop(timeline6Ref.current ? `#timeline6` : "") -
+  //       window.innerWidth;
+  //     if (scrolled > timeline1Top + 100) {
+  //       setLoadTimeline1(true);
+  //     }
+  //     if (scrolled >= timeline2Top) {
+  //       setLoadTimeline2(true);
+  //     }
+  //     if (scrolled >= timeline3Top) {
+  //       setLoadTimeline3(true);
+  //     }
+  //     if (scrolled >= timeline4Top) {
+  //       setLoadTimeline4(true);
+  //     }
+  //     if (scrolled >= timeline5Top) {
+  //       setLoadTimeline5(true);
+  //     }
+  //     if (scrolled >= timeline6Top) {
+  //       setLoadTimeline6(true);
+  //     }
+  //   };
+
+  //   window.addEventListener("scroll", toggleVisibility);
+
+  //   // Clean up the event listener on unmount
+  //   return () => window.removeEventListener("scroll", toggleVisibility);
+  // }, []);
   // Rabbis Data
   const TimelineData = [
     {
@@ -250,7 +314,8 @@ export default function Page() {
         ?.background_overlay_image || false,
   };
   const IntroContentData = {
-    title: `פרעות תרפ״ט`,
+    title:
+      chroniclesPageData?.acf?.timeline_3?.intro_banner?.title || `פרעות תרפ״ט`,
     subtitle: ``,
   };
   const IntroData4 = {
@@ -301,29 +366,51 @@ export default function Page() {
   ];
   const QuoteData2 = [
     {
-      content: `<p><strong>שנת תשכ"ז:</strong> מינוי רבי רפאל אהרן יפהן לר"מ</p><p><strong>שנת תשכ"ח:</strong> רבי מרדכי חברוני לר"מ</p>`,
+      content:
+        chroniclesPageData?.acf?.timeline_4?.quote_section ||
+        `<p><strong>שנת תשכ"ז:</strong> מינוי רבי רפאל אהרן יפהן לר"מ</p><p><strong>שנת תשכ"ח:</strong> רבי מרדכי חברוני לר"מ</p>`,
     },
   ];
-  const QuoteData3 = [
-    {
-      content: `<p><strong>שנת תשפ"ב</strong><br/> הרחבת בית המדרש</p>`,
-    },
-  ];
+  const QuoteData3 = {
+    content:
+      chroniclesPageData?.acf?.timeline_6?.quote_section?.text ||
+      `<p><strong>שנת תשפ"ב</strong><br/> הרחבת בית המדרש</p>`,
+  };
 
   //Arrow Slider Data
-  const SliderData = [
-    {
-      text1: `מתוך מכתב רבי יצחק הוטנר על שנות לימודיו בחברון:<br/>"כי אמנם מהרגע הראשון להתבצרותה של הישיבה על אדמת חברון, עלו והתבלטו שני קוים יסודיים בתכונת חייה: רעננות הלבבות והתמתחות השרירים לעבודת תורה ויראה. והלכו להם שני אלה והתלכדו לשטף אחד. קשה היה להגיד, מי כאן האב ומי התולדה:`,
-      text2: `שמחה מתוך עבודה או עבודה מתוך שמחה. והנכון דדא ודא היו בה: שמחה מתוך עבודה ועבודה מתוך שמחה, וכתר אצילות של תלמידי חכמים מבהיק על גביהם. ולא עוד אלא שנסתגל להם, לבאים, אוירא דארעא דישראל לראות ברכה יתירה בעמלם, וכל חד לפום דרגיה עלה והתעלה במדה לא צפויה.`,
-    },
-  ];
+  const SliderData = {
+    text1:
+      chroniclesPageData?.acf?.timeline_3?.arrow_slider_section?.arrow_slider
+        ?.slide_1 ||
+      `מתוך מכתב רבי יצחק הוטנר על שנות לימודיו בחברון:<br/>"כי אמנם מהרגע הראשון להתבצרותה של הישיבה על אדמת חברון, עלו והתבלטו שני קוים יסודיים בתכונת חייה: רעננות הלבבות והתמתחות השרירים לעבודת תורה ויראה. והלכו להם שני אלה והתלכדו לשטף אחד. קשה היה להגיד, מי כאן האב ומי התולדה:`,
+    text2:
+      chroniclesPageData?.acf?.timeline_3?.arrow_slider_section?.arrow_slider
+        ?.slide_2 ||
+      `שמחה מתוך עבודה או עבודה מתוך שמחה. והנכון דדא ודא היו בה: שמחה מתוך עבודה ועבודה מתוך שמחה, וכתר אצילות של תלמידי חכמים מבהיק על גביהם. ולא עוד אלא שנסתגל להם, לבאים, אוירא דארעא דישראל לראות ברכה יתירה בעמלם, וכל חד לפום דרגיה עלה והתעלה במדה לא צפויה.`,
+    background:
+      chroniclesPageData?.acf?.timeline_3?.arrow_slider_section?.background ||
+      arrowSectionBG,
+    floatingImage:
+      chroniclesPageData?.acf?.timeline_3?.arrow_slider_section
+        ?.floating_image || arrowSectionImage,
+  };
   //Arrow Slider Data
-  const SliderData2 = [
-    {
-      text1: `מתוך מכתב רבי יצחק הוטנר על שנות לימודיו בחברון:<br/>"כי אמנם מהרגע הראשון להתבצרותה של הישיבה על אדמת חברון, עלו והתבלטו שני קוים יסודיים בתכונת חייה: רעננות הלבבות והתמתחות השרירים לעבודת תורה ויראה. והלכו להם שני אלה והתלכדו לשטף אחד. קשה היה להגיד, מי כאן האב ומי התולדה:`,
-      text2: `שמחה מתוך עבודה או עבודה מתוך שמחה. והנכון דדא ודא היו בה: שמחה מתוך עבודה ועבודה מתוך שמחה, וכתר אצילות של תלמידי חכמים מבהיק על גביהם. ולא עוד אלא שנסתגל להם, לבאים, אוירא דארעא דישראל לראות ברכה יתירה בעמלם, וכל חד לפום דרגיה עלה והתעלה במדה לא צפויה.`,
-    },
-  ];
+  const SliderData2 = {
+    text1:
+      chroniclesPageData?.acf?.timeline_5?.arrow_slider_section?.arrow_slider
+        ?.slide_1 ||
+      `מתוך מכתב רבי יצחק הוטנר על שנות לימודיו בחברון:<br/>"כי אמנם מהרגע הראשון להתבצרותה של הישיבה על אדמת חברון, עלו והתבלטו שני קוים יסודיים בתכונת חייה: רעננות הלבבות והתמתחות השרירים לעבודת תורה ויראה. והלכו להם שני אלה והתלכדו לשטף אחד. קשה היה להגיד, מי כאן האב ומי התולדה:`,
+    text2:
+      chroniclesPageData?.acf?.timeline_5?.arrow_slider_section?.arrow_slider
+        ?.slide_2 ||
+      `שמחה מתוך עבודה או עבודה מתוך שמחה. והנכון דדא ודא היו בה: שמחה מתוך עבודה ועבודה מתוך שמחה, וכתר אצילות של תלמידי חכמים מבהיק על גביהם. ולא עוד אלא שנסתגל להם, לבאים, אוירא דארעא דישראל לראות ברכה יתירה בעמלם, וכל חד לפום דרגיה עלה והתעלה במדה לא צפויה.`,
+    background:
+      chroniclesPageData?.acf?.timeline_5?.arrow_slider_section?.background ||
+      arrowSectionBG2,
+    floatingImage:
+      chroniclesPageData?.acf?.timeline_5?.arrow_slider_section
+        ?.floating_image_1 || arrowSectionImage,
+  };
   // Hamburger Menu
   const RabbisMenu = [
     {
@@ -388,6 +475,7 @@ export default function Page() {
 
   // Load Page
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     document.fonts.ready.then(() => {
       // Selectors
       const headerLeft = main.current?.querySelector(".header-left");
@@ -513,8 +601,13 @@ export default function Page() {
             "-=3",
           );
         }
+        animations.push(tl);
       }
     });
+
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
   }, [pageDataFetched, animationPlayed]);
 
   // Complete Timeline Function
@@ -571,7 +664,6 @@ export default function Page() {
     let timeline2 = null;
     let timeline3 = null;
     let timeline4 = null;
-    let timeline4ContainerTween: gsap.core.Tween | null = null;
     let timeline5 = null;
     let timeline6 = null;
     if (typeof window !== "undefined" && main.current && page.current) {
@@ -741,7 +833,7 @@ export default function Page() {
           },
         },
       });
-      timeline4ContainerTween = gsap.to(wrapper4.current, {
+      timeline4.to(wrapper4.current, {
         x: () =>
           wrapper4.current
             ? wrapper4.current.offsetWidth - window.innerWidth
@@ -754,7 +846,6 @@ export default function Page() {
           scrub: scurbScale,
         },
       });
-      setTimeline4ContainerAnimation(timeline4ContainerTween);
       setTimelinePeriod4(timeline4);
       // Timeline Section  5
       timeline5 = gsap.timeline({
@@ -850,7 +941,6 @@ export default function Page() {
       timelinePeriod2?.kill();
       timelinePeriod3?.kill();
       timelinePeriod4?.kill();
-      timeline4ContainerTween?.kill();
       timelinePeriod5?.kill();
       timelinePeriod6?.kill();
     };
@@ -930,7 +1020,7 @@ export default function Page() {
   // Default Effect
   useEffect(() => {
     // Page Overflow Hidden
-    document.body.classList.remove("!overflow-auto");
+    document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
@@ -987,14 +1077,14 @@ export default function Page() {
             className="main opacity-0 relative z-10"
           >
             {/* First Panel Start Here */}
-            <div ref={timeline1Ref} className="timeline1">
+            <div ref={timeline1Ref} className="timeline1" id="timeline1">
               <div
                 ref={panel1}
                 className="w-screen h-screen flex items-end justify-end"
               >
                 <div
                   ref={wrapper1}
-                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[707vw] h-screen will-change-transform`}
+                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[707vw] min-w-[707vw] h-screen will-change-transform`}
                 >
                   <Introduction
                     animated={isAllAnimationComplete}
@@ -1014,572 +1104,920 @@ export default function Page() {
                     }}
                     timeline={"timeline1"}
                   />
-                  <ContentSection2
-                    animWidthText={0.5}
-                    extraClass={
-                      "min-w-[80vw] w-[80vw] h-screen panel-section will-change-transform"
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[80vw] w-[80vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    data={
-                      chroniclesPageData?.acf?.timeline_1?.content_section || ""
+                  >
+                    <ContentSection2
+                      animWidthText={0.5}
+                      extraClass={
+                        "min-w-[80vw] w-[80vw] h-screen panel-section will-change-transform"
+                      }
+                      data={
+                        chroniclesPageData?.acf?.timeline_1?.content_section ||
+                        ""
+                      }
+                      loadAnimation={true}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                  />
-                  <TitleSection
-                    animWidthText={0.9}
-                    extraClass={
-                      "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                  >
+                    <TitleSection
+                      animWidthText={0.9}
+                      extraClass={
+                        "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                      }
+                      leftShape={false}
+                      rightShape={false}
+                      panel={timeline1Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_1?.title_section || ""
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                    leftShape={false}
-                    rightShape={false}
-                    panel={timeline1Ref}
-                    data={
-                      chroniclesPageData?.acf?.timeline_1?.title_section || ""
+                  >
+                    <RabbisPeriodSection
+                      animWidthText={2}
+                      extraClass={
+                        "min-w-screen w-screen h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline1Ref}
+                      activeMenu={activeRabbisMenu}
+                      activeMenuFunction={setActiveRabbisMenu}
+                      data={
+                        chroniclesPageData?.acf?.timeline_1
+                          ?.past_rabbis_section || []
+                      }
+                      rabbisData={SetListOfRabbis}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                  />
-                  <RabbisPeriodSection
-                    animWidthText={2}
-                    extraClass={
-                      "min-w-screen w-screen h-screen panel-section will-change-transform"
+                  >
+                    <SingleImageSection
+                      animWidthText={2.9}
+                      extraClass={
+                        "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
+                      }
+                      image={
+                        chroniclesPageData?.acf?.timeline_1?.single_image ||
+                        HistoryImage1
+                      }
+                      panel={timeline1Ref}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline1Ref}
-                    activeMenu={activeRabbisMenu}
-                    activeMenuFunction={setActiveRabbisMenu}
-                    data={
-                      chroniclesPageData?.acf?.timeline_1
-                        ?.past_rabbis_section || []
+                  >
+                    <MarkOfTheRoad
+                      animWidthText={3.4}
+                      extraClass={
+                        "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
+                      }
+                      data={
+                        chroniclesPageData?.acf?.timeline_1?.mark_of_the_road ||
+                        []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    rabbisData={SetListOfRabbis}
-                  />
-                  <SingleImageSection
-                    animWidthText={2.9}
-                    extraClass={
-                      "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
+                  >
+                    <RabbisTimeline
+                      animWidthText={5.4}
+                      extraClass={
+                        "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
+                      }
+                      bgImage={timelineBG}
+                      panel={timeline1Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_1?.rabbis_timeline ||
+                        []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[45vw] w-[45vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    image={
-                      chroniclesPageData?.acf?.timeline_1?.single_image ||
-                      HistoryImage1
-                    }
-                    panel={timeline1Ref}
-                  />
-                  <MarkOfTheRoad
-                    animWidthText={3.4}
-                    extraClass={
-                      "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
-                    }
-                    data={
-                      chroniclesPageData?.acf?.timeline_1?.mark_of_the_road ||
-                      []
-                    }
-                  />
-                  <RabbisTimeline
-                    animWidthText={5.4}
-                    extraClass={
-                      "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
-                    }
-                    bgImage={timelineBG}
-                    panel={timeline1Ref}
-                    data={
-                      chroniclesPageData?.acf?.timeline_1?.rabbis_timeline || []
-                    }
-                  />
-                  <HistoryQuoteSection
-                    animWidthText={6.9}
-                    bgImage={""}
-                    extraClass={
-                      "min-w-[45vw] w-[45vw] h-screen panel-section will-change-transform"
-                    }
-                    data={QuoteData}
-                    boxClass="translate-x-[6vw]"
-                    panel={timeline1Ref}
-                  />
+                  >
+                    <HistoryQuoteSection
+                      animWidthText={6.9}
+                      bgImage={""}
+                      extraClass={
+                        "min-w-[45vw] w-[45vw] h-screen panel-section will-change-transform"
+                      }
+                      data={QuoteData}
+                      boxClass="translate-x-[6vw]"
+                      panel={timeline1Ref}
+                    />
+                  </Suspense>
                 </div>
               </div>
             </div>
             {/* First Panel End Here */}
             {/* Second Panel Start Here */}
-            <div ref={timeline2Ref} className="timeline2">
+            <div ref={timeline2Ref} className="timeline2" id="timeline2">
               <div
                 ref={panel2}
                 className="w-screen h-screen flex items-end justify-end"
               >
                 <div
                   ref={wrapper2}
-                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[588vw] h-screen will-change-transform`}
+                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[588vw] min-w-[588vw] h-screen will-change-transform`}
                 >
-                  <Introduction2
-                    animWidthText={0.1}
-                    animated={isAllAnimationComplete}
-                    bgImage={IntroBG}
-                    bgOverlay={""}
-                    data={IntroData2}
-                    extraClass={
-                      "second-intro panel-section will-change-transform min-w-screen w-screen"
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline2Ref}
-                    timeline={"timeline2"}
-                    bgPosition=""
-                    overlayClass="bg-[#57717A] opacity-70"
-                    bgClass=""
-                    audioControl={function (): void {
-                      throw new Error("Function not implemented.");
-                    }}
-                  />
-                  <NewsPapperSection
-                    animWidthText={8.2}
-                    panel={timeline2Ref}
-                    extraClass={
-                      "min-w-[128vw] w-[128vw] h-screen panel-section will-change-transform"
+                  >
+                    <Introduction2
+                      animWidthText={0.1}
+                      animated={isAllAnimationComplete}
+                      bgImage={IntroBG}
+                      bgOverlay={""}
+                      data={IntroData2}
+                      extraClass={
+                        "second-intro panel-section will-change-transform min-w-screen w-screen"
+                      }
+                      panel={timeline2Ref}
+                      timeline={"timeline2"}
+                      bgPosition=""
+                      overlayClass="bg-[#57717A] opacity-70"
+                      bgClass=""
+                      audioControl={function (): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[128vw] w-[128vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    bgImage={NewsSectionBG}
-                    data={
-                      chroniclesPageData?.acf?.timeline_2?.news_paper_section ||
-                      []
+                  >
+                    <NewsPapperSection
+                      animWidthText={8.2}
+                      panel={timeline2Ref}
+                      extraClass={
+                        "min-w-[128vw] w-[128vw] h-screen panel-section will-change-transform"
+                      }
+                      bgImage={NewsSectionBG}
+                      data={
+                        chroniclesPageData?.acf?.timeline_2
+                          ?.news_paper_section || []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                  />
-                  <TitleSection
-                    animWidthText={9.1}
-                    extraClass={
-                      "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                  >
+                    <TitleSection
+                      animWidthText={9.1}
+                      extraClass={
+                        "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                      }
+                      leftShape={false}
+                      rightShape={false}
+                      panel={timeline2Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_2?.title_section || ""
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                    leftShape={false}
-                    rightShape={false}
-                    panel={timeline2Ref}
-                    data={
-                      chroniclesPageData?.acf?.timeline_2?.title_section || ""
+                  >
+                    <RabbisPeriodSection
+                      animWidthText={10.2}
+                      extraClass={
+                        "min-w-screen w-screen h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline2Ref}
+                      activeMenu={activeRabbisMenu}
+                      activeMenuFunction={setActiveRabbisMenu}
+                      data={
+                        chroniclesPageData?.acf?.timeline_2
+                          ?.past_rabbis_section || []
+                      }
+                      rabbisData={SetListOfRabbis}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                  />
-                  <RabbisPeriodSection
-                    animWidthText={10.2}
-                    extraClass={
-                      "min-w-screen w-screen h-screen panel-section will-change-transform"
-                    }
-                    panel={timeline2Ref}
-                    activeMenu={activeRabbisMenu}
-                    activeMenuFunction={setActiveRabbisMenu}
-                    data={
-                      chroniclesPageData?.acf?.timeline_2
-                        ?.past_rabbis_section || []
-                    }
-                    rabbisData={SetListOfRabbis}
-                  />
-                  <MarkOfTheRoad2
-                    animWidthText={11.4}
-                    panel={timeline2Ref}
-                    extraClass={
-                      "min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform"
-                    }
-                    data={
-                      chroniclesPageData?.acf?.timeline_2?.mark_of_the_road ||
-                      []
-                    }
-                  />
+                  >
+                    <MarkOfTheRoad2
+                      animWidthText={11.4}
+                      panel={timeline2Ref}
+                      extraClass={
+                        "min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform"
+                      }
+                      data={
+                        chroniclesPageData?.acf?.timeline_2?.mark_of_the_road ||
+                        []
+                      }
+                    />
+                  </Suspense>
                 </div>
               </div>
             </div>
             {/* Second Panel End Here */}
             {/* Third Panel Start Here */}
-            <div ref={timeline3Ref} className="timeline3">
+            <div ref={timeline3Ref} className="timeline3" id="timeline3">
               <div
                 ref={panel3}
                 className="w-screen h-screen flex items-end justify-end"
               >
                 <div
                   ref={wrapper3}
-                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[939.8vw] h-screen will-change-transform`}
+                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[939.8vw] min-w-[939.8vw] h-screen will-change-transform`}
                 >
-                  <Introduction2
-                    animated={isAllAnimationComplete}
-                    bgImage={IntroBG2}
-                    data={IntroData3}
-                    extraClass={
-                      "third-intro panel-section will-change-transform min-w-screen w-screen"
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline3Ref}
-                    bgPosition=""
-                    overlayClass="hidden"
-                    bgClass="opacity-40"
-                    bgOverlay={IntroBGoverlay}
-                    audioControl={function (): void {
-                      throw new Error("Function not implemented.");
-                    }}
-                    animWidthText={13}
-                    timeline="timeline3"
-                  />
-                  <ArrowSliderSection
-                    animWidthText={14}
-                    extraClass={
-                      "min-w-[65.8vw] w-[65.8vw] h-screen panel-section will-change-transform"
+                  >
+                    <Introduction2
+                      animated={isAllAnimationComplete}
+                      bgImage={IntroBG2}
+                      data={IntroData3}
+                      extraClass={
+                        "third-intro panel-section will-change-transform min-w-screen w-screen"
+                      }
+                      panel={timeline3Ref}
+                      bgPosition=""
+                      overlayClass="hidden"
+                      bgClass="opacity-40"
+                      bgOverlay={IntroBGoverlay}
+                      audioControl={function (): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                      animWidthText={0}
+                      timeline="timeline3"
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[65.8vw] w-[65.8vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    bgImage={arrowSectionBG}
-                    bgClass=""
-                    bgPosition="center"
-                    overlayClass="hidden"
-                    SlideData={SliderData}
-                    sectionImage={sectionImage}
-                    panel={timeline3Ref}
-                  />
-                  <EvidenceOfPeriod
-                    animWidthText={14.65}
-                    extraClass={
-                      "min-w-[93vw] w-[93vw] h-screen panel-section will-change-transform"
+                  >
+                    <ArrowSliderSection
+                      animWidthText={14}
+                      extraClass={
+                        "min-w-[65.8vw] w-[65.8vw] h-screen panel-section will-change-transform"
+                      }
+                      bgImage={arrowSectionBG}
+                      bgClass=""
+                      bgPosition="center"
+                      overlayClass="hidden"
+                      slideData={SliderData}
+                      sectionImage={sectionImage}
+                      panel={timeline3Ref}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[93vw] w-[93vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline3Ref}
-                    videoControl={setIsVideoPopupOpen}
-                  />
-                  <TitleSection
-                    animWidthText={15}
-                    extraClass={
-                      "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                  >
+                    <EvidenceOfPeriod
+                      animWidthText={14.65}
+                      extraClass={
+                        "min-w-[93vw] w-[93vw] h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline3Ref}
+                      videoControl={setIsVideoPopupOpen}
+                      data={
+                        chroniclesPageData?.acf?.timeline_3
+                          ?.evidence_of_period || []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    leftShape={false}
-                    rightShape={false}
-                    panel={timeline3Ref}
-                    data={
-                      chroniclesPageData?.acf?.timeline_3?.title_section || ""
+                  >
+                    <TitleSection
+                      animWidthText={15}
+                      extraClass={
+                        "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                      }
+                      leftShape={false}
+                      rightShape={false}
+                      panel={timeline3Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_3?.title_section || ""
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                  />
-                  <RabbisPeriodSection
-                    animWidthText={15.9}
-                    extraClass={
-                      "min-w-[100vw] w-[100vw] h-screen panel-section will-change-transform"
+                  >
+                    <RabbisPeriodSection
+                      animWidthText={15.9}
+                      extraClass={
+                        "min-w-screen w-screen h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline3Ref}
+                      activeMenu={activeRabbisMenu}
+                      activeMenuFunction={setActiveRabbisMenu}
+                      data={
+                        chroniclesPageData?.acf?.timeline_3
+                          ?.past_rabbis_section || []
+                      }
+                      rabbisData={SetListOfRabbis}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[285vw] w-[285vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline3Ref}
-                    activeMenu={activeRabbisMenu}
-                    activeMenuFunction={setActiveRabbisMenu}
-                    data={
-                      chroniclesPageData?.acf?.timeline_3
-                        ?.past_rabbis_section || []
+                  >
+                    <MarkOfTheRoad3
+                      animWidthText={17}
+                      extraClass={
+                        "min-w-[285vw] w-[285vw] h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline3Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_3?.mark_of_the_road ||
+                        []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                    rabbisData={SetListOfRabbis}
-                  />
-                  <MarkOfTheRoad3
-                    animWidthText={17}
-                    extraClass={
-                      "min-w-[285vw] w-[285vw] h-screen panel-section will-change-transform"
+                  >
+                    <IntroductionContent
+                      animated={isAllAnimationComplete}
+                      bgImage={
+                        chroniclesPageData?.acf?.timeline_3?.intro_banner
+                          ?.background || introBG3
+                      }
+                      data={IntroContentData}
+                      extraClass={
+                        "panel-section will-change-transform min-w-screen w-screen"
+                      }
+                      panel={timeline3Ref}
+                      timeline="timeline3"
+                      bgPosition=""
+                      overlayClass="bg-[#000000] opacity-40"
+                      bgClass=""
+                      bgOverlay={""}
+                      audioControl={function (): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                      animWidthText={19.9}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[146vw] w-[146vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline3Ref}
-                  />
-                  <IntroductionContent
-                    animated={isAllAnimationComplete}
-                    bgImage={introBG3}
-                    data={IntroContentData}
-                    extraClass={
-                      "panel-section will-change-transform min-w-screen w-screen"
-                    }
-                    panel={timeline3Ref}
-                    timeline="timeline3"
-                    bgPosition=""
-                    overlayClass="bg-[#000000] opacity-40"
-                    bgClass=""
-                    bgOverlay={""}
-                    audioControl={function (): void {
-                      throw new Error("Function not implemented.");
-                    }}
-                    animWidthText={19.9}
-                  />
-                  <LambOfferingSection
-                    animWidthText={20.65}
-                    extraClass={
-                      "min-w-[146vw] w-[146vw] h-screen panel-section will-change-transform"
-                    }
-                    panel={timeline3Ref}
-                  />
+                  >
+                    <LambOfferingSection
+                      animWidthText={20.65}
+                      extraClass={
+                        "min-w-[146vw] w-[146vw] h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline3Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_3
+                          ?.lamb_offering_section || []
+                      }
+                    />
+                  </Suspense>
                 </div>
               </div>
             </div>
             {/* Third Panel End Here */}
             {/* Fourth Panel Start Here */}
-            <div ref={timeline4Ref} className="timeline4">
+            <div ref={timeline4Ref} className="timeline4" id="timeline4">
               <div
                 ref={panel4}
                 className="w-screen h-screen flex items-end justify-end"
               >
                 <div
                   ref={wrapper4}
-                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[875vw] h-screen will-change-transform`}
+                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[875vw] min-w-[875vw] h-screen will-change-transform`}
                 >
-                  <Introduction2
-                    animated={isAllAnimationComplete}
-                    bgImage={introBG5}
-                    data={IntroData4}
-                    extraClass={
-                      "fourth-intro panel-section will-change-transform min-w-screen w-screen"
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline4Ref}
-                    timeline="timeline4"
-                    bgPosition=""
-                    overlayClass="bg-[#43493B] opacity-80"
-                    bgClass=""
-                    bgOverlay={""}
-                    audioControl={function (): void {
-                      throw new Error("Function not implemented.");
-                    }}
-                    animWidthText={0.1}
-                  />
-                  <MoveToJerusalem
-                    animWidthText={23.3}
-                    extraClass={
-                      "min-w-[170vw] w-[170vw] h-screen panel-section will-change-transform"
+                  >
+                    <Introduction2
+                      animated={isAllAnimationComplete}
+                      bgImage={introBG5}
+                      data={IntroData4}
+                      extraClass={
+                        "fourth-intro panel-section will-change-transform min-w-screen w-screen"
+                      }
+                      panel={timeline4Ref}
+                      timeline="timeline4"
+                      bgPosition=""
+                      overlayClass="bg-[#43493B] opacity-80"
+                      bgClass=""
+                      bgOverlay={""}
+                      audioControl={function (): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                      animWidthText={0.1}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[170vw] w-[170vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline4Ref}
-                  />
-                  <TitleSection
-                    animWidthText={24.3}
-                    extraClass={
-                      "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                  >
+                    <MoveToJerusalem
+                      animWidthText={23.3}
+                      extraClass={
+                        "min-w-[170vw] w-[170vw] h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline4Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_4
+                          ?.move_to_jerusalem || []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    leftShape={false}
-                    rightShape={false}
-                    panel={timeline4Ref}
-                    data={
-                      chroniclesPageData?.acf?.timeline_4?.title_section || ""
+                  >
+                    <TitleSection
+                      animWidthText={24.3}
+                      extraClass={
+                        "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                      }
+                      leftShape={false}
+                      rightShape={false}
+                      panel={timeline4Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_4?.title_section || ""
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                  />
-                  <RabbisPeriodSection
-                    animWidthText={25.3}
-                    extraClass={
-                      "min-w-[100vw] w-[100vw] h-screen panel-section will-change-transform"
+                  >
+                    <RabbisPeriodSection
+                      animWidthText={25.3}
+                      extraClass={
+                        "min-w-screen w-screen h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline4Ref}
+                      activeMenu={activeRabbisMenu}
+                      activeMenuFunction={setActiveRabbisMenu}
+                      data={
+                        chroniclesPageData?.acf?.timeline_4
+                          ?.past_rabbis_section || []
+                      }
+                      rabbisData={SetListOfRabbis}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[405vw] w-[405vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline4Ref}
-                    activeMenu={activeRabbisMenu}
-                    activeMenuFunction={setActiveRabbisMenu}
-                    data={
-                      chroniclesPageData?.acf?.timeline_4
-                        ?.past_rabbis_section || []
+                  >
+                    <RabbisTimeline2
+                      animWidthText={26.1}
+                      extraClass={
+                        "min-w-[405vw] w-[405vw] h-screen panel-section will-change-transform"
+                      }
+                      bgImage={timelineBG}
+                      panel={timeline4Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_4?.history_timeline ||
+                        []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    rabbisData={SetListOfRabbis}
-                  />
-                  <RabbisTimeline2
-                    animWidthText={26.1}
-                    extraClass={
-                      "min-w-[405vw] w-[405vw] h-screen panel-section will-change-transform"
-                    }
-                    bgImage={timelineBG}
-                    panel={timeline4Ref}
-                  />
-                  <HistoryQuoteSection
-                    animWidthText={30.3}
-                    bgImage={""}
-                    extraClass={
-                      "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
-                    }
-                    data={QuoteData2}
-                    boxClass="max-w-[40vw]"
-                    panel={timeline4Ref}
-                  />
+                  >
+                    <HistoryQuoteSection
+                      animWidthText={30.3}
+                      bgImage={""}
+                      extraClass={
+                        "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                      }
+                      data={QuoteData2}
+                      boxClass="max-w-[40vw]"
+                      panel={timeline4Ref}
+                    />
+                  </Suspense>
                 </div>
               </div>
             </div>
             {/* Fourth Panel End Here */}
             {/* Fifth Panel Start Here */}
-            <div ref={timeline5Ref} className="timeline5">
+            <div ref={timeline5Ref} className="timeline5" id="timeline5">
               <div
                 ref={panel5}
                 className="w-screen h-screen flex items-end justify-end"
               >
                 <div
                   ref={wrapper5}
-                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[553vw] h-screen will-change-transform`}
+                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[553vw] min-w-[553vw] h-screen will-change-transform`}
                 >
-                  <Introduction2
-                    animated={isAllAnimationComplete}
-                    bgImage={introBG6}
-                    data={IntroData5}
-                    extraClass={
-                      "fifth-intro panel-section will-change-transform min-w-screen w-screen"
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline5Ref}
-                    timeline="timeline5"
-                    bgPosition=""
-                    overlayClass="bg-[#000000] opacity-60"
-                    bgClass=""
-                    bgOverlay={""}
-                    audioControl={function (): void {
-                      throw new Error("Function not implemented.");
-                    }}
-                    animWidthText={31.2}
-                  />
-                  <OnlyTextSection
-                    animWidthText={31.6}
-                    extraClass={
-                      "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
+                  >
+                    <Introduction2
+                      animated={isAllAnimationComplete}
+                      bgImage={introBG6}
+                      data={IntroData5}
+                      extraClass={
+                        "fifth-intro panel-section will-change-transform min-w-screen w-screen"
+                      }
+                      panel={timeline5Ref}
+                      timeline="timeline5"
+                      bgPosition=""
+                      overlayClass="bg-[#000000] opacity-60"
+                      bgClass=""
+                      bgOverlay={""}
+                      audioControl={function (): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                      animWidthText={31.2}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline5Ref}
-                  />
-                  <ArrowSliderSection
-                    animWidthText={32.3}
-                    extraClass={
-                      "min-w-[70vw] w-[70vw] h-screen panel-section will-change-transform"
+                  >
+                    <OnlyTextSection
+                      animWidthText={31.6}
+                      extraClass={
+                        "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline5Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_5?.text_section || ""
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[70vw] w-[70vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    bgImage={arrowSectionBG2}
-                    bgClass=""
-                    bgPosition="center"
-                    overlayClass="hidden"
-                    SlideData={SliderData2}
-                    sectionImage={arrowSectionImage}
-                    panel={timeline5Ref}
-                  />
-                  <ImageOnlySection
-                    animWidthText={32.6}
-                    extraClass={
-                      "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                  >
+                    <ArrowSliderSection
+                      animWidthText={32.3}
+                      extraClass={
+                        "min-w-[70vw] w-[70vw] h-screen panel-section will-change-transform"
+                      }
+                      bgImage={arrowSectionBG2}
+                      bgClass=""
+                      bgPosition="center"
+                      overlayClass="hidden"
+                      slideData={SliderData2}
+                      sectionImage={arrowSectionImage}
+                      panel={timeline5Ref}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline5Ref}
-                  />
-                  <SingleVideoSection
-                    animWidthText={33.2}
-                    extraClass={
-                      "min-w-[26vw] w-[26vw] h-screen panel-section will-change-transform"
+                  >
+                    <ImageOnlySection
+                      animWidthText={32.6}
+                      extraClass={
+                        "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline5Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_5
+                          ?.arrow_slider_section?.floating_image_2 || ""
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[26vw] w-[26vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline5Ref}
-                  />
-                  <TitleSection
-                    animWidthText={33.4}
-                    extraClass={
-                      "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                  >
+                    <SingleVideoSection
+                      animWidthText={33.2}
+                      extraClass={
+                        "min-w-[26vw] w-[26vw] h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline5Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_5?.single_video || []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    leftShape={false}
-                    rightShape={false}
-                    panel={timeline5Ref}
-                    data={
-                      chroniclesPageData?.acf?.timeline_5?.title_section || ""
+                  >
+                    <TitleSection
+                      animWidthText={33.4}
+                      extraClass={
+                        "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                      }
+                      leftShape={false}
+                      rightShape={false}
+                      panel={timeline5Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_5?.title_section || ""
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                  />
-                  <RabbisPeriodSection
-                    animWidthText={34.2}
-                    extraClass={
-                      "min-w-screen w-screen h-screen panel-section will-change-transform"
+                  >
+                    <RabbisPeriodSection
+                      animWidthText={34.2}
+                      extraClass={
+                        "min-w-screen w-screen h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline5Ref}
+                      activeMenu={activeRabbisMenu}
+                      activeMenuFunction={setActiveRabbisMenu}
+                      data={
+                        chroniclesPageData?.acf?.timeline_5
+                          ?.past_rabbis_section || []
+                      }
+                      rabbisData={SetListOfRabbis}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[125vw] w-[125vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline5Ref}
-                    activeMenu={activeRabbisMenu}
-                    activeMenuFunction={setActiveRabbisMenu}
-                    data={
-                      chroniclesPageData?.acf?.timeline_5
-                        ?.past_rabbis_section || []
-                    }
-                    rabbisData={SetListOfRabbis}
-                  />
-                  <RabbisTimeline3
-                    animWidthText={35.1}
-                    extraClass={
-                      "min-w-[125vw] w-[125vw] h-screen panel-section will-change-transform"
-                    }
-                    bgImage={timelineBG}
-                    panel={timeline5Ref}
-                  />
+                  >
+                    <RabbisTimeline3
+                      animWidthText={35.1}
+                      extraClass={
+                        "min-w-[125vw] w-[125vw] h-screen panel-section will-change-transform"
+                      }
+                      bgImage={timelineBG}
+                      panel={timeline5Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_5?.history_timeline ||
+                        []
+                      }
+                    />
+                  </Suspense>
                 </div>
               </div>
             </div>
             {/* Fifth Panel End Here */}
             {/* Sixth Panel Start Here */}
-            <div ref={timeline6Ref} className="timeline6">
+            <div ref={timeline6Ref} className="timeline6" id="timeline6">
               <div
                 ref={panel6}
                 className="w-screen h-screen flex items-end justify-end"
               >
                 <div
                   ref={wrapper6}
-                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[837.6vw] h-screen will-change-transform`}
+                  className={`section-wrapp flex flex-nowrap flex-row-reverse w-[837.6vw] min-w-[837.6vw] h-screen will-change-transform`}
                 >
-                  <Introduction2
-                    animated={isAllAnimationComplete}
-                    bgImage={introBG7}
-                    data={IntroData6}
-                    extraClass={
-                      "sixth-intro panel-section will-change-transform min-w-screen w-screen"
+                  <Suspense
+                    fallback={
+                      <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline6Ref}
-                    timeline="timeline6"
-                    bgPosition=""
-                    overlayClass="bg-[#000000] opacity-20"
-                    bgClass=""
-                    bgOverlay={""}
-                    audioControl={function (): void {
-                      throw new Error("Function not implemented.");
-                    }}
-                    animWidthText={36.6}
-                  />
-                  <OnlyTextSection2
-                    animWidthText={37.2}
-                    extraClass={
-                      "min-w-[32.5vw] w-[32.5vw] h-screen panel-section will-change-transform"
+                  >
+                    <Introduction2
+                      animated={isAllAnimationComplete}
+                      bgImage={introBG7}
+                      data={IntroData6}
+                      extraClass={
+                        "sixth-intro panel-section will-change-transform min-w-screen w-screen"
+                      }
+                      panel={timeline6Ref}
+                      timeline="timeline6"
+                      bgPosition=""
+                      overlayClass="bg-[#000000] opacity-20"
+                      bgClass=""
+                      bgOverlay={""}
+                      audioControl={function (): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                      animWidthText={36.6}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[32.5vw] w-[32.5vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline6Ref}
-                  />
-                  <ImageOnlySection2
-                    animWidthText={38}
-                    extraClass={
-                      "min-w-[55.5vw] w-[55.5vw] h-screen panel-section will-change-transform"
+                  >
+                    <OnlyTextSection2
+                      animWidthText={37.2}
+                      extraClass={
+                        "min-w-[32.5vw] w-[32.5vw] h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline6Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_6?.text_section || ""
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[55.5vw] w-[55.5vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline6Ref}
-                  />
-                  <RabbisTimeline4
-                    extraClass={
-                      "panel-section will-change-transform min-w-[210vw] w-[210vw]"
+                  >
+                    <ImageOnlySection2
+                      animWidthText={38}
+                      extraClass={
+                        "min-w-[55.5vw] w-[55.5vw] h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline6Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_6?.single_image || ""
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    animWidthText={38.4}
-                    panel={timeline6Ref}
-                  />
-                  <OnlyParallaxImageSection
-                    extraClass={
-                      "panel-section will-change-transform min-w-[61.8vw] w-[61.8vw]"
+                  >
+                    <RabbisTimeline4
+                      extraClass={
+                        "panel-section will-change-transform min-w-[210vw] w-[210vw]"
+                      }
+                      animWidthText={38.4}
+                      panel={timeline6Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_6?.card_section || []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[61.8vw] w-[61.8vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    image={OnlyImage}
-                    animWidthText={40}
-                    panel={timeline6Ref}
-                  />
-                  <MarkOfTheRoad4
-                    animWidthText={41.2}
-                    extraClass={
-                      "min-w-[130vw] w-[130vw] h-screen panel-section will-change-transform"
+                  >
+                    <OnlyParallaxImageSection
+                      extraClass={
+                        "panel-section will-change-transform min-w-[61.8vw] w-[61.8vw]"
+                      }
+                      image={
+                        chroniclesPageData?.acf?.timeline_6?.parallax_image ||
+                        OnlyImage
+                      }
+                      animWidthText={40}
+                      panel={timeline6Ref}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[130vw] w-[130vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    panel={timeline6Ref}
-                  />
-                  <ImageWithTextSection
-                    extraClass={
-                      "min-w-[137vw] w-[137vw] h-screen panel-section will-change-transform"
+                  >
+                    <MarkOfTheRoad4
+                      animWidthText={41.2}
+                      extraClass={
+                        "min-w-[130vw] w-[130vw] h-screen panel-section will-change-transform"
+                      }
+                      panel={timeline6Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_6?.mark_of_the_road ||
+                        []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[137vw] w-[137vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    animWidthText={42.7}
-                    panel={timeline6Ref}
-                  />
-                  <OnlyImageSection
-                    extraClass={
-                      "panel-section will-change-transform min-w-[35.8vw] w-[35.8vw]"
+                  >
+                    <ImageWithTextSection
+                      extraClass={
+                        "min-w-[137vw] w-[137vw] h-screen panel-section will-change-transform"
+                      }
+                      animWidthText={42.7}
+                      panel={timeline6Ref}
+                      data={
+                        chroniclesPageData?.acf?.timeline_6
+                          ?.image_with_text_section || []
+                      }
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[35.8vw] w-[35.8vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    image={OnlyImage2}
-                    animWidthText={43.5}
-                  />
-                  <HistoryQuoteSection2
-                    extraClass={
-                      "panel-section will-change-transform min-w-[75vw] w-[75vw]"
+                  >
+                    <OnlyImageSection
+                      extraClass={
+                        "panel-section will-change-transform min-w-[35.8vw] w-[35.8vw]"
+                      }
+                      image={
+                        chroniclesPageData?.acf?.timeline_6?.only_image ||
+                        OnlyImage2
+                      }
+                      animWidthText={43.5}
+                    />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="min-w-[75vw] w-[75vw] h-screen panel-section will-change-transform bg-black" />
                     }
-                    animWidthText={44.2}
-                    bgImage={QuoteSectionBG}
-                    boxClass={""}
-                    data={QuoteData3}
-                  />
+                  >
+                    <HistoryQuoteSection2
+                      extraClass={
+                        "panel-section will-change-transform min-w-[75vw] w-[75vw]"
+                      }
+                      animWidthText={44.2}
+                      bgImage={
+                        chroniclesPageData?.acf?.timeline_6?.quote_section
+                          ?.background || QuoteSectionBG
+                      }
+                      boxClass={""}
+                      data={QuoteData3}
+                    />
+                  </Suspense>
                 </div>
               </div>
             </div>
           </main>
-          <Footer className={"relative z-20"} />
+          {pageDataFetched && (
+            <Suspense fallback={<div className="w-screen h-screen bg-black" />}>
+              <Footer className={"relative z-20"} />
+            </Suspense>
+          )}
         </SmoothWrapper>
         {pageDataFetched && (
-          <HistoryTimeline
-            wrapperRef={history}
-            progressRef={progress}
-            timelineData={TimelineData}
-          />
+          <Suspense>
+            <HistoryTimeline
+              wrapperRef={history}
+              progressRef={progress}
+              timelineData={TimelineData}
+            />
+          </Suspense>
         )}
-        <NotificationPopup />
-        <RabbisHamburgerMenuHome
-          extraClass="hidden"
-          data={JSON.stringify(RabbisMenu)}
-          data2={listOfRabbis}
-          activeMenu={activeRabbisMenu}
-          activeMenuFunction={setActiveRabbisMenu}
-        />
-        <VideoPopup videoControl={{ isVideoPopupOpen, setIsVideoPopupOpen }} />
-        <SlidingArrow />
+        {pageDataFetched && (
+          <Suspense>
+            <NotificationPopup />
+          </Suspense>
+        )}
+        {pageDataFetched && (
+          <Suspense>
+            <RabbisHamburgerMenuHome
+              extraClass="hidden"
+              data={JSON.stringify(RabbisMenu)}
+              data2={listOfRabbis}
+              activeMenu={activeRabbisMenu}
+              activeMenuFunction={setActiveRabbisMenu}
+            />
+          </Suspense>
+        )}
+        {pageDataFetched && (
+          <Suspense>
+            <VideoPopup
+              videoControl={{ isVideoPopupOpen, setIsVideoPopupOpen }}
+            />
+          </Suspense>
+        )}
+        {pageDataFetched && (
+          <Suspense>
+            <SlidingArrow />
+          </Suspense>
+        )}
       </div>
     )
   );

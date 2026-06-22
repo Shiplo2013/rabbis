@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -13,6 +14,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 
 export default function ImageOnlySection(props: ChildProps) {
@@ -27,29 +29,39 @@ export default function ImageOnlySection(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
-      const image = wrapper.current?.querySelector(".image1");
-      if (image) {
-        gsap.set(image, { x: "17vw" });
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(wrapper.current) -
-                window.innerWidth / 2
-              );
+      const animations: gsap.core.Animation[] = [];
+      if (typeof window !== "undefined" && wrapper.current) {
+        // Selector
+        const image = wrapper.current?.querySelector(".image1");
+        if (image && image?.textContent?.length !== 0) {
+          gsap.set(image, { x: "17vw" });
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              start: () => {
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(wrapper.current) -
+                  window.innerWidth / 2
+                );
+              },
+              end: () => "+=" + window.innerWidth * 2,
+              scrub: 2,
             },
-            end: () => "+=" + window.innerWidth * 2,
-            scrub: 2,
-          },
-        });
-        tl.to(image, {
-          x: "-5vw",
-          ease: "easeIn",
-        });
+          });
+          tl.to(image, {
+            x: "-5vw",
+            ease: "easeIn",
+          });
+          animations.push(tl);
+        }
       }
+
+      // Return function to kill animations on component unmount
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
 
   return (
@@ -63,10 +75,10 @@ export default function ImageOnlySection(props: ChildProps) {
         <div className="image1 w-121 h-80.5 relative z-30">
           <Image
             className="w-full object-cover object-center h-full"
-            src={Image1?.src}
+            src={props.data?.sizes?.medium || Image1?.src}
             width={"484"}
             height={"322"}
-            blurDataURL={Image1?.blurDataURL}
+            blurDataURL={CreateShimmerDataUrl(484, 322) || Image1?.blurDataURL}
             placeholder={"blur"}
             loading="lazy"
             alt={"Section Image"}

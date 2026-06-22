@@ -38,13 +38,14 @@ export default function MarkOfTheRoad(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
       // Section Moving Image
       if (imageMove.current) {
         gsap.set(imageMove.current, { x: 200 });
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * props.animWidthText - 0.8;
+              return window.innerWidth * props.animWidthText - 0.7;
             },
             end: () => "+=" + window.innerWidth * 1.5,
             scrub: 2,
@@ -54,11 +55,12 @@ export default function MarkOfTheRoad(props: ChildProps) {
           x: -200,
           ease: "easeIn",
         });
+        animations.push(tl);
       }
       // Section Image 1
       if (image1.current) {
         gsap.set(image1.current, { y: 300, opacity: 0 });
-        gsap.to(image1.current, {
+        const image1Animation = gsap.to(image1.current, {
           y: 0,
           opacity: 1,
           duration: 2,
@@ -71,12 +73,13 @@ export default function MarkOfTheRoad(props: ChildProps) {
             toggleActions: "restart pause play reverse",
           },
         });
+        animations.push(image1Animation);
       }
 
       // Section Image 2
       if (image2.current) {
         gsap.set(image2.current, { y: 300, opacity: 0 });
-        gsap.to(image2.current, {
+        const image2Animation = gsap.to(image2.current, {
           y: 0,
           opacity: 1,
           duration: 2,
@@ -89,6 +92,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
             toggleActions: "restart pause play reverse",
           },
         });
+        animations.push(image2Animation);
       }
       document.fonts.ready.then(() => {
         // Section Title 1
@@ -115,6 +119,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(splititle);
               return splititle;
             },
           });
@@ -143,6 +148,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(splitext1);
               return splitext1;
             },
           });
@@ -171,13 +177,19 @@ export default function MarkOfTheRoad(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(splitext2);
               return splitext2;
             },
           });
         }
       });
+
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
   return (
     <section

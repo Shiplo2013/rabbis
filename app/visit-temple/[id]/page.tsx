@@ -483,7 +483,7 @@ export default function Page() {
     const animations: gsap.core.Animation[] = [];
 
     const scrollAnimation = gsap.to(window, {
-      scrollTo: window.innerWidth * 1.4,
+      scrollTo: window.innerWidth * 1.45,
       duration: 0.5,
       ease: "power3.inOut",
     });
@@ -494,32 +494,23 @@ export default function Page() {
   }, [isAllAnimationComplete]);
 
   useGSAP(() => {
-    const animations: gsap.core.Animation[] = [];
     // Page Overflow Hidden
     document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
-      if (main.current) {
-        const mainAnimation = gsap.to(main.current, {
-          opacity: 0,
-          duration: 0.1,
-        });
-        animations.push(mainAnimation);
-      }
-      if (page.current) {
-        const pageAnimation = gsap.to(page.current, {
-          opacity: 0,
-          duration: 0,
-          onComplete: () => {
-            window.scrollTo(0, 0);
-          },
-        });
-        animations.push(pageAnimation);
-      }
-    };
-    return () => {
-      animations.forEach((animation) => animation.kill());
+      setIsLoading(true);
+      gsap.to(main.current, {
+        opacity: 0,
+        duration: 0.1,
+      });
+      gsap.to(page.current, {
+        opacity: 0,
+        duration: 0,
+        onComplete: () => {
+          window.scrollTo(0, 0);
+        },
+      });
     };
   }, []);
 

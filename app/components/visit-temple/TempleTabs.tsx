@@ -118,7 +118,7 @@ export default function TempleTabs(props: ChildProps) {
               <Link
                 href={`/visit-temple/${index}`}
                 key={index}
-                className={`tab-head-item group flex text-[24px] leading-[1.2em] relative cursor-pointer ${activeTab === index ? "active" : ""}`}
+                className={`group flex text-[24px] leading-[1.2em] relative cursor-pointer ${activeTab === index ? "active" : ""}`}
               >
                 <span className="relative">
                   {tab.tab_title}

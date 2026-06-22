@@ -123,68 +123,65 @@ export default function Page() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Load Page
-  useGSAP(
-    () => {
-      if (typeof window !== "undefined" && main) {
-        document.fonts.ready.then(() => {
-          // Selectors
-          const header = main.current?.querySelector(".community-page-header");
-          // Set localStorage variable
-          const userVisit = localStorage.getItem("hasVisited");
-          if (userVisit === "true" && animationPlayed) {
-            // Timeline
-            const tl = gsap.timeline({
-              onComplete: () => {
-                // Set Animation Played to true
-                setIsAllAnimationComplete(true);
-              },
+  useGSAP(() => {
+    if (typeof window !== "undefined" && main.current && page.current) {
+      document.fonts.ready.then(() => {
+        // Selectors
+        const header = main.current?.querySelector(".community-page-header");
+        // Set localStorage variable
+        const userVisit = localStorage.getItem("hasVisited");
+        if (userVisit === "true" && animationPlayed) {
+          // Timeline
+          const tl = gsap.timeline({
+            onComplete: () => {
+              // Set Animation Played to true
+              setIsAllAnimationComplete(true);
+            },
+          });
+          if (communityLoader.current) {
+            tl.to(communityLoader.current, {
+              opacity: 0,
+              ease: "none",
+              duration: 1,
+              delay: 1,
             });
-            if (communityLoader.current) {
-              tl.to(communityLoader.current, {
-                opacity: 0,
-                ease: "none",
-                duration: 1,
-                delay: 1,
-              });
-              tl.to(communityLoader.current, {
-                visibility: "hidden",
-                ease: "none",
-                duration: 0,
-                delay: 0,
-              });
-            }
-            if (main.current) {
-              tl.to(main.current, {
-                opacity: 1,
-                ease: "none",
-                duration: 0.5,
-                delay: 0,
-              });
-            }
-            if (header) {
-              tl.to(header, {
-                opacity: 1,
-                ease: "none",
-                duration: 1,
-              });
-            }
-            if (page.current) {
-              tl.to(
-                page.current,
-                {
-                  opacity: 1,
-                  ease: "none",
-                  duration: 1,
-                },
-                "-=0.5",
-              );
-            }
+            tl.to(communityLoader.current, {
+              visibility: "hidden",
+              ease: "none",
+              duration: 0,
+              delay: 0,
+            });
           }
-        });
-      }
-    },
-    { scope: main, dependencies: [pageDataFetched] },
-  );
+          if (main.current) {
+            tl.to(main.current, {
+              opacity: 1,
+              ease: "none",
+              duration: 0.5,
+              delay: 0,
+            });
+          }
+          if (header) {
+            tl.to(header, {
+              opacity: 1,
+              ease: "none",
+              duration: 1,
+            });
+          }
+          if (page.current) {
+            tl.to(
+              page.current,
+              {
+                opacity: 1,
+                ease: "none",
+                duration: 1,
+              },
+              "-=0.5",
+            );
+          }
+        }
+      });
+    }
+  }, [pageDataFetched, pathname, animationPlayed]);
 
   // Set Page Content Animation
   //   const setPageContentAnimation = () => {
@@ -506,8 +503,6 @@ export default function Page() {
                         {Array.isArray(communityTabs[activeTab]?.content) &&
                           communityTabs[activeTab]?.content?.map(
                             (item: any, index: number) => {
-                              // Debug: log item to see actual ACF field keys
-                              console.log("Tab content item:", item);
                               // Section Title
                               if (item.field_type === "title") {
                                 return (

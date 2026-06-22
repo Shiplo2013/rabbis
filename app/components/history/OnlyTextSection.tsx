@@ -12,6 +12,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 
 export default function OnlyTextSection(props: ChildProps) {
@@ -25,23 +26,26 @@ export default function OnlyTextSection(props: ChildProps) {
   };
 
   // Section data
-  const textData = [
-    {
-      text: `<p>כאשר צר המקום מלהכיל את ריבוי התלמידים, גמלה בלב ראשי הישיבה ההכרעה – לחפש כר נרחב, שקט ושליו, אשר יכיל ברווחה את שורות התלמידים ההולכות ומתרבות. מקום מרוחק משאון העיר והמולה סואנת, אשר יאפשר שקיעה מלאה באור התורה וטהרתה.</p><p>ואז, בתשרי תשל"ו, נחנכה ברוב הוד והדר קריית הישיבה החדשה בגבעת מרדכי. היה זה רגע מכונן ומרגש בתולדות הישיבה. אלפים מבוגרי הישיבה לדורותיהם נהרו למעמד המרומם של חנוכת הבית,  לראות בגיל ובהדרת כבוד את הבית אשר נבנה לתפארת, בית שיכיל אלפי בחורים שיוכלו מעתה להגות בתורה בלב שקט ונפש חפצה, כמעין המתגבר שאין לו הפסק.</p>`,
-      quote: `מאותו יום ואילך, החלה תקופה פריחה חדשה: הישיבה מתרחבת, פורחת, ומגיעה לממדים אדירים, כשכמעט אלפיים בחורים חובשים את ספסליה. היא הופכת לחוד החנית של עולם התורה, אות ומופת לישיבה גדולה ונשגבה, אשר ממנה תצא תורה ומוסר לכל קצווי ארץ הקודש`,
-    },
-  ];
+  const textData = {
+    text:
+      props.data?.text_1 ||
+      `<p>כאשר צר המקום מלהכיל את ריבוי התלמידים, גמלה בלב ראשי הישיבה ההכרעה – לחפש כר נרחב, שקט ושליו, אשר יכיל ברווחה את שורות התלמידים ההולכות ומתרבות. מקום מרוחק משאון העיר והמולה סואנת, אשר יאפשר שקיעה מלאה באור התורה וטהרתה.</p><p>ואז, בתשרי תשל"ו, נחנכה ברוב הוד והדר קריית הישיבה החדשה בגבעת מרדכי. היה זה רגע מכונן ומרגש בתולדות הישיבה. אלפים מבוגרי הישיבה לדורותיהם נהרו למעמד המרומם של חנוכת הבית,  לראות בגיל ובהדרת כבוד את הבית אשר נבנה לתפארת, בית שיכיל אלפי בחורים שיוכלו מעתה להגות בתורה בלב שקט ונפש חפצה, כמעין המתגבר שאין לו הפסק.</p>`,
+    quote:
+      props.data?.text_2 ||
+      `מאותו יום ואילך, החלה תקופה פריחה חדשה: הישיבה מתרחבת, פורחת, ומגיעה לממדים אדירים, כשכמעט אלפיים בחורים חובשים את ספסליה. היא הופכת לחוד החנית של עולם התורה, אות ומופת לישיבה גדולה ונשגבה, אשר ממנה תצא תורה ומוסר לכל קצווי ארץ הקודש`,
+  };
 
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
       // Selector
       const smallText = wrapper.current?.querySelector(".small-text");
       const bigText = wrapper.current?.querySelector(".big-text");
       // Animation
       document.fonts.ready.then(() => {
         // Section text
-        if (smallText) {
+        if (smallText && smallText.textContent !== "") {
           gsap.set(smallText, { opacity: 1 });
           let text;
           SplitText.create(smallText, {
@@ -67,12 +71,13 @@ export default function OnlyTextSection(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(text);
               return text;
             },
           });
         }
         // Section Big text
-        if (bigText) {
+        if (bigText && bigText.textContent !== "") {
           gsap.set(bigText, { opacity: 1 });
           let bitText;
           SplitText.create(bigText, {
@@ -98,13 +103,19 @@ export default function OnlyTextSection(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(bitText);
               return bitText;
             },
           });
         }
       });
+
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
 
   return (
@@ -119,13 +130,13 @@ export default function OnlyTextSection(props: ChildProps) {
           dir="ltr"
           className="small-text text-[#FBF4E6] 2xl:text-[21px] xl:text-[18px] sm:text-[16px] leading-[1.4em] text-right w-full"
         >
-          {parse(textData[0].text)}
+          {parse(textData.text)}
         </div>
         <div
           dir="ltr"
           className="big-text text-[#FBF4E6] 2xl:text-[28px] xl:text-[24px] sm:text-[20px] leading-[1em] mt-6 text-right w-full"
         >
-          {parse(textData[0].quote)}
+          {parse(textData.quote)}
         </div>
       </div>
     </section>

@@ -41,19 +41,23 @@ export default function TabMenu(props: ChildProps) {
         const scrollY = window.scrollY;
 
         if (scrollY > triggerPoint) {
-          const animation = gsap.to(tabMenuRef.current, {
-            clipPath: "inset(0% 0% 0% 0%)",
-            ease: "slow(0.1,1,false)",
-            duration: 0.5,
-          });
-          animations.push(animation);
+          if (tabMenuRef.current) {
+            const animation = gsap.to(tabMenuRef.current, {
+              clipPath: "inset(0% 0% 0% 0%)",
+              ease: "slow(0.1,1,false)",
+              duration: 0.5,
+            });
+            animations.push(animation);
+          }
         } else {
-          const animation = gsap.to(tabMenuRef.current, {
-            clipPath: "inset(0% 0% 0% 100%)",
-            ease: "slow(0.1,1,false)",
-            duration: 0.5,
-          });
-          animations.push(animation);
+          if (tabMenuRef.current) {
+            const animation = gsap.to(tabMenuRef.current, {
+              clipPath: "inset(0% 0% 0% 100%)",
+              ease: "slow(0.1,1,false)",
+              duration: 0.5,
+            });
+            animations.push(animation);
+          }
         }
       });
     }
@@ -87,7 +91,7 @@ export default function TabMenu(props: ChildProps) {
           <Link
             href={`/visit-temple/${index}`}
             key={index}
-            className={`tab-head-item group flex text-[24px] leading-[1.2em] relative cursor-pointer ${activeTab === index ? "active" : ""}`}
+            className={`group flex text-[24px] leading-[1.2em] relative cursor-pointer ${activeTab === index ? "active" : ""}`}
           >
             <span className="relative">
               {tab.tab_title}
