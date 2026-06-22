@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "@/app/ui/plugins";
 import Image, { StaticImageData } from "next/image";
@@ -11,7 +12,7 @@ if (typeof window !== "undefined") {
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
-  image: StaticImageData;
+  image: StaticImageData | any;
   panel?: RefObject<HTMLDivElement | null>;
 }
 
@@ -29,27 +30,39 @@ export default function OnlyParallaxImageSection(props: ChildProps) {
   // GSAP Context for Animations
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+
+      if (typeof window === "undefined" || !background.current) {
+        return;
+      }
       // Banner Background
-      gsap.set(background.current, { scale: 1.4, x: "20vw" });
-      gsap.to(background.current, {
-        x: "-30vw",
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return (
-              getTimelineOffset() +
-              GetRightPosition(background.current) -
-              window.innerWidth * 1.5
-            );
+      if (background.current) {
+        gsap.set(background.current, { scale: 1.4, x: "20vw" });
+        gsap.to(background.current, {
+          x: "-30vw",
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return (
+                getTimelineOffset() +
+                GetRightPosition(background.current) -
+                window.innerWidth * 1.5
+              );
+            },
+            end: () => {
+              return "+=" + window.innerWidth * 2;
+            },
+            scrub: 2,
           },
-          end: () => {
-            return "+=" + window.innerWidth * 2;
-          },
-          scrub: 2,
-        },
-      });
+        });
+      }
+
+      // Return Animations
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: background, dependencies: [pathname] },
+    { scope: background, dependencies: [pathname, props.image] },
   );
   return (
     <section
@@ -59,10 +72,13 @@ export default function OnlyParallaxImageSection(props: ChildProps) {
       <div ref={background} className="section-wrapper w-full h-screen">
         <Image
           className="w-full object-cover object-center h-full"
-          src={props?.image?.src}
+          src={props.image?.sizes?.large || props?.image?.src}
           width={props?.image?.width}
           height={props?.image?.height}
-          blurDataURL={props?.image?.blurDataURL}
+          blurDataURL={
+            CreateShimmerDataUrl(props?.image?.width, props?.image?.height) ||
+            props?.image?.blurDataURL
+          }
           placeholder={"blur"}
           loading="lazy"
           alt="Image Background"

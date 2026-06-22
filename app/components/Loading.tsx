@@ -18,9 +18,10 @@ function Loading(props: { animated: (value: boolean) => void }) {
 
   // GSAP Animation
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     //console.log("Starting loading animation...");
     // Timeline
-    let tl = gsap.timeline({
+    const tl = gsap.timeline({
       onComplete: function () {
         setAnimComplete(true);
       },
@@ -42,6 +43,10 @@ function Loading(props: { animated: (value: boolean) => void }) {
         duration: 1,
         delay: 1,
       });
+    animations.push(tl);
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
   }, []);
   return (
     <section

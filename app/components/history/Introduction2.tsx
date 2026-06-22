@@ -39,86 +39,75 @@ export default function Introduction2(props: ChildProps) {
   // Section animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
       if (typeof window === "undefined" || !wrapper.current) {
         return;
       }
 
-      const setupAnimation = () => {
-        document.fonts.ready.then(() => {
-          // Section Title
-          if (title.current) {
-            gsap.set(title.current, { opacity: 1 });
-            let splititle;
-            SplitText.create(title.current, {
-              type: "lines",
-              linesClass: "line direction-rtl2",
-              autoSplit: true,
-              mask: "lines",
-              onSplit: (self) => {
-                splititle = gsap.from(self.lines, {
-                  duration: 2,
-                  yPercent: 100,
-                  opacity: 0,
-                  stagger: 0.05,
-                  ease: "expo.out",
-                  scrollTrigger: {
-                    start: () => {
-                      return getTimelineOffset() - 10;
-                    },
-                    toggleActions: "restart pause play reverse",
+      document.fonts.ready.then(() => {
+        // Section Title
+        if (title.current) {
+          gsap.set(title.current, { opacity: 1 });
+          let splititle;
+          SplitText.create(title.current, {
+            type: "lines",
+            linesClass: "line direction-rtl2",
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              splititle = gsap.from(self.lines, {
+                duration: 2,
+                yPercent: 100,
+                opacity: 0,
+                stagger: 0.05,
+                ease: "expo.out",
+                scrollTrigger: {
+                  start: () => {
+                    return getTimelineOffset() - 10;
                   },
-                });
-                return splititle;
-              },
-            });
-          }
-          // Section Subtitle
-          if (subtitle.current) {
-            gsap.set(subtitle.current, { opacity: 1 });
-            let splitSubtitle;
-            SplitText.create(subtitle.current, {
-              type: "lines",
-              linesClass: "line direction-rtl",
-              autoSplit: true,
-              mask: "lines",
-              onSplit: (self) => {
-                splitSubtitle = gsap.from(self.lines, {
-                  duration: 2,
-                  yPercent: 120,
-                  stagger: 0.025,
-                  ease: "expo.out",
-                  scrollTrigger: {
-                    start: () => {
-                      return getTimelineOffset() - 10;
-                    },
-                    toggleActions: "restart pause play reverse",
+                  toggleActions: "restart pause play reverse",
+                },
+              });
+              animations.push(splititle);
+              return splititle;
+            },
+          });
+        }
+        // Section Subtitle
+        if (subtitle.current) {
+          gsap.set(subtitle.current, { opacity: 1 });
+          let splitSubtitle;
+          SplitText.create(subtitle.current, {
+            type: "lines",
+            linesClass: "line direction-rtl",
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              splitSubtitle = gsap.from(self.lines, {
+                duration: 2,
+                yPercent: 120,
+                stagger: 0.025,
+                ease: "expo.out",
+                scrollTrigger: {
+                  start: () => {
+                    return getTimelineOffset() - 10;
                   },
-                });
-                return splitSubtitle;
-              },
-            });
-          }
+                  toggleActions: "restart pause play reverse",
+                },
+              });
+              animations.push(splitSubtitle);
+              return splitSubtitle;
+            },
+          });
+        }
+      });
 
-          ScrollTrigger.refresh();
-        });
-      };
-
-      if (document.readyState === "complete") {
-        setupAnimation();
-        return;
-      }
-
-      const onLoad = () => {
-        setupAnimation();
-      };
-
-      window.addEventListener("load", onLoad, { once: true });
-
+      // Return function to kill animations on unmount or dependency change
       return () => {
-        window.removeEventListener("load", onLoad);
+        animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
   return (
     <section
@@ -126,7 +115,7 @@ export default function Introduction2(props: ChildProps) {
       className={`${props.extraClass} overflow-hidden relative h-screen bg-black`}
       data-scroll-section={props.animWidthText}
     >
-      {props.data?.background && (
+      {props.data && props.data?.background && (
         <IntroductionBackground
           bgImage={props.data.background || props.bgImage}
           overlayClass={props.overlayClass}
@@ -137,7 +126,7 @@ export default function Introduction2(props: ChildProps) {
           timeline={props.timeline}
         />
       )}
-      {props.data?.overlay && (
+      {props.data && props.data?.overlay && (
         <div className="absolute top-0 left-0 w-full h-full z-20">
           <Image
             className={`w-full object-contain h-full relative`}
@@ -168,7 +157,7 @@ export default function Introduction2(props: ChildProps) {
       )}
       <div dir="ltr" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-center">
-          {props?.data?.title && (
+          {props.data && props.data?.title && (
             <h1
               ref={title}
               className="text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5"
@@ -176,7 +165,7 @@ export default function Introduction2(props: ChildProps) {
               {parse(props?.data?.title)}
             </h1>
           )}
-          {props?.data?.subtitle && (
+          {props.data && props.data?.subtitle && (
             <h4
               ref={subtitle}
               className="overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30"

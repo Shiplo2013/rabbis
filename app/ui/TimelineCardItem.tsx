@@ -1,18 +1,16 @@
-import Image, { StaticImageData } from "next/image";
+import parse from "html-react-parser";
+import Image from "next/image";
 import { useRef } from "react";
 import MinusIcon2 from "../assets/icons/MinusIcon2";
 import PlusIcon from "../assets/icons/PlusIcon";
 import { gsap, useGSAP } from "../ui/plugins";
+import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
   cardClass: string;
-  data: {
-    title: string;
-    text: string;
-    images: { image1: StaticImageData; image2: StaticImageData };
-  };
+  data: any;
   dataIndex: number;
 }
 
@@ -384,6 +382,10 @@ export default function TimelineCardItem(props: ChildProps) {
   // Set Default
   useGSAP(
     () => {
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
+
       const imagesDiv = wrapper.current?.querySelector(".expand-images");
       const imagesWrap = wrapper.current?.querySelector(
         ".expand-images>.images-wrapper",
@@ -412,8 +414,7 @@ export default function TimelineCardItem(props: ChildProps) {
         className={`card-item w-full h-full flex items-center justify-center relative z-10 origin-center ${props.cardClass}`}
       >
         <div className="card-wrapper text-[30px] leading-[90%] text-black w-51">
-          <h3 className="font-bold">{props.data.title}</h3>
-          <p>{props.data.text}</p>
+          {parse(props.data?.text || "")}
         </div>
       </div>
       <div className="expand-button bg-linear-to-t from-[#C3A13F] to-[#966814] w-16.75 h-16.75 rounded-full p-0.5 shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] cursor-pointer absolute top-1/2 right-full -translate-y-1/2 translate-x-1/2 transition-all duration-500 opacity-0 group-hover:opacity-100 z-50">
@@ -438,25 +439,39 @@ export default function TimelineCardItem(props: ChildProps) {
       </div>
       <div className="expand-images absolute top-1/2 -translate-y-1/2 right-full overflow-hidden z-40">
         <div className="images-wrapper flex gap-x-[2.7vw]">
-          <div className="image1 w-[28.8vw] h-[38.1vh]">
-            <Image
-              className="w-full object-cover object-center h-full relative z-10"
-              src={props.data?.images?.image1?.src}
-              width="553"
-              height="354"
-              blurDataURL={props.data?.images?.image1?.blurDataURL}
-              placeholder={"blur"}
-              loading="lazy"
-              alt="Card Image"
-            />
-          </div>
+          {props.data?.image_1 && (
+            <div className="image1 w-[28.8vw] h-[38.1vh]">
+              <Image
+                className="w-full object-cover object-center h-full relative z-10"
+                src={
+                  props.data?.image_1?.sizes?.large ||
+                  props.data?.images?.image1?.src
+                }
+                width="553"
+                height="354"
+                blurDataURL={
+                  CreateShimmerDataUrl(553, 354) ||
+                  props.data?.images?.image1?.blurDataURL
+                }
+                placeholder={"blur"}
+                loading="lazy"
+                alt="Card Image"
+              />
+            </div>
+          )}
           <div className="image2 w-[12vw] h-[39vh]">
             <Image
               className="w-full object-cover object-center h-full relative z-10"
-              src={props.data?.images?.image2?.src}
+              src={
+                props.data?.image_2?.sizes?.large ||
+                props.data?.images?.image2?.src
+              }
               width="258"
               height="305"
-              blurDataURL={props.data?.images?.image2?.blurDataURL}
+              blurDataURL={
+                CreateShimmerDataUrl(258, 305) ||
+                props.data?.images?.image2?.blurDataURL
+              }
               placeholder={"blur"}
               loading="lazy"
               alt="Card Image"

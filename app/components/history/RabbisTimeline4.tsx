@@ -1,6 +1,7 @@
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import TimelineCardItem from "@/app/ui/TimelineCardItem";
 import VideoItem from "@/app/ui/VideoItem";
+import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { RefObject, useRef } from "react";
 import rabbisImage1 from "../../assets/images/timeline4image1.jpg";
@@ -15,6 +16,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 export default function RabbisTimeline4(props: ChildProps) {
   // Navigation
@@ -97,12 +99,17 @@ export default function RabbisTimeline4(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
       // Selector
       const secTitle = wrapper?.current?.querySelector(".rabbis-title>h2");
       // Section Title
       document.fonts.ready.then(() => {
         // Section Title
-        if (secTitle) {
+        if (secTitle && secTitle?.textContent?.length !== 0) {
           gsap.set(secTitle, { opacity: 1 });
           let splititle;
           SplitText.create(secTitle, {
@@ -128,6 +135,7 @@ export default function RabbisTimeline4(props: ChildProps) {
                   toggleActions: "restart pause resume reverse",
                 },
               });
+              animations.push(splititle);
               return splititle;
             },
           });
@@ -136,7 +144,7 @@ export default function RabbisTimeline4(props: ChildProps) {
       // Selector
       const cardItems = wrapper.current?.querySelectorAll(".timeline-card");
       cardItems?.forEach((item) => {
-        gsap.from(item, {
+        const animation = gsap.from(item, {
           opacity: 0,
           x: "-10vw",
           duration: 1,
@@ -152,9 +160,15 @@ export default function RabbisTimeline4(props: ChildProps) {
           },
           stagger: 0.25,
         });
+        animations.push(animation);
       });
+
+      // Return animations
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
   return (
     <section
@@ -166,9 +180,7 @@ export default function RabbisTimeline4(props: ChildProps) {
       <div className="section-row w-full h-screen flex px-[10vw] py-[10vh] items-center relative z-30 gap-x-[8vw]">
         <div className="rabbis-title self-end mb-[3vh]">
           <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F]">
-            ציוני
-            <br />
-            דרך
+            {parse(props.data?.title || `ציוני<br /> דרך`)}
           </h2>
         </div>
         <div className="rabbis-timeline flex h-full items-center relative">
@@ -176,60 +188,63 @@ export default function RabbisTimeline4(props: ChildProps) {
             extraClass={"z-10"}
             animWidthText={0}
             cardClass={"bg-[#C3A13F] rotate-[7.3deg]"}
-            data={RabbisData[0]}
+            data={props?.data?.card_content_1 || RabbisData[0]}
             dataIndex={1}
           />
           <TimelineCardItem
             extraClass={"z-20 -mr-[4vw]"}
             animWidthText={0}
             cardClass={"bg-[#D4AF37] -rotate-[6.53deg]"}
-            data={RabbisData[1]}
+            data={props?.data?.card_content_2 || RabbisData[1]}
             dataIndex={2}
           />
           <TimelineCardItem
             extraClass={"z-30 -mr-[3.5vw]"}
             animWidthText={0}
             cardClass={"bg-[#D1A941] rotate-[4.61deg]"}
-            data={RabbisData[2]}
+            data={props?.data?.card_content_3 || RabbisData[2]}
             dataIndex={3}
           />
           <TimelineCardItem
             extraClass={"z-10 -mr-[2.5vw]"}
             animWidthText={0}
             cardClass={"bg-[#C3A13F] rotate-[7.3deg]"}
-            data={RabbisData[3]}
+            data={props?.data?.card_content_4 || RabbisData[3]}
             dataIndex={4}
           />
           <TimelineCardItem
             extraClass={"z-20 -mr-[4vw]"}
             animWidthText={0}
             cardClass={"bg-[#D4AF37] -rotate-[6.53deg]"}
-            data={RabbisData[4]}
+            data={props?.data?.card_content_5 || RabbisData[4]}
             dataIndex={5}
           />
           <TimelineCardItem
             extraClass={"z-20 -mr-[3vw]"}
             animWidthText={0}
             cardClass={"bg-[#D1A941] rotate-[4.61deg]"}
-            data={RabbisData[5]}
+            data={props?.data?.card_content_6 || RabbisData[5]}
             dataIndex={6}
           />
           <TimelineCardItem
             extraClass={"z-20 -mr-[3vw]"}
             animWidthText={0}
             cardClass={"bg-[#C3A13F] -rotate-[4.61deg]"}
-            data={RabbisData[6]}
+            data={props?.data?.card_content_7 || RabbisData[6]}
             dataIndex={7}
           />
-          <VideoItem
-            extraClass={"card-video mr-[10vw]"}
-            animWidthText={props.animWidthText}
-          />
+          {props?.data?.single_video && (
+            <VideoItem
+              extraClass={"card-video mr-[10vw]"}
+              animWidthText={props.animWidthText}
+              data={props?.data?.single_video}
+            />
+          )}
           <TimelineCardItem
             extraClass={"z-20 -mr-[1vw]"}
             animWidthText={0}
             cardClass={"bg-[#D4AF37] rotate-[2.79deg]"}
-            data={RabbisData[7]}
+            data={props?.data?.card_content_8 || RabbisData[7]}
             dataIndex={8}
           />
         </div>

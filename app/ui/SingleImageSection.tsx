@@ -27,6 +27,7 @@ export default function SingleImageSection(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
       // Section Image
       if (image.current) {
         gsap.set(image.current, { scale: 1.2 });
@@ -48,7 +49,13 @@ export default function SingleImageSection(props: ChildProps) {
           duration: 0.5,
           delay: 0,
         });
+        animations.push(tl);
       }
+
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
     { scope: wrapper, dependencies: [pathname] },
   );

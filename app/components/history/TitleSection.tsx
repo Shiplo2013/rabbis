@@ -39,6 +39,7 @@ export default function TitleSection(props: ChildProps) {
   const Title = props?.data?.title || `רבנים<br/> בתקופה<br/> זו`;
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
       // Section Title 2
       gsap.set(introImage.current, { x: 100 });
       const tl = gsap.timeline({
@@ -58,6 +59,7 @@ export default function TitleSection(props: ChildProps) {
         x: -300,
         ease: "easeIn",
       });
+      animations.push(tl);
       document.fonts.ready.then(() => {
         // Section Title 1
         gsap.set(introTitle.current, { opacity: 1 });
@@ -86,12 +88,17 @@ export default function TitleSection(props: ChildProps) {
                 toggleActions: "restart pause play reverse",
               },
             });
+            animations.push(splititle);
             return splititle;
           },
         });
       });
+
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
 
   return (

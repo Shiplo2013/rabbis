@@ -50,7 +50,7 @@ export default function BackgroundImage(props: ChildProps) {
     >
       <Image
         className="bg-image w-full object-cover object-center h-full"
-        src={props?.bgImage?.url}
+        src={props?.bgImage?.url || props?.bgImage?.src || props?.bgImage || ""}
         width="1920"
         height="1080"
         blurDataURL={CreateShimmerDataUrl(1920, 1080)}

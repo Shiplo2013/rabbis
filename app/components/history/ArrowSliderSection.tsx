@@ -1,4 +1,5 @@
 import CardSlider from "@/app/ui/CardSlider";
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import IntroductionBackground2 from "@/app/ui/IntroductionBackground2";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -17,7 +18,12 @@ interface ChildProps {
   bgClass: string;
   overlayClass: string;
   sectionImage: any;
-  SlideData: { text1: string; text2: string }[];
+  slideData: {
+    text1: string;
+    text2: string;
+    background: any;
+    floatingImage: any;
+  };
   panel?: RefObject<HTMLDivElement | null>;
 }
 
@@ -46,27 +52,35 @@ export default function ArrowSliderSection(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
       // Section Image
-      gsap.set(imageRef.current, { x: "30vw" });
-      gsap.set(cardSlider.current, { y: "10vh", opacity: 0 });
+      if (imageRef.current) {
+        gsap.set(imageRef.current, { x: "30vw" });
+      }
 
-      // Slider Anim
-      gsap.to(cardSlider.current, {
-        y: 0,
-        opacity: 1,
-        duration: 1.5,
-        ease: "expo.inOut",
-        scrollTrigger: {
-          start: () => {
-            return (
-              getTimelineOffset() +
-              getRightPosition(cardSlider.current) -
-              window.innerWidth / 2
-            );
+      // Section Slider
+      if (cardSlider.current) {
+        gsap.set(cardSlider.current, { y: "10vh", opacity: 0 });
+
+        // Slider Anim
+        const sliderAnimation = gsap.to(cardSlider.current, {
+          y: 0,
+          opacity: 1,
+          duration: 1.5,
+          ease: "expo.inOut",
+          scrollTrigger: {
+            start: () => {
+              return (
+                getTimelineOffset() +
+                getRightPosition(cardSlider.current) -
+                window.innerWidth / 2
+              );
+            },
+            toggleActions: "restart pause resume reverse",
           },
-          toggleActions: "restart pause resume reverse",
-        },
-      });
+        });
+        animations.push(sliderAnimation);
+      }
 
       // Image Move
       const tl = gsap.timeline({
@@ -82,12 +96,20 @@ export default function ArrowSliderSection(props: ChildProps) {
           scrub: 2,
         },
       });
-      tl.to(imageRef.current, {
-        x: "-10vw",
-        ease: "easeIn",
-      });
+      if (imageRef.current) {
+        tl.to(imageRef.current, {
+          x: "-10vw",
+          ease: "easeIn",
+        });
+        animations.push(tl);
+      }
+
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.slideData] },
   );
   return (
     <section
@@ -97,34 +119,51 @@ export default function ArrowSliderSection(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-10">
-        <IntroductionBackground2
-          bgImage={props.bgImage}
-          overlayClass={props.overlayClass}
-          imagePosition={props.bgPosition}
-          bgClass={props.bgClass}
-          animatePosition={props.animWidthText}
-          panel={props.panel}
-        />
+        {props.slideData?.background && (
+          <IntroductionBackground2
+            bgImage={props.slideData?.background || props.bgImage}
+            overlayClass={props.overlayClass}
+            imagePosition={props.bgPosition}
+            bgClass={props.bgClass}
+            animatePosition={1}
+            panel={props.panel}
+          />
+        )}
       </div>
       <div className="section-wrapper w-full h-full relative z-30">
         <div ref={cardSlider} className="absolute left-[8vw] top-[10vh]">
-          <CardSlider SlideData={props.SlideData} />
-        </div>
-        <div
-          ref={imageRef}
-          className="section-image w-121 h-80.5 absolute bottom-[15vh] left-0"
-        >
-          <Image
-            className={`w-full object-cover h-full relative z-10`}
-            src={props?.sectionImage?.src}
-            width={`484`}
-            height={`322`}
-            blurDataURL={props?.sectionImage?.blurDataURL}
-            placeholder={"blur"}
-            loading="lazy"
-            alt="Section Image"
+          <CardSlider
+            SlideData={[
+              {
+                text1: props.slideData?.text1,
+                text2: props.slideData?.text2,
+              },
+            ]}
           />
         </div>
+        {props?.slideData?.floatingImage && (
+          <div
+            ref={imageRef}
+            className="section-image w-121 h-80.5 absolute bottom-[15vh] left-0"
+          >
+            <Image
+              className={`w-full object-cover h-full relative z-10`}
+              src={
+                props?.slideData?.floatingImage?.url ||
+                props?.slideData?.floatingImage?.src
+              }
+              width={`484`}
+              height={`322`}
+              blurDataURL={
+                CreateShimmerDataUrl(484, 322) ||
+                props?.slideData?.floatingImage?.blurDataURL
+              }
+              placeholder={"blur"}
+              loading="lazy"
+              alt="Section Image"
+            />
+          </div>
+        )}
       </div>
     </section>
   );

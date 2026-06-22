@@ -1,10 +1,11 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import Image, { StaticImageData } from "next/image";
 import { useRef } from "react";
 
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
-  image: StaticImageData;
+  image: StaticImageData | any;
 }
 
 export default function OnlyImageSection(props: ChildProps) {
@@ -18,10 +19,13 @@ export default function OnlyImageSection(props: ChildProps) {
       <div ref={background} className="content-wrapper w-full h-screen">
         <Image
           className="w-full object-cover object-center h-full"
-          src={props?.image?.src}
+          src={props.image?.sizes?.large || props?.image?.src}
           width={props?.image?.width}
           height={props?.image?.height}
-          blurDataURL={props?.image?.blurDataURL}
+          blurDataURL={
+            CreateShimmerDataUrl(props?.image?.width, props?.image?.height) ||
+            props?.image?.blurDataURL
+          }
           placeholder={"blur"}
           loading="lazy"
           alt="Image Background"

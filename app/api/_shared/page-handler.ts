@@ -50,6 +50,9 @@ export function createWordPressPageHandler(options: {
 
       const restResponse = await fetch(restUrl, {
         cache: "no-store",
+        headers: {
+          Accept: "application/json",
+        },
       });
 
       if (!restResponse.ok) {
@@ -59,7 +62,40 @@ export function createWordPressPageHandler(options: {
         );
       }
 
-      const pages = (await restResponse.json()) as RestPage[];
+      const contentType = restResponse.headers.get("content-type") ?? "";
+
+      if (!contentType.includes("application/json")) {
+        return NextResponse.json(
+          {
+            error: `Unexpected response while loading ${pageName} data from WordPress.`,
+            details:
+              "WordPress returned non-JSON content (possible security challenge page).",
+          },
+          { status: 502 },
+        );
+      }
+
+      let pages: RestPage[];
+      try {
+        pages = (await restResponse.json()) as RestPage[];
+      } catch {
+        return NextResponse.json(
+          {
+            error: `Invalid JSON while loading ${pageName} data from WordPress.`,
+          },
+          { status: 502 },
+        );
+      }
+
+      if (!Array.isArray(pages)) {
+        return NextResponse.json(
+          {
+            error: `Unexpected payload shape while loading ${pageName} data from WordPress.`,
+          },
+          { status: 502 },
+        );
+      }
+
       const restPage = pickRestPageByUri(pages, uri);
 
       if (!restPage) {

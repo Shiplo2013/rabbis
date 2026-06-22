@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -13,6 +14,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 
 export default function ImageOnlySection2(props: ChildProps) {
@@ -29,12 +31,18 @@ export default function ImageOnlySection2(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
+      // Selector
       const image = wrapper.current?.querySelector(".image1");
-      if (image) {
+      if (image && image?.textContent?.length !== 0) {
         gsap.set(image, {
           x: "-10vw",
         });
-        gsap.to(image, {
+        const animation = gsap.to(image, {
           x: "15vw",
           ease: "easeIn",
           scrollTrigger: {
@@ -49,9 +57,15 @@ export default function ImageOnlySection2(props: ChildProps) {
             scrub: 2,
           },
         });
+        animations.push(animation);
       }
+
+      // Return animations
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
   return (
     <section
@@ -64,10 +78,10 @@ export default function ImageOnlySection2(props: ChildProps) {
         <div className="image1 w-220 h-144.75 relative z-30 translate-x-[9vw]">
           <Image
             className="w-full object-cover object-center h-full"
-            src={Image1?.src}
+            src={props.data?.sizes?.large || Image1?.src}
             width={"880"}
             height={"579"}
-            blurDataURL={Image1?.blurDataURL}
+            blurDataURL={CreateShimmerDataUrl(880, 579) || Image1?.blurDataURL}
             placeholder={"blur"}
             loading="lazy"
             alt={"Section Image"}

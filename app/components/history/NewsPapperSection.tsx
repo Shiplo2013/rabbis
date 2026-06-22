@@ -1,6 +1,6 @@
 "use client";
+import BackgroundImage2 from "@/app/ui/BackgroundImage2";
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
-import ImageRevealWithParallaxBG from "@/app/ui/ImageRevealWithParallaxBG";
 import TextSplitLines from "@/app/ui/TextSplitLines";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -52,6 +52,7 @@ export default function NewsPapperSection(props: ChildProps) {
   // Seciton Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
       // Image Animations
       const image1 = wrapper.current?.querySelector(".image1");
       const image2 = wrapper.current?.querySelector(".image2");
@@ -61,7 +62,7 @@ export default function NewsPapperSection(props: ChildProps) {
       const content3 = wrapper.current?.querySelector(".content-text3");
       const content4 = wrapper.current?.querySelector(".content-text4");
       if (image1) {
-        gsap.from(image1, {
+        const image1Animation = gsap.from(image1, {
           y: 100,
           opacity: 0,
           duration: 1,
@@ -73,9 +74,10 @@ export default function NewsPapperSection(props: ChildProps) {
             toggleActions: "restart pause resume reverse",
           },
         });
+        animations.push(image1Animation);
       }
       if (image2) {
-        gsap.from(image2, {
+        const image2Animation = gsap.from(image2, {
           y: 100,
           opacity: 0,
           duration: 1,
@@ -87,9 +89,10 @@ export default function NewsPapperSection(props: ChildProps) {
             toggleActions: "restart pause resume reverse",
           },
         });
+        animations.push(image2Animation);
       }
       if (image3) {
-        gsap.from(image3, {
+        const image3Animation = gsap.from(image3, {
           y: 100,
           opacity: 0,
           duration: 1,
@@ -101,6 +104,7 @@ export default function NewsPapperSection(props: ChildProps) {
             toggleActions: "restart pause resume reverse",
           },
         });
+        animations.push(image3Animation);
       }
       // timeline for images
       // if (image1) {
@@ -156,7 +160,7 @@ export default function NewsPapperSection(props: ChildProps) {
             yPercent: 150,
             opacity: 0,
           });
-          gsap.to(content1Split, {
+          const content1Animation = gsap.to(content1Split, {
             scrollTrigger: {
               start: () => {
                 return window.innerWidth * props.animWidthText;
@@ -170,6 +174,7 @@ export default function NewsPapperSection(props: ChildProps) {
             ease: "expo.inOut",
             duration: 3,
           });
+          animations.push(content1Animation);
         }
         // Section content 2
         if (content2) {
@@ -181,7 +186,7 @@ export default function NewsPapperSection(props: ChildProps) {
             yPercent: 150,
             opacity: 0,
           });
-          gsap.to(content2Split, {
+          const content2Animation = gsap.to(content2Split, {
             scrollTrigger: {
               start: () => {
                 return window.innerWidth * (props.animWidthText + 0.2);
@@ -195,6 +200,7 @@ export default function NewsPapperSection(props: ChildProps) {
             ease: "expo.inOut",
             duration: 3,
           });
+          animations.push(content2Animation);
         }
         // Section content 3
         if (content3) {
@@ -206,7 +212,7 @@ export default function NewsPapperSection(props: ChildProps) {
             yPercent: 150,
             opacity: 0,
           });
-          gsap.to(content3Split, {
+          const content3Animation = gsap.to(content3Split, {
             scrollTrigger: {
               start: () => {
                 return window.innerWidth * (props.animWidthText + 0.6);
@@ -220,6 +226,7 @@ export default function NewsPapperSection(props: ChildProps) {
             ease: "expo.inOut",
             duration: 2,
           });
+          animations.push(content3Animation);
         }
         // Section content 4
         if (content4) {
@@ -231,7 +238,7 @@ export default function NewsPapperSection(props: ChildProps) {
             yPercent: 150,
             opacity: 0,
           });
-          gsap.to(content4Split, {
+          const content4Animation = gsap.to(content4Split, {
             scrollTrigger: {
               start: () => {
                 return window.innerWidth * (props.animWidthText + 0.6);
@@ -245,10 +252,16 @@ export default function NewsPapperSection(props: ChildProps) {
             ease: "expo.inOut",
             duration: 2,
           });
+          animations.push(content4Animation);
         }
       });
+
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
   return (
     <section
@@ -258,11 +271,16 @@ export default function NewsPapperSection(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       {props.bgImage !== "" && (
-        <ImageRevealWithParallaxBG
+        // <ImageRevealWithParallaxBG
+        //   bgImage={props.bgImage}
+        //   overlayLeft={false}
+        //   overlayLeftColor={""}
+        //   animatePosition={props.animWidthText - 0.3}
+        //   panel={props.panel}
+        // />
+        <BackgroundImage2
           bgImage={props.bgImage}
-          overlayLeft={false}
-          overlayLeftColor={""}
-          animatePosition={props.animWidthText - 0.3}
+          start={props.animWidthText - 0.3}
           panel={props.panel}
         />
       )}

@@ -509,6 +509,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,

@@ -41,6 +41,89 @@ function normalizePost(post: CptPost): NormalizedPost {
   };
 }
 
+async function fetchWordPressJsonArray<T>(options: {
+  url: string;
+  loadLabel: string;
+  attempts?: number;
+}) {
+  const { url, loadLabel, attempts = 3 } = options;
+  let lastDetails = "Unknown upstream response issue.";
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    const response = await fetch(url, {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const shouldRetry =
+        attempt < attempts &&
+        [403, 429, 500, 502, 503, 504].includes(response.status);
+
+      if (shouldRetry) {
+        lastDetails = `Upstream status ${response.status} (attempt ${attempt}/${attempts}).`;
+        continue;
+      }
+
+      return {
+        error: NextResponse.json(
+          { error: `Failed to fetch ${loadLabel} from WordPress.` },
+          { status: response.status },
+        ),
+      };
+    }
+
+    const contentType = response.headers.get("content-type") ?? "";
+
+    if (!contentType.includes("application/json")) {
+      lastDetails = `Upstream content-type was "${contentType || "unknown"}" (attempt ${attempt}/${attempts}).`;
+
+      if (attempt < attempts) {
+        continue;
+      }
+
+      break;
+    }
+
+    try {
+      const payload = (await response.json()) as unknown;
+
+      if (Array.isArray(payload)) {
+        return {
+          data: payload as T[],
+          response,
+        };
+      }
+
+      lastDetails = `Upstream payload was not an array (attempt ${attempt}/${attempts}).`;
+      if (attempt < attempts) {
+        continue;
+      }
+      break;
+    } catch {
+      lastDetails = `Upstream returned invalid JSON (attempt ${attempt}/${attempts}).`;
+
+      if (attempt < attempts) {
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  return {
+    error: NextResponse.json(
+      {
+        error: `Unexpected response while loading ${loadLabel} from WordPress.`,
+        details: lastDetails,
+      },
+      { status: 502 },
+    ),
+  };
+}
+
 /**
  * Creates a GET handler that returns a paginated list of CPT posts.
  *
@@ -124,16 +207,16 @@ export function createCptListHandler(options: {
         }
       }
 
-      const response = await fetch(url.toString(), { cache: "no-store" });
+      const listResult = await fetchWordPressJsonArray<CptPost>({
+        url: url.toString(),
+        loadLabel: `${postTypeName} posts`,
+      });
 
-      if (!response.ok) {
-        return NextResponse.json(
-          { error: `Failed to fetch ${postTypeName} posts from WordPress.` },
-          { status: response.status },
-        );
+      if ("error" in listResult) {
+        return listResult.error;
       }
 
-      const posts = (await response.json()) as CptPost[];
+      const { data: posts, response } = listResult;
 
       const totalPosts = response.headers.get("X-WP-Total");
       const totalPages = response.headers.get("X-WP-TotalPages");
@@ -196,16 +279,16 @@ export function createCptSingleHandler(options: {
       );
       url.searchParams.set("slug", slug);
 
-      const response = await fetch(url.toString(), { cache: "no-store" });
+      const singleResult = await fetchWordPressJsonArray<CptPost>({
+        url: url.toString(),
+        loadLabel: `${postTypeName} post`,
+      });
 
-      if (!response.ok) {
-        return NextResponse.json(
-          { error: `Failed to fetch ${postTypeName} post from WordPress.` },
-          { status: response.status },
-        );
+      if ("error" in singleResult) {
+        return singleResult.error;
       }
 
-      const posts = (await response.json()) as CptPost[];
+      const { data: posts } = singleResult;
 
       if (!posts.length) {
         return NextResponse.json(

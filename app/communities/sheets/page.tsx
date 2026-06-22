@@ -259,7 +259,7 @@ export default function Page() {
         verticalSection.kill();
       }
     };
-  }, [pageDataFetched]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
@@ -414,7 +414,7 @@ export default function Page() {
         }
       });
     }
-  }, [pageDataFetched]);
+  }, [pathname, pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
@@ -525,7 +525,9 @@ export default function Page() {
       });
     }
   };
-
+  // useEffect(() => {
+  //   console.log(animationPlayed);
+  // }, [animationPlayed]);
   // Set Body Overflow Hidden
   useEffect(() => {
     if (isAllAnimationComplete) {
@@ -547,6 +549,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,

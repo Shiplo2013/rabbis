@@ -30,15 +30,6 @@ export default function MarkOfTheRoad2(props: ChildProps) {
     return timeline?.current ? timeline.current.offsetTop : 0;
   };
 
-  // Get Intro Right Position
-  function getRightPosition(selector: any) {
-    const intro = selector;
-    if (!intro) return 0;
-    const introObj = intro.getBoundingClientRect();
-    const introRight = Math.floor(window.innerWidth - introObj.right);
-    return introRight;
-  }
-
   // Section Data
   const sectionData = [
     {
@@ -60,66 +51,75 @@ export default function MarkOfTheRoad2(props: ChildProps) {
   ];
 
   // Section Aniamtion
-  useGSAP(
-    () => {
-      const items = wrapper.current?.querySelectorAll(".section-content");
-      items?.forEach((item, index) => {
-        const image = item.querySelector(".image");
-        const title = item.querySelector(".title>h4");
-        // Rubbis Image
-        if (image) {
-          gsap.set(image, {
-            y: 100,
-            opacity: 0,
-          });
-          gsap.to(image, {
-            y: 0,
-            opacity: 1,
-            duration: 1.5,
-            ease: "expo.inOut",
-            scrollTrigger: {
-              start: () => {
-                return getTimelineOffset() + getRightPosition(image);
-              },
-              toggleActions: "restart pause play reverse",
-            },
-          });
-        }
-        // Rubbis Title
-        document.fonts.ready.then(() => {
-          // Section Title 1
-          if (title) {
-            gsap.set(title, { opacity: 1 });
-            let splititle;
-            SplitText.create(title, {
-              type: "lines",
-              linesClass: "line direction-rtl",
-              autoSplit: true,
-              mask: "lines",
-              onSplit: (self) => {
-                splititle = gsap.from(self.lines, {
-                  duration: 2,
-                  yPercent: 100,
-                  opacity: 0,
-                  delay: -0.5,
-                  stagger: 0.02,
-                  ease: "expo.inOut",
-                  scrollTrigger: {
-                    start: () => {
-                      return getTimelineOffset() + getRightPosition(title);
-                    },
-                    toggleActions: "restart pause resume reverse",
-                  },
-                });
-                return splititle;
-              },
-            });
-          }
-        });
-      });
-    },
-    { scope: wrapper, dependencies: [pathname] },
-  );
+  // useGSAP(
+  //   () => {
+  //     const animations: gsap.core.Animation[] = [];
+  //     const sections = wrapper.current?.querySelectorAll(".section-content");
+  //     sections?.forEach((item, index) => {
+  //       const image = item.querySelector(".image") as HTMLElement | null;
+  //       const title = item.querySelector(".title>h4") as HTMLElement | null;
+
+  //       // Rubbis Image
+  //       if (image && image?.textContent?.length !== 0) {
+  //         gsap.set(image, {
+  //           y: 100,
+  //           opacity: 0,
+  //         });
+  //         const imageAnimation = gsap.to(image, {
+  //           y: 0,
+  //           opacity: 1,
+  //           duration: 1.5,
+  //           ease: "expo.inOut",
+  //           scrollTrigger: {
+  //             start: () => {
+  //               return getTimelineOffset() + GetRightPosition(image);
+  //             },
+  //             toggleActions: "restart pause play reverse",
+  //           },
+  //         });
+  //         animations.push(imageAnimation);
+  //       }
+  //       // Rubbis Title
+  //       document.fonts.ready.then(() => {
+  //         // Section Title 1
+  //         if (title && title?.textContent?.length !== 0) {
+  //           gsap.set(title, { opacity: 1 });
+  //           let splititle;
+  //           SplitText.create(title, {
+  //             type: "lines",
+  //             linesClass: "line direction-rtl",
+  //             autoSplit: true,
+  //             mask: "lines",
+  //             onSplit: (self) => {
+  //               splititle = gsap.from(self.lines, {
+  //                 duration: 2,
+  //                 yPercent: 100,
+  //                 opacity: 0,
+  //                 delay: -0.5,
+  //                 stagger: 0.02,
+  //                 ease: "expo.inOut",
+  //                 scrollTrigger: {
+  //                   start: () => {
+  //                     return getTimelineOffset() + GetRightPosition(title);
+  //                   },
+  //                   toggleActions: "restart pause resume reverse",
+  //                 },
+  //               });
+  //               animations.push(splititle);
+  //               return splititle;
+  //             },
+  //           });
+  //         }
+  //       });
+  //     });
+
+  //     // Return function to kill animations on unmount or dependency change
+  //     return () => {
+  //       animations.forEach((animation) => animation.kill());
+  //     };
+  //   },
+  //   { scope: wrapper, dependencies: [pathname, props.data] },
+  // );
 
   return (
     <section
@@ -137,7 +137,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
             <div className="image w-[33.33vw] h-103.25">
               <Image
                 className="w-full object-cover object-center h-full"
-                src={item?.image?.url || item?.image?.src}
+                src={item?.image?.sizes?.committee_thumb || item?.image?.src}
                 width={"640"}
                 height={"413"}
                 blurDataURL={

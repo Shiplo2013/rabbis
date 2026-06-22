@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -17,6 +18,7 @@ interface ChildProps {
   animWidthText: number;
   bgImage: any;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 export default function RabbisTimeline3(props: ChildProps) {
   // Navigation
@@ -28,118 +30,130 @@ export default function RabbisTimeline3(props: ChildProps) {
     return timeline?.current ? timeline.current.offsetTop : 0;
   };
   // Section Data
-  const RabbisData = [
+  const RabbisData = props.data?.section_content || [
     {
       image: rabbisImage1,
-      text: `שנת תשמ"ז:<br/>מינוי רבי שלמה כץ ורבי דוד כהן לרמי"ם`,
+      title: `שנת תשמ"ז:<br/>מינוי רבי שלמה כץ ורבי דוד כהן לרמי"ם`,
     },
     {
       image: rabbisImage2,
-      text: `שנת????:<br/>פתיחת פנימיה ב'`,
+      title: `שנת????:<br/>פתיחת פנימיה ב'`,
     },
     {
       image: rabbisImage3,
-      text: `שנת תשנ"ה:<br/> פתיחת פנימיה ג'`,
+      title: `שנת תשנ"ה:<br/> פתיחת פנימיה ג'`,
     },
   ];
   // Section Animation
   useGSAP(
     () => {
-      // Selector
-      const secTitle = wrapper?.current?.querySelector(".rabbis-title>h2");
-      // Section Title
-      document.fonts.ready.then(() => {
+      const animations: gsap.core.Animation[] = [];
+
+      if (typeof window !== "undefined" && wrapper.current) {
+        // Selector
+        const secTitle = wrapper?.current?.querySelector(".rabbis-title>h2");
         // Section Title
-        if (secTitle) {
-          gsap.set(secTitle, { opacity: 1 });
-          let splititle;
-          SplitText.create(secTitle, {
-            type: "lines",
-            linesClass: "line direction-rtl",
-            autoSplit: true,
-            mask: "lines",
-            onSplit: (self) => {
-              splititle = gsap.from(self.lines, {
-                duration: 2,
-                yPercent: 120,
-                stagger: 0.025,
-                delay: -0.5,
-                ease: "expo.inOut",
-                scrollTrigger: {
-                  start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(secTitle) +
-                      window.innerWidth * 0.1
-                    );
-                  },
-                  toggleActions: "restart pause resume reverse",
-                },
-              });
-              return splititle;
-            },
-          });
-        }
-      });
-      // Current Rabbis Animatin
-      const items = wrapper.current?.querySelectorAll(".current-rubbis");
-      items?.forEach((item, index) => {
-        const image = item.querySelector(".image");
-        const title = item.querySelector(".title>h4");
-        // Rubbis Image
-        gsap.set(image, {
-          x: -100,
-          opacity: 0,
-        });
-        gsap.to(image, {
-          x: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "expo.out",
-          scrollTrigger: {
-            start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(item) +
-                window.innerWidth * 0.1
-              );
-            },
-            toggleActions: "restart pause resume reverse",
-          },
-        });
-        // Rubbis Title
         document.fonts.ready.then(() => {
-          // Section Title 1
-          gsap.set(title, { opacity: 1 });
-          let splititle;
-          SplitText.create(title, {
-            type: "lines",
-            linesClass: "line direction-rtl",
-            autoSplit: true,
-            mask: "lines",
-            onSplit: (self) => {
-              splititle = gsap.from(self.lines, {
-                duration: 1,
-                yPercent: 100,
-                opacity: 0,
-                stagger: 0.05,
-                ease: "expo.inOut",
-                scrollTrigger: {
-                  start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(item) +
-                      window.innerWidth * 0.1
-                    );
+          // Section Title
+          if (secTitle) {
+            gsap.set(secTitle, { opacity: 1 });
+            let splititle;
+            SplitText.create(secTitle, {
+              type: "lines",
+              linesClass: "line direction-rtl",
+              autoSplit: true,
+              mask: "lines",
+              onSplit: (self) => {
+                splititle = gsap.from(self.lines, {
+                  duration: 2,
+                  yPercent: 120,
+                  stagger: 0.025,
+                  delay: -0.5,
+                  ease: "expo.inOut",
+                  scrollTrigger: {
+                    start: () => {
+                      return (
+                        getTimelineOffset() +
+                        GetRightPosition(secTitle) +
+                        window.innerWidth * 0.1
+                      );
+                    },
+                    toggleActions: "restart pause resume reverse",
                   },
-                  toggleActions: "restart pause resume reverse",
-                },
-              });
-              return splititle;
+                });
+                animations.push(splititle);
+                return splititle;
+              },
+            });
+          }
+        });
+        // Current Rabbis Animatin
+        const items = wrapper.current?.querySelectorAll(".current-rubbis");
+        items?.forEach((item, index) => {
+          const image = item.querySelector(".image");
+          const title = item.querySelector(".title>h4");
+          // Rubbis Image
+          gsap.set(image, {
+            x: -100,
+            opacity: 0,
+          });
+          const imageAnimation = gsap.to(image, {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "expo.out",
+            scrollTrigger: {
+              start: () => {
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(item) +
+                  window.innerWidth * 0.1
+                );
+              },
+              toggleActions: "restart pause resume reverse",
             },
           });
+          animations.push(imageAnimation);
+          // Rubbis Title
+          document.fonts.ready.then(() => {
+            // Section Title 1
+            gsap.set(title, { opacity: 1 });
+            let splititle;
+            SplitText.create(title, {
+              type: "lines",
+              linesClass: "line direction-rtl",
+              autoSplit: true,
+              mask: "lines",
+              onSplit: (self) => {
+                splititle = gsap.from(self.lines, {
+                  duration: 1,
+                  yPercent: 100,
+                  opacity: 0,
+                  stagger: 0.05,
+                  ease: "expo.inOut",
+                  scrollTrigger: {
+                    start: () => {
+                      return (
+                        getTimelineOffset() +
+                        GetRightPosition(item) +
+                        window.innerWidth * 0.1
+                      );
+                    },
+                    toggleActions: "restart pause resume reverse",
+                  },
+                });
+                animations.push(splititle);
+                return splititle;
+              },
+            });
+          });
         });
-      });
+      }
+
+      // Return animations
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
     { scope: wrapper, dependencies: [pathname] },
   );
@@ -153,13 +167,11 @@ export default function RabbisTimeline3(props: ChildProps) {
       <div className="section-row w-full h-full flex px-[15.5vw] py-[10vh] items-center justify-center relative z-30 gap-x-[8vw]">
         <div dir="ltr" className="rabbis-title self-end mb-[3vh]">
           <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F] text-right">
-            ציוני
-            <br />
-            דרך
+            {parse(props.data?.title || `ציוני<br /> דרך`)}
           </h2>
         </div>
         <div className="rabbis-timeline flex gap-x-[20vw] relative">
-          {RabbisData.map((item, index) => (
+          {RabbisData.map((item: any, index: number) => (
             <div
               key={index}
               className="current-rubbis w-64.5 flex flex-col gap-y-[7vh]"
@@ -167,10 +179,12 @@ export default function RabbisTimeline3(props: ChildProps) {
               <div className="image w-[13.44vw] h-[32.83vh] relative overflow-hidden">
                 <Image
                   className="w-full object-cover object-center h-full relative z-10"
-                  src={item?.image?.src}
+                  src={item?.image?.sizes?.thumbnail || item?.image?.src}
                   width="258"
                   height="305"
-                  blurDataURL={item?.image?.blurDataURL}
+                  blurDataURL={
+                    CreateShimmerDataUrl(258, 305) || item?.image?.blurDataURL
+                  }
                   placeholder={"blur"}
                   loading="lazy"
                   alt="Rabbis Image"
@@ -178,7 +192,7 @@ export default function RabbisTimeline3(props: ChildProps) {
               </div>
               <div dir="ltr" className="title mt-auto">
                 <h4 className="text-[40px] leading-[0.7em] text-[#FBF4E6] text-right pt-2">
-                  {parse(item.text)}
+                  {parse(item.title || "")}
                 </h4>
               </div>
             </div>

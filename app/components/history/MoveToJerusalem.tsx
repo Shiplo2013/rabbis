@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -15,6 +16,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 
 export default function MoveToJerusalem(props: ChildProps) {
@@ -28,23 +30,29 @@ export default function MoveToJerusalem(props: ChildProps) {
   };
 
   // Section Content
-  const moveToJerusalemText = `מתוך האפר קמה הישיבה לבניין מחודש, זוהר ונישא.<br/>תלמידי הישיבה הוותיקים, יחד עם בחורים מבני היישוב הישן, מתלכדים סביב אורה של הישיבה הקדושה, וממשיכים ביתר שאת את המפעל הגדול של תורה ומוסר, כאילו לא נעקרה ממקומה מעולם.<br/>מן היום ההוא והלאה, נושאת הישיבה את שמה "ישיבת חברון", שם זה נחרת לנצח באותיות של זהב, זכר לקדושים ולטהורים אשר עלו בסערה השמימה על קידוש ה', בידי בני עוולה.<br/>בראש המחנה ניצב מרן רבי יחזקאל סרנא, כמלך בגדוד, מנהיג את הישיבה ביד רמה וברוח נדירה, ומצעידה לפסגות חדשות. מאות בני תורה, מכל קצווי הארץ, מתדפקים על שערי ההיכל  לבוא, להסתופף, ולהצטרף אל ליגיון של מלך.<br/>לצידו עומדים עמודי התורה ראשי הישיבה הגאון רבי אהרן כהן והגאון רבי משה חברוני, שותפיו לדרך, המסייעים בעדו במסירות ובהשראה.<br/>יחד, נדבך אחר נדבך, הם בונים את מבצר התורה האיתן, ההולך ונישא לעין כל – עד שהוא הופך תוך זמן קצר למרכז תורה מבהיק, המאציל מזיו קדושתו על כל ארץ הקודש כולה`;
+  const moveToJerusalemText =
+    props.data?.text ||
+    `<p>מתוך האפר קמה הישיבה לבניין מחודש, זוהר ונישא.<br/>תלמידי הישיבה הוותיקים, יחד עם בחורים מבני היישוב הישן, מתלכדים סביב אורה של הישיבה הקדושה, וממשיכים ביתר שאת את המפעל הגדול של תורה ומוסר, כאילו לא נעקרה ממקומה מעולם.<br/>מן היום ההוא והלאה, נושאת הישיבה את שמה "ישיבת חברון", שם זה נחרת לנצח באותיות של זהב, זכר לקדושים ולטהורים אשר עלו בסערה השמימה על קידוש ה', בידי בני עוולה.<br/>בראש המחנה ניצב מרן רבי יחזקאל סרנא, כמלך בגדוד, מנהיג את הישיבה ביד רמה וברוח נדירה, ומצעידה לפסגות חדשות. מאות בני תורה, מכל קצווי הארץ, מתדפקים על שערי ההיכל  לבוא, להסתופף, ולהצטרף אל ליגיון של מלך.<br/>לצידו עומדים עמודי התורה ראשי הישיבה הגאון רבי אהרן כהן והגאון רבי משה חברוני, שותפיו לדרך, המסייעים בעדו במסירות ובהשראה.<br/>יחד, נדבך אחר נדבך, הם בונים את מבצר התורה האיתן, ההולך ונישא לעין כל – עד שהוא הופך תוך זמן קצר למרכז תורה מבהיק, המאציל מזיו קדושתו על כל ארץ הקודש כולה</p>`;
 
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
       // Selectors
       const image1 = wrapper?.current?.querySelector(".image1");
       const image2 = wrapper?.current?.querySelector(".image2");
       const button = wrapper?.current?.querySelector(".period-button");
       const text = wrapper?.current?.querySelector(".section-text");
       // Image 1
-      if (image1) {
+      if (image1 && image1?.textContent?.length !== 0) {
         gsap.set(image1, {
           y: 100,
           opacity: 0,
         });
-        gsap.to(image1, {
+        const image1Animation = gsap.to(image1, {
           y: 0,
           opacity: 1,
           duration: 1,
@@ -60,7 +68,8 @@ export default function MoveToJerusalem(props: ChildProps) {
             toggleActions: "restart pause play reverse",
           },
         });
-        gsap.to(image1, {
+        animations.push(image1Animation);
+        const image1XAnimation = gsap.to(image1, {
           xPercent: 60,
           duration: 1,
           ease: "expo.out",
@@ -76,10 +85,11 @@ export default function MoveToJerusalem(props: ChildProps) {
             scrub: 2,
           },
         });
+        animations.push(image1XAnimation);
       }
       // Button
-      if (button) {
-        gsap.to(button, {
+      if (button && button?.textContent?.length !== 0) {
+        const buttonAnimation = gsap.to(button, {
           x: "-30vw",
           rotate: 360,
           duration: 1,
@@ -96,15 +106,16 @@ export default function MoveToJerusalem(props: ChildProps) {
             scrub: 2,
           },
         });
+        animations.push(buttonAnimation);
       }
       // Image 2
-      if (image2) {
+      if (image2 && image2?.textContent?.length !== 0) {
         gsap.set(image2, {
           y: 100,
           xPercent: 30,
           opacity: 0,
         });
-        gsap.to(image2, {
+        const image2Animation = gsap.to(image2, {
           y: 0,
           opacity: 1,
           duration: 1,
@@ -120,7 +131,7 @@ export default function MoveToJerusalem(props: ChildProps) {
             toggleActions: "restart pause play reverse",
           },
         });
-        gsap.to(image2, {
+        const image2XAnimation = gsap.to(image2, {
           xPercent: 0,
           duration: 1,
           ease: "expo.out",
@@ -136,11 +147,13 @@ export default function MoveToJerusalem(props: ChildProps) {
             scrub: 2,
           },
         });
+        animations.push(image2Animation);
+        animations.push(image2XAnimation);
       }
       // Text
       document.fonts.ready.then(() => {
         // Section Title
-        if (text) {
+        if (text && text?.textContent?.length !== 0) {
           gsap.set(text, { opacity: 1 });
           let splititle;
           SplitText.create(text, {
@@ -165,13 +178,19 @@ export default function MoveToJerusalem(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(splititle);
               return splititle;
             },
           });
         }
       });
+
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
 
   return (
@@ -187,12 +206,14 @@ export default function MoveToJerusalem(props: ChildProps) {
             <div className="relative h-143.5 w-188.75">
               <Image
                 className="w-full object-cover object-center h-full"
-                src={mtjImage1.src}
+                src={props.data?.image_1?.sizes?.large || mtjImage1.src}
                 width={755}
                 height={574}
                 loading="lazy"
                 placeholder="blur"
-                blurDataURL={mtjImage1?.blurDataURL}
+                blurDataURL={
+                  CreateShimmerDataUrl(755, 574) || mtjImage1?.blurDataURL
+                }
                 alt="Image 1"
               />
             </div>
@@ -206,13 +227,15 @@ export default function MoveToJerusalem(props: ChildProps) {
             <div className="relative h-140 w-236.5">
               <Image
                 className="w-full object-cover object-center h-full"
-                src={mtjImage2.src}
+                src={props.data?.image_2?.sizes?.large || mtjImage2.src}
                 width={946}
                 height={560}
                 loading="lazy"
                 placeholder="blur"
-                blurDataURL={mtjImage2?.blurDataURL}
-                alt="Image 1"
+                blurDataURL={
+                  CreateShimmerDataUrl(946, 560) || mtjImage2?.blurDataURL
+                }
+                alt="Image 2"
               />
             </div>
           </div>
@@ -220,7 +243,7 @@ export default function MoveToJerusalem(props: ChildProps) {
             dir="ltr"
             className="section-text 2xl:text-[21px] xl:text-[18px] sm:text-[16px] leading-[1.4em] text-[#FBF4E6] min-w-[26.3vw] w-[26.3vw] text-right"
           >
-            <p>{parse(moveToJerusalemText)}</p>
+            {parse(moveToJerusalemText)}
           </div>
         </div>
       </div>

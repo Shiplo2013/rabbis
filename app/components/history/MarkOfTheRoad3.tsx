@@ -1,4 +1,5 @@
 "use client";
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -19,6 +20,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel: React.RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 export default function MarkOfTheRoad3(props: ChildProps) {
   // Navigation
@@ -33,40 +35,51 @@ export default function MarkOfTheRoad3(props: ChildProps) {
   };
 
   // Section Data
-  const title = `ציוני<br/>דרך`;
+  const title = props?.data?.title || `ציוני<br/>דרך`;
   const sectionData = [
     {
-      title: `שנת תרפ"ד:<br/>ייסוד הישיבה`,
-      image: markImage1,
+      title: props?.data?.content_1?.title || `שנת תרפ"ד:<br/>ייסוד הישיבה`,
+      image: props?.data?.content_1?.image || markImage1,
       notification: "",
     },
     {
-      title: `שנת תרפ"ה:<br/>עליית הסבא והגרמ"מ אפשטיין`,
-      image: markImage2,
+      title:
+        props?.data?.content_2?.title ||
+        `שנת תרפ"ה:<br/>עליית הסבא והגרמ"מ אפשטיין`,
+      image: props?.data?.content_2?.image || markImage2,
       notification: "",
     },
     {
-      title: `שנת תרפ"ה:<br/>עליית הסבא והגרמ"מ אפשטיין`,
-      image: markImage3,
+      title:
+        props?.data?.content_3?.title ||
+        `שנת תרפ"ה:<br/>עליית הסבא והגרמ"מ אפשטיין`,
+      image: props?.data?.content_3?.image || markImage3,
       notification: "",
     },
     {
-      title: `שנת תרפ"ו:<br/>מינוי רבי  אריה יהודה לייב חסמן כמשגיח`,
-      image: markImage3,
+      title:
+        props?.data?.content_4?.title ||
+        `שנת תרפ"ו:<br/>מינוי רבי  אריה יהודה לייב חסמן כמשגיח`,
+      image: props?.data?.content_4?.image || markImage4,
       notification: `מכתב מרן המשגיח רבי יהודה אריה לייב חסמן זצוק"ל אל ראשי הישיבה בחברון`,
     },
   ];
-  const secTitle5 = `שנת תרפ"ז:<br/>פטירת הסבא`;
+  const secTitle5 =
+    props?.data?.content_5?.title || `שנת תרפ"ז:<br/>פטירת הסבא`;
 
   // Section Animaton
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
       // Section Text Here
       document.fonts.ready.then(() => {
         // Selectors
         const mainTitle = wrapper.current?.querySelector(".main-title");
         // Section Title
-        if (mainTitle) {
+        if (mainTitle && mainTitle?.textContent?.length !== 0) {
           gsap.set(mainTitle, { opacity: 1 });
           let maintitleSplit;
           SplitText.create(mainTitle, {
@@ -92,6 +105,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                   toggleActions: "restart pause play reverse",
                 },
               });
+              animations.push(maintitleSplit);
               return maintitleSplit;
             },
           });
@@ -110,7 +124,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
               y: 100,
               opacity: 0,
             });
-            gsap.to(notification, {
+            const notificationAnimation = gsap.to(notification, {
               y: 0,
               opacity: 1,
               duration: 1.5,
@@ -127,6 +141,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                 toggleActions: "restart pause play reverse",
               },
             });
+            animations.push(notificationAnimation);
             // Notification Icon
             gsap.set(notificationIcon, {
               y: 20,
@@ -134,7 +149,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
               rotate: -15,
               opacity: 0,
             });
-            gsap.to(notificationIcon, {
+            const notificationIconAnimation = gsap.to(notificationIcon, {
               y: 0,
               x: 0,
               rotate: 0,
@@ -153,14 +168,15 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                 toggleActions: "restart pause play reverse",
               },
             });
+            animations.push(notificationIconAnimation);
           }
           // Section Image
-          if (image) {
+          if (image && image?.textContent?.length !== 0) {
             gsap.set(image, {
               y: 100,
               opacity: 0,
             });
-            gsap.to(image, {
+            const imageAnimation = gsap.to(image, {
               y: 0,
               opacity: 1,
               duration: 1.5,
@@ -176,9 +192,10 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                 toggleActions: "restart pause play reverse",
               },
             });
+            animations.push(imageAnimation);
           }
-          // Seection Title
-          if (title) {
+          // Section Title
+          if (title && title?.textContent?.length !== 0) {
             gsap.set(title, { opacity: 1 });
             let splititle;
             SplitText.create(title, {
@@ -204,14 +221,20 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                     toggleActions: "restart pause play reverse",
                   },
                 });
+                animations.push(splititle);
                 return splititle;
               },
             });
           }
         });
       });
+
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
 
   return (
@@ -230,17 +253,17 @@ export default function MarkOfTheRoad3(props: ChildProps) {
             {parse(title)}
           </h2>
         </div>
-        {sectionData?.map((item, index) => (
+        {sectionData?.map((item: any, index: number) => (
           <div
             key={index}
             className="group section-content flex flex-col items-start gap-y-[10vh] w-48.5vw self-end -mb-[9vh] px-[2.7vw] pt-[9vh] relative cursor-pointer"
           >
-            {item.notification !== "" && (
+            {item?.notification !== "" && (
               <div className="notifiaction notification-button py-5 px-8 w-108 bg-[#5A7C4E] relative pl-19 mx-auto z-20">
                 <div className="notify-icon w-33.75 h-25 absolute top-0 left-0 -translate-x-1/2">
                   <Image
                     className="w-full object-cover object-center h-full"
-                    src={notifyIcon.src}
+                    src={notifyIcon?.src}
                     width={"135"}
                     height={"100"}
                     blurDataURL={notifyIcon?.blurDataURL}
@@ -249,24 +272,26 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                     alt={"Notify Icon"}
                   />
                 </div>
-                <p className="text-[20px] leading-[1.25em]">
-                  {parse(item.notification)}
-                </p>
+                <div className="text-[20px] leading-[1.25em]">
+                  {parse(item?.notification)}
+                </div>
               </div>
             )}
             <div dir="ltr" className="title relative z-20">
               <h4 className="text-[43px] text-(--theme-color) leading-[0.7em] transition-all duration-300 delay-100 group-hover:text-black group-hover text-right">
-                {parse(item.title)}
+                {parse(item?.title)}
               </h4>
             </div>
             <div className="image w-161 h-106.25 relative z-20">
               <div className="image-wrapper w-full h-full transition-all duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] group-hover:scale-105">
                 <Image
                   className="w-full object-cover object-center h-full"
-                  src={item.image.src}
+                  src={item?.image?.sizes?.large || item?.image?.src}
                   width={"644"}
                   height={"425"}
-                  blurDataURL={item.image?.blurDataURL}
+                  blurDataURL={
+                    CreateShimmerDataUrl(644, 425) || item?.image?.blurDataURL
+                  }
                   placeholder={"blur"}
                   loading="lazy"
                   alt={"Section Image"}
@@ -280,10 +305,14 @@ export default function MarkOfTheRoad3(props: ChildProps) {
           <div className="image w-[62.7vw] h-[56.8vh]">
             <Image
               className="w-full object-cover object-center h-full"
-              src={markImage4.src}
+              src={
+                props?.data?.content_5?.image?.sizes?.large || markImage4.src
+              }
               width={"1205"}
               height={"614"}
-              blurDataURL={markImage4?.blurDataURL}
+              blurDataURL={
+                CreateShimmerDataUrl(1205, 614) || markImage4?.blurDataURL
+              }
               placeholder={"blur"}
               loading="lazy"
               alt={"Section Image"}

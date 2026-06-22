@@ -10,7 +10,6 @@ import Header from "../components/Header";
 import CyclePicturesSection from "../components/cycle-pictures/CyclePicturesSection";
 import Introduction from "../components/cycle-pictures/Introduction";
 import LoadingEffect from "../components/LoadingEffect";
-import GetRightPosition from "../ui/GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
 import SmoothWrapper from "../ui/SmoothWrapper";
 import TextSplitLines from "../ui/TextSplitLines";
@@ -29,7 +28,11 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   // Router Path
   const pathname = usePathname();
-  const [activeCategory, setActiveCategory] = useState(0);
+  const [activeCategory, setActiveCategory] = useState(-1);
+  const [postPagination, setPostPagination] = useState(1);
+  const [totalPostPages, setTotalPostPages] = useState(1);
+  const [currentPositions, setCurrentPositions] = useState(0);
+  const [postDataLoaded, setPostDataLoaded] = useState(false);
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -56,7 +59,7 @@ export default function Page() {
         const response = await fetch("/api/cycle-pictures", {
           cache: "no-store",
         });
-        const response2 = await fetch("/api/cycle-pictures/posts?per_page=3", {
+        const response2 = await fetch("/api/cycle-pictures/posts?per_page=6", {
           cache: "no-store",
         });
         const response3 = await fetch("/api/cycle-pictures/categories", {
@@ -85,6 +88,8 @@ export default function Page() {
             posts: posts || [],
             parentCategories: categories?.parents || [],
           });
+          setTotalPostPages(posts?.pagination?.total_pages || 1);
+          setPostPagination(posts?.pagination?.page || 1);
         }
       } catch (error) {
         console.error(error);
@@ -110,13 +115,146 @@ export default function Page() {
     }
   }, [picturesPageData, animationPlayed]);
 
+  // On Post Pagenation change
+  useEffect(() => {
+    console.log("Total Post Pages:", totalPostPages);
+    console.log("Current Post Page:", postPagination);
+    setCurrentPositions(window.scrollY);
+
+    if (postPagination === 1) {
+      return;
+    }
+    const loadMorePosts = async () => {
+      try {
+        setIsLoading(true);
+        setPostDataLoaded(false);
+        setPageDataFetched(false);
+
+        const response = await fetch(
+          `/api/cycle-pictures/posts?per_page=6&page=${postPagination}`,
+          {
+            cache: "no-store",
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to load more posts.");
+        } else {
+          const newPosts = await response.json();
+          setPicturesPageData((prevData: any) => ({
+            ...prevData,
+            posts: {
+              ...prevData.posts,
+              posts: [...prevData.posts.posts, ...newPosts.posts],
+              pagination: newPosts.pagination,
+            },
+          }));
+        }
+      } catch (error) {
+        console.error(error);
+        setError("Failed to load more posts.");
+      } finally {
+        setIsLoading(false);
+        setPageDataFetched(true);
+        setPostDataLoaded(true);
+      }
+    };
+
+    loadMorePosts();
+  }, [postPagination]);
+
+  useEffect(() => {
+    console.log("Post Data:", picturesPageData?.posts);
+  }, [postDataLoaded]);
+
+  useEffect(() => {
+    const animations: gsap.core.Animation[] = [];
+    // Selectors
+    const headerLeft = main.current?.querySelector(".header-left");
+    const headerRight = main.current?.querySelector(".header-right");
+    const bannerBackgroundOverlay = main.current?.querySelector(
+      ".first-intro .intro-background .intro-bg-mask",
+    );
+    if (main.current) {
+      const mainAnim = gsap.to(main.current, {
+        opacity: 1,
+        ease: "none",
+        duration: 0.5,
+        delay: 0,
+      });
+      animations.push(mainAnim);
+    }
+    if (headerLeft) {
+      const headerLeftAnim = gsap.to(headerLeft, {
+        opacity: 1,
+        ease: "none",
+        duration: 1,
+      });
+      animations.push(headerLeftAnim);
+    }
+    if (headerRight) {
+      const headerRightAnim = gsap.to(headerRight, {
+        opacity: 1,
+        ease: "none",
+        duration: 0,
+      });
+      animations.push(headerRightAnim);
+    }
+    if (page.current) {
+      const pageAnim = gsap.to(page.current, {
+        opacity: 1,
+        ease: "none",
+        duration: 0,
+      });
+      animations.push(pageAnim);
+    }
+    // Wave Line Animation
+    if (waveMask.current) {
+      const waveMaskAnim = gsap.to(waveMask.current, {
+        translateY: 0,
+        opacity: 1,
+        ease: "expo.inOut",
+        duration: 0,
+        delay: 0,
+      });
+      animations.push(waveMaskAnim);
+    }
+    if (bannerBackgroundOverlay) {
+      const bannerBackgroundOverlayAnim = gsap.to(bannerBackgroundOverlay, {
+        translateY: "-100%",
+        delay: 0,
+        duration: 0,
+        ease: "expo.inOut",
+      });
+      animations.push(bannerBackgroundOverlayAnim);
+    }
+
+    gsap.to(window, {
+      scrollTo: postPagination * window.innerWidth,
+      duration: 0,
+      ease: "none",
+    });
+
+    // Return
+    return () => {
+      animations.forEach((anim) => anim.kill());
+    };
+  }, [postDataLoaded]);
+
   useEffect(() => {
     if (!picturesPageData) {
       return;
     }
+
+    console.log("Pictures Page Data Updated:", picturesPageData);
     // Update Section Width on Data Change
     const updateSectionWidth = () => {
-      const newSectionWidth = 200;
+      const newSectionWidth =
+        10 +
+        picturesPageData?.posts?.posts?.length * 44.27 +
+        picturesPageData?.posts?.posts?.length +
+        1 * 10 +
+        (200 / 19.2) * 2;
 
       setSectionWidth(newSectionWidth);
       setContainerWidth(newSectionWidth + 100);
@@ -145,19 +283,25 @@ export default function Page() {
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
-            gsap.to(progress.current, { width: `${100 * self.progress}%` });
+            if (progress.current) {
+              gsap.to(progress.current, { width: `${100 * self.progress}%` });
+            }
             if (self.progress > 0.97) {
-              gsap.to(waveLine.current, {
-                opacity: 0,
-                duration: 0.1,
-                delay: 0,
-              });
+              if (waveLine.current) {
+                gsap.to(waveLine.current, {
+                  opacity: 0,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
             } else {
-              gsap.to(waveLine.current, {
-                opacity: 1,
-                duration: 0.1,
-                delay: 0,
-              });
+              if (waveLine.current) {
+                gsap.to(waveLine.current, {
+                  opacity: 1,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
             }
           },
         },
@@ -185,15 +329,18 @@ export default function Page() {
 
   // Load Page
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && main.current) {
+    const animations: gsap.core.Animation[] = [];
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      main.current &&
+      page.current &&
+      !isAllAnimationComplete
+    ) {
       document.fonts.ready.then(() => {
         // Selectors
         const headerLeft = main.current?.querySelector(".header-left");
         const headerRight = main.current?.querySelector(".header-right");
-        const rabbisContent = main.current?.querySelectorAll(".rabbis-section");
-        rabbisContent?.forEach((section) => {
-          section.classList.add("opacity-0");
-        });
         // Banner Button
         const introTitle = main.current?.querySelector(
           ".first-intro .intro-title",
@@ -237,9 +384,6 @@ export default function Page() {
             onComplete: () => {
               // Set Animation Played to true
               setIsAllAnimationComplete(true);
-              rabbisContent?.forEach((section) => {
-                section.classList.add("opacity-100");
-              });
             },
           });
           if (main.current) {
@@ -333,13 +477,19 @@ export default function Page() {
               "-=2.5",
             );
           }
+          animations.push(tl);
         }
       });
     }
-  }, [pathname, pageDataFetched]);
+    // Return
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
+  }, [pathname, pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
+    const animations: gsap.core.Animation[] = [];
     // Page Content Animation
     const sheetContent = main.current?.querySelectorAll(
       ".sheet-content .single-cycle-picture",
@@ -351,7 +501,7 @@ export default function Page() {
 
     // Animations
     if (sidebar) {
-      gsap.from(sidebar, {
+      const sideAnimation = gsap.from(sidebar, {
         xPercent: 100,
         opacity: 0,
         ease: "expo.inOut",
@@ -364,48 +514,62 @@ export default function Page() {
           toggleActions: "restart pause resume reverse",
         },
       });
+      animations.push(sideAnimation);
     }
     // Contents
-    if (sheetContent) {
-      sheetContent.forEach((section, index) => {
-        // Custom Content Item
-        if (section) {
-          gsap.from(section, {
-            xPercent: -50,
-            opacity: 0,
-            ease: "slow(0.1,1,false)",
-            duration: 1.5,
-            delay: 0,
-            scrollTrigger: {
-              start: () => {
-                return GetRightPosition(section) - window.innerWidth * 0.5;
-              },
-              toggleActions: "restart pause resume reverse",
-            },
-          });
-        }
-      });
-    }
-    // ReadMore Button
-    if (sheetReadmore) {
-      gsap.set(sheetReadmore, {
-        xPercent: -50,
-        opacity: 0,
-      });
-      gsap.to(sheetReadmore, {
-        xPercent: 0,
-        opacity: 1,
-        ease: "expo.inOut",
-        duration: 1,
-        delay: 0,
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * 3;
-          },
-          toggleActions: "restart pause resume reverse",
-        },
-      });
-    }
+    // if (sheetContent) {
+    //   sheetContent.forEach((section, index) => {
+    //     console.log("Animating Section:", GetRightPosition(section));
+    //     // Custom Content Item
+    //     if (section) {
+    //       gsap.set(section, {
+    //         xPercent: -50,
+    //         opacity: 0,
+    //       });
+    //       const contentAnimation = gsap.to(section, {
+    //         xPercent: 0,
+    //         opacity: 1,
+    //         ease: "slow(0.1,1,false)",
+    //         duration: 1.5,
+    //         delay: 0,
+    //         scrollTrigger: {
+    //           trigger: section,
+    //           start: () => {
+    //             return GetRightPosition(section) - window.innerWidth * 0.5;
+    //           },
+    //           toggleActions: "restart pause resume reverse",
+    //         },
+    //       });
+    //       animations.push(contentAnimation);
+    //     }
+    //   });
+    // }
+    // // ReadMore Button
+    // if (sheetReadmore) {
+    //   gsap.set(sheetReadmore, {
+    //     xPercent: -50,
+    //     opacity: 0,
+    //   });
+    //   const readmoreAnimation = gsap.to(sheetReadmore, {
+    //     xPercent: 0,
+    //     opacity: 1,
+    //     ease: "expo.inOut",
+    //     duration: 1,
+    //     delay: 0,
+    //     scrollTrigger: {
+    //       trigger: sheetReadmore,
+    //       start: () => {
+    //         return GetRightPosition(sheetReadmore) - window.innerWidth * 0.5;
+    //       },
+    //       toggleActions: "restart pause resume reverse",
+    //     },
+    //   });
+    //   animations.push(readmoreAnimation);
+    // }
+    // Return Animation Complete Promise
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
   };
 
   // Set Body Overflow Hidden
@@ -429,6 +593,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,
@@ -524,6 +689,9 @@ export default function Page() {
                   parentCategories={picturesPageData.parentCategories}
                   activeCategory={activeCategory}
                   setActiveCategory={setActiveCategory}
+                  postPagination={postPagination}
+                  totalPostPages={totalPostPages}
+                  setPostPagination={setPostPagination}
                 />
               </div>
             </div>

@@ -35,90 +35,102 @@ export default function RabbisTimeline(props: ChildProps) {
   // Section Data
   const RabbisData = [
     {
-      image: props?.data?.[0]?.image?.medium || rabbisImage1,
-      text:
-        props?.data?.[0]?.title || `שנת תרמ״א:<br/>מינוי רבי דב צבי הלר כמשגיח`,
+      image: rabbisImage1,
+      text: `שנת תרמ״א:<br/>מינוי רבי דב צבי הלר כמשגיח`,
     },
     {
-      image: props?.data?.[1]?.image?.medium || rabbisImage2,
-      text: props?.data?.[1]?.title || `שנת תר"ן:<br/>מינוי רבי יצחק מפוניבז'`,
+      image: rabbisImage2,
+      text: `שנת תר"ן:<br/>מינוי רבי יצחק מפוניבז'`,
     },
     {
-      image: props?.data?.[2]?.image?.medium || rabbisImage3,
-      text: props?.data?.[2]?.title || `שנת תרנ"ד:<br/>מינוי הגרמ"מ אפשטיין`,
+      image: rabbisImage3,
+      text: `שנת תרנ"ד:<br/>מינוי הגרמ"מ אפשטיין`,
     },
     {
-      image: props?.data?.[3]?.image?.medium || rabbisImage4,
-      text: props?.data?.[3]?.title || `שנת תרנ"ד:<br/>מינוי הגרא"ז מלצר`,
+      image: rabbisImage4,
+      text: `שנת תרנ"ד:<br/>מינוי הגרא"ז מלצר`,
     },
   ];
   // Section Animation
-  useGSAP(
-    () => {
-      // Current Rabbis Animatin
-      const items = wrapper.current?.querySelectorAll(".current-rubbis");
+  useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
+    // Current Rabbis Animatin
+    if (typeof window === "undefined" || !wrapper.current) {
+      return;
+    }
+    const items = wrapper.current?.querySelectorAll(".current-rubbis");
+    items?.length !== 0 &&
       items?.forEach((item, index) => {
-        const image = item.querySelector(".image");
-        const title = item.querySelector(".title>h4");
-        if (!image || !title) return;
+        const image = item.querySelector(".image") as HTMLElement | null;
+        const title = item.querySelector(".title>h4") as HTMLElement | null;
+
         // Rubbis Image
-        gsap.set(image, {
-          x: -100,
-          opacity: 0,
-        });
-        gsap.to(image, {
-          x: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "expo.out",
-          scrollTrigger: {
-            start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(item) +
-                window.innerWidth * 0.2
-              );
+        if (image && image?.textContent?.length !== 0) {
+          gsap.set(image, {
+            x: -100,
+            opacity: 0,
+          });
+          const imageAnimation = gsap.to(image, {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "expo.out",
+            scrollTrigger: {
+              start: () => {
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(item) -
+                  window.innerWidth * 0.2
+                );
+              },
+              toggleActions: "restart pause play reverse",
             },
-            toggleActions: "restart pause play reverse",
-          },
-        });
+          });
+          animations.push(imageAnimation);
+        }
         // Rubbis Title
         document.fonts.ready.then(() => {
           // Section Title 1
-          gsap.set(title, { opacity: 1 });
-          let splititle;
-          SplitText.create(title, {
-            type: "lines",
-            linesClass: "line direction-rtl",
-            autoSplit: true,
-            mask: "lines",
-            onSplit: (self) => {
-              splititle = gsap.from(self.lines, {
-                duration: 1,
-                yPercent: 100,
-                opacity: 0,
-                delay: 0.1,
-                stagger: 0.05,
-                ease: "expo.out",
-                scrollTrigger: {
-                  start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(item) +
-                      window.innerWidth * 0.2
-                    );
+          if (title && title?.textContent?.length !== 0) {
+            gsap.set(title, { opacity: 1 });
+            let splititle;
+            SplitText.create(title, {
+              type: "lines",
+              linesClass: "line direction-rtl",
+              autoSplit: true,
+              mask: "lines",
+              onSplit: (self) => {
+                splititle = gsap.from(self.lines, {
+                  duration: 1,
+                  yPercent: 100,
+                  opacity: 0,
+                  delay: 0.1,
+                  stagger: 0.05,
+                  ease: "expo.out",
+                  scrollTrigger: {
+                    start: () => {
+                      return (
+                        getTimelineOffset() +
+                        GetRightPosition(item) -
+                        window.innerWidth * 0.2
+                      );
+                    },
+                    toggleActions: "restart pause play reverse",
                   },
-                  toggleActions: "restart pause play reverse",
-                },
-              });
-              return splititle;
-            },
-          });
+                });
+                animations.push(splititle);
+                return splititle;
+              },
+            });
+          }
         });
       });
-    },
-    { scope: wrapper, dependencies: [pathname] },
-  );
+
+    // Return function to kill animations on unmount or dependency change
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
+  }, [pathname, props?.data]);
 
   return (
     <section
@@ -136,8 +148,8 @@ export default function RabbisTimeline(props: ChildProps) {
       />
       <div className="section-row w-full h-full flex px-[15.5vw] py-[5vh] items-center justify-center relative z-30">
         <div className="rabbis-timeline flex gap-x-[20vw]">
-          {props?.data?.map(
-            (item: { image: any; title: string }, index: number) => (
+          {props?.data &&
+            props?.data?.map((item: any, index: number) => (
               <div
                 key={index}
                 className="current-rubbis w-64.5 flex flex-col gap-y-[5.5vh]"
@@ -162,8 +174,7 @@ export default function RabbisTimeline(props: ChildProps) {
                   </h4>
                 </div>
               </div>
-            ),
-          )}
+            ))}
         </div>
         <div className="timeline h-2.25 w-10/12 bg-[#C3A13F] absolute top-[59vh] right-[17vw]"></div>
       </div>

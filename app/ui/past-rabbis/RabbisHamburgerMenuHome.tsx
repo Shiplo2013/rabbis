@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
+import RabbisThumb from "../../assets/images/rabbis-thumb.jpg";
 import { gsap } from "../../ui/plugins";
 import TextSplitLines from "../TextSplitLines";
 
@@ -24,6 +25,42 @@ type PastRabbis = {
   text: string;
   buttonLink?: string;
 };
+
+function resolveNestedImageUrl(value: unknown): string | undefined {
+  if (typeof value === "string" && value.trim()) {
+    return value.trim();
+  }
+
+  if (!value || typeof value !== "object") {
+    return undefined;
+  }
+
+  const record = value as Record<string, unknown>;
+  const directValue = record.url ?? record.src ?? record.source_url;
+
+  if (typeof directValue === "string" && directValue.trim()) {
+    return directValue.trim();
+  }
+
+  return (
+    resolveNestedImageUrl(record.full) ||
+    resolveNestedImageUrl(record.large) ||
+    resolveNestedImageUrl(record.medium_large) ||
+    resolveNestedImageUrl(record.medium) ||
+    resolveNestedImageUrl(record.thumbnail) ||
+    resolveNestedImageUrl(record.sizes) ||
+    resolveNestedImageUrl(record.media_details) ||
+    undefined
+  );
+}
+
+function resolveImageSrc(image: unknown, fallback: string) {
+  if (typeof image === "string" && image.trim()) {
+    return image.trim();
+  }
+
+  return resolveNestedImageUrl(image) || fallback;
+}
 
 export default function RabbisHamburgerMenuHome(
   props: RabbisHamburgerMenuProps,
@@ -45,6 +82,7 @@ export default function RabbisHamburgerMenuHome(
   // Handle Menu Close
   useGSAP(() => {
     //console.log(allPosts);
+    const animations: gsap.core.Animation[] = [];
     // Set Animations
     const closeButton = hamurgerMenu.current?.querySelector(".menu-close");
     const menuItemsTitle = hamurgerMenu.current?.querySelectorAll(
@@ -92,8 +130,8 @@ export default function RabbisHamburgerMenuHome(
     }
 
     // Menu Animation
-    menuTimeline
-      .to(
+    if (hamurgerMenu.current && menuOverlay.current) {
+      menuTimeline.to(
         menuOverlay.current,
         {
           opacity: 1,
@@ -103,8 +141,11 @@ export default function RabbisHamburgerMenuHome(
           delay: 0,
         },
         "-=0.5",
-      )
-      .to(
+      );
+    }
+    // Hamburger Menu
+    if (hamurgerMenu.current) {
+      menuTimeline.to(
         hamurgerMenu.current,
         {
           opacity: 1,
@@ -114,17 +155,18 @@ export default function RabbisHamburgerMenuHome(
           delay: 0,
         },
         "-=0.5",
-      )
-      .to(
+      );
+      menuTimeline.to(
         hamurgerMenu.current,
         {
-          clipPath: `inset(0 0 0% 0%)`,
+          clipPath: `inset(0% 0% 0% 0%)`,
           ease: "expo.inOut",
           duration: 1.5,
           delay: 0,
         },
         "-=0.5",
       );
+    }
     if (titleSplit) {
       menuTimeline.to(
         titleSplit,
@@ -180,6 +222,11 @@ export default function RabbisHamburgerMenuHome(
         "-=1.5",
       );
     }
+    animations.push(menuTimeline);
+
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
   }, [pathname]);
 
   useGSAP(() => {
@@ -198,7 +245,7 @@ export default function RabbisHamburgerMenuHome(
       <div
         ref={hamurgerMenu}
         style={{
-          clipPath: `inset(0 0 100% 100%)`,
+          clipPath: `inset(0% 0% 100% 100%)`,
         }}
         className="rabbis-hamburger-menu fixed top-0 right-0 z-99 flex items-start justify-start bg-black w-1/3 h-screen py-[9.6vh] pr-[8.9vw] pl-[4.5vw] opacity-0 invisible"
       >
@@ -221,31 +268,42 @@ export default function RabbisHamburgerMenuHome(
             </h3>
           </div>
           <div className="rabbis-burger-menu flex flex-col gap-y-[4.7vh] h-[65vh] overflow-y-auto pr-2">
-            {allPosts.map((item: PastRabbis, index: number) => (
-              <Link
-                href={item.buttonLink || "#"}
-                key={index}
-                className="burger-menu-item group flex gap-x-2.5"
-              >
-                <div className="image w-29.5 h-29.5 overflow-hidden border-dashed border-transparent group-hover:border-[#D1A941]">
-                  <div className="image-inner w-full h-full group-hover:scale-110 transition-all duration-300 grayscale group-hover:grayscale-0">
-                    <Image
-                      className="w-full h-full object-cover object-center"
-                      src={item?.thumbnail?.url || item?.thumbnail?.src || ""}
-                      width={122}
-                      height={125}
-                      alt={item?.title || "Rabbi image"}
-                    />
-                  </div>
-                </div>
-                <div
-                  dir="ltr"
-                  className="title text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
+            {allPosts.map((item: PastRabbis, index: number) => {
+              const thumbnailSrc = resolveImageSrc(
+                item?.thumbnail,
+                RabbisThumb.src,
+              );
+
+              return (
+                <Link
+                  href={item.buttonLink || "#"}
+                  key={index}
+                  className="burger-menu-item group flex gap-x-2.5"
                 >
-                  <p className="text">{parse(item?.title || "")}</p>
-                </div>
-              </Link>
-            ))}
+                  <div className="image w-29.5 h-29.5 overflow-hidden border-dashed border-transparent group-hover:border-[#D1A941]">
+                    <div className="image-inner w-full h-full group-hover:scale-110 transition-all duration-300 grayscale group-hover:grayscale-0">
+                      {thumbnailSrc ? (
+                        <Image
+                          className="w-full h-full object-cover object-center"
+                          src={thumbnailSrc}
+                          width={122}
+                          height={125}
+                          alt={item?.title || "Rabbi image"}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-[#1a1a1a]" />
+                      )}
+                    </div>
+                  </div>
+                  <div
+                    dir="ltr"
+                    className="title text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
+                  >
+                    <p className="text">{parse(item?.title || "")}</p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

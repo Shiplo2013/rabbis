@@ -2,6 +2,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
+import GetRightPosition from "./GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "./plugins";
 
 if (typeof window !== "undefined") {
@@ -20,25 +21,48 @@ export default function BackgroundImage2(props: ChildProps) {
 
   // Routers
   const pathname = usePathname();
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
 
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+
+      if (typeof window === "undefined" || !background.current) {
+        return;
+      }
       // Banner Background
-      gsap.set(background.current, { scale: 1.4, x: "20vw" });
-      gsap.to(background.current, {
-        x: "-30vw",
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * props.start;
+      if (background.current) {
+        gsap.set(background.current, { scale: 1.4, x: "20vw" });
+        const animation = gsap.to(background.current, {
+          x: "-30vw",
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return (
+                getTimelineOffset() +
+                GetRightPosition(background.current) -
+                window.innerWidth * 1.2
+              );
+            },
+            end: () => {
+              return "+=" + window.innerWidth * 3.2;
+            },
+            scrub: 2,
           },
-          end: () => {
-            return "+=" + window.innerWidth * 2;
-          },
-          scrub: 2,
-        },
-      });
+        });
+        animations.push(animation);
+      }
+
+      // Return animations
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
     { scope: background, dependencies: [pathname] },
   );
@@ -49,7 +73,7 @@ export default function BackgroundImage2(props: ChildProps) {
     >
       <Image
         className="bg-image w-full object-cover object-center h-full"
-        src={props?.bgImage?.url || props.bgImage.src}
+        src={props?.bgImage?.sizes?.intro_background || props.bgImage.src}
         width="1920"
         height="1080"
         blurDataURL={CreateShimmerDataUrl(1920, 1080)}

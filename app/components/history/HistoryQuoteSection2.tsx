@@ -13,7 +13,7 @@ interface ChildProps {
   animWidthText: number;
   bgImage: any;
   boxClass: string;
-  data: { content: string }[];
+  data?: any;
 }
 
 export default function HistoryQuoteSection2(props: ChildProps) {
@@ -25,6 +25,11 @@ export default function HistoryQuoteSection2(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+
+      if (typeof window === "undefined" || !wrapper.current || !quote.current) {
+        return;
+      }
       document.fonts.ready.then(() => {
         // Section Text
         gsap.set(quote.current, { opacity: 1, x: "-5vw" });
@@ -48,6 +53,7 @@ export default function HistoryQuoteSection2(props: ChildProps) {
                 toggleActions: "restart pause play reverse",
               },
             });
+            animations.push(splititle);
             return splititle;
           },
         });
@@ -65,9 +71,15 @@ export default function HistoryQuoteSection2(props: ChildProps) {
           x: "20vw",
           ease: "none",
         });
+        animations.push(tl);
       });
+
+      // Return animations
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.data] },
   );
   return (
     <section
@@ -91,7 +103,7 @@ export default function HistoryQuoteSection2(props: ChildProps) {
           dir="ltr"
           className={`bg-[#E2D7C3] w-[29.3vw] text-[#000000] text-[45px] leading-[0.8em] px-[5vw] py-[5vh] flex flex-col min-h-53.5 justify-center ml-[40vw] text-right ${props.boxClass}`}
         >
-          {parse(props?.data[0]?.content)}
+          {parse(props?.data?.content)}
         </div>
       </div>
     </section>

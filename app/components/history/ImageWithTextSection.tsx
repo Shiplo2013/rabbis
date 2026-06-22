@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -17,6 +18,7 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  data?: any;
 }
 
 export default function ImageWithTextSection(props: ChildProps) {
@@ -43,18 +45,23 @@ export default function ImageWithTextSection(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      const animations: gsap.core.Animation[] = [];
+
+      if (typeof window === "undefined" || !wrapper.current) {
+        return;
+      }
       // Content Image 1
       const imageRef1 = wrapper.current?.querySelector(".content-image1");
       const imageRef1image1 = wrapper.current?.querySelector(
         ".content-image1>.image1",
       );
       // Image 1
-      if (imageRef1) {
+      if (imageRef1 && imageRef1.textContent.length > 0) {
         gsap.set(imageRef1, {
           y: 100,
           opacity: 0,
         });
-        gsap.to(imageRef1, {
+        const animation = gsap.to(imageRef1, {
           y: 0,
           opacity: 1,
           duration: 1.5,
@@ -70,6 +77,7 @@ export default function ImageWithTextSection(props: ChildProps) {
             toggleActions: "restart pause play reverse",
           },
         });
+        animations.push(animation);
       }
       if (imageRef1image1) {
         gsap.set(imageRef1image1, {
@@ -92,6 +100,7 @@ export default function ImageWithTextSection(props: ChildProps) {
           x: "20vw",
           ease: "none",
         });
+        animations.push(tl);
       }
 
       // Content text
@@ -100,7 +109,7 @@ export default function ImageWithTextSection(props: ChildProps) {
       const imageTexttext = wrapper.current?.querySelector(".content-text>p");
       document.fonts.ready.then(() => {
         // Section Title
-        if (imageTextheading) {
+        if (imageTextheading && imageTextheading?.textContent?.length !== 0) {
           gsap.set(imageTextheading, { opacity: 1 });
           let splititle;
           SplitText.create(imageTextheading, {
@@ -127,12 +136,13 @@ export default function ImageWithTextSection(props: ChildProps) {
                   toggleActions: "restart pause resume reverse",
                 },
               });
+              animations.push(splititle);
               return splititle;
             },
           });
         }
         // Section Text
-        if (imageTexttext) {
+        if (imageTexttext && imageTexttext?.textContent?.length !== 0) {
           gsap.set(imageTexttext, { opacity: 1 });
           let splitext;
           SplitText.create(imageTexttext, {
@@ -159,6 +169,7 @@ export default function ImageWithTextSection(props: ChildProps) {
                   toggleActions: "restart pause resume reverse",
                 },
               });
+              animations.push(splitext);
               return splitext;
             },
           });
@@ -170,12 +181,12 @@ export default function ImageWithTextSection(props: ChildProps) {
         ".content-image2>.image3",
       );
       // Image 2
-      if (imageRef2) {
+      if (imageRef2 && imageRef2.textContent.length > 0) {
         gsap.set(imageRef2, {
           y: 100,
           opacity: 0,
         });
-        gsap.to(imageRef2, {
+        const animation = gsap.to(imageRef2, {
           y: 0,
           opacity: 1,
           duration: 1.5,
@@ -191,8 +202,9 @@ export default function ImageWithTextSection(props: ChildProps) {
             toggleActions: "restart pause play reverse",
           },
         });
+        animations.push(animation);
       }
-      if (imageRef2image3) {
+      if (imageRef2image3 && imageRef2image3.textContent.length > 0) {
         gsap.set(imageRef2image3, {
           x: "-30vw",
         });
@@ -213,7 +225,13 @@ export default function ImageWithTextSection(props: ChildProps) {
           x: "20vw",
           ease: "none",
         });
+        animations.push(tl);
       }
+
+      // Return Animations
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     },
     { scope: wrapper, dependencies: [pathname] },
   );
@@ -229,10 +247,16 @@ export default function ImageWithTextSection(props: ChildProps) {
           <div className="image1 w-[25.67vw] h-[35.4vh] absolute bottom-10 right-0 -mr-[15vw]">
             <Image
               className="w-full object-cover object-center h-full"
-              src={sectionData?.image1?.src}
+              src={
+                props?.data?.floating_image_1?.sizes?.medium ||
+                sectionData?.image1?.src
+              }
               width={"493"}
               height={"329"}
-              blurDataURL={sectionData?.image1?.blurDataURL}
+              blurDataURL={
+                CreateShimmerDataUrl(493, 329) ||
+                sectionData?.image1?.blurDataURL
+              }
               placeholder={"blur"}
               loading="lazy"
               alt={"Section Image"}
@@ -241,10 +265,15 @@ export default function ImageWithTextSection(props: ChildProps) {
           <div className="image2 w-[39.68vw] h-[54.68vh]">
             <Image
               className="w-full object-cover object-center h-full"
-              src={sectionData?.image2?.src}
+              src={
+                props?.data?.image_1?.sizes?.large || sectionData?.image2?.src
+              }
               width={"762"}
               height={"508"}
-              blurDataURL={sectionData?.image2?.blurDataURL}
+              blurDataURL={
+                CreateShimmerDataUrl(762, 508) ||
+                sectionData?.image2?.blurDataURL
+              }
               placeholder={"blur"}
               loading="lazy"
               alt={"Section Image"}
@@ -255,17 +284,22 @@ export default function ImageWithTextSection(props: ChildProps) {
           dir="ltr"
           className="content-text text-[30px] leading-[90%] text-[#FBF4E6] min-w-[14vw] ml-[2vw] self-baseline mt-[15vh] text-right"
         >
-          <h3 className="font-bold">{parse(sectionData.title)}</h3>
-          <p>{parse(sectionData.text)}</p>
+          {parse(props?.data?.text || sectionData?.text)}
         </div>
         <div className="content-image2 relative">
           <div className="image3 w-[27.65vw] h-[38.1vh] absolute bottom-0 right-0 -mb-[6.8vh] -mr-[8.9vw]">
             <Image
               className="w-full object-cover object-center h-full"
-              src={sectionData?.image3?.src}
+              src={
+                props?.data?.floating_image_2?.sizes?.medium ||
+                sectionData?.image3?.src
+              }
               width={"531"}
               height={"354"}
-              blurDataURL={sectionData?.image3?.blurDataURL}
+              blurDataURL={
+                CreateShimmerDataUrl(531, 354) ||
+                sectionData?.image3?.blurDataURL
+              }
               placeholder={"blur"}
               loading="lazy"
               alt={"Section Image"}
@@ -274,10 +308,15 @@ export default function ImageWithTextSection(props: ChildProps) {
           <div className="image4 w-[47.86vw] h-[65.87vh]">
             <Image
               className="w-full object-cover object-center h-full"
-              src={sectionData?.image4?.src}
+              src={
+                props?.data?.image_2?.sizes?.large || sectionData?.image4?.src
+              }
               width={"919"}
               height={"612"}
-              blurDataURL={sectionData?.image4?.blurDataURL}
+              blurDataURL={
+                CreateShimmerDataUrl(919, 612) ||
+                sectionData?.image4?.blurDataURL
+              }
               placeholder={"blur"}
               loading="lazy"
               alt={"Section Image"}
