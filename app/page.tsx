@@ -1,7 +1,7 @@
 "use client";
 import { StaticImageData } from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import WishIcon from "./assets/icons/WishIcon";
 import CursorFollow from "./components/CursorFollow";
 import Footer from "./components/Footer";
@@ -804,65 +804,109 @@ export default function Home() {
                 id="section-wrapper"
                 className={`section-wrapp flex flex-nowrap flex-row-reverse w-[510vw] h-screen will-change-transform`}
               >
-                <HomeBanner
-                  audioControl={togglePlayPause}
-                  animated={isAllAnimationComplete}
-                  extraClass={
-                    "panel-section will-change-transform min-w-screen w-screen cursor-pointer"
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center min-w-screen w-screen h-screen bg-black animate-pulse"></div>
                   }
-                  panel={panel}
-                  bannerData={homePageData?.acf?.banner_section}
-                />
-                <IntroSection
-                  animWidthText={0.4}
-                  extraClass={
-                    "panel-section will-change-transform min-w-[50vw] w-[50vw]"
+                >
+                  <HomeBanner
+                    audioControl={togglePlayPause}
+                    animated={isAllAnimationComplete}
+                    extraClass={
+                      "panel-section will-change-transform min-w-screen w-screen cursor-pointer"
+                    }
+                    panel={panel}
+                    bannerData={homePageData?.acf?.banner_section}
+                  />
+                </Suspense>
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center min-w-[50vw] w-[50vw] h-screen bg-black animate-pulse"></div>
                   }
-                  introData={homePageData?.acf?.intro_section}
-                />
-                <HomeSection1
-                  animWidthPost={1}
-                  animWidthSlider={1.4}
-                  extraClass={
-                    "panel-section will-change-transform min-w-[70vw] w-[70vw]"
+                >
+                  <IntroSection
+                    animWidthText={0.4}
+                    extraClass={
+                      "panel-section will-change-transform min-w-[50vw] w-[50vw]"
+                    }
+                    introData={homePageData?.acf?.intro_section}
+                  />
+                </Suspense>
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center min-w-[70vw] w-[70vw] h-screen bg-black animate-pulse"></div>
                   }
-                  panel={panel}
-                  sectionData={homePageData?.acf?.home_section_1}
-                />
-                <HomeSection2
-                  animWidthImage={2.2}
-                  animWidthText={2.7}
-                  extraClass={
-                    "panel-section will-change-transform min-w-screen w-screen bg-black"
+                >
+                  <HomeSection1
+                    animWidthPost={1}
+                    animWidthSlider={1.4}
+                    extraClass={
+                      "panel-section will-change-transform min-w-[70vw] w-[70vw]"
+                    }
+                    panel={panel}
+                    sectionData={homePageData?.acf?.home_section_1}
+                  />
+                </Suspense>
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center min-w-screen w-screen h-screen bg-black animate-pulse"></div>
                   }
-                  sectionData={homePageData?.acf?.home_section_2}
-                />
-                <HomeSection3
-                  animWidthImage={3.6}
-                  animWidthText={3.9}
-                  extraClass={
-                    "panel-section will-change-transform min-w-[90vw] w-[90vw]"
+                >
+                  <HomeSection2
+                    animWidthImage={2.2}
+                    animWidthText={2.7}
+                    extraClass={
+                      "panel-section will-change-transform min-w-screen w-screen bg-black"
+                    }
+                    sectionData={homePageData?.acf?.home_section_2}
+                  />
+                </Suspense>
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center min-w-[90vw] w-[90vw] h-screen bg-black animate-pulse"></div>
                   }
-                  sectionData={homePageData?.acf?.home_section_3}
-                />
-                <HomeSection4
-                  animWidth={5}
-                  extraClass={
-                    "panel-section will-change-transform min-w-screen w-screen"
+                >
+                  <HomeSection3
+                    animWidthImage={3.6}
+                    animWidthText={3.9}
+                    extraClass={
+                      "panel-section will-change-transform min-w-[90vw] w-[90vw]"
+                    }
+                    sectionData={homePageData?.acf?.home_section_3}
+                  />
+                </Suspense>
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center min-w-screen w-screen h-screen bg-black animate-pulse"></div>
                   }
-                  sectionData={homePageData?.acf?.home_section_4}
-                />
+                >
+                  <HomeSection4
+                    animWidth={5}
+                    extraClass={
+                      "panel-section will-change-transform min-w-screen w-screen"
+                    }
+                    sectionData={homePageData?.acf?.home_section_4}
+                  />
+                </Suspense>
               </div>
             </div>
           </main>
-          <Footer className={"relative z-20"} />
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center min-w-screen w-screen h-screen bg-white animate-pulse"></div>
+            }
+          >
+            <Footer className={"relative z-20"} />
+          </Suspense>
         </SmoothWrapper>
         <SlidingArrow />
         <CursorFollow isPlaying={isPlaying} />
-        <AudioPlayer
-          audioRef={audio}
-          src={homePageData?.acf?.banner_section?.audio_music}
-        />
+        <Suspense fallback={<div className="hidden"></div>}>
+          <AudioPlayer
+            audioRef={audio}
+            src={homePageData?.acf?.banner_section?.audio_music}
+          />
+        </Suspense>
         <div
           ref={wishButton}
           className="wish-button fixed p-5 bottom-0 right-40 z-50 opacity-0 invisible"

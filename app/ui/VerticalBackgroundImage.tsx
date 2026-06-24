@@ -24,7 +24,13 @@ export default function VerticalBackgroundImage(props: ChildProps) {
   // Seciton Animation
   useGSAP(
     () => {
-      if (props.animatePosition > 0) {
+      const animations: gsap.core.Tween[] = [];
+
+      if (
+        typeof window !== "undefined" &&
+        props.animatePosition > 0 &&
+        background.current
+      ) {
         // Banner Background
         gsap.set(background.current, { scale: 1.2 });
         gsap.to(background.current, {
