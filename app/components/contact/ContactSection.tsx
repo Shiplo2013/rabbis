@@ -1,28 +1,38 @@
+"use client";
 import EmailIcon from "@/app/assets/icons/EmailIcon";
 import MarkerIcon from "@/app/assets/icons/MarkerIcon";
 import PhoneIcon from "@/app/assets/icons/PhoneIcon";
 import WazeIcon from "@/app/assets/icons/WazeIcon";
 import ThemeButton2 from "@/app/ui/ThemeButton2";
 import VerticalBackgroundImage from "@/app/ui/VerticalBackgroundImage";
+import parse from "html-react-parser";
 import { StaticImageData } from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
-  data: { bgImage: StaticImageData };
+  bgImage: StaticImageData;
+  data: any;
 }
 
 export default function ContactSection(props: ChildProps) {
+  useEffect(() => {
+    if (props.data) {
+      console.log("Contact Section Data:", props.data);
+    }
+  }, [props.data]);
+
   return (
     <section
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20 overflow-hidden`}
     >
-      {props.data?.bgImage && (
+      {props.bgImage && (
         <div className="intro-background absolute top-0 left-0 w-full h-full z-10">
           <VerticalBackgroundImage
-            bgImage={props.data.bgImage}
+            bgImage={props.bgImage}
             overlayClass={""}
             imagePosition={""}
             bgClass={""}
@@ -36,9 +46,10 @@ export default function ContactSection(props: ChildProps) {
           <div className="contact-right flex flex-col gap-y-[10vh]">
             <div dir="ltr" className="contact-heading text-right">
               <h2 className="text-[40px] leading-[1em] text-[#FBF4E6] font-bold max-w-96.75">
-                לכל פניה או שאלה
-                <br />
-                מלאו את הטופס ונחזור אליכם בהקדם.
+                {parse(
+                  props.data?.contact_info?.title ||
+                    "לכל פניה או שאלה מלאו את הטופס ונחזור אליכם בהקדם.",
+                )}
               </h2>
             </div>
             <div className="contact-info flex flex-col gap-y-2">
@@ -48,7 +59,12 @@ export default function ContactSection(props: ChildProps) {
                     <MarkerIcon />
                   </div>
                   <div className="text text-[30px] leading-[1.2em]">
-                    <address>הרב חיים הלר 8 ירושלים ישראל</address>
+                    <address>
+                      {parse(
+                        props.data?.contact_info?.address ||
+                          "הרב חיים הלר 8 ירושלים ישראל",
+                      )}
+                    </address>
                   </div>
                 </div>
               </div>
@@ -59,10 +75,13 @@ export default function ContactSection(props: ChildProps) {
                   </div>
                   <div className="text text-[30px] leading-[1.2em]">
                     <Link
-                      href={"mailto:office@chevron.org.il"}
+                      href={`mailto:${props.data?.contact_info?.email}`}
                       className="hover:text-(--theme-color) transition-all duration-500"
                     >
-                      office@chevron.org.il
+                      {parse(
+                        props.data?.contact_info?.email ||
+                          "office@chevron.org.il",
+                      )}
                     </Link>
                   </div>
                 </div>
@@ -74,10 +93,10 @@ export default function ContactSection(props: ChildProps) {
                   </div>
                   <div className="text text-[30px] leading-[1.2em]">
                     <Link
-                      href={"tel:02-6209331"}
+                      href={`tel:${props.data?.contact_info?.phone}`}
                       className="hover:text-(--theme-color) transition-all duration-500"
                     >
-                      02-6209331
+                      {parse(props.data?.contact_info?.phone || "02-6209331")}
                     </Link>
                   </div>
                 </div>
@@ -89,7 +108,7 @@ export default function ContactSection(props: ChildProps) {
                   </div>
                   <div className="text text-[30px] leading-[1.2em]">
                     <Link
-                      href={"/"}
+                      href={props.data?.contact_info?.waze_link || "/"}
                       className="hover:text-(--theme-color) transition-all duration-500"
                     >
                       נווט בוויז
@@ -99,53 +118,55 @@ export default function ContactSection(props: ChildProps) {
               </div>
             </div>
           </div>
-          <div className="contact-left w-[35vw]">
+          <div className="contact-left w-[35vw] mt-[15vh]">
             <div className="contact-form w-full overflow-hidden">
               <div className="contact-form-wrapper bg-white text-[#231F20] text-[22px] leading-[100%] py-11.25 px-10 flex flex-col gap-y-[4vh]">
                 <div className="contact-row flex gap-x-[2vw]">
                   <div className="contact-col w-1/2 flex items-center gap-x-3.25">
-                    <label htmlFor="name">שם</label>
+                    <label htmlFor="form-name">שם</label>
                     <input
                       className="border-b border-b-[#000000] focus:outline-0 w-full"
-                      id="name"
-                      name="name"
+                      id="form-name"
+                      name="form-name"
                       type="text"
                     />
                   </div>
                   <div className="contact-col w-1/2 flex items-center gap-x-3.25">
-                    <label htmlFor="family">משפחה</label>
+                    <label htmlFor="form-family">משפחה</label>
                     <input
                       className="border-b border-b-[#000000] focus:outline-0 w-full"
-                      id="family"
-                      name="family"
+                      id="form-family"
+                      name="form-family"
                       type="text"
                     />
                   </div>
                 </div>
                 <div className="contact-row flex gap-x-[2vw]">
                   <div className="contact-col w-1/2 flex items-center gap-x-3.25">
-                    <label htmlFor="mobile">נייד</label>
+                    <label htmlFor="form-phone">נייד</label>
                     <input
                       className="border-b border-b-[#000000] focus:outline-0 w-full"
-                      id="mobile"
-                      name="mobile"
+                      id="form-phone"
+                      name="form-phone"
                       type="tel"
                     />
                   </div>
                   <div className="contact-col w-1/2 flex items-center gap-x-3.25">
-                    <label htmlFor="email">דוא״ל</label>
+                    <label htmlFor="form-email">דוא״ל</label>
                     <input
                       className="border-b border-b-[#000000] focus:outline-0 w-full"
-                      id="email"
-                      name="email"
+                      id="form-email"
+                      name="form-email"
                       type="email"
                     />
                   </div>
                 </div>
                 <div className="contact-row flex flex-col">
-                  <label>נושא הפניה</label>
+                  <label htmlFor="form-message">נושא הפניה</label>
                   <textarea
                     className="border-b border-b-[#000000] focus:outline-0 w-full"
+                    id="form-message"
+                    name="form-message"
                     cols={10}
                     rows={3}
                   ></textarea>
