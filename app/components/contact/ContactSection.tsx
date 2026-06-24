@@ -3,12 +3,11 @@ import EmailIcon from "@/app/assets/icons/EmailIcon";
 import MarkerIcon from "@/app/assets/icons/MarkerIcon";
 import PhoneIcon from "@/app/assets/icons/PhoneIcon";
 import WazeIcon from "@/app/assets/icons/WazeIcon";
-import ThemeButton2 from "@/app/ui/ThemeButton2";
 import VerticalBackgroundImage from "@/app/ui/VerticalBackgroundImage";
 import parse from "html-react-parser";
 import { StaticImageData } from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import ContactForm from "./ContactForm";
 
 interface ChildProps {
   extraClass: string;
@@ -18,12 +17,6 @@ interface ChildProps {
 }
 
 export default function ContactSection(props: ChildProps) {
-  useEffect(() => {
-    if (props.data) {
-      console.log("Contact Section Data:", props.data);
-    }
-  }, [props.data]);
-
   return (
     <section
       dir="rtl"
@@ -120,69 +113,7 @@ export default function ContactSection(props: ChildProps) {
           </div>
           <div className="contact-left w-[35vw] mt-[15vh]">
             <div className="contact-form w-full overflow-hidden">
-              <div className="contact-form-wrapper bg-white text-[#231F20] text-[22px] leading-[100%] py-11.25 px-10 flex flex-col gap-y-[4vh]">
-                <div className="contact-row flex gap-x-[2vw]">
-                  <div className="contact-col w-1/2 flex items-center gap-x-3.25">
-                    <label htmlFor="form-name">שם</label>
-                    <input
-                      className="border-b border-b-[#000000] focus:outline-0 w-full"
-                      id="form-name"
-                      name="form-name"
-                      type="text"
-                    />
-                  </div>
-                  <div className="contact-col w-1/2 flex items-center gap-x-3.25">
-                    <label htmlFor="form-family">משפחה</label>
-                    <input
-                      className="border-b border-b-[#000000] focus:outline-0 w-full"
-                      id="form-family"
-                      name="form-family"
-                      type="text"
-                    />
-                  </div>
-                </div>
-                <div className="contact-row flex gap-x-[2vw]">
-                  <div className="contact-col w-1/2 flex items-center gap-x-3.25">
-                    <label htmlFor="form-phone">נייד</label>
-                    <input
-                      className="border-b border-b-[#000000] focus:outline-0 w-full"
-                      id="form-phone"
-                      name="form-phone"
-                      type="tel"
-                    />
-                  </div>
-                  <div className="contact-col w-1/2 flex items-center gap-x-3.25">
-                    <label htmlFor="form-email">דוא״ל</label>
-                    <input
-                      className="border-b border-b-[#000000] focus:outline-0 w-full"
-                      id="form-email"
-                      name="form-email"
-                      type="email"
-                    />
-                  </div>
-                </div>
-                <div className="contact-row flex flex-col">
-                  <label htmlFor="form-message">נושא הפניה</label>
-                  <textarea
-                    className="border-b border-b-[#000000] focus:outline-0 w-full"
-                    id="form-message"
-                    name="form-message"
-                    cols={10}
-                    rows={3}
-                  ></textarea>
-                </div>
-                <div className="contact-row flex justify-end">
-                  <ThemeButton2
-                    svgIconClass={""}
-                    extraClass="bg-[#D4AF37] pt-2 pb-1.25 px-5 rounded-none cursor-pointer"
-                    fontSize="text-[22px]"
-                    text={`שלח טופס`}
-                    textColor="text-black"
-                    hoverBgColor="bg-black"
-                    hoverTextColor="group-hover:text-[#D4AF37]"
-                  />
-                </div>
-              </div>
+              <ContactForm />
             </div>
           </div>
         </div>
