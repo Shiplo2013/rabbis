@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -42,7 +43,7 @@ export default function Introduction(props: ChildProps) {
         <div className="absolute top-0 left-0 w-full h-full z-20">
           <Image
             className={`w-full object-contain h-full relative`}
-            src={props?.bgOverlay?.src}
+            src={props?.bgOverlay?.sizes?.large || props?.bgOverlay?.src}
             width={`${props?.bgOverlay?.width > 1920 ? props?.bgOverlay?.width : "1920"}`}
             height={`${props?.bgOverlay?.width > 1080 ? props?.bgOverlay?.width : "1080"}`}
             blurDataURL={props?.bgOverlay?.blurDataURL}
@@ -62,10 +63,16 @@ export default function Introduction(props: ChildProps) {
               <div className="image image1 w-77.75 h-116.5 absolute top-0 right-0 -mr-[4vw] z-10 origin-center will-change-transform">
                 <Image
                   className="w-full object-cover object-center h-full relative z-10 will-change-transform"
-                  src={props.data[0].images.image1?.src}
+                  src={
+                    props.data[0].images.image1?.sizes?.large ||
+                    props.data[0].images.image1?.src
+                  }
                   width="311"
                   height="466"
-                  blurDataURL={props.data[0].images.image1?.blurDataURL}
+                  blurDataURL={
+                    CreateShimmerDataUrl(311, 466) ||
+                    props.data[0].images.image1?.blurDataURL
+                  }
                   placeholder={"blur"}
                   loading="lazy"
                   alt="Rabbis"
@@ -76,10 +83,16 @@ export default function Introduction(props: ChildProps) {
               <div className="image image2 w-89 h-133.5 absolute top-0 left-0 z-30 origin-center will-change-transform">
                 <Image
                   className="w-full object-cover object-center h-full relative z-10 will-change-transform"
-                  src={props.data[0].images.image2?.src}
+                  src={
+                    props.data[0].images.image2?.sizes?.large ||
+                    props.data[0].images.image2?.src
+                  }
                   width="356"
                   height="534"
-                  blurDataURL={props.data[0].images.image2?.blurDataURL}
+                  blurDataURL={
+                    CreateShimmerDataUrl(356, 534) ||
+                    props.data[0].images.image2?.blurDataURL
+                  }
                   placeholder={"blur"}
                   loading="lazy"
                   alt="Rabbis"
@@ -90,10 +103,16 @@ export default function Introduction(props: ChildProps) {
               <div className="image image3 w-83.75 h-125.75 absolute top-0 left-0 -ml-[2.5vw] z-20 origin-center will-change-transform">
                 <Image
                   className="w-full object-cover object-center h-full relative z-10 will-change-transform"
-                  src={props.data[0].images.image3?.src}
+                  src={
+                    props.data[0].images.image3?.sizes?.large ||
+                    props.data[0].images.image3?.src
+                  }
                   width="335"
                   height="503"
-                  blurDataURL={props.data[0].images.image3?.blurDataURL}
+                  blurDataURL={
+                    CreateShimmerDataUrl(335, 503) ||
+                    props.data[0].images.image3?.blurDataURL
+                  }
                   placeholder={"blur"}
                   loading="lazy"
                   alt="Rabbis"
