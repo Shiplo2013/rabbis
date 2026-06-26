@@ -14,7 +14,7 @@ interface ChildProps {
   overlayClass: string;
   bgPosition: string;
   bgClass: string;
-  data: { title: string; content: string }[];
+  data: { title: string; content: string } | null;
 }
 
 export default function Introduction(props: ChildProps) {
@@ -54,10 +54,10 @@ export default function Introduction(props: ChildProps) {
       <div dir="ltr" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-right flex flex-col items-end gap-x-[3.75vw]">
           <h1 className="intro-title text-[208px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 font-bold">
-            {parse(props.data[0].title)}
+            {props.data ? parse(props.data.title) : ""}
           </h1>
           <h4 className="intro-content overflow-hidden text-[47px] leading-[70%] text-[#D1A941] relative z-30 max-w-188.75">
-            {parse(props.data[0].content)}
+            {props.data ? parse(props.data.content) : ""}
           </h4>
         </div>
       </div>

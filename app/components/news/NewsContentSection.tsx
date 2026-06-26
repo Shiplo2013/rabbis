@@ -1,17 +1,13 @@
-import { useState } from "react";
 import SidebarSearch from "./SidebarSearch";
 import SingleNews from "./SingleNews";
 
 interface ChildProps {
   extraClass: string;
   animWidthText: number;
-  sectionData: string;
+  data: any;
 }
 
 export default function NewsContentSection(props: ChildProps) {
-  const [newsPostsData, setNewsPostsData] = useState(
-    props.sectionData ? JSON.parse(props.sectionData) : [],
-  );
   return (
     <section
       dir="rtl"
@@ -24,8 +20,8 @@ export default function NewsContentSection(props: ChildProps) {
           </div>
         </div>
         <div className="news-content flex items-center gap-x-[12.5vw] will-change-transform">
-          {newsPostsData?.map((item: any, index: number) => (
-            <SingleNews key={index} data={JSON.stringify(item)} />
+          {props.data?.map((item: any, index: number) => (
+            <SingleNews key={index} data={item} />
           ))}
         </div>
       </div>

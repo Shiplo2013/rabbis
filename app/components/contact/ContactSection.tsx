@@ -102,6 +102,7 @@ export default function ContactSection(props: ChildProps) {
                   <div className="text text-[30px] leading-[1.2em]">
                     <Link
                       href={props.data?.contact_info?.waze_link || "/"}
+                      target="_blank"
                       className="hover:text-(--theme-color) transition-all duration-500"
                     >
                       נווט בוויז

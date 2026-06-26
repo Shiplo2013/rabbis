@@ -117,8 +117,6 @@ export default function Page() {
 
   // On Post Pagenation change
   useEffect(() => {
-    console.log("Total Post Pages:", totalPostPages);
-    console.log("Current Post Page:", postPagination);
     setCurrentPositions(window.scrollY);
 
     if (postPagination === 1) {
@@ -162,10 +160,6 @@ export default function Page() {
 
     loadMorePosts();
   }, [postPagination]);
-
-  useEffect(() => {
-    console.log("Post Data:", picturesPageData?.posts);
-  }, [postDataLoaded]);
 
   useEffect(() => {
     const animations: gsap.core.Animation[] = [];
@@ -245,8 +239,6 @@ export default function Page() {
     if (!picturesPageData) {
       return;
     }
-
-    console.log("Pictures Page Data Updated:", picturesPageData);
     // Update Section Width on Data Change
     const updateSectionWidth = () => {
       const newSectionWidth =
