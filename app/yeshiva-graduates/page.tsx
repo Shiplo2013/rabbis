@@ -25,19 +25,95 @@ if (typeof window !== "undefined") {
 export default function Page() {
   // Router Path
   const pathname = usePathname();
+  const [pageData, setPageData] = useState<any>(null);
+  const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [sectionWidth, setSectionWidth] = useState(200);
+  const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Animation State
+  const [animationPlayed, setAnimationPlayed] = useState(false);
+  const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+  // Vertical Section
+  const [verticalSection, setVerticalSection] =
+    useState<gsap.core.Timeline | null>(null);
+
+  // Page Refs
+  const main = useRef<HTMLDivElement>(null);
+  const page = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const wrapper = useRef<HTMLDivElement>(null);
+  const waveLine = useRef<HTMLDivElement>(null);
+  const waveMask = useRef<HTMLDivElement>(null);
+  const progress = useRef<HTMLDivElement>(null);
+
+  // Get Page Data From backend
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPageData = async () => {
+      try {
+        const response = await fetch("/api/yeshiva-graduates", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load yeshiva graduates page data.");
+        }
+
+        const data = await response.json();
+
+        if (isMounted) {
+          //console.log(data, "Yeshiva Graduates Page Data");
+          setPageData(data);
+        }
+      } catch (error) {
+        console.error(error);
+        setError("Failed to load yeshiva graduates page data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPageData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+
+  // Set Page Data Fetched
+  useEffect(() => {
+    if (!pageData?.acf) {
+      return;
+    }
+    // Set Section Width and Container Width
+    const sectionWidth =
+      pageData?.acf?.graduate_posts?.length * 19.27 +
+        (pageData?.acf?.graduate_posts?.length - 1) * 3.3 +
+        10 +
+        38 || 200;
+    const containerWidth = sectionWidth + 100;
+    setSectionWidth(sectionWidth);
+    setContainerWidth(containerWidth);
+    // Set Page Data Fetched
+    setPageDataFetched(true);
+  }, [pageData]);
+
   // Page Data
   const IntroData1 = [
     {
-      title: `כנסת<br/>הבוגרים`,
+      title: pageData?.acf?.introduction?.title || `כנסת<br/>הבוגרים`,
       images: {
-        image1: introImage1,
-        image2: introImage2,
-        image3: introImage3,
+        image1: pageData?.acf?.introduction?.floating_image_1 || introImage1,
+        image2: pageData?.acf?.introduction?.floating_image_2 || introImage2,
+        image3: pageData?.acf?.introduction?.floating_image_3 || introImage3,
       },
     },
   ];
   // Rabbis Data
-  const GraduateData = [
+  const GraduateData = pageData?.acf?.graduate_posts || [
     {
       title: `קהילות`,
       content: `תלמידי ישיבת חברון, לאורך כל תולדותיה, המשיכו לשמר את הקשר העמוק ואת דיבוק החברים גם לאחר נישואיהם, המשך משפט קריאה ללחיצה`,
@@ -64,25 +140,9 @@ export default function Page() {
     },
   ];
 
-  // Animation State
-  const [animationPlayed, setAnimationPlayed] = useState(false);
-  const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
-  // Vertical Section
-  const [verticalSection, setVerticalSection] =
-    useState<gsap.core.Timeline | null>(null);
-
-  // Page Refs
-  const main = useRef<HTMLDivElement>(null);
-  const page = useRef<HTMLDivElement>(null);
-  const panel = useRef<HTMLDivElement>(null);
-  const wrapper = useRef<HTMLDivElement>(null);
-  const waveLine = useRef<HTMLDivElement>(null);
-  const waveMask = useRef<HTMLDivElement>(null);
-  const progress = useRef<HTMLDivElement>(null);
-
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
       setPageContentAnimation();
       // Overflow body
       const scurbScale = 2;
@@ -132,12 +192,13 @@ export default function Page() {
         verticalSection.kill();
       }
     };
-  }, [pathname]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(
     () => {
-      if (typeof window !== "undefined" && panel) {
+      const animations: gsap.core.Animation[] = [];
+      if (typeof window !== "undefined" && panel.current && wrapper.current) {
         document.fonts.ready.then(() => {
           // Selectors
           const headerLeft = main.current?.querySelector(".header-left");
@@ -193,7 +254,7 @@ export default function Page() {
           }
           // Set localStorage variable
           const userVisit = localStorage.getItem("hasVisited");
-          if (userVisit === "true" && animationPlayed) {
+          if (userVisit === "true" && animationPlayed && pageDataFetched) {
             // Timeline
             const tl = gsap.timeline({
               onComplete: () => {
@@ -301,40 +362,55 @@ export default function Page() {
                 duration: 0.5,
                 delay: -1,
                 onComplete: () => {
+                  const animations: gsap.core.Animation[] = [];
                   const image1 = introImages?.querySelector(".image1");
                   const image2 = introImages?.querySelector(".image2");
                   const image3 = introImages?.querySelector(".image3");
-                  gsap.to(image1, {
+                  const image1Animation = gsap.to(image1, {
                     rotate: "1.52deg",
                     delay: 0,
                     duration: 2,
                     ease: "expo.inOut",
                   });
-                  gsap.to(image2, {
+                  const image2Animation = gsap.to(image2, {
                     rotate: "-10.18deg",
                     delay: 0,
                     duration: 2,
                     ease: "expo.inOut",
                   });
-                  gsap.to(image3, {
+                  const image3Animation = gsap.to(image3, {
                     y: "5vh",
                     rotate: "-6.2deg",
                     delay: 0,
                     duration: 2,
                     ease: "expo.inOut",
                   });
+                  animations.push(
+                    image1Animation,
+                    image2Animation,
+                    image3Animation,
+                  );
                 },
               });
             }
+            animations.push(tl);
           }
         });
       }
+
+      // Return
+      return () => {
+        animations.forEach((animation) => {
+          animation.kill();
+        });
+      };
     },
-    { scope: main, dependencies: [animationPlayed, pathname] },
+    { scope: main, dependencies: [animationPlayed, pathname, pageDataFetched] },
   );
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
+    const animations: gsap.core.Animation[] = [];
     // Page Content Animation
     const sheetContent = main.current?.querySelectorAll(
       ".sheet-content .single-graduate",
@@ -349,7 +425,7 @@ export default function Page() {
       const image1 = introImages?.querySelector(".image1");
       const image2 = introImages?.querySelector(".image2");
       const image3 = introImages?.querySelector(".image3");
-      gsap.to(image1, {
+      const image1Animation = gsap.to(image1, {
         x: "15vw",
         delay: 0,
         ease: "none",
@@ -363,7 +439,7 @@ export default function Page() {
           scrub: 2,
         },
       });
-      gsap.to(image2, {
+      const image2Animation = gsap.to(image2, {
         x: "-25vw",
         delay: 0,
         ease: "none",
@@ -377,7 +453,7 @@ export default function Page() {
           scrub: 2,
         },
       });
-      gsap.to(image3, {
+      const image3Animation = gsap.to(image3, {
         x: "7vw",
         delay: 0,
         ease: "none",
@@ -391,13 +467,14 @@ export default function Page() {
           scrub: 2,
         },
       });
+      animations.push(image1Animation, image2Animation, image3Animation);
     }
     // Contents
     if (sheetContent) {
       sheetContent.forEach((section, index) => {
         // Custom Content Item
         if (section) {
-          gsap.from(section, {
+          const sectionAnimation = gsap.from(section, {
             xPercent: -50,
             opacity: 0,
             ease: "slow(0.1,1,false)",
@@ -410,6 +487,7 @@ export default function Page() {
               toggleActions: "restart pause resume reverse",
             },
           });
+          animations.push(sectionAnimation);
         }
       });
     }
@@ -419,7 +497,7 @@ export default function Page() {
         xPercent: -50,
         opacity: 0,
       });
-      gsap.to(sheetReadmore, {
+      const sheetReadmoreAnimation = gsap.to(sheetReadmore, {
         xPercent: 0,
         opacity: 1,
         ease: "slow(0.1,1,false)",
@@ -432,7 +510,15 @@ export default function Page() {
           toggleActions: "restart pause resume reverse",
         },
       });
+      animations.push(sheetReadmoreAnimation);
     }
+
+    // Return
+    return () => {
+      animations.forEach((animation) => {
+        animation.kill();
+      });
+    };
   };
 
   // Set Body Overflow Hidden
@@ -452,10 +538,11 @@ export default function Page() {
 
   useGSAP(() => {
     // Page Overflow Hidden
-    document.body.classList.remove("!overflow-auto");
+    document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,
@@ -469,72 +556,98 @@ export default function Page() {
       });
     };
   }, []);
-  return (
-    <div ref={main} id="main" className="relative">
-      <LoadingEffect animated={setAnimationPlayed} />
-      <Header animationStatus={isAllAnimationComplete} />
-      <SmoothWrapper>
-        <main
-          ref={page}
-          id="page"
-          dir="ltr"
-          className="main relative overflow-hidden z-10 opacity-0"
-        >
-          <div
-            ref={panel}
-            id="panel-wrapper"
-            className="w-screen h-screen flex items-end justify-end"
-          >
-            <div
-              ref={wrapper}
-              id="section-wrapper"
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[320vw] h-screen items-center will-change-transform`}
-            >
-              <Introduction
-                animated={isAllAnimationComplete}
-                animationStatus={isAllAnimationComplete}
-                bgImage={IntroBG}
-                bgOverlay={""}
-                data={IntroData1}
-                extraClass={
-                  "first-intro panel-section will-change-transform min-w-screen w-screen"
-                }
-                panel={panel}
-                bgPosition=""
-                overlayClass="bg-[#000000] opacity-0"
-                bgClass=""
-                audioControl={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
 
-              <GraduateListSection
-                extraClass="min-w-[185vw] w-[185vw] h-screen panel-section will-change-transform py-[5vw] pr-[6.25vw]"
-                GraduateData={GraduateData}
-                animWidthText={1}
-              />
-            </div>
-          </div>
-        </main>
-        <Footer className={"relative z-20"} />
-      </SmoothWrapper>
-      <div
-        ref={waveLine}
-        className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
-      >
-        <div
-          ref={waveMask}
-          style={{
-            maskImage: `url(${Wave.src})`,
-          }}
-          className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
-        >
-          <div
-            ref={progress}
-            className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#1A1A1A] z-10"
-          ></div>
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
+          <p>Loading...</p>
         </div>
       </div>
-    </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    pageData && (
+      <div ref={main} id="main" className="relative">
+        <LoadingEffect animated={setAnimationPlayed} />
+        <Header animationStatus={isAllAnimationComplete} />
+        <SmoothWrapper>
+          <main
+            ref={page}
+            id="page"
+            dir="ltr"
+            className="main relative overflow-hidden z-10 opacity-0"
+          >
+            <div
+              ref={panel}
+              id="panel-wrapper"
+              className="w-screen h-screen flex items-end justify-end"
+            >
+              <div
+                ref={wrapper}
+                id="section-wrapper"
+                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[320vw] h-screen items-center will-change-transform`}
+              >
+                <Introduction
+                  animated={isAllAnimationComplete}
+                  animationStatus={isAllAnimationComplete}
+                  bgImage={pageData?.acf?.introduction?.background || IntroBG}
+                  bgOverlay={""}
+                  data={IntroData1}
+                  extraClass={
+                    "first-intro panel-section will-change-transform min-w-screen w-screen"
+                  }
+                  panel={panel}
+                  bgPosition=""
+                  overlayClass="bg-[#000000] opacity-0"
+                  bgClass=""
+                  audioControl={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+
+                <GraduateListSection
+                  extraClass="min-w-[185vw] w-[185vw] h-screen panel-section will-change-transform py-[5vw] pr-[6.25vw]"
+                  GraduateData={GraduateData}
+                  animWidthText={1}
+                  pageLinks={pageData?.acf?.page_links || []}
+                />
+              </div>
+            </div>
+          </main>
+          <Footer className={"relative z-20"} />
+        </SmoothWrapper>
+        <div
+          ref={waveLine}
+          className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
+        >
+          <div
+            ref={waveMask}
+            style={{
+              maskImage: `url(${Wave.src})`,
+            }}
+            className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+          >
+            <div
+              ref={progress}
+              className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#1A1A1A] z-10"
+            ></div>
+          </div>
+        </div>
+      </div>
+    )
   );
 }

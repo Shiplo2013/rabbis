@@ -1,3 +1,4 @@
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import SingleGraduates from "@/app/ui/SingleGraduates";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,27 +15,28 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   GraduateData: { title: string; content: string }[];
+  pageLinks: { page_title: string; page_link: string; page_image: any }[];
 }
 
 export default function GraduateListSection(props: ChildProps) {
   // Data
-  const PageLinks = [
+  const PageLinks = props.pageLinks || [
     {
-      title: "כנסת המנהגים",
-      link: "/",
-      image: image1,
+      page_title: "כנסת המנהגים",
+      page_link: "/",
+      page_image: image1,
     },
     {
-      title: "עד שבחברון - חדשות",
-      link: "/",
-      image: image2,
+      page_title: "עד שבחברון - חדשות",
+      page_link: "/",
+      page_image: image2,
     },
   ];
   // Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const pageImage = useRef<HTMLDivElement>(null);
   // Section Data
-  const Years = ["תשפ״ו", "תשפ״ה", "תשפ״ד", "תשפ״ג"];
+  //const Years = ["תשפ״ו", "תשפ״ה", "תשפ״ד", "תשפ״ג"];
 
   // Use GSAP function
   const { contextSafe } = useGSAP({ scope: wrapper });
@@ -88,13 +90,13 @@ export default function GraduateListSection(props: ChildProps) {
               className="readmore-link group border-t border-b border-[#D1A941] relative overflow-hidden"
             >
               <Link
-                href={"/"}
+                href={item.page_link}
                 onMouseEnter={handleMouseOver}
                 onMouseLeave={handleMouseOut}
                 data-index={index}
                 className="text-[55px] leading-[70%] text-[#D1A941] py-[5.38vh] block relative z-30"
               >
-                {item.title}
+                {item.page_title}
               </Link>
               <div className="absolute top-0 left-0 bg-black w-full h-full z-10 translate-y-full transition-transform duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] group-hover:translate-y-0"></div>
             </div>
@@ -112,10 +114,13 @@ export default function GraduateListSection(props: ChildProps) {
                 >
                   <Image
                     className="w-full object-cover object-center h-full relative z-10 will-change-transform"
-                    src={item.image?.src}
+                    src={item.page_image?.sizes?.large || item.page_image?.src}
                     width="356"
                     height="534"
-                    blurDataURL={item.image?.blurDataURL}
+                    blurDataURL={
+                      CreateShimmerDataUrl(356, 534) ||
+                      item.page_image?.blurDataURL
+                    }
                     placeholder={"blur"}
                     loading="lazy"
                     alt="Rabbis"
