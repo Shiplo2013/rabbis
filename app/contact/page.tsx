@@ -104,6 +104,7 @@ export default function Page() {
 
   // Load Page
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     if (typeof window !== "undefined" && main.current && page.current) {
       document.fonts.ready.then(() => {
         // Selectors
@@ -244,8 +245,14 @@ export default function Page() {
               "-=2.5",
             );
           }
+          animations.push(tl);
         }
       });
+
+      // Cleanup function to kill animations on unmount
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
     }
   }, [pageDataFetched, animationPlayed]);
 

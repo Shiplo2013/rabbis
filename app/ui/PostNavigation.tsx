@@ -1,18 +1,95 @@
 import ArrowLeft2 from "@/app/assets/icons/ArrowLeft2";
 import ArrowRight from "@/app/assets/icons/ArrowRight";
+import parse from "html-react-parser";
 import Link from "next/dist/client/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo } from "react";
+import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 
+type NewsPostData = {
+  title: string;
+  content: string;
+  slug: string;
+  id: number;
+  acf?: {
+    gallery_title?: string;
+    gallery: {
+      type?: string;
+      image?: any;
+      video?: any;
+    }[];
+  };
+};
 interface ChildProps {
   extraClass: string;
   data: string;
+  currentPostId: number;
+  posts: NewsPostData[];
 }
 
 export default function PostNavigation(props: ChildProps) {
-  const [navigationData, setNavigationData] = useState(
-    props.data ? JSON.parse(props.data) : null,
-  );
+  const mapPostToNavigationItem = (post: any) => {
+    const imageFromAcf = post?.acf?.gallery?.find(
+      (item: any) => item.type === "image",
+    )?.image;
+    const image =
+      typeof imageFromAcf === "string"
+        ? { src: imageFromAcf }
+        : imageFromAcf?.sizes?.thumbnail
+          ? {
+              src: imageFromAcf.sizes?.thumbnail,
+              width: 300,
+              height: 300,
+              blurDataURL:
+                CreateShimmerDataUrl(300, 300) ||
+                imageFromAcf?.sizes?.thumbnail,
+            }
+          : imageFromAcf?.src
+            ? imageFromAcf
+            : null;
+
+    return {
+      title: parse(post?.title || ""),
+      link: `/news/${post?.slug}`,
+      image,
+    };
+  };
+
+  const navigationData = useMemo(() => {
+    const parsedData = props.data ? JSON.parse(props.data) : null;
+
+    if (
+      typeof props.currentPostId === "number" &&
+      Array.isArray(props.posts) &&
+      props.posts.length
+    ) {
+      const currentIndex = props.posts.findIndex(
+        (post) => post?.id === props.currentPostId,
+      );
+      //console.log(currentIndex, "Current Index");
+
+      if (currentIndex !== -1) {
+        const prevPost =
+          currentIndex > 0
+            ? mapPostToNavigationItem(props.posts[currentIndex - 1])
+            : null;
+        const nextPost =
+          currentIndex < props.posts.length - 1
+            ? mapPostToNavigationItem(props.posts[currentIndex + 1])
+            : null;
+
+        return { prevPost, nextPost };
+      }
+    }
+
+    return parsedData;
+  }, [props.currentPostId, props.data, props.posts]);
+
+  const nextImageSrc =
+    navigationData?.nextPost?.image?.src || navigationData?.nextPost?.image;
+  const prevImageSrc =
+    navigationData?.prevPost?.image?.src || navigationData?.prevPost?.image;
+
   return (
     <div
       className={`post-navigation bg-black py-10 px-12 flex items-center justify-between ${props.extraClass}`}
@@ -47,7 +124,7 @@ export default function PostNavigation(props: ChildProps) {
       {navigationData?.prevPost && (
         <Link
           href={navigationData?.prevPost?.link}
-          className="prev-post relative group"
+          className="prev-post relative group mr-auto"
         >
           <div className="image w-[12vw] h-[12vw] overflow-hidden">
             <Image
