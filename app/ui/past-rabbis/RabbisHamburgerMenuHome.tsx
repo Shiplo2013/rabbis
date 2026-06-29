@@ -131,6 +131,10 @@ export default function RabbisHamburgerMenuHome(
 
     // Menu Animation
     if (hamurgerMenu.current && menuOverlay.current) {
+      gsap.set(menuOverlay.current, {
+        opacity: 0,
+        visibility: "hidden",
+      });
       menuTimeline.to(
         menuOverlay.current,
         {
