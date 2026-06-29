@@ -74,8 +74,8 @@ export default function RabbisTimeline3(props: ChildProps) {
                     start: () => {
                       return (
                         getTimelineOffset() +
-                        GetRightPosition(secTitle) +
-                        window.innerWidth * 0.1
+                        GetRightPosition(secTitle) -
+                        window.innerWidth * 0.5
                       );
                     },
                     toggleActions: "restart pause resume reverse",
@@ -106,8 +106,8 @@ export default function RabbisTimeline3(props: ChildProps) {
               start: () => {
                 return (
                   getTimelineOffset() +
-                  GetRightPosition(item) +
-                  window.innerWidth * 0.1
+                  GetRightPosition(image) -
+                  window.innerWidth * 0.2
                 );
               },
               toggleActions: "restart pause resume reverse",
@@ -135,8 +135,8 @@ export default function RabbisTimeline3(props: ChildProps) {
                     start: () => {
                       return (
                         getTimelineOffset() +
-                        GetRightPosition(item) +
-                        window.innerWidth * 0.1
+                        GetRightPosition(title) -
+                        window.innerWidth * 0.2
                       );
                     },
                     toggleActions: "restart pause resume reverse",

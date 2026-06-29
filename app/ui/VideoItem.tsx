@@ -5,6 +5,7 @@ import { useRef } from "react";
 import PlusIcon from "../assets/icons/PlusIcon";
 import thumb from "../assets/images/video-thumb.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../ui/plugins";
+import GetRightPosition from "./GetRightPosition";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -47,15 +48,17 @@ export default function VideoItem(props: ChildProps) {
       }
 
       const video = wrapper.current?.querySelector(".section-overlay");
-      if (video && video.textContent?.length !== 0) {
+      if (video) {
         const animation = gsap.to(video, {
           duration: 2,
           translateY: "-100%",
           ease: "expo.inOut",
-          delay: -0.5,
+          delay: 0,
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText + 1.4);
+              return (
+                GetRightPosition(wrapper.current) - window.innerWidth * 1.5
+              );
             },
             toggleActions: "restart pause resume reverse",
           },
