@@ -56,7 +56,7 @@ export default function ImageWithTextSection(props: ChildProps) {
         ".content-image1>.image1",
       );
       // Image 1
-      if (imageRef1 && imageRef1.textContent.length > 0) {
+      if (imageRef1) {
         gsap.set(imageRef1, {
           y: 100,
           opacity: 0,
@@ -64,14 +64,14 @@ export default function ImageWithTextSection(props: ChildProps) {
         const animation = gsap.to(imageRef1, {
           y: 0,
           opacity: 1,
-          duration: 1.5,
+          duration: 1,
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
               return (
                 getTimelineOffset() +
                 GetRightPosition(imageRef1) -
-                window.innerWidth * 2
+                window.innerWidth * 2.2
               );
             },
             toggleActions: "restart pause play reverse",
@@ -109,7 +109,7 @@ export default function ImageWithTextSection(props: ChildProps) {
       const imageTexttext = wrapper.current?.querySelector(".content-text>p");
       document.fonts.ready.then(() => {
         // Section Title
-        if (imageTextheading && imageTextheading?.textContent?.length !== 0) {
+        if (imageTextheading) {
           gsap.set(imageTextheading, { opacity: 1 });
           let splititle;
           SplitText.create(imageTextheading, {
@@ -122,7 +122,7 @@ export default function ImageWithTextSection(props: ChildProps) {
                 duration: 2,
                 yPercent: 100,
                 opacity: 0,
-                delay: -0.5,
+                delay: 0,
                 stagger: 0.02,
                 ease: "expo.inOut",
                 scrollTrigger: {
@@ -142,7 +142,7 @@ export default function ImageWithTextSection(props: ChildProps) {
           });
         }
         // Section Text
-        if (imageTexttext && imageTexttext?.textContent?.length !== 0) {
+        if (imageTexttext) {
           gsap.set(imageTexttext, { opacity: 1 });
           let splitext;
           SplitText.create(imageTexttext, {
@@ -155,7 +155,7 @@ export default function ImageWithTextSection(props: ChildProps) {
                 duration: 2,
                 yPercent: 100,
                 opacity: 0,
-                delay: -0.5,
+                delay: 0,
                 stagger: 0.02,
                 ease: "expo.inOut",
                 scrollTrigger: {
@@ -163,7 +163,7 @@ export default function ImageWithTextSection(props: ChildProps) {
                     return (
                       getTimelineOffset() +
                       GetRightPosition(imageTexttext) -
-                      window.innerWidth * 2
+                      window.innerWidth * 2.5
                     );
                   },
                   toggleActions: "restart pause resume reverse",
@@ -181,7 +181,7 @@ export default function ImageWithTextSection(props: ChildProps) {
         ".content-image2>.image3",
       );
       // Image 2
-      if (imageRef2 && imageRef2.textContent.length > 0) {
+      if (imageRef2) {
         gsap.set(imageRef2, {
           y: 100,
           opacity: 0,
@@ -196,7 +196,7 @@ export default function ImageWithTextSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(imageRef2) -
-                window.innerWidth * 2
+                window.innerWidth * 2.5
               );
             },
             toggleActions: "restart pause play reverse",
@@ -204,7 +204,7 @@ export default function ImageWithTextSection(props: ChildProps) {
         });
         animations.push(animation);
       }
-      if (imageRef2image3 && imageRef2image3.textContent.length > 0) {
+      if (imageRef2image3) {
         gsap.set(imageRef2image3, {
           x: "-30vw",
         });

@@ -9,14 +9,6 @@ interface ChildProps {
 export default function HistoryTimeline(props: ChildProps) {
   const [introData, setIntroData] = useState<Record<string, number>>({});
 
-  // Get Intro Right Position
-  function getRightPosition(selector: string) {
-    const intro = document.querySelector(selector);
-    if (!intro) return 0;
-    const introObj = intro.getBoundingClientRect();
-    const introRight = Math.floor(window.innerWidth - introObj.right);
-    return introRight;
-  }
   // Get Offset Top Position
   function getOffsetTop(selector: string) {
     const element = document.querySelector(selector);

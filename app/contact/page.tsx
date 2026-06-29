@@ -328,7 +328,7 @@ export default function Page() {
     pageData && (
       <div ref={main} className="relative overflow-hidden">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={false} />
+        <Header animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

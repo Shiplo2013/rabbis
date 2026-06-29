@@ -228,7 +228,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
                   return (
                     getTimelineOffset() +
                     GetRightPosition(title.current) -
-                    window.innerWidth / 2
+                    window.innerWidth / 3
                   );
                 },
                 toggleActions: "restart pause play reverse",
@@ -252,7 +252,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(slider.current) -
-                window.innerWidth / 2
+                window.innerWidth / 3
               );
             },
             toggleActions: "restart pause play reverse",
@@ -273,7 +273,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(button.current) -
-                window.innerWidth / 2
+                window.innerWidth / 3
               );
             },
             toggleActions: "restart pause play reverse",

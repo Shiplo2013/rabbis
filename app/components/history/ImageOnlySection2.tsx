@@ -38,7 +38,7 @@ export default function ImageOnlySection2(props: ChildProps) {
       }
       // Selector
       const image = wrapper.current?.querySelector(".image1");
-      if (image && image?.textContent?.length !== 0) {
+      if (image) {
         gsap.set(image, {
           x: "-10vw",
         });

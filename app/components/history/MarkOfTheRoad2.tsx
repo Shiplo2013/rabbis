@@ -1,4 +1,5 @@
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -51,75 +52,83 @@ export default function MarkOfTheRoad2(props: ChildProps) {
   ];
 
   // Section Aniamtion
-  // useGSAP(
-  //   () => {
-  //     const animations: gsap.core.Animation[] = [];
-  //     const sections = wrapper.current?.querySelectorAll(".section-content");
-  //     sections?.forEach((item, index) => {
-  //       const image = item.querySelector(".image") as HTMLElement | null;
-  //       const title = item.querySelector(".title>h4") as HTMLElement | null;
+  useGSAP(
+    () => {
+      const animations: gsap.core.Animation[] = [];
+      const sections = wrapper.current?.querySelectorAll(".section-content");
+      sections?.forEach((item, index) => {
+        const image = item.querySelector(".image") as HTMLElement | null;
+        const title = item.querySelector(".title>h4") as HTMLElement | null;
 
-  //       // Rubbis Image
-  //       if (image && image?.textContent?.length !== 0) {
-  //         gsap.set(image, {
-  //           y: 100,
-  //           opacity: 0,
-  //         });
-  //         const imageAnimation = gsap.to(image, {
-  //           y: 0,
-  //           opacity: 1,
-  //           duration: 1.5,
-  //           ease: "expo.inOut",
-  //           scrollTrigger: {
-  //             start: () => {
-  //               return getTimelineOffset() + GetRightPosition(image);
-  //             },
-  //             toggleActions: "restart pause play reverse",
-  //           },
-  //         });
-  //         animations.push(imageAnimation);
-  //       }
-  //       // Rubbis Title
-  //       document.fonts.ready.then(() => {
-  //         // Section Title 1
-  //         if (title && title?.textContent?.length !== 0) {
-  //           gsap.set(title, { opacity: 1 });
-  //           let splititle;
-  //           SplitText.create(title, {
-  //             type: "lines",
-  //             linesClass: "line direction-rtl",
-  //             autoSplit: true,
-  //             mask: "lines",
-  //             onSplit: (self) => {
-  //               splititle = gsap.from(self.lines, {
-  //                 duration: 2,
-  //                 yPercent: 100,
-  //                 opacity: 0,
-  //                 delay: -0.5,
-  //                 stagger: 0.02,
-  //                 ease: "expo.inOut",
-  //                 scrollTrigger: {
-  //                   start: () => {
-  //                     return getTimelineOffset() + GetRightPosition(title);
-  //                   },
-  //                   toggleActions: "restart pause resume reverse",
-  //                 },
-  //               });
-  //               animations.push(splititle);
-  //               return splititle;
-  //             },
-  //           });
-  //         }
-  //       });
-  //     });
+        // Rubbis Image
+        if (image && image?.textContent?.length !== 0) {
+          gsap.set(image, {
+            y: 100,
+            opacity: 0,
+          });
+          const imageAnimation = gsap.to(image, {
+            y: 0,
+            opacity: 1,
+            duration: 1.5,
+            ease: "expo.inOut",
+            scrollTrigger: {
+              start: () => {
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(image) -
+                  window.innerWidth * 0.2
+                );
+              },
+              toggleActions: "restart pause play reverse",
+            },
+          });
+          animations.push(imageAnimation);
+        }
+        // Rubbis Title
+        document.fonts.ready.then(() => {
+          // Section Title 1
+          if (title && title?.textContent?.length !== 0) {
+            gsap.set(title, { opacity: 1 });
+            let splititle;
+            SplitText.create(title, {
+              type: "lines",
+              linesClass: "line direction-rtl",
+              autoSplit: true,
+              mask: "lines",
+              onSplit: (self) => {
+                splititle = gsap.from(self.lines, {
+                  duration: 2,
+                  yPercent: 100,
+                  opacity: 0,
+                  delay: -0.5,
+                  stagger: 0.02,
+                  ease: "expo.inOut",
+                  scrollTrigger: {
+                    start: () => {
+                      return (
+                        getTimelineOffset() +
+                        GetRightPosition(title) -
+                        window.innerWidth * 0.2
+                      );
+                    },
+                    toggleActions: "restart pause resume reverse",
+                  },
+                });
+                animations.push(splititle);
+                return splititle;
+              },
+            });
+          }
+        });
+      });
 
-  //     // Return function to kill animations on unmount or dependency change
-  //     return () => {
-  //       animations.forEach((animation) => animation.kill());
-  //     };
-  //   },
-  //   { scope: wrapper, dependencies: [pathname, props.data] },
-  // );
+      // Return function to kill animations on unmount or dependency change
+      return () => {
+        animations.forEach((animation) => animation.kill());
+      };
+    },
+    { scope: wrapper, dependencies: [pathname, props.data] },
+  );
 
   return (
     <section

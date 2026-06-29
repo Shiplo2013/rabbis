@@ -75,7 +75,7 @@ export default function RabbisHamburgerMenuHome(
   // Menu State
   const [menuTimeline] = useState(
     gsap.timeline({
-      paused: true,
+      reversed: true,
     }),
   );
 

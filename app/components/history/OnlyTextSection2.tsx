@@ -58,7 +58,7 @@ export default function OnlyTextSection2(props: ChildProps) {
             mask: "lines",
             onSplit: (self) => {
               text = gsap.from(self.lines, {
-                duration: 2,
+                duration: 1,
                 yPercent: 120,
                 stagger: 0.025,
                 ease: "expo.inOut",

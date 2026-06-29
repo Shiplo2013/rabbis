@@ -22,7 +22,9 @@ interface ChildProps {
 export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
-
+  // useEffect(() => {
+  //   console.log("Introduction props.data:", props.data);
+  // }, [props.data]);
   return (
     <section
       ref={wrapper}

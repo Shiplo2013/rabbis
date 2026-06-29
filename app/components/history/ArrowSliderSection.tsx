@@ -125,7 +125,7 @@ export default function ArrowSliderSection(props: ChildProps) {
             overlayClass={props.overlayClass}
             imagePosition={props.bgPosition}
             bgClass={props.bgClass}
-            animatePosition={1}
+            animatePosition={0.5}
             panel={props.panel}
           />
         )}

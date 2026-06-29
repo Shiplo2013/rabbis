@@ -38,7 +38,7 @@ export default function VerticalBackgroundImage(props: ChildProps) {
           ease: "none",
           delay: 0,
           scrollTrigger: {
-            trigger: ".introduction-background",
+            trigger: background.current,
             start: "top top",
             end: "bottom top",
             scrub: 0.5,

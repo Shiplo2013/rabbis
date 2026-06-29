@@ -1,6 +1,7 @@
 "use client";
 import BackgroundImage2 from "@/app/ui/BackgroundImage2";
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import TextSplitLines from "@/app/ui/TextSplitLines";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -69,7 +70,7 @@ export default function NewsPapperSection(props: ChildProps) {
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * props.animWidthText;
+              return GetRightPosition(image1) - window.innerWidth * 0.5;
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -84,7 +85,7 @@ export default function NewsPapperSection(props: ChildProps) {
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * props.animWidthText;
+              return GetRightPosition(image2) - window.innerWidth * 0.5;
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -99,55 +100,13 @@ export default function NewsPapperSection(props: ChildProps) {
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * props.animWidthText;
+              return GetRightPosition(image3) - window.innerWidth * 0.5;
             },
             toggleActions: "restart pause resume reverse",
           },
         });
         animations.push(image3Animation);
       }
-      // timeline for images
-      // if (image1) {
-      //   gsap.to(image1, {
-      //     x: 50,
-      //     rotate: -5,
-      //     ease: "easeIn",
-      //     scrollTrigger: {
-      //       start: () => {
-      //         return window.innerWidth * (props.animWidthText - 0.5);
-      //       },
-      //       end: () => "+=" + window.innerWidth * 2,
-      //       scrub: 2,
-      //     },
-      //   });
-      // }
-      // if (image2) {
-      //   gsap.to(image2, {
-      //     x: -100,
-      //     ease: "easeIn",
-      //     scrollTrigger: {
-      //       start: () => {
-      //         return window.innerWidth * (props.animWidthText - 0.5);
-      //       },
-      //       end: () => "+=" + window.innerWidth * 2,
-      //       scrub: 2,
-      //     },
-      //   });
-      // }
-      // if (image3) {
-      //   gsap.to(image3, {
-      //     x: -100,
-      //     rotate: -10,
-      //     ease: "easeIn",
-      //     scrollTrigger: {
-      //       start: () => {
-      //         return window.innerWidth * (props.animWidthText - 0.5);
-      //       },
-      //       end: () => "+=" + window.innerWidth * 2,
-      //       scrub: 2,
-      //     },
-      //   });
-      // }
       // Text Aniamtions
       document.fonts.ready.then(() => {
         // Section content 1
@@ -163,7 +122,7 @@ export default function NewsPapperSection(props: ChildProps) {
           const content1Animation = gsap.to(content1Split, {
             scrollTrigger: {
               start: () => {
-                return window.innerWidth * props.animWidthText;
+                return GetRightPosition(content1) - window.innerWidth * 0.5;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -189,7 +148,7 @@ export default function NewsPapperSection(props: ChildProps) {
           const content2Animation = gsap.to(content2Split, {
             scrollTrigger: {
               start: () => {
-                return window.innerWidth * (props.animWidthText + 0.2);
+                return GetRightPosition(content2) - window.innerWidth * 0.5;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -215,7 +174,7 @@ export default function NewsPapperSection(props: ChildProps) {
           const content3Animation = gsap.to(content3Split, {
             scrollTrigger: {
               start: () => {
-                return window.innerWidth * (props.animWidthText + 0.6);
+                return GetRightPosition(content3) - window.innerWidth * 0.5;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -241,7 +200,7 @@ export default function NewsPapperSection(props: ChildProps) {
           const content4Animation = gsap.to(content4Split, {
             scrollTrigger: {
               start: () => {
-                return window.innerWidth * (props.animWidthText + 0.6);
+                return GetRightPosition(content4) - window.innerWidth * 0.5;
               },
               toggleActions: "restart pause resume reverse",
             },

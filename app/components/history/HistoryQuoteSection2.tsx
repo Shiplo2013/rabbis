@@ -1,4 +1,5 @@
-import BackgroundImage2 from "@/app/ui/BackgroundImage2";
+import BackgroundImage from "@/app/ui/BackgroundImage";
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -48,7 +49,9 @@ export default function HistoryQuoteSection2(props: ChildProps) {
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * props.animWidthText;
+                  return (
+                    GetRightPosition(quote.current) - window.innerWidth * 2.5
+                  );
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -61,7 +64,7 @@ export default function HistoryQuoteSection2(props: ChildProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return window.innerWidth * (props.animWidthText - 0.5);
+              return GetRightPosition(quote.current) - window.innerWidth * 2.5;
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -89,10 +92,11 @@ export default function HistoryQuoteSection2(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       <div className="quote-background w-full h-full absolute top-0 left-0 z-10 overflow-hidden">
-        <BackgroundImage2
+        <BackgroundImage
           bgImage={props.bgImage}
-          start={props.animWidthText}
+          overlayClass={"opacity-0"}
           panel={""}
+          animated={true}
         />
       </div>
       <div
