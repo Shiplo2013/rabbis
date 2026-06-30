@@ -18,6 +18,7 @@ interface ChildProps {
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
   data: any;
+  offsetTopTimeline?: number;
 }
 export default function MarkOfTheRoad2(props: ChildProps) {
   // Navigation
@@ -28,7 +29,10 @@ export default function MarkOfTheRoad2(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Section Data

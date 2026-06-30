@@ -2,7 +2,6 @@ import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { RefObject, useRef } from "react";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 
@@ -23,22 +22,25 @@ interface ChildProps {
   bgClass: string;
   data: { title: string; subtitle: string; background: any; overlay: any };
   timeline?: string;
+  offsetTopTimeline?: number;
+  offsetTopAdded: boolean;
 }
 
 export default function Introduction2(props: ChildProps) {
-  // Navigation
-  const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const subtitle = useRef<HTMLHeadingElement>(null);
   const timeline = props.panel;
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // Section animation
-  useGSAP(
-    () => {
+  useGSAP(() => {
+    if (props.offsetTopTimeline !== 0) {
       const animations: gsap.core.Animation[] = [];
       if (typeof window === "undefined" || !wrapper.current) {
         return;
@@ -63,9 +65,7 @@ export default function Introduction2(props: ChildProps) {
                 ease: "expo.out",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      (timeline?.current ? timeline.current.offsetTop : 0) - 10
-                    );
+                    return getTimelineOffset() - 10;
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -94,7 +94,7 @@ export default function Introduction2(props: ChildProps) {
                   start: () => {
                     return getTimelineOffset() - 10;
                   },
-                  toggleActions: "restart pause play reverse",
+                  toggleActions: "restart none none reverse",
                 },
               });
               animations.push(splitSubtitle);
@@ -108,9 +108,8 @@ export default function Introduction2(props: ChildProps) {
       return () => {
         animations.forEach((animation) => animation.kill());
       };
-    },
-    { scope: wrapper, dependencies: [props.data] },
-  );
+    }
+  }, [props.offsetTopAdded]);
   return (
     <section
       ref={wrapper}
@@ -124,6 +123,7 @@ export default function Introduction2(props: ChildProps) {
           imagePosition={props.bgPosition}
           bgClass={props.bgClass}
           animatePosition={props.animWidthText}
+          offsetTopTimeline={props.offsetTopTimeline}
           panel={props.panel}
           timeline={props.timeline}
         />

@@ -21,6 +21,7 @@ interface ChildProps {
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
+  offsetTopTimeline?: number;
 }
 
 export default function LambOfferingSection(props: ChildProps) {
@@ -36,7 +37,10 @@ export default function LambOfferingSection(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Section Data
@@ -66,7 +70,7 @@ export default function LambOfferingSection(props: ChildProps) {
         const image2 = wrapper.current?.querySelector(".image2");
         const image3 = wrapper.current?.querySelector(".image3");
         // Image Animation
-        if (image1 && image1?.textContent?.length !== 0) {
+        if (image1) {
           const imageAnim = gsap.from(image1, {
             y: 100,
             opacity: 0,
@@ -85,7 +89,7 @@ export default function LambOfferingSection(props: ChildProps) {
           });
           animations.push(imageAnim);
         }
-        if (image2 && image2?.textContent?.length !== 0) {
+        if (image2) {
           const image2Anim = gsap.from(image2, {
             y: 100,
             opacity: 0,
@@ -104,7 +108,7 @@ export default function LambOfferingSection(props: ChildProps) {
           });
           animations.push(image2Anim);
         }
-        if (image3 && image3?.textContent?.length !== 0) {
+        if (image3) {
           const image3Anim = gsap.from(image3, {
             y: 100,
             opacity: 0,
@@ -124,7 +128,7 @@ export default function LambOfferingSection(props: ChildProps) {
           animations.push(image3Anim);
         }
         // Notification Animation
-        if (notification && notification?.textContent?.length !== 0) {
+        if (notification) {
           const notificationIcon = notification?.querySelector(".notify-icon");
           // Notification
           gsap.set(notification, {
@@ -159,7 +163,7 @@ export default function LambOfferingSection(props: ChildProps) {
             rotate: 0,
             opacity: 1,
             duration: 1.5,
-            delay: 0.5,
+            delay: 0,
             ease: "expo.inOut",
             scrollTrigger: {
               start: () => {
@@ -169,7 +173,7 @@ export default function LambOfferingSection(props: ChildProps) {
                   window.innerWidth * 0.2
                 );
               },
-              toggleActions: "restart pause play reverse",
+              toggleActions: "restart none none reverse",
             },
           });
           animations.push(notificationIconAnim);
@@ -280,7 +284,7 @@ export default function LambOfferingSection(props: ChildProps) {
                       );
                     },
                     end: () => "+=" + window.innerWidth * 0.5,
-                    toggleActions: "restart pause play reverse",
+                    toggleActions: "restart none none reverse",
                     scrub: 2,
                   },
                 });
@@ -313,7 +317,7 @@ export default function LambOfferingSection(props: ChildProps) {
                       );
                     },
                     end: () => "+=" + window.innerWidth * 0.5,
-                    toggleActions: "restart pause play reverse",
+                    toggleActions: "restart none none reverse",
                     scrub: 2,
                   },
                 });
@@ -346,7 +350,7 @@ export default function LambOfferingSection(props: ChildProps) {
                       );
                     },
                     end: () => "+=" + window.innerWidth * 0.5,
-                    toggleActions: "restart pause play reverse",
+                    toggleActions: "restart none none reverse",
                     scrub: 2,
                   },
                 });

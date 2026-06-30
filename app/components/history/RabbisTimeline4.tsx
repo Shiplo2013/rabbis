@@ -17,6 +17,7 @@ interface ChildProps {
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
+  offsetTopTimeline?: number;
 }
 export default function RabbisTimeline4(props: ChildProps) {
   // Navigation
@@ -27,7 +28,10 @@ export default function RabbisTimeline4(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // Section Data
   const RabbisData = [
@@ -128,11 +132,11 @@ export default function RabbisTimeline4(props: ChildProps) {
                   start: () => {
                     return (
                       getTimelineOffset() +
-                      GetRightPosition(wrapper.current) -
-                      window.innerWidth
+                      GetRightPosition(secTitle) -
+                      window.innerWidth * 0.7
                     );
                   },
-                  toggleActions: "restart pause resume reverse",
+                  toggleActions: "restart none none reverse",
                 },
               });
               animations.push(splititle);
@@ -152,11 +156,11 @@ export default function RabbisTimeline4(props: ChildProps) {
             start: () => {
               return (
                 getTimelineOffset() +
-                GetRightPosition(wrapper.current) -
+                GetRightPosition(item) -
                 window.innerWidth * 0.7
               );
             },
-            toggleActions: "restart pause resume reverse",
+            toggleActions: "restart none none reverse",
           },
           stagger: 0.25,
         });
@@ -238,6 +242,8 @@ export default function RabbisTimeline4(props: ChildProps) {
               extraClass={"card-video mr-[10vw]"}
               animWidthText={props.animWidthText}
               data={props?.data?.single_video}
+              panel={props.panel}
+              offsetTopTimeline={props.offsetTopTimeline}
             />
           )}
           <TimelineCardItem

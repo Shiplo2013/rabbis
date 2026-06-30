@@ -15,6 +15,7 @@ interface ChildProps {
   imagePosition: string;
   bgClass: string;
   animatePosition: number;
+  offsetTopTimeline?: number;
 }
 
 export default function IntroductionBackground2(props: ChildProps) {
@@ -22,7 +23,10 @@ export default function IntroductionBackground2(props: ChildProps) {
   const pathname = usePathname();
   const timeline = props.panel;
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // Get Intro Right Position
   function getRightPosition(selector: any) {
@@ -52,8 +56,8 @@ export default function IntroductionBackground2(props: ChildProps) {
             start: () => {
               return (
                 getTimelineOffset() +
-                getRightPosition(background.current) +
-                window.innerWidth * 0.2
+                getRightPosition(background.current) -
+                window.innerWidth * 0.5
               );
             },
             end: () => {

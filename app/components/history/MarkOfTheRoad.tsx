@@ -18,6 +18,7 @@ interface ChildProps {
   panel?: RefObject<HTMLDivElement | null>;
   animWidthText: number;
   data: any;
+  offsetTopTimeline?: number;
 }
 export default function MarkOfTheRoad(props: ChildProps) {
   // Navigation
@@ -26,7 +27,10 @@ export default function MarkOfTheRoad(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // Selectors
   const wrapper = useRef<HTMLDivElement>(null);

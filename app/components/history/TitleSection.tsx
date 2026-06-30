@@ -20,6 +20,7 @@ interface ChildProps {
   leftShape: boolean;
   panel?: RefObject<HTMLDivElement | null>;
   data: any;
+  offsetTopTimeline?: number;
 }
 
 export default function TitleSection(props: ChildProps) {
@@ -33,7 +34,10 @@ export default function TitleSection(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // Content
   const Title = props?.data?.title || `רבנים<br/> בתקופה<br/> זו`;
@@ -74,7 +78,7 @@ export default function TitleSection(props: ChildProps) {
               yPercent: 120,
               stagger: 0.02,
               ease: "expo.inOut",
-              duration: 2,
+              duration: 1,
               delay: 0,
               opacity: 0,
               scrollTrigger: {
@@ -82,7 +86,7 @@ export default function TitleSection(props: ChildProps) {
                   return (
                     getTimelineOffset() +
                     GetRightPosition(wrapper.current) -
-                    window.innerWidth * 0.6
+                    window.innerWidth * 0.7
                   );
                 },
                 toggleActions: "restart none none reverse",

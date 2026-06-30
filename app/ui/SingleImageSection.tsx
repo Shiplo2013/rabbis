@@ -12,6 +12,7 @@ interface ChildProps {
   image: any;
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
+  offsetTopTimeline?: number;
 }
 export default function SingleImageSection(props: ChildProps) {
   // Navigation
@@ -21,7 +22,10 @@ export default function SingleImageSection(props: ChildProps) {
   const image = useRef(null);
   const timeline = props.panel;
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Section Animation

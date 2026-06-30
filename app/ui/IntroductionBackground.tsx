@@ -15,49 +15,56 @@ interface ChildProps {
   imagePosition: string;
   bgClass: string;
   animatePosition: number;
+  offsetTopTimeline?: number;
 }
 
 export default function IntroductionBackground(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   const timeline = props.panel;
-  const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
-  };
   // Selector
   const background = useRef<HTMLDivElement>(null);
 
   // Seciton Animation
-  useGSAP(
-    () => {
-      const animations: gsap.core.Animation[] = [];
-      if (typeof window === "undefined") {
-        return;
-      }
+  useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
+    if (typeof window === "undefined" || !background.current) {
+      return;
+    }
 
-      if (!background.current || props.animatePosition <= 0) {
-        return;
-      }
+    if (!background.current || props.animatePosition <= 0) {
+      return;
+    }
+    // Get Offset Top of Timeline
+    const getTimelineOffset = () => {
+      return (
+        props.offsetTopTimeline ||
+        (timeline?.current ? timeline.current.offsetTop : 0)
+      );
+    };
 
-      // Banner Background
-      gsap.set(background.current, { scale: 1.2, x: "10vw" });
-      const animation = gsap.to(background.current, {
-        x: "-20vw",
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return getTimelineOffset();
-          },
-          end: () => {
-            return "+=" + window.innerWidth * 2;
-          },
-          scrub: 2,
+    // Banner Background
+    gsap.set(background.current, { scale: 1.2, x: "10vw" });
+    const animation = gsap.to(background.current, {
+      x: "-20vw",
+      ease: "none",
+      scrollTrigger: {
+        start: () => {
+          return getTimelineOffset();
         },
-      });
-      animations.push(animation);
-    },
-    { scope: background, dependencies: [pathname, props.bgImage] },
-  );
+        end: () => {
+          return "+=" + window.innerWidth * 2;
+        },
+        scrub: 2,
+      },
+    });
+    animations.push(animation);
+
+    // Return Cleanup Function
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
+  }, [pathname, props.offsetTopTimeline]);
   return (
     <div
       ref={background}

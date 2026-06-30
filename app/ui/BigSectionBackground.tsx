@@ -15,6 +15,7 @@ interface ChildProps {
   bgClass: string;
   animatePosition: number;
   panel?: RefObject<HTMLDivElement | null>;
+  offsetTopTimeline?: number;
 }
 
 export default function BigSectionBackground(props: ChildProps) {
@@ -26,7 +27,10 @@ export default function BigSectionBackground(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // Seciton Animation
   useGSAP(
@@ -53,7 +57,7 @@ export default function BigSectionBackground(props: ChildProps) {
         });
       }
     },
-    { scope: background, dependencies: [pathname] },
+    { scope: background, dependencies: [pathname, props.offsetTopTimeline] },
   );
   return (
     <div

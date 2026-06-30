@@ -25,6 +25,7 @@ interface ChildProps {
     floatingImage: any;
   };
   panel?: RefObject<HTMLDivElement | null>;
+  offsetTopTimeline?: number;
 }
 
 export default function ArrowSliderSection(props: ChildProps) {
@@ -38,7 +39,10 @@ export default function ArrowSliderSection(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Get Intro Right Position
@@ -52,6 +56,7 @@ export default function ArrowSliderSection(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      if (getTimelineOffset() === 0) return;
       const animations: gsap.core.Animation[] = [];
       // Section Image
       if (imageRef.current) {
@@ -73,7 +78,7 @@ export default function ArrowSliderSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 getRightPosition(cardSlider.current) -
-                window.innerWidth / 2
+                window.innerWidth * 0.8
               );
             },
             toggleActions: "restart pause resume reverse",
@@ -127,6 +132,7 @@ export default function ArrowSliderSection(props: ChildProps) {
             bgClass={props.bgClass}
             animatePosition={0.5}
             panel={props.panel}
+            offsetTopTimeline={props.offsetTopTimeline}
           />
         )}
       </div>

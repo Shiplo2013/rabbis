@@ -75,7 +75,7 @@ export default function RabbisHamburgerMenuHome(
   // Menu State
   const [menuTimeline] = useState(
     gsap.timeline({
-      reversed: true,
+      paused: true,
     }),
   );
 
@@ -135,41 +135,29 @@ export default function RabbisHamburgerMenuHome(
         opacity: 0,
         visibility: "hidden",
       });
-      menuTimeline.to(
-        menuOverlay.current,
-        {
-          opacity: 1,
-          visibility: "visible",
-          ease: "none",
-          duration: 0.1,
-          delay: 0,
-        },
-        "-=0.5",
-      );
+      menuTimeline.to(menuOverlay.current, {
+        opacity: 1,
+        visibility: "visible",
+        ease: "none",
+        duration: 0.1,
+        delay: 0,
+      });
     }
     // Hamburger Menu
     if (hamurgerMenu.current) {
-      menuTimeline.to(
-        hamurgerMenu.current,
-        {
-          opacity: 1,
-          visibility: "visible",
-          ease: "none",
-          duration: 0,
-          delay: 0,
-        },
-        "-=0.5",
-      );
-      menuTimeline.to(
-        hamurgerMenu.current,
-        {
-          clipPath: `inset(0% 0% 0% 0%)`,
-          ease: "expo.inOut",
-          duration: 1.5,
-          delay: 0,
-        },
-        "-=0.5",
-      );
+      menuTimeline.to(hamurgerMenu.current, {
+        opacity: 1,
+        visibility: "visible",
+        ease: "none",
+        duration: 0,
+        delay: 0,
+      });
+      menuTimeline.to(hamurgerMenu.current, {
+        clipPath: `inset(0% 0% 0% 0%)`,
+        ease: "expo.inOut",
+        duration: 1.5,
+        delay: 0,
+      });
     }
     if (titleSplit) {
       menuTimeline.to(
@@ -199,11 +187,11 @@ export default function RabbisHamburgerMenuHome(
       );
     }
     if (menuItemsImage?.length) {
-      menuTimeline.fromTo(
+      menuTimeline.set(menuItemsImage, {
+        clipPath: "inset(100% 0% 0% 0%)",
+      });
+      menuTimeline.to(
         menuItemsImage,
-        {
-          clipPath: "inset(100% 0% 0% 0%)",
-        },
         {
           clipPath: "inset(0% 0% 0% 0%)",
           ease: "expo.inOut",

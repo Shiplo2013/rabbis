@@ -24,6 +24,7 @@ interface ChildProps {
   bgClass: string;
   data: { title: string; subtitle: string };
   timeline?: string;
+  offsetTopTimeline?: number;
 }
 
 export default function IntroductionContent(props: ChildProps) {
@@ -35,7 +36,10 @@ export default function IntroductionContent(props: ChildProps) {
   const subtitle = useRef<HTMLHeadingElement>(null);
   const timeline = props.panel;
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // Section animation
   useGSAP(
@@ -131,6 +135,7 @@ export default function IntroductionContent(props: ChildProps) {
           animatePosition={props.animWidthText}
           panel={props.panel}
           timeline={props.timeline}
+          offsetTopTimeline={props.offsetTopTimeline}
         />
       )}
       {props.bgOverlay !== "" && (
