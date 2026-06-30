@@ -95,10 +95,7 @@ export default function Page() {
       try {
         const response = await fetch("/api/chronicles", {
           //next: { revalidate: 3000 },
-          cache: "no-store",
-          headers: {
-            Accept: "application/json",
-          },
+          cache: "force-cache",
         });
 
         if (!response.ok) {
@@ -131,28 +128,6 @@ export default function Page() {
       return;
     }
     setPageDataFetched(true);
-    //console.log("Chronicles page data:", chroniclesPageData);
-    //console.log(chroniclesPageData?.acf?.timeline_1?.introduction?.subtitle);
-
-    // const updateSectionWidth = () => {
-    //   const newSectionWidth =
-    //     chroniclesPageData?.postsData.length * 24.3 +
-    //     (chroniclesPageData?.postsData.length - 1) * 15 +
-    //     30 +
-    //     chroniclesPageData?.postsData
-    //       .map((item: any) => item.posts.length - 1)
-    //       .reduce((a: number, b: number) => a + b, 0) *
-    //       5;
-
-    //   setSectionWidth(newSectionWidth);
-    //   setContainerWidth(newSectionWidth + 100);
-    // };
-
-    // updateSectionWidth();
-    // window.addEventListener("resize", updateSectionWidth);
-    // return () => {
-    //   window.removeEventListener("resize", updateSectionWidth);
-    // };
   }, [chroniclesPageData]);
 
   // Page Selectors
@@ -182,61 +157,6 @@ export default function Page() {
   const isHeaderLeftHidden = useRef(false);
   const [listOfRabbis, SetListOfRabbis] = useState<any[]>([]);
 
-  // Get Offset Top of Timeline
-  function getOffsetTop(selector: string) {
-    const element = document.querySelector(selector);
-    if (!element) return 0;
-    const offsetTop = element.getBoundingClientRect().top + window.scrollY;
-    return offsetTop;
-  }
-
-  // useEffect(() => {
-  //   // Show button when page is scrolled past 300px
-  //   const toggleVisibility = () => {
-  //     const scrolled = window.scrollY;
-  //     let timeline1Top =
-  //       getOffsetTop(timeline1Ref.current ? `#timeline1` : "") -
-  //       window.innerWidth;
-  //     let timeline2Top =
-  //       getOffsetTop(timeline2Ref.current ? `#timeline2` : "") -
-  //       window.innerWidth;
-  //     let timeline3Top =
-  //       getOffsetTop(timeline3Ref.current ? `#timeline3` : "") -
-  //       window.innerWidth;
-  //     let timeline4Top =
-  //       getOffsetTop(timeline4Ref.current ? `#timeline4` : "") -
-  //       window.innerWidth;
-  //     let timeline5Top =
-  //       getOffsetTop(timeline5Ref.current ? `#timeline5` : "") -
-  //       window.innerWidth;
-  //     let timeline6Top =
-  //       getOffsetTop(timeline6Ref.current ? `#timeline6` : "") -
-  //       window.innerWidth;
-  //     if (scrolled > timeline1Top + 100) {
-  //       setLoadTimeline1(true);
-  //     }
-  //     if (scrolled >= timeline2Top) {
-  //       setLoadTimeline2(true);
-  //     }
-  //     if (scrolled >= timeline3Top) {
-  //       setLoadTimeline3(true);
-  //     }
-  //     if (scrolled >= timeline4Top) {
-  //       setLoadTimeline4(true);
-  //     }
-  //     if (scrolled >= timeline5Top) {
-  //       setLoadTimeline5(true);
-  //     }
-  //     if (scrolled >= timeline6Top) {
-  //       setLoadTimeline6(true);
-  //     }
-  //   };
-
-  //   window.addEventListener("scroll", toggleVisibility);
-
-  //   // Clean up the event listener on unmount
-  //   return () => window.removeEventListener("scroll", toggleVisibility);
-  // }, []);
   // Rabbis Data
   const TimelineData = [
     {
@@ -764,7 +684,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel2.current,
           start: timeline2Ref.current?.offsetTop,
-          end: "+=" + window.innerWidth * 5.88,
+          end: "+=" + (window.innerWidth * 5.88 - 200),
           scrub: scurbScale,
         },
       });
@@ -803,7 +723,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel3.current,
           start: timeline3Ref.current?.offsetTop,
-          end: "+=" + window.innerWidth * 9.398,
+          end: "+=" + (window.innerWidth * 9.398 - 200),
           scrub: scurbScale,
         },
       });
@@ -842,7 +762,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel4.current,
           start: timeline4Ref.current?.offsetTop,
-          end: "+=" + window.innerWidth * 8.75,
+          end: "+=" + (window.innerWidth * 8.75 - 200),
           scrub: scurbScale,
         },
       });
@@ -881,7 +801,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel5.current,
           start: timeline5Ref.current?.offsetTop,
-          end: "+=" + window.innerWidth * 5.53,
+          end: "+=" + (window.innerWidth * 5.53 - 200),
           scrub: scurbScale,
         },
       });
@@ -891,7 +811,7 @@ export default function Page() {
         scrollTrigger: {
           trigger: panel6.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 5.53,
+          end: "+=" + (window.innerWidth * 5.53 - 200),
           scrub: scurbScale,
           pin: true,
           anticipatePin: 1,
@@ -1024,6 +944,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       if (main.current) {
         gsap.to(main.current, {
           opacity: 0,
@@ -1183,6 +1104,7 @@ export default function Page() {
                   >
                     <MarkOfTheRoad
                       animWidthText={3.4}
+                      panel={timeline1Ref}
                       extraClass={
                         "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
                       }
@@ -1371,7 +1293,7 @@ export default function Page() {
                       audioControl={function (): void {
                         throw new Error("Function not implemented.");
                       }}
-                      animWidthText={0}
+                      animWidthText={0.1}
                       timeline="timeline3"
                     />
                   </Suspense>

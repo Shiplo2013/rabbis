@@ -70,6 +70,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
   // Section Animaton
   useGSAP(
     () => {
+      console.log("MarkOfTheRoad3 Animation", props.data);
       const animations: gsap.core.Animation[] = [];
       if (typeof window === "undefined" || !wrapper.current) {
         return;

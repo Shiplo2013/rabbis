@@ -262,18 +262,19 @@ export default function RabbisPeriodSection(props: ChildProps) {
       }
       // Section Button
       if (button.current) {
+        gsap.set(button.current, { opacity: 0, yPercent: 100 });
         const buttonAnimation = gsap.to(button.current, {
           yPercent: 0,
           opacity: 1,
-          duration: 1,
+          duration: 2,
           delay: 0,
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
               return (
                 getTimelineOffset() +
-                GetRightPosition(button.current) -
-                window.innerWidth / 3
+                GetRightPosition(wrapper.current) +
+                window.innerWidth / 4
               );
             },
             toggleActions: "restart pause play reverse",

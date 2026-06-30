@@ -40,28 +40,28 @@ export default function TitleSection(props: ChildProps) {
   useGSAP(
     () => {
       const animations: gsap.core.Animation[] = [];
-      // Section Title 2
-      gsap.set(introImage.current, { x: 100 });
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          start: () => {
-            return (
-              getTimelineOffset() +
-              GetRightPosition(wrapper.current) -
-              window.innerWidth
-            );
-          },
-          end: () => "+=" + window.innerWidth * 2,
-          scrub: 2,
-        },
-      });
-      tl.to(introImage.current, {
-        x: -300,
-        ease: "easeIn",
-      });
-      animations.push(tl);
       document.fonts.ready.then(() => {
-        // Section Title 1
+        // Section Image
+        gsap.set(introImage.current, { x: 100 });
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            start: () => {
+              return (
+                getTimelineOffset() +
+                GetRightPosition(wrapper.current) -
+                window.innerWidth
+              );
+            },
+            end: () => "+=" + window.innerWidth * 2,
+            scrub: 2,
+          },
+        });
+        tl.to(introImage.current, {
+          x: -300,
+          ease: "easeIn",
+        });
+        animations.push(tl);
+        // Section Title
         gsap.set(introTitle.current, { opacity: 1 });
         let splititle;
         SplitText.create(introTitle.current, {
@@ -74,18 +74,18 @@ export default function TitleSection(props: ChildProps) {
               yPercent: 120,
               stagger: 0.02,
               ease: "expo.inOut",
-              duration: 3,
-              delay: -1,
+              duration: 2,
+              delay: 0,
               opacity: 0,
               scrollTrigger: {
                 start: () => {
                   return (
                     getTimelineOffset() +
                     GetRightPosition(wrapper.current) -
-                    window.innerWidth / 2
+                    window.innerWidth * 0.6
                   );
                 },
-                toggleActions: "restart pause play reverse",
+                toggleActions: "restart none none reverse",
               },
             });
             animations.push(splititle);

@@ -65,7 +65,7 @@ export default function RabbisTimeline(props: ChildProps) {
         const title = item.querySelector(".title>h4") as HTMLElement | null;
 
         // Rubbis Image
-        if (image && image?.textContent?.length !== 0) {
+        if (image) {
           gsap.set(image, {
             x: -100,
             opacity: 0,
@@ -80,7 +80,7 @@ export default function RabbisTimeline(props: ChildProps) {
                 return (
                   getTimelineOffset() +
                   GetRightPosition(item) -
-                  window.innerWidth * 0.2
+                  window.innerWidth * 0.1
                 );
               },
               toggleActions: "restart pause play reverse",
@@ -112,7 +112,7 @@ export default function RabbisTimeline(props: ChildProps) {
                       return (
                         getTimelineOffset() +
                         GetRightPosition(item) -
-                        window.innerWidth * 0.2
+                        window.innerWidth * 0.1
                       );
                     },
                     toggleActions: "restart pause play reverse",
