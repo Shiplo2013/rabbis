@@ -15,11 +15,20 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   data?: any;
+  panel?: React.RefObject<HTMLDivElement | null>;
+  offsetTopTimeline?: number;
 }
 
 export default function VideoItem(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
+  };
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const videoWrap = useRef<HTMLDivElement>(null);
@@ -57,10 +66,12 @@ export default function VideoItem(props: ChildProps) {
           scrollTrigger: {
             start: () => {
               return (
-                GetRightPosition(wrapper.current) - window.innerWidth * 1.5
+                getTimelineOffset() +
+                GetRightPosition(wrapper.current) -
+                window.innerWidth * 0.8
               );
             },
-            toggleActions: "restart pause resume reverse",
+            toggleActions: "restart none none reverse",
           },
         });
         animations.push(animation);

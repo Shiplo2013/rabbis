@@ -20,6 +20,8 @@ interface ChildProps {
   activeMenuFunction?: (state: boolean) => void;
   data: any;
   rabbisData?: (data: SlideItem[]) => void;
+  offsetTopTimeline?: number;
+  rabbisPosts?: { posts: RabbiPost[] }; // Add this line to accept rabbisPosts as a prop
 }
 
 type RabbiPost = {
@@ -105,102 +107,34 @@ export default function RabbisPeriodSection(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
-  // useEffect(() => {
-  //   console.log(
-  //     "RabbisPeriodSection: props.data.past_rabbis",
-  //     props?.data?.past_rabbis,
-  //   );
-  // }, [props?.data?.past_rabbis, props.data]);
-
   useEffect(() => {
-    let isMounted = true;
+    if (props.rabbisPosts?.posts && props.rabbisPosts.posts.length > 0) {
+      const mappedSlides: SlideItem[] = props.rabbisPosts?.posts.map((post) => {
+        const acf = (post.acf ?? {}) as Record<string, unknown>;
+        const title =
+          typeof acf?.title === "string" ? acf.title : post.title || "";
+        const subtitle = typeof acf.time === "string" ? acf.time : "";
+        const thumbnail = acf.thumbnail || null;
 
-    const loadPastRabbis = async () => {
-      const rawItems = parsePastRabbis(props?.data?.past_rabbis);
-      const ids = rawItems
-        .map(extractPostId)
-        .filter((id): id is number => typeof id === "number");
-
-      if (!ids.length) {
-        if (isMounted) {
-          setSlideData([]);
-        }
-        return;
-      }
-
-      const uniqueIds = [...new Set(ids)];
-      const params = new URLSearchParams({
-        include: uniqueIds.join(","),
-        per_page: String(uniqueIds.length),
-        orderby: "include",
-        order: "asc",
+        return {
+          buttonText: "הרחב קריאה",
+          title,
+          subtitle,
+          thumbnail,
+          text: "מייסד וראש הישיבה. מראשי תנועת המוסר ידוע בכינויו הסבא מסלבודקה.",
+          buttonLink: post.slug ? `/past-rabbis/${post.slug}` : "/past-rabbis",
+        };
       });
-
-      try {
-        const response = await fetch(
-          `/api/past-rabbis/posts?${params.toString()}`,
-          {
-            cache: "no-store",
-          },
-        );
-
-        if (!response.ok) {
-          if (isMounted) {
-            setSlideData([]);
-          }
-          return;
-        }
-
-        const data = (await response.json()) as { posts?: RabbiPost[] };
-        const posts = Array.isArray(data.posts) ? data.posts : [];
-        const orderIndex = new Map(uniqueIds.map((id, index) => [id, index]));
-        const sortedPosts = [...posts].sort((a, b) => {
-          const aIndex = orderIndex.get(a.id) ?? Number.MAX_SAFE_INTEGER;
-          const bIndex = orderIndex.get(b.id) ?? Number.MAX_SAFE_INTEGER;
-          return aIndex - bIndex;
-        });
-
-        const mappedSlides: SlideItem[] = sortedPosts.map((post) => {
-          const acf = (post.acf ?? {}) as Record<string, unknown>;
-          const title =
-            typeof acf?.title === "string" ? acf.title : post.title || "";
-          const subtitle = typeof acf.time === "string" ? acf.time : "";
-          const thumbnail = acf.thumbnail || null;
-
-          return {
-            buttonText: "הרחב קריאה",
-            title,
-            subtitle,
-            thumbnail,
-            text: "מייסד וראש הישיבה. מראשי תנועת המוסר ידוע בכינויו הסבא מסלבודקה.",
-            buttonLink: post.slug
-              ? `/past-rabbis/${post.slug}`
-              : "/past-rabbis",
-          };
-        });
-
-        if (isMounted) {
-          setSlideData(mappedSlides);
-          if (props.panel?.current?.className == "timeline1") {
-            props.rabbisData?.(mappedSlides);
-          }
-        }
-      } catch {
-        if (isMounted) {
-          setSlideData([]);
-        }
-      }
-    };
-
-    loadPastRabbis();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [props?.data?.past_rabbis, props.data]);
+      setSlideData(mappedSlides);
+      props.rabbisData?.(mappedSlides);
+    }
+  }, [props.rabbisPosts]);
 
   // Section Animation
   useGSAP(() => {
@@ -228,10 +162,10 @@ export default function RabbisPeriodSection(props: ChildProps) {
                   return (
                     getTimelineOffset() +
                     GetRightPosition(title.current) -
-                    window.innerWidth / 3
+                    window.innerWidth * 0.5
                   );
                 },
-                toggleActions: "restart pause play reverse",
+                toggleActions: "restart none none reverse",
               },
             });
             animations.push(splititle);
@@ -252,10 +186,10 @@ export default function RabbisPeriodSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(slider.current) -
-                window.innerWidth / 3
+                window.innerWidth * 0.5
               );
             },
-            toggleActions: "restart pause play reverse",
+            toggleActions: "restart none none reverse",
           },
         });
         animations.push(sliderAnimation);
@@ -273,11 +207,11 @@ export default function RabbisPeriodSection(props: ChildProps) {
             start: () => {
               return (
                 getTimelineOffset() +
-                GetRightPosition(wrapper.current) +
-                window.innerWidth / 4
+                GetRightPosition(button.current) -
+                window.innerWidth * 0.5
               );
             },
-            toggleActions: "restart pause play reverse",
+            toggleActions: "restart none none reverse",
           },
         });
         animations.push(buttonAnimation);
@@ -308,6 +242,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
         bgImage={contentBG}
         start={props.animWidthText - 0.3}
         panel={props.panel}
+        offsetTopTimeline={props.offsetTopTimeline}
       />
       <div className="period-content-wrapper flex items-center justify-center w-full h-full relative z-20 pr-[10vw] pl-[10vw] pt-[6vh]">
         <div

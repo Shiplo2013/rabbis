@@ -15,6 +15,7 @@ interface ChildProps {
   bgImage: any;
   panel: any;
   overlayClass: string;
+  offsetTopTimeline?: number;
 }
 
 export default function BackgroundImage(props: ChildProps) {
@@ -22,26 +23,39 @@ export default function BackgroundImage(props: ChildProps) {
   const background = useRef<HTMLDivElement>(null);
   // Route
   const pathname = usePathname();
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
+  };
   // GSAP Context for Animations
   useGSAP(
     () => {
       // Banner Background
-      gsap.set(background.current, { scale: 1.2 });
-      gsap.to(background.current, {
-        x: "-50vw",
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return GetRightPosition(background.current);
+      if (background.current && props.animated) {
+        gsap.set(background.current, { scale: 1.2 });
+        gsap.to(background.current, {
+          x: "-50vw",
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return (
+                getTimelineOffset() +
+                GetRightPosition(background.current) -
+                window.innerWidth
+              );
+            },
+            end: () => "+=" + window.innerWidth * 2,
+            scrub: 2,
           },
-          end: () => {
-            return GetRightPosition(background.current) + window.innerWidth * 2;
-          },
-          scrub: 2,
-        },
-      });
+        });
+      }
     },
-    { scope: background, dependencies: [pathname] },
+    { scope: background, dependencies: [pathname, props.offsetTopTimeline] },
   );
   return (
     <div

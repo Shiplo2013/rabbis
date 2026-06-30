@@ -14,6 +14,7 @@ interface ChildProps {
   animWidthText: number;
   image: StaticImageData | any;
   panel?: RefObject<HTMLDivElement | null>;
+  offsetTopTimeline?: number;
 }
 
 export default function OnlyParallaxImageSection(props: ChildProps) {
@@ -25,7 +26,10 @@ export default function OnlyParallaxImageSection(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // GSAP Context for Animations
   useGSAP(
@@ -46,7 +50,7 @@ export default function OnlyParallaxImageSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(background.current) -
-                window.innerWidth * 1.5
+                window.innerWidth * 0.5
               );
             },
             end: () => {

@@ -13,6 +13,7 @@ interface ChildProps {
   bgImage: any;
   start: number;
   panel: any;
+  offsetTopTimeline?: number;
 }
 
 export default function BackgroundImage2(props: ChildProps) {
@@ -25,7 +26,10 @@ export default function BackgroundImage2(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Section Animation

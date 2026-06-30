@@ -21,6 +21,7 @@ interface ChildProps {
   animWidthText: number;
   panel: React.RefObject<HTMLDivElement | null>;
   data?: any;
+  offsetTopTimeline?: number;
 }
 export default function MarkOfTheRoad3(props: ChildProps) {
   // Navigation
@@ -31,7 +32,10 @@ export default function MarkOfTheRoad3(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Section Data
@@ -70,7 +74,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
   // Section Animaton
   useGSAP(
     () => {
-      console.log("MarkOfTheRoad3 Animation", props.data);
+      //console.log("MarkOfTheRoad3 Animation", props.data);
       const animations: gsap.core.Animation[] = [];
       if (typeof window === "undefined" || !wrapper.current) {
         return;
@@ -172,7 +176,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
             animations.push(notificationIconAnimation);
           }
           // Section Image
-          if (image && image?.textContent?.length !== 0) {
+          if (image) {
             gsap.set(image, {
               y: 100,
               opacity: 0,

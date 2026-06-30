@@ -13,6 +13,7 @@ interface ChildProps {
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
+  offsetTopTimeline?: number;
 }
 
 export default function OnlyTextSection(props: ChildProps) {
@@ -22,7 +23,10 @@ export default function OnlyTextSection(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const timeline = props.panel;
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Section data
@@ -55,20 +59,20 @@ export default function OnlyTextSection(props: ChildProps) {
             mask: "lines",
             onSplit: (self) => {
               text = gsap.from(self.lines, {
-                duration: 2,
+                duration: 1,
                 yPercent: 120,
                 stagger: 0.01,
-                delay: -0.5,
+                delay: 0,
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
                     return (
                       getTimelineOffset() +
                       GetRightPosition(wrapper.current) -
-                      window.innerWidth * 0.5
+                      window.innerWidth * 0.7
                     );
                   },
-                  toggleActions: "restart pause play reverse",
+                  toggleActions: "restart none none reverse",
                 },
               });
               animations.push(text);
@@ -87,7 +91,7 @@ export default function OnlyTextSection(props: ChildProps) {
             mask: "lines",
             onSplit: (self) => {
               bitText = gsap.from(self.lines, {
-                duration: 2,
+                duration: 1,
                 yPercent: 120,
                 delay: 0,
                 stagger: 0.01,
@@ -97,10 +101,10 @@ export default function OnlyTextSection(props: ChildProps) {
                     return (
                       getTimelineOffset() +
                       GetRightPosition(wrapper.current) -
-                      window.innerWidth * 0.5
+                      window.innerWidth * 0.7
                     );
                   },
-                  toggleActions: "restart pause play reverse",
+                  toggleActions: "restart none none reverse",
                 },
               });
               animations.push(bitText);

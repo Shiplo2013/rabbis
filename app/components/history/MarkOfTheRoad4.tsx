@@ -20,9 +20,10 @@ interface ChildProps {
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
+  offsetTopTimeline?: number;
 }
 
-export default function MarkOfTheRoad2(props: ChildProps) {
+export default function MarkOfTheRoad4(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
@@ -31,7 +32,10 @@ export default function MarkOfTheRoad2(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Section Data
@@ -70,7 +74,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
           const title = item.querySelector(".title>h4");
           const text = item.querySelector(".title>.text");
           // Rubbis Image
-          if (image && image?.textContent?.length !== 0) {
+          if (image) {
             gsap.set(image, {
               y: 100,
               opacity: 0,
@@ -85,10 +89,10 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                   return (
                     getTimelineOffset() +
                     GetRightPosition(image) -
-                    window.innerWidth * 2
+                    window.innerWidth * 0.5
                   );
                 },
-                toggleActions: "restart pause play reverse",
+                toggleActions: "restart none none reverse",
               },
             });
             animations.push(animation);
@@ -117,10 +121,10 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                         return (
                           getTimelineOffset() +
                           GetRightPosition(title) -
-                          window.innerWidth * 2
+                          window.innerWidth * 0.5
                         );
                       },
-                      toggleActions: "restart pause resume reverse",
+                      toggleActions: "restart none none reverse",
                     },
                   });
                   animations.push(splititle);
@@ -150,10 +154,10 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                         return (
                           getTimelineOffset() +
                           GetRightPosition(text) -
-                          window.innerWidth * 2
+                          window.innerWidth * 0.5
                         );
                       },
-                      toggleActions: "restart pause resume reverse",
+                      toggleActions: "restart none none reverse",
                     },
                   });
                   animations.push(splitext);
@@ -174,7 +178,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(items[0]) -
-                window.innerWidth * 2
+                window.innerWidth * 0.5
               );
             },
             end: () => "+=" + window.innerWidth * 2,
@@ -211,6 +215,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
           imagePosition={""}
           overlayClass=""
           panel={props.panel}
+          offsetTopTimeline={props.offsetTopTimeline}
         />
       </div>
       <div className="section-row w-full h-full flex px-[6.3vw] py-[4.5vw] items-center relative z-30">

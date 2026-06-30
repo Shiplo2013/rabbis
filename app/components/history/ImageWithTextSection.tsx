@@ -19,6 +19,7 @@ interface ChildProps {
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
+  offsetTopTimeline?: number;
 }
 
 export default function ImageWithTextSection(props: ChildProps) {
@@ -30,7 +31,10 @@ export default function ImageWithTextSection(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Section Data
@@ -71,10 +75,10 @@ export default function ImageWithTextSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(imageRef1) -
-                window.innerWidth * 2.2
+                window.innerWidth * 0.5
               );
             },
-            toggleActions: "restart pause play reverse",
+            toggleActions: "restart none none reverse",
           },
         });
         animations.push(animation);
@@ -89,7 +93,7 @@ export default function ImageWithTextSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(imageRef1) -
-                window.innerWidth * 2.5
+                window.innerWidth * 0.7
               );
             },
             end: () => "+=" + window.innerWidth * 2,
@@ -130,10 +134,10 @@ export default function ImageWithTextSection(props: ChildProps) {
                     return (
                       getTimelineOffset() +
                       GetRightPosition(imageTextheading) -
-                      window.innerWidth * 2
+                      window.innerWidth * 0.5
                     );
                   },
-                  toggleActions: "restart pause resume reverse",
+                  toggleActions: "restart none none reverse",
                 },
               });
               animations.push(splititle);
@@ -163,10 +167,10 @@ export default function ImageWithTextSection(props: ChildProps) {
                     return (
                       getTimelineOffset() +
                       GetRightPosition(imageTexttext) -
-                      window.innerWidth * 2.5
+                      window.innerWidth * 0.7
                     );
                   },
-                  toggleActions: "restart pause resume reverse",
+                  toggleActions: "restart none none reverse",
                 },
               });
               animations.push(splitext);
@@ -196,10 +200,10 @@ export default function ImageWithTextSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(imageRef2) -
-                window.innerWidth * 2.5
+                window.innerWidth * 0.7
               );
             },
-            toggleActions: "restart pause play reverse",
+            toggleActions: "restart none none reverse",
           },
         });
         animations.push(animation);
@@ -214,7 +218,7 @@ export default function ImageWithTextSection(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(imageRef2) -
-                window.innerWidth * 2.5
+                window.innerWidth * 0.7
               );
             },
             end: () => "+=" + window.innerWidth * 2,

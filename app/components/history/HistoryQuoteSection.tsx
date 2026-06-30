@@ -15,6 +15,7 @@ interface ChildProps {
   boxClass: string;
   data: { content: string }[];
   panel?: RefObject<HTMLDivElement | null>;
+  offsetTopTimeline?: number;
 }
 
 export default function HistoryQuoteSection(props: ChildProps) {
@@ -25,7 +26,10 @@ export default function HistoryQuoteSection(props: ChildProps) {
   const quote = useRef<HTMLDivElement>(null);
   const timeline = props.panel;
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // Section Animation
   useGSAP(
@@ -57,7 +61,7 @@ export default function HistoryQuoteSection(props: ChildProps) {
                       window.innerWidth * 0.1
                     );
                   },
-                  toggleActions: "restart pause play reverse",
+                  toggleActions: "restart none none reverse",
                 },
               });
               animations.push(splititle);

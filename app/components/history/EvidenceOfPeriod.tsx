@@ -21,6 +21,7 @@ interface ChildProps {
   panel?: RefObject<HTMLDivElement | null>;
   videoControl: any;
   data: any;
+  offsetTopTimeline?: number;
 }
 
 export default function EvidenceOfPeriod(props: ChildProps) {
@@ -32,7 +33,10 @@ export default function EvidenceOfPeriod(props: ChildProps) {
   const timeline = props.panel;
   // Get Offset Top of Timeline
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Section Data
@@ -76,7 +80,7 @@ export default function EvidenceOfPeriod(props: ChildProps) {
               return (
                 getTimelineOffset() +
                 GetRightPosition(video) -
-                window.innerWidth / 2
+                window.innerWidth * 0.7
               );
             },
             toggleActions: "restart pause play reverse",
@@ -110,7 +114,7 @@ export default function EvidenceOfPeriod(props: ChildProps) {
                     return (
                       getTimelineOffset() +
                       GetRightPosition(item) -
-                      window.innerWidth / 2
+                      window.innerWidth * 0.7
                     );
                   },
                   toggleActions: "restart pause play reverse",

@@ -15,6 +15,7 @@ interface ChildProps {
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
+  offsetTopTimeline?: number;
 }
 
 export default function ImageOnlySection(props: ChildProps) {
@@ -24,7 +25,10 @@ export default function ImageOnlySection(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const timeline = props.panel;
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // Section Animation
   useGSAP(

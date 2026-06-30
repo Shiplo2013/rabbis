@@ -15,11 +15,22 @@ interface ChildProps {
   bgImage: any;
   boxClass: string;
   data?: any;
+  offsetTopTimeline?: number;
+  panel?: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function HistoryQuoteSection2(props: ChildProps) {
-  // Navigation
+  // Path
   const pathname = usePathname();
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
+  };
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const quote = useRef<HTMLDivElement>(null);
@@ -50,10 +61,12 @@ export default function HistoryQuoteSection2(props: ChildProps) {
               scrollTrigger: {
                 start: () => {
                   return (
-                    GetRightPosition(quote.current) - window.innerWidth * 2.5
+                    getTimelineOffset() +
+                    GetRightPosition(wrapper.current) -
+                    window.innerWidth * 0.5
                   );
                 },
-                toggleActions: "restart pause play reverse",
+                toggleActions: "restart none none reverse",
               },
             });
             animations.push(splititle);
@@ -64,7 +77,11 @@ export default function HistoryQuoteSection2(props: ChildProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(quote.current) - window.innerWidth * 2.5;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(wrapper.current) -
+                window.innerWidth * 0.7
+              );
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -96,7 +113,8 @@ export default function HistoryQuoteSection2(props: ChildProps) {
           bgImage={props.bgImage}
           overlayClass={"opacity-0"}
           panel={""}
-          animated={true}
+          animated={false}
+          offsetTopTimeline={props.offsetTopTimeline}
         />
       </div>
       <div

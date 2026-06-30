@@ -1,4 +1,5 @@
 import BackgroundImage2 from "@/app/ui/BackgroundImage2";
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -14,6 +15,8 @@ interface ChildProps {
   animWidthText: number;
   data: any;
   loadAnimation: boolean;
+  offsetTopTimeline?: number;
+  panel?: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function ContentSection2(props: ChildProps) {
@@ -23,6 +26,13 @@ export default function ContentSection2(props: ChildProps) {
   const content2 = useRef<HTMLDivElement>(null);
   // Use path
   const pathname = usePathname();
+  const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
+  };
 
   // Page Data
   const sectionData = [
@@ -61,7 +71,11 @@ export default function ContentSection2(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * props.animWidthText;
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(heading.current) -
+                    window.innerWidth * 0.7
+                  );
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -90,7 +104,11 @@ export default function ContentSection2(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * props.animWidthText;
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(content1.current) -
+                    window.innerWidth * 0.7
+                  );
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -119,7 +137,11 @@ export default function ContentSection2(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return window.innerWidth * (props.animWidthText + 0.2);
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(content2.current) -
+                    window.innerWidth * 0.7
+                  );
                 },
                 toggleActions: "restart pause play reverse",
               },

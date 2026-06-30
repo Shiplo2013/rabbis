@@ -23,6 +23,7 @@ interface ChildProps {
   bgImage: any;
   panel: RefObject<HTMLDivElement | null>;
   data: any;
+  offsetTopTimeline?: number;
 }
 
 export default function NewsPapperSection(props: ChildProps) {
@@ -30,7 +31,10 @@ export default function NewsPapperSection(props: ChildProps) {
   const pathname = usePathname();
   const timeline = props.panel;
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);

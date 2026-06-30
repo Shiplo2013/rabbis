@@ -21,6 +21,7 @@ interface ChildProps {
   bgImage: any;
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
+  offsetTopTimeline?: number;
 }
 export default function RabbisTimeline(props: ChildProps) {
   // Navigation
@@ -29,7 +30,10 @@ export default function RabbisTimeline(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const timeline = props.panel;
   const getTimelineOffset = () => {
-    return timeline?.current ? timeline.current.offsetTop : 0;
+    return (
+      props.offsetTopTimeline ||
+      (timeline?.current ? timeline.current.offsetTop : 0)
+    );
   };
 
   // Section Data
