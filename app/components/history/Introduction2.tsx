@@ -63,7 +63,9 @@ export default function Introduction2(props: ChildProps) {
                 ease: "expo.out",
                 scrollTrigger: {
                   start: () => {
-                    return getTimelineOffset() - 10;
+                    return (
+                      (timeline?.current ? timeline.current.offsetTop : 0) - 10
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -107,7 +109,7 @@ export default function Introduction2(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.data] },
+    { scope: wrapper, dependencies: [props.data] },
   );
   return (
     <section

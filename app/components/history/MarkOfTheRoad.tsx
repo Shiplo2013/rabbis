@@ -1,8 +1,9 @@
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import markImage1 from "../../assets/images/mark-image1.jpg";
 import markImage2 from "../../assets/images/mark-image2.jpg";
 import markImage3 from "../../assets/images/mark-image3.jpg";
@@ -14,12 +15,19 @@ if (typeof window !== "undefined") {
 
 interface ChildProps {
   extraClass: string;
+  panel?: RefObject<HTMLDivElement | null>;
   animWidthText: number;
   data: any;
 }
 export default function MarkOfTheRoad(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
+  // Section Ref
+  const timeline = props.panel;
+  // Get Offset Top of Timeline
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
   // Selectors
   const wrapper = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -39,61 +47,6 @@ export default function MarkOfTheRoad(props: ChildProps) {
   useGSAP(
     () => {
       const animations: gsap.core.Animation[] = [];
-      // Section Moving Image
-      if (imageMove.current) {
-        gsap.set(imageMove.current, { x: 200 });
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            start: () => {
-              return window.innerWidth * props.animWidthText - 0.7;
-            },
-            end: () => "+=" + window.innerWidth * 1.5,
-            scrub: 2,
-          },
-        });
-        tl.to(imageMove.current, {
-          x: -200,
-          ease: "easeIn",
-        });
-        animations.push(tl);
-      }
-      // Section Image 1
-      if (image1.current) {
-        gsap.set(image1.current, { y: 300, opacity: 0 });
-        const image1Animation = gsap.to(image1.current, {
-          y: 0,
-          opacity: 1,
-          duration: 2,
-          delay: -0.5,
-          ease: "expo.inOut",
-          scrollTrigger: {
-            start: () => {
-              return window.innerWidth * (props.animWidthText + 0.2);
-            },
-            toggleActions: "restart pause play reverse",
-          },
-        });
-        animations.push(image1Animation);
-      }
-
-      // Section Image 2
-      if (image2.current) {
-        gsap.set(image2.current, { y: 300, opacity: 0 });
-        const image2Animation = gsap.to(image2.current, {
-          y: 0,
-          opacity: 1,
-          duration: 2,
-          delay: -0.5,
-          ease: "expo.inOut",
-          scrollTrigger: {
-            start: () => {
-              return window.innerWidth * (props.animWidthText + 0.9);
-            },
-            toggleActions: "restart pause play reverse",
-          },
-        });
-        animations.push(image2Animation);
-      }
       document.fonts.ready.then(() => {
         // Section Title 1
         if (titleRef.current) {
@@ -114,7 +67,11 @@ export default function MarkOfTheRoad(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * props.animWidthText;
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(titleRef.current) -
+                      window.innerWidth * 0.4
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -123,6 +80,73 @@ export default function MarkOfTheRoad(props: ChildProps) {
               return splititle;
             },
           });
+        }
+        // Section Moving Image
+        if (imageMove.current) {
+          gsap.set(imageMove.current, { x: 200 });
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              start: () => {
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(imageMove.current) -
+                  window.innerWidth * 0.8
+                );
+              },
+              end: () => "+=" + window.innerWidth * 2,
+              scrub: 2,
+            },
+          });
+          tl.to(imageMove.current, {
+            x: -200,
+            ease: "easeIn",
+          });
+          animations.push(tl);
+        }
+        // Section Image 1
+        if (image1.current) {
+          gsap.set(image1.current, { y: 300, opacity: 0 });
+          const image1Animation = gsap.to(image1.current, {
+            y: 0,
+            opacity: 1,
+            duration: 2,
+            delay: -0.5,
+            ease: "expo.inOut",
+            scrollTrigger: {
+              start: () => {
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(image1.current) -
+                  window.innerWidth * 0.4
+                );
+              },
+              toggleActions: "restart pause play reverse",
+            },
+          });
+          animations.push(image1Animation);
+        }
+
+        // Section Image 2
+        if (image2.current) {
+          gsap.set(image2.current, { y: 300, opacity: 0 });
+          const image2Animation = gsap.to(image2.current, {
+            y: 0,
+            opacity: 1,
+            duration: 2,
+            delay: -0.5,
+            ease: "expo.inOut",
+            scrollTrigger: {
+              start: () => {
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(image2.current) -
+                  window.innerWidth * 0.4
+                );
+              },
+              toggleActions: "restart pause play reverse",
+            },
+          });
+          animations.push(image2Animation);
         }
         // Section Text 1
         if (text1.current) {
@@ -143,7 +167,11 @@ export default function MarkOfTheRoad(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * (props.animWidthText + 0.5);
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(text1.current) -
+                      window.innerWidth * 0.4
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -172,7 +200,11 @@ export default function MarkOfTheRoad(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return window.innerWidth * (props.animWidthText + 1.1);
+                    return (
+                      getTimelineOffset() +
+                      GetRightPosition(text2.current) -
+                      window.innerWidth * 0.4
+                    );
                   },
                   toggleActions: "restart pause play reverse",
                 },

@@ -55,37 +55,36 @@ export default function MarkOfTheRoad2(props: ChildProps) {
   useGSAP(
     () => {
       const animations: gsap.core.Animation[] = [];
-      const sections = wrapper.current?.querySelectorAll(".section-content");
-      sections?.forEach((item, index) => {
-        const image = item.querySelector(".image") as HTMLElement | null;
-        const title = item.querySelector(".title>h4") as HTMLElement | null;
 
-        // Rubbis Image
-        if (image && image?.textContent?.length !== 0) {
-          gsap.set(image, {
-            y: 100,
-            opacity: 0,
-          });
-          const imageAnimation = gsap.to(image, {
-            y: 0,
-            opacity: 1,
-            duration: 1.5,
-            ease: "expo.inOut",
-            scrollTrigger: {
-              start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(image) -
-                  window.innerWidth * 0.2
-                );
+      document.fonts.ready.then(() => {
+        const sections = wrapper.current?.querySelectorAll(".section-content");
+        sections?.forEach((item, index) => {
+          const image = item.querySelector(".image") as HTMLElement | null;
+          const title = item.querySelector(".title>h4") as HTMLElement | null;
+          // Rubbis Image
+          if (image) {
+            gsap.set(image, {
+              y: 100,
+              opacity: 0,
+            });
+            const imageAnimation = gsap.to(image, {
+              y: 0,
+              opacity: 1,
+              duration: 1.5,
+              ease: "expo.inOut",
+              scrollTrigger: {
+                start: () => {
+                  return (
+                    getTimelineOffset() +
+                    GetRightPosition(image) -
+                    window.innerWidth * 0.3
+                  );
+                },
+                toggleActions: "restart none none reverse",
               },
-              toggleActions: "restart pause play reverse",
-            },
-          });
-          animations.push(imageAnimation);
-        }
-        // Rubbis Title
-        document.fonts.ready.then(() => {
+            });
+            animations.push(imageAnimation);
+          }
           // Section Title 1
           if (title && title?.textContent?.length !== 0) {
             gsap.set(title, { opacity: 1 });
@@ -108,10 +107,10 @@ export default function MarkOfTheRoad2(props: ChildProps) {
                       return (
                         getTimelineOffset() +
                         GetRightPosition(title) -
-                        window.innerWidth * 0.2
+                        window.innerWidth * 0.3
                       );
                     },
-                    toggleActions: "restart pause resume reverse",
+                    toggleActions: "restart none none reverse",
                   },
                 });
                 animations.push(splititle);

@@ -29,6 +29,9 @@ export default function NewsPapperSection(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   const timeline = props.panel;
+  const getTimelineOffset = () => {
+    return timeline?.current ? timeline.current.offsetTop : 0;
+  };
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const image1Ref = useRef<HTMLDivElement>(null);
@@ -70,7 +73,11 @@ export default function NewsPapperSection(props: ChildProps) {
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(image1) - window.innerWidth * 0.5;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(image1) -
+                window.innerWidth * 0.5
+              );
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -85,7 +92,11 @@ export default function NewsPapperSection(props: ChildProps) {
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(image2) - window.innerWidth * 0.5;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(image2) -
+                window.innerWidth * 0.5
+              );
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -100,7 +111,11 @@ export default function NewsPapperSection(props: ChildProps) {
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(image3) - window.innerWidth * 0.5;
+              return (
+                getTimelineOffset() +
+                GetRightPosition(image3) -
+                window.innerWidth * 0.5
+              );
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -122,7 +137,11 @@ export default function NewsPapperSection(props: ChildProps) {
           const content1Animation = gsap.to(content1Split, {
             scrollTrigger: {
               start: () => {
-                return GetRightPosition(content1) - window.innerWidth * 0.5;
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(content1) -
+                  window.innerWidth * 0.5
+                );
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -148,7 +167,11 @@ export default function NewsPapperSection(props: ChildProps) {
           const content2Animation = gsap.to(content2Split, {
             scrollTrigger: {
               start: () => {
-                return GetRightPosition(content2) - window.innerWidth * 0.5;
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(content2) -
+                  window.innerWidth * 0.5
+                );
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -174,7 +197,11 @@ export default function NewsPapperSection(props: ChildProps) {
           const content3Animation = gsap.to(content3Split, {
             scrollTrigger: {
               start: () => {
-                return GetRightPosition(content3) - window.innerWidth * 0.5;
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(content3) -
+                  window.innerWidth * 0.5
+                );
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -200,7 +227,11 @@ export default function NewsPapperSection(props: ChildProps) {
           const content4Animation = gsap.to(content4Split, {
             scrollTrigger: {
               start: () => {
-                return GetRightPosition(content4) - window.innerWidth * 0.5;
+                return (
+                  getTimelineOffset() +
+                  GetRightPosition(content4) -
+                  window.innerWidth * 0.5
+                );
               },
               toggleActions: "restart pause resume reverse",
             },
