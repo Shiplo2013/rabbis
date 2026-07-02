@@ -3,6 +3,7 @@ import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 interface ChildProps {
   data: any;
@@ -10,6 +11,11 @@ interface ChildProps {
 
 export default function SingleCommunityPost(props: ChildProps) {
   const postData = props.data;
+
+  useEffect(() => {
+    // Preload the image
+    console.log("Preloading image:", postData?.acf?.post_thumbnail);
+  }, [postData]);
 
   return (
     <div
@@ -24,7 +30,7 @@ export default function SingleCommunityPost(props: ChildProps) {
           <Image
             className="w-full object-cover object-center h-full relative z-10 group-hover:scale-105 transition-transform duration-500 ease-in-out"
             src={
-              postData?.acf?.post_thumbnail?.url ||
+              postData?.acf?.post_thumbnail?.sizes?.medium_large ||
               postData?.acf?.post_thumbnail?.src
             }
             width="467"
