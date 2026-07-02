@@ -21,6 +21,7 @@ interface ChildProps {
   data: any;
   rabbisData?: (data: SlideItem[]) => void;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
   rabbisPosts?: { posts: RabbiPost[] }; // Add this line to accept rabbisPosts as a prop
 }
 
@@ -139,6 +140,13 @@ export default function RabbisPeriodSection(props: ChildProps) {
   // Section Animation
   useGSAP(() => {
     const animations: gsap.core.Animation[] = [];
+    if (
+      typeof window === "undefined" ||
+      !wrapper.current ||
+      !props.offsetTopAdded
+    ) {
+      return;
+    }
     document.fonts.ready.then(() => {
       // Section Title 1
       if (title.current) {
@@ -222,7 +230,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [slideData, pathname]);
+  }, [props.offsetTopAdded, pathname]);
 
   return (
     <section
@@ -243,6 +251,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
         start={props.animWidthText - 0.3}
         panel={props.panel}
         offsetTopTimeline={props.offsetTopTimeline}
+        offsetTopAdded={props.offsetTopAdded}
       />
       <div className="period-content-wrapper flex items-center justify-center w-full h-full relative z-20 pr-[10vw] pl-[10vw] pt-[6vh]">
         <div

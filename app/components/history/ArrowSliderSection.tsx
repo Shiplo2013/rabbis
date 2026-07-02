@@ -26,6 +26,7 @@ interface ChildProps {
   };
   panel?: RefObject<HTMLDivElement | null>;
   offsetTopTimeline?: number;
+  offsetTopAdded: boolean;
 }
 
 export default function ArrowSliderSection(props: ChildProps) {
@@ -114,7 +115,7 @@ export default function ArrowSliderSection(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.slideData] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
   return (
     <section
@@ -133,6 +134,7 @@ export default function ArrowSliderSection(props: ChildProps) {
             animatePosition={0.5}
             panel={props.panel}
             offsetTopTimeline={props.offsetTopTimeline}
+            offsetTopAdded={props.offsetTopAdded}
           />
         )}
       </div>

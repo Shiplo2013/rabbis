@@ -13,6 +13,7 @@ interface ChildProps {
   animWidthText: number;
   panel?: RefObject<HTMLDivElement | null>;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 export default function SingleImageSection(props: ChildProps) {
   // Navigation
@@ -32,6 +33,15 @@ export default function SingleImageSection(props: ChildProps) {
   useGSAP(
     () => {
       const animations: gsap.core.Animation[] = [];
+
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
+        return;
+      }
+
       // Section Image
       if (image.current) {
         gsap.set(image.current, { scale: 1.2 });
@@ -61,7 +71,7 @@ export default function SingleImageSection(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
 
   return (

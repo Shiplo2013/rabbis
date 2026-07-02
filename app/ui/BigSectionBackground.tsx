@@ -16,6 +16,7 @@ interface ChildProps {
   animatePosition: number;
   panel?: RefObject<HTMLDivElement | null>;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function BigSectionBackground(props: ChildProps) {
@@ -35,7 +36,7 @@ export default function BigSectionBackground(props: ChildProps) {
   // Seciton Animation
   useGSAP(
     () => {
-      if (props.animatePosition !== 0) {
+      if (props.animatePosition !== 0 && props.offsetTopAdded) {
         // Banner Background
         gsap.set(background.current, { scale: 1.2, x: "20vw" });
         gsap.to(background.current, {
@@ -57,7 +58,7 @@ export default function BigSectionBackground(props: ChildProps) {
         });
       }
     },
-    { scope: background, dependencies: [pathname, props.offsetTopTimeline] },
+    { scope: background, dependencies: [pathname, props.offsetTopAdded] },
   );
   return (
     <div

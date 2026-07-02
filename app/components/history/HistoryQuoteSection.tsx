@@ -16,6 +16,7 @@ interface ChildProps {
   data: { content: string }[];
   panel?: RefObject<HTMLDivElement | null>;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function HistoryQuoteSection(props: ChildProps) {
@@ -35,6 +36,14 @@ export default function HistoryQuoteSection(props: ChildProps) {
   useGSAP(
     () => {
       const animations: gsap.core.Animation[] = [];
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
+        return;
+      }
+
       document.fonts.ready.then(() => {
         // Section Text
         if (quote.current) {
@@ -94,7 +103,7 @@ export default function HistoryQuoteSection(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.data] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
   return (
     <section

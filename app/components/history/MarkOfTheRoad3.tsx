@@ -22,6 +22,7 @@ interface ChildProps {
   panel: React.RefObject<HTMLDivElement | null>;
   data?: any;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 export default function MarkOfTheRoad3(props: ChildProps) {
   // Navigation
@@ -76,7 +77,11 @@ export default function MarkOfTheRoad3(props: ChildProps) {
     () => {
       //console.log("MarkOfTheRoad3 Animation", props.data);
       const animations: gsap.core.Animation[] = [];
-      if (typeof window === "undefined" || !wrapper.current) {
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
         return;
       }
       // Section Text Here
@@ -107,7 +112,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                       window.innerWidth * 0.4
                     );
                   },
-                  toggleActions: "restart pause play reverse",
+                  toggleActions: "restart none none reverse",
                 },
               });
               animations.push(maintitleSplit);
@@ -143,7 +148,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                     window.innerWidth * 0.4
                   );
                 },
-                toggleActions: "restart pause play reverse",
+                toggleActions: "restart none none reverse",
               },
             });
             animations.push(notificationAnimation);
@@ -170,7 +175,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                     window.innerWidth * 0.4
                   );
                 },
-                toggleActions: "restart pause play reverse",
+                toggleActions: "restart none none reverse",
               },
             });
             animations.push(notificationIconAnimation);
@@ -194,7 +199,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                     window.innerWidth * 0.4
                   );
                 },
-                toggleActions: "restart pause play reverse",
+                toggleActions: "restart none none reverse",
               },
             });
             animations.push(imageAnimation);
@@ -223,7 +228,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                         window.innerWidth * 0.4
                       );
                     },
-                    toggleActions: "restart pause play reverse",
+                    toggleActions: "restart none none reverse",
                   },
                 });
                 animations.push(splititle);
@@ -239,7 +244,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.data] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
 
   return (

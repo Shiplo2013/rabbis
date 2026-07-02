@@ -16,6 +16,7 @@ interface ChildProps {
   bgClass: string;
   animatePosition: number;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function IntroductionBackground2(props: ChildProps) {
@@ -45,7 +46,8 @@ export default function IntroductionBackground2(props: ChildProps) {
       if (
         typeof window !== "undefined" &&
         background.current &&
-        props.animatePosition > 0
+        props.animatePosition > 0 &&
+        props.offsetTopAdded
       ) {
         // Banner Background
         gsap.set(background.current, { scale: 1.4, x: "20vw" });
@@ -73,7 +75,7 @@ export default function IntroductionBackground2(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: background, dependencies: [pathname, props.bgImage] },
+    { scope: background, dependencies: [pathname, props.offsetTopAdded] },
   );
   return (
     <div

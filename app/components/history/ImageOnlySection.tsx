@@ -16,6 +16,7 @@ interface ChildProps {
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
   offsetTopTimeline?: number;
+  offsetTopAdded: boolean;
 }
 
 export default function ImageOnlySection(props: ChildProps) {
@@ -34,7 +35,11 @@ export default function ImageOnlySection(props: ChildProps) {
   useGSAP(
     () => {
       const animations: gsap.core.Animation[] = [];
-      if (typeof window !== "undefined" && wrapper.current) {
+      if (
+        typeof window !== "undefined" &&
+        wrapper.current &&
+        props.offsetTopAdded
+      ) {
         // Selector
         const image = wrapper.current?.querySelector(".image1");
         if (image && image?.textContent?.length !== 0) {
@@ -65,7 +70,7 @@ export default function ImageOnlySection(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.data] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
 
   return (

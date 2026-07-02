@@ -20,6 +20,7 @@ interface ChildProps {
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 export default function RabbisTimeline3(props: ChildProps) {
   // Navigation
@@ -53,7 +54,19 @@ export default function RabbisTimeline3(props: ChildProps) {
     () => {
       const animations: gsap.core.Animation[] = [];
 
-      if (typeof window !== "undefined" && wrapper.current) {
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
+        return;
+      }
+
+      if (
+        typeof window !== "undefined" &&
+        wrapper.current &&
+        props.offsetTopAdded
+      ) {
         // Selector
         const secTitle = wrapper?.current?.querySelector(".rabbis-title>h2");
         // Section Title
@@ -159,7 +172,7 @@ export default function RabbisTimeline3(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
   return (
     <section

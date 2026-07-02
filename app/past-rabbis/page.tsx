@@ -21,6 +21,8 @@ if (typeof window !== "undefined") {
 export default function Page() {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
@@ -72,6 +74,9 @@ export default function Page() {
         }
       } catch (error) {
         console.error(error);
+        setError("Failed to load page data.");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -82,7 +87,7 @@ export default function Page() {
     };
   }, [pathname]);
 
-  // Page Data Loade
+  // Page Data Loaded
   useEffect(() => {
     if (!rabbisPageData) {
       return;
@@ -394,6 +399,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,
@@ -407,6 +413,42 @@ export default function Page() {
       });
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!rabbisPageData) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <p className="text-gray-600">
+            The requested rabbi post could not be found.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     rabbisPageData && (
       <div ref={main} id="main" className="relative">

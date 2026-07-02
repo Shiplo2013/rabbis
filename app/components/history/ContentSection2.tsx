@@ -17,6 +17,7 @@ interface ChildProps {
   loadAnimation: boolean;
   offsetTopTimeline?: number;
   panel?: React.RefObject<HTMLDivElement | null>;
+  offsetTopAdded?: boolean;
 }
 
 export default function ContentSection2(props: ChildProps) {
@@ -51,6 +52,15 @@ export default function ContentSection2(props: ChildProps) {
   // Section Animation
   useGSAP(() => {
     const animations: gsap.core.Animation[] = [];
+
+    if (
+      typeof window === "undefined" ||
+      !props.loadAnimation ||
+      !props.offsetTopAdded
+    ) {
+      return;
+    }
+
     document.fonts.ready.then(() => {
       // Section Title 1
       if (heading.current) {
@@ -156,7 +166,7 @@ export default function ContentSection2(props: ChildProps) {
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [pathname, props.loadAnimation, props.data]);
+  }, [pathname, props.offsetTopAdded]);
   return (
     <section
       className={`${props.extraClass} flex items-center justify-center flex-col relative overflow-hidden`}

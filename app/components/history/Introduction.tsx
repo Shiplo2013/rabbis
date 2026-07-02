@@ -17,14 +17,19 @@ interface ChildProps {
   bgPosition: string;
   bgClass: string;
   data: { title: string; subtitle: string; background: any; overlay: any };
+  offsetTopTimeline: number;
+  offsetTopAdded: boolean;
 }
 
 export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   // useEffect(() => {
-  //   console.log("Introduction props.data:", props.data);
-  // }, [props.data]);
+  //   console.log(
+  //     "Introduction props.offsetTopTimeline:",
+  //     props.offsetTopTimeline,
+  //   );
+  // }, [props.offsetTopTimeline]);
   return (
     <section
       ref={wrapper}

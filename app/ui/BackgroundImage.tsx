@@ -16,6 +16,7 @@ interface ChildProps {
   panel: any;
   overlayClass: string;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function BackgroundImage(props: ChildProps) {
@@ -36,7 +37,7 @@ export default function BackgroundImage(props: ChildProps) {
   useGSAP(
     () => {
       // Banner Background
-      if (background.current && props.animated) {
+      if (background.current && props.animated && props.offsetTopAdded) {
         gsap.set(background.current, { scale: 1.2 });
         gsap.to(background.current, {
           x: "-50vw",
@@ -55,7 +56,7 @@ export default function BackgroundImage(props: ChildProps) {
         });
       }
     },
-    { scope: background, dependencies: [pathname, props.offsetTopTimeline] },
+    { scope: background, dependencies: [pathname, props.offsetTopAdded] },
   );
   return (
     <div
