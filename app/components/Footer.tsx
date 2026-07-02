@@ -335,6 +335,7 @@ function Footer(props: ChildProps) {
       });
     };
   }, [pathname, footerData]);
+
   return (
     footerData && (
       <footer
