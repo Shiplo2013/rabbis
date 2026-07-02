@@ -7,6 +7,7 @@ interface ChildProps {
   animWidthText: number;
   image: StaticImageData | any;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function OnlyImageSection(props: ChildProps) {

@@ -17,6 +17,7 @@ interface ChildProps {
   data?: any;
   panel?: React.RefObject<HTMLDivElement | null>;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function VideoItem(props: ChildProps) {
@@ -52,7 +53,11 @@ export default function VideoItem(props: ChildProps) {
     () => {
       const animations: gsap.core.Animation[] = [];
 
-      if (typeof window === "undefined" || !wrapper.current) {
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
         return;
       }
 
@@ -81,7 +86,7 @@ export default function VideoItem(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.data] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
 
   // video element selector

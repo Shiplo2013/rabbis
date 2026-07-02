@@ -1,6 +1,7 @@
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
+import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
 import { RefObject, useRef } from "react";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
@@ -31,85 +32,91 @@ export default function Introduction2(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const subtitle = useRef<HTMLHeadingElement>(null);
+  const pathname = usePathname();
   const timeline = props.panel;
-  const getTimelineOffset = () => {
-    return (
-      props.offsetTopTimeline ||
-      (timeline?.current ? timeline.current.offsetTop : 0)
-    );
-  };
+
   // Section animation
   useGSAP(() => {
-    if (props.offsetTopTimeline !== 0) {
-      const animations: gsap.core.Animation[] = [];
-      if (typeof window === "undefined" || !wrapper.current) {
-        return;
-      }
-
-      document.fonts.ready.then(() => {
-        // Section Title
-        if (title.current) {
-          gsap.set(title.current, { opacity: 1 });
-          let splititle;
-          SplitText.create(title.current, {
-            type: "lines",
-            linesClass: "line direction-rtl2",
-            autoSplit: true,
-            mask: "lines",
-            onSplit: (self) => {
-              splititle = gsap.from(self.lines, {
-                duration: 2,
-                yPercent: 100,
-                opacity: 0,
-                stagger: 0.05,
-                ease: "expo.out",
-                scrollTrigger: {
-                  start: () => {
-                    return getTimelineOffset() - 10;
-                  },
-                  toggleActions: "restart pause play reverse",
-                },
-              });
-              animations.push(splititle);
-              return splititle;
-            },
-          });
-        }
-        // Section Subtitle
-        if (subtitle.current) {
-          gsap.set(subtitle.current, { opacity: 1 });
-          let splitSubtitle;
-          SplitText.create(subtitle.current, {
-            type: "lines",
-            linesClass: "line direction-rtl",
-            autoSplit: true,
-            mask: "lines",
-            onSplit: (self) => {
-              splitSubtitle = gsap.from(self.lines, {
-                duration: 2,
-                yPercent: 120,
-                stagger: 0.025,
-                ease: "expo.out",
-                scrollTrigger: {
-                  start: () => {
-                    return getTimelineOffset() - 10;
-                  },
-                  toggleActions: "restart none none reverse",
-                },
-              });
-              animations.push(splitSubtitle);
-              return splitSubtitle;
-            },
-          });
-        }
-      });
-
-      // Return function to kill animations on unmount or dependency change
-      return () => {
-        animations.forEach((animation) => animation.kill());
-      };
+    const animations: gsap.core.Animation[] = [];
+    if (
+      typeof window === "undefined" ||
+      !wrapper.current ||
+      !props.offsetTopAdded
+    ) {
+      return;
     }
-  }, [props.offsetTopAdded]);
+
+    // Get Offset Top of Timeline
+    const getTimelineOffset = () => {
+      return (
+        props.offsetTopTimeline ||
+        (timeline?.current ? timeline.current.offsetTop : 0)
+      );
+    };
+
+    document.fonts.ready.then(() => {
+      // Section Title
+      if (title.current) {
+        gsap.set(title.current, { opacity: 1 });
+        let splititle;
+        SplitText.create(title.current, {
+          type: "lines",
+          linesClass: "line direction-rtl2",
+          autoSplit: true,
+          mask: "lines",
+          onSplit: (self) => {
+            splititle = gsap.from(self.lines, {
+              duration: 2,
+              yPercent: 100,
+              opacity: 0,
+              stagger: 0.05,
+              ease: "expo.out",
+              scrollTrigger: {
+                start: () => {
+                  return getTimelineOffset() - 10;
+                },
+                toggleActions: "play pause resume reset",
+              },
+            });
+            animations.push(splititle);
+            return splititle;
+          },
+        });
+      }
+      // Section Subtitle
+      if (subtitle.current) {
+        gsap.set(subtitle.current, { opacity: 1 });
+        let splitSubtitle;
+        SplitText.create(subtitle.current, {
+          type: "lines",
+          linesClass: "line direction-rtl",
+          autoSplit: true,
+          mask: "lines",
+          onSplit: (self) => {
+            splitSubtitle = gsap.from(self.lines, {
+              duration: 2,
+              yPercent: 120,
+              stagger: 0.025,
+              ease: "expo.out",
+              scrollTrigger: {
+                start: () => {
+                  return getTimelineOffset() - 10;
+                },
+                toggleActions: "play pause resume reset",
+              },
+            });
+            animations.push(splitSubtitle);
+            return splitSubtitle;
+          },
+        });
+      }
+    });
+
+    // Return function to kill animations on unmount or dependency change
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
+  }, [props.offsetTopAdded, pathname]);
   return (
     <section
       ref={wrapper}
@@ -124,6 +131,7 @@ export default function Introduction2(props: ChildProps) {
           bgClass={props.bgClass}
           animatePosition={props.animWidthText}
           offsetTopTimeline={props.offsetTopTimeline}
+          offsetTopAdded={props.offsetTopAdded}
           panel={props.panel}
           timeline={props.timeline}
         />

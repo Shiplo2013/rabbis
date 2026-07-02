@@ -21,6 +21,7 @@ interface ChildProps {
   panel?: RefObject<HTMLDivElement | null>;
   data: any;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function TitleSection(props: ChildProps) {
@@ -44,6 +45,13 @@ export default function TitleSection(props: ChildProps) {
   useGSAP(
     () => {
       const animations: gsap.core.Animation[] = [];
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
+        return;
+      }
       document.fonts.ready.then(() => {
         // Section Image
         gsap.set(introImage.current, { x: 100 });
@@ -102,7 +110,7 @@ export default function TitleSection(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.data] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
 
   return (

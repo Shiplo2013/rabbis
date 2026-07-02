@@ -16,6 +16,7 @@ interface ChildProps {
   bgClass: string;
   animatePosition: number;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function IntroductionBackground(props: ChildProps) {
@@ -28,7 +29,12 @@ export default function IntroductionBackground(props: ChildProps) {
   // Seciton Animation
   useGSAP(() => {
     const animations: gsap.core.Animation[] = [];
-    if (typeof window === "undefined" || !background.current) {
+    if (
+      typeof window === "undefined" ||
+      !background.current ||
+      props.animatePosition <= 0 ||
+      !props.offsetTopAdded
+    ) {
       return;
     }
 
@@ -64,7 +70,7 @@ export default function IntroductionBackground(props: ChildProps) {
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [pathname, props.offsetTopTimeline]);
+  }, [props.offsetTopAdded, pathname]);
   return (
     <div
       ref={background}

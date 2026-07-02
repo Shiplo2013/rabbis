@@ -70,6 +70,9 @@ if (typeof window !== "undefined") {
 }
 
 export default function Page() {
+  const CHRONICLES_CACHE_KEY = "chronicles-page-cache-v1";
+  const CHRONICLES_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
   // Router Path
   const pathname = usePathname();
   const [chroniclesPageData, setChroniclesPageData] = useState<any | []>(null);
@@ -95,12 +98,87 @@ export default function Page() {
   useEffect(() => {
     let isMounted = true;
     let fetchError = false;
+    const controller = new AbortController();
+
+    const cacheKey = `${CHRONICLES_CACHE_KEY}:${pathname}`;
+
+    const getCachedData = () => {
+      if (typeof window === "undefined") return null;
+
+      try {
+        const rawCache = localStorage.getItem(cacheKey);
+        if (!rawCache) return null;
+
+        const parsedCache = JSON.parse(rawCache) as {
+          cachedAt: number;
+          chroniclesPageData: any;
+          rabbisPostsData1: any;
+          rabbisPostsData2: any;
+          rabbisPostsData3: any;
+          rabbisPostsData4: any;
+          rabbisPostsData5: any;
+        };
+
+        if (
+          !parsedCache ||
+          typeof parsedCache.cachedAt !== "number" ||
+          Date.now() - parsedCache.cachedAt > CHRONICLES_CACHE_TTL_MS
+        ) {
+          localStorage.removeItem(cacheKey);
+          return null;
+        }
+
+        return parsedCache;
+      } catch {
+        localStorage.removeItem(cacheKey);
+        return null;
+      }
+    };
+
+    const setCachedData = (payload: {
+      chroniclesPageData: any;
+      rabbisPostsData1: any;
+      rabbisPostsData2: any;
+      rabbisPostsData3: any;
+      rabbisPostsData4: any;
+      rabbisPostsData5: any;
+    }) => {
+      if (typeof window === "undefined") return;
+
+      try {
+        localStorage.setItem(
+          cacheKey,
+          JSON.stringify({
+            ...payload,
+            cachedAt: Date.now(),
+          }),
+        );
+      } catch {
+        // Ignore localStorage write errors (private mode / quota exceeded)
+      }
+    };
+
+    const cachedData = getCachedData();
+    if (cachedData && isMounted) {
+      setChroniclesPageData(cachedData.chroniclesPageData);
+      setRabbisPostsData1(cachedData.rabbisPostsData1 || []);
+      setRabbisPostsData2(cachedData.rabbisPostsData2 || []);
+      setRabbisPostsData3(cachedData.rabbisPostsData3 || []);
+      setRabbisPostsData4(cachedData.rabbisPostsData4 || []);
+      setRabbisPostsData5(cachedData.rabbisPostsData5 || []);
+      setIsLoading(false);
+      return () => {
+        isMounted = false;
+        controller.abort();
+      };
+    }
 
     const loadChroniclesPageData = async () => {
       try {
         const response = await fetch("/api/chronicles", {
           //next: { revalidate: 3000 },
           cache: "force-cache",
+          signal: controller.signal,
         });
 
         if (!response.ok) {
@@ -111,90 +189,122 @@ export default function Page() {
         const data = fetchError ? staticData : await response.json();
 
         if (isMounted) {
-          const params1 = new URLSearchParams({
-            include: data.acf?.timeline_1?.past_rabbis_section?.past_rabbis,
-            per_page: String(
-              data.acf?.timeline_1?.past_rabbis_section?.past_rabbis.length,
-            ),
-            orderby: "include",
-            order: "asc",
-          });
-          const params2 = new URLSearchParams({
-            include: data.acf?.timeline_2?.past_rabbis_section?.past_rabbis,
-            per_page: String(
-              data.acf?.timeline_2?.past_rabbis_section?.past_rabbis.length,
-            ),
-            orderby: "include",
-            order: "asc",
-          });
-          const params3 = new URLSearchParams({
-            include: data.acf?.timeline_3?.past_rabbis_section?.past_rabbis,
-            per_page: String(
-              data.acf?.timeline_3?.past_rabbis_section?.past_rabbis.length,
-            ),
-            orderby: "include",
-            order: "asc",
-          });
-          const params4 = new URLSearchParams({
-            include: data.acf?.timeline_4?.past_rabbis_section?.past_rabbis,
-            per_page: String(
-              data.acf?.timeline_4?.past_rabbis_section?.past_rabbis.length,
-            ),
-            orderby: "include",
-            order: "asc",
-          });
-          const params5 = new URLSearchParams({
-            include: data.acf?.timeline_5?.past_rabbis_section?.past_rabbis,
-            per_page: String(
-              data.acf?.timeline_5?.past_rabbis_section?.past_rabbis.length,
-            ),
-            orderby: "include",
-            order: "asc",
-          });
-          const [
-            rabbisPost1,
-            rabbisPost2,
-            rabbisPost3,
-            rabbisPost4,
-            rabbisPost5,
-          ] = await Promise.all([
-            fetch(`/api/past-rabbis/posts?${params1.toString()}`, {
-              cache: "no-store",
-            }),
-            fetch(`/api/past-rabbis/posts?${params2.toString()}`, {
-              cache: "no-store",
-            }),
-            fetch(`/api/past-rabbis/posts?${params3.toString()}`, {
-              cache: "no-store",
-            }),
-            fetch(`/api/past-rabbis/posts?${params4.toString()}`, {
-              cache: "no-store",
-            }),
-            fetch(`/api/past-rabbis/posts?${params5.toString()}`, {
-              cache: "no-store",
-            }),
-          ]);
-          const [
-            rabbisData1,
-            rabbisData2,
-            rabbisData3,
-            rabbisData4,
-            rabbisData5,
-          ] = await Promise.all([
-            rabbisPost1.json(),
-            rabbisPost2.json(),
-            rabbisPost3.json(),
-            rabbisPost4.json(),
-            rabbisPost5.json(),
-          ]);
+          if (
+            data.acf?.timeline_1?.past_rabbis_section?.past_rabbis &&
+            data.acf?.timeline_2?.past_rabbis_section?.past_rabbis &&
+            data.acf?.timeline_3?.past_rabbis_section?.past_rabbis &&
+            data.acf?.timeline_4?.past_rabbis_section?.past_rabbis &&
+            data.acf?.timeline_5?.past_rabbis_section?.past_rabbis
+          ) {
+            const params1 = new URLSearchParams({
+              include: data.acf?.timeline_1?.past_rabbis_section?.past_rabbis,
+              per_page: String(
+                data.acf?.timeline_1?.past_rabbis_section?.past_rabbis.length,
+              ),
+              orderby: "include",
+              order: "asc",
+            });
+            const params2 = new URLSearchParams({
+              include: data.acf?.timeline_2?.past_rabbis_section?.past_rabbis,
+              per_page: String(
+                data.acf?.timeline_2?.past_rabbis_section?.past_rabbis.length,
+              ),
+              orderby: "include",
+              order: "asc",
+            });
+            const params3 = new URLSearchParams({
+              include: data.acf?.timeline_3?.past_rabbis_section?.past_rabbis,
+              per_page: String(
+                data.acf?.timeline_3?.past_rabbis_section?.past_rabbis.length,
+              ),
+              orderby: "include",
+              order: "asc",
+            });
+            const params4 = new URLSearchParams({
+              include: data.acf?.timeline_4?.past_rabbis_section?.past_rabbis,
+              per_page: String(
+                data.acf?.timeline_4?.past_rabbis_section?.past_rabbis.length,
+              ),
+              orderby: "include",
+              order: "asc",
+            });
+            const params5 = new URLSearchParams({
+              include: data.acf?.timeline_5?.past_rabbis_section?.past_rabbis,
+              per_page: String(
+                data.acf?.timeline_5?.past_rabbis_section?.past_rabbis.length,
+              ),
+              orderby: "include",
+              order: "asc",
+            });
+            const [
+              rabbisPost1,
+              rabbisPost2,
+              rabbisPost3,
+              rabbisPost4,
+              rabbisPost5,
+            ] = await Promise.all([
+              fetch(`/api/past-rabbis/posts?${params1.toString()}`, {
+                cache: "no-store",
+                signal: controller.signal,
+              }),
+              fetch(`/api/past-rabbis/posts?${params2.toString()}`, {
+                cache: "no-store",
+                signal: controller.signal,
+              }),
+              fetch(`/api/past-rabbis/posts?${params3.toString()}`, {
+                cache: "no-store",
+                signal: controller.signal,
+              }),
+              fetch(`/api/past-rabbis/posts?${params4.toString()}`, {
+                cache: "no-store",
+                signal: controller.signal,
+              }),
+              fetch(`/api/past-rabbis/posts?${params5.toString()}`, {
+                cache: "no-store",
+                signal: controller.signal,
+              }),
+            ]);
+            const [
+              rabbisData1,
+              rabbisData2,
+              rabbisData3,
+              rabbisData4,
+              rabbisData5,
+            ] = await Promise.all([
+              rabbisPost1.json(),
+              rabbisPost2.json(),
+              rabbisPost3.json(),
+              rabbisPost4.json(),
+              rabbisPost5.json(),
+            ]);
+            setRabbisPostsData1(rabbisData1);
+            setRabbisPostsData2(rabbisData2);
+            setRabbisPostsData3(rabbisData3);
+            setRabbisPostsData4(rabbisData4);
+            setRabbisPostsData5(rabbisData5);
+
+            setCachedData({
+              chroniclesPageData: data,
+              rabbisPostsData1: rabbisData1,
+              rabbisPostsData2: rabbisData2,
+              rabbisPostsData3: rabbisData3,
+              rabbisPostsData4: rabbisData4,
+              rabbisPostsData5: rabbisData5,
+            });
+          } else {
+            setCachedData({
+              chroniclesPageData: data,
+              rabbisPostsData1: [],
+              rabbisPostsData2: [],
+              rabbisPostsData3: [],
+              rabbisPostsData4: [],
+              rabbisPostsData5: [],
+            });
+          }
           setChroniclesPageData(data);
-          setRabbisPostsData1(rabbisData1);
-          setRabbisPostsData2(rabbisData2);
-          setRabbisPostsData3(rabbisData3);
-          setRabbisPostsData4(rabbisData4);
-          setRabbisPostsData5(rabbisData5);
         }
       } catch (error) {
+        if ((error as Error)?.name === "AbortError") return;
         console.error(error);
         setError("Failed to load chronicles page data.");
       } finally {
@@ -206,6 +316,7 @@ export default function Page() {
 
     return () => {
       isMounted = false;
+      controller.abort();
     };
   }, [pathname]);
 
@@ -225,13 +336,6 @@ export default function Page() {
   const timeline4Ref = useRef<HTMLDivElement>(null);
   const timeline5Ref = useRef<HTMLDivElement>(null);
   const timeline6Ref = useRef<HTMLDivElement>(null);
-  const [offsetTopTimeline1, setOffsetTopTimeline1] = useState(0);
-  const [offsetTopTimeline2, setOffsetTopTimeline2] = useState(14503);
-  const [offsetTopTimeline3, setOffsetTopTimeline3] = useState(26722);
-  const [offsetTopTimeline4, setOffsetTopTimeline4] = useState(45695);
-  const [offsetTopTimeline5, setOffsetTopTimeline5] = useState(63424);
-  const [offsetTopTimeline6, setOffsetTopTimeline6] = useState(74971);
-  const [offsetTopAdded, setOffsetTopAdded] = useState(false);
   const panel1 = useRef<HTMLDivElement>(null);
   const wrapper1 = useRef<HTMLDivElement>(null);
   const panel2 = useRef<HTMLDivElement>(null);
@@ -479,6 +583,7 @@ export default function Page() {
     useState<gsap.core.Timeline | null>(null);
   const [timelinePeriod6, setTimelinePeriod6] =
     useState<gsap.core.Timeline | null>(null);
+  const [timelineAdded, setTimelineAdded] = useState(false);
 
   const setProgressLineWidth = (target: Element | null, value: string) => {
     if (target instanceof HTMLElement) {
@@ -947,16 +1052,8 @@ export default function Page() {
         },
       });
       setTimelinePeriod6(timeline6);
-
-      // Set Timeline OffsetTop
-      setOffsetTopTimeline1(timeline1Ref.current?.offsetTop || 0);
-      setOffsetTopTimeline2(timeline2Ref.current?.offsetTop || 0);
-      setOffsetTopTimeline3(timeline3Ref.current?.offsetTop || 0);
-      setOffsetTopTimeline4(timeline4Ref.current?.offsetTop || 0);
-      setOffsetTopTimeline5(timeline5Ref.current?.offsetTop || 0);
-      setOffsetTopTimeline6(timeline6Ref.current?.offsetTop || 0);
-      setOffsetTopAdded(true);
     }
+    setTimelineAdded(true);
     // Return
     return () => {
       timelinePeriod1?.kill();
@@ -967,6 +1064,15 @@ export default function Page() {
       timelinePeriod6?.kill();
     };
   }, [pathname, pageDataFetched]);
+
+  // Timeline Refs OffsetTop
+  const [offsetTopTimeline1, setOffsetTopTimeline1] = useState(0);
+  const [offsetTopTimeline2, setOffsetTopTimeline2] = useState(0);
+  const [offsetTopTimeline3, setOffsetTopTimeline3] = useState(0);
+  const [offsetTopTimeline4, setOffsetTopTimeline4] = useState(0);
+  const [offsetTopTimeline5, setOffsetTopTimeline5] = useState(0);
+  const [offsetTopTimeline6, setOffsetTopTimeline6] = useState(0);
+  const [offsetTopAdded, setOffsetTopAdded] = useState(false);
 
   // Set Body Overflow Hidden
   useEffect(() => {
@@ -1065,6 +1171,30 @@ export default function Page() {
     };
   }, []);
 
+  // Set Timeline Refs OffsetTop
+  useEffect(() => {
+    // Get Offset Top Position
+    function getOffsetTop(selector: string) {
+      const element = document.querySelector(selector);
+      if (!element) return 0;
+      const offsetTop = element.getBoundingClientRect().top + window.scrollY;
+      return offsetTop;
+    }
+    if (!isLoading && isAllAnimationComplete && pageDataFetched) {
+      const timer = setTimeout(() => {
+        setOffsetTopTimeline1(getOffsetTop("#timeline1"));
+        setOffsetTopTimeline2(getOffsetTop("#timeline2"));
+        setOffsetTopTimeline3(getOffsetTop("#timeline3"));
+        setOffsetTopTimeline4(getOffsetTop("#timeline4"));
+        setOffsetTopTimeline5(getOffsetTop("#timeline5"));
+        setOffsetTopTimeline6(getOffsetTop("#timeline6"));
+        setOffsetTopAdded(true);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, isAllAnimationComplete, pageDataFetched]);
+
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -1126,6 +1256,8 @@ export default function Page() {
                       throw new Error("Function not implemented.");
                     }}
                     timeline={"timeline1"}
+                    offsetTopTimeline={pageDataFetched ? offsetTopTimeline1 : 0}
+                    offsetTopAdded={offsetTopAdded}
                   />
                   <Suspense
                     fallback={
@@ -1143,7 +1275,10 @@ export default function Page() {
                       }
                       panel={timeline1Ref}
                       loadAnimation={true}
-                      offsetTopTimeline={offsetTopTimeline1}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline1 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1162,7 +1297,10 @@ export default function Page() {
                       data={
                         chroniclesPageData?.acf?.timeline_1?.title_section || ""
                       }
-                      offsetTopTimeline={offsetTopTimeline1}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline1 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1184,7 +1322,10 @@ export default function Page() {
                       }
                       rabbisPosts={rabbisPostsData1}
                       rabbisData={SetListOfRabbis}
-                      offsetTopTimeline={offsetTopTimeline1}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline1 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1202,7 +1343,10 @@ export default function Page() {
                         HistoryImage1
                       }
                       panel={timeline1Ref}
-                      offsetTopTimeline={offsetTopTimeline1}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline1 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1220,7 +1364,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_1?.mark_of_the_road ||
                         []
                       }
-                      offsetTopTimeline={offsetTopTimeline1}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline1 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1239,7 +1386,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_1?.rabbis_timeline ||
                         []
                       }
-                      offsetTopTimeline={offsetTopTimeline1}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline1 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1256,7 +1406,10 @@ export default function Page() {
                       data={QuoteData}
                       boxClass="translate-x-[6vw]"
                       panel={timeline1Ref}
-                      offsetTopTimeline={offsetTopTimeline1}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline1 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                 </div>
@@ -1295,7 +1448,9 @@ export default function Page() {
                       audioControl={function (): void {
                         throw new Error("Function not implemented.");
                       }}
-                      offsetTopTimeline={offsetTopTimeline2}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline2 : 0
+                      }
                       offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
@@ -1315,7 +1470,9 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_2
                           ?.news_paper_section || []
                       }
-                      offsetTopTimeline={offsetTopTimeline2}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline2 : 0
+                      }
                     />
                   </Suspense>
                   <Suspense
@@ -1334,7 +1491,9 @@ export default function Page() {
                       data={
                         chroniclesPageData?.acf?.timeline_2?.title_section || ""
                       }
-                      offsetTopTimeline={offsetTopTimeline2}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline2 : 0
+                      }
                     />
                   </Suspense>
                   <Suspense
@@ -1355,7 +1514,9 @@ export default function Page() {
                           ?.past_rabbis_section || []
                       }
                       rabbisData={SetListOfRabbis}
-                      offsetTopTimeline={offsetTopTimeline2}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline2 : 0
+                      }
                       rabbisPosts={rabbisPostsData2}
                     />
                   </Suspense>
@@ -1374,7 +1535,9 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_2?.mark_of_the_road ||
                         []
                       }
-                      offsetTopTimeline={offsetTopTimeline2}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline2 : 0
+                      }
                     />
                   </Suspense>
                 </div>
@@ -1413,7 +1576,9 @@ export default function Page() {
                       }}
                       animWidthText={0.1}
                       timeline="timeline3"
-                      offsetTopTimeline={offsetTopTimeline3}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline3 : 0
+                      }
                       offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
@@ -1434,7 +1599,10 @@ export default function Page() {
                       slideData={SliderData}
                       sectionImage={sectionImage}
                       panel={timeline3Ref}
-                      offsetTopTimeline={offsetTopTimeline3}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline3 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1453,7 +1621,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_3
                           ?.evidence_of_period || []
                       }
-                      offsetTopTimeline={offsetTopTimeline3}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline3 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1472,7 +1643,10 @@ export default function Page() {
                       data={
                         chroniclesPageData?.acf?.timeline_3?.title_section || ""
                       }
-                      offsetTopTimeline={offsetTopTimeline3}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline3 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1493,7 +1667,10 @@ export default function Page() {
                           ?.past_rabbis_section || []
                       }
                       rabbisData={SetListOfRabbis}
-                      offsetTopTimeline={offsetTopTimeline3}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline3 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                       rabbisPosts={rabbisPostsData3}
                     />
                   </Suspense>
@@ -1512,7 +1689,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_3?.mark_of_the_road ||
                         []
                       }
-                      offsetTopTimeline={offsetTopTimeline3}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline3 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1526,7 +1706,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_3?.intro_banner
                           ?.background || introBG3
                       }
-                      offsetTopTimeline={offsetTopTimeline3}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline3 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                       data={IntroContentData}
                       extraClass={
                         "panel-section will-change-transform min-w-screen w-screen"
@@ -1558,7 +1741,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_3
                           ?.lamb_offering_section || []
                       }
-                      offsetTopTimeline={offsetTopTimeline3}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline3 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                 </div>
@@ -1597,7 +1783,9 @@ export default function Page() {
                         throw new Error("Function not implemented.");
                       }}
                       animWidthText={0.1}
-                      offsetTopTimeline={offsetTopTimeline4}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline4 : 0
+                      }
                       offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
@@ -1616,7 +1804,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_4
                           ?.move_to_jerusalem || []
                       }
-                      offsetTopTimeline={offsetTopTimeline4}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline4 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1635,7 +1826,10 @@ export default function Page() {
                       data={
                         chroniclesPageData?.acf?.timeline_4?.title_section || ""
                       }
-                      offsetTopTimeline={offsetTopTimeline4}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline4 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1656,7 +1850,10 @@ export default function Page() {
                           ?.past_rabbis_section || []
                       }
                       rabbisData={SetListOfRabbis}
-                      offsetTopTimeline={offsetTopTimeline4}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline4 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                       rabbisPosts={rabbisPostsData4}
                     />
                   </Suspense>
@@ -1676,7 +1873,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_4?.history_timeline ||
                         []
                       }
-                      offsetTopTimeline={offsetTopTimeline4}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline4 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1693,7 +1893,10 @@ export default function Page() {
                       data={QuoteData2}
                       boxClass="max-w-[40vw]"
                       panel={timeline4Ref}
-                      offsetTopTimeline={offsetTopTimeline4}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline4 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                 </div>
@@ -1732,7 +1935,9 @@ export default function Page() {
                         throw new Error("Function not implemented.");
                       }}
                       animWidthText={31.2}
-                      offsetTopTimeline={offsetTopTimeline5}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline5 : 0
+                      }
                       offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
@@ -1750,7 +1955,10 @@ export default function Page() {
                       data={
                         chroniclesPageData?.acf?.timeline_5?.text_section || ""
                       }
-                      offsetTopTimeline={offsetTopTimeline5}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline5 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1770,7 +1978,10 @@ export default function Page() {
                       slideData={SliderData2}
                       sectionImage={arrowSectionImage}
                       panel={timeline5Ref}
-                      offsetTopTimeline={offsetTopTimeline5}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline5 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1788,7 +1999,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_5
                           ?.arrow_slider_section?.floating_image_2 || ""
                       }
-                      offsetTopTimeline={offsetTopTimeline5}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline5 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1805,7 +2019,10 @@ export default function Page() {
                       data={
                         chroniclesPageData?.acf?.timeline_5?.single_video || []
                       }
-                      offsetTopTimeline={offsetTopTimeline5}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline5 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1824,7 +2041,10 @@ export default function Page() {
                       data={
                         chroniclesPageData?.acf?.timeline_5?.title_section || ""
                       }
-                      offsetTopTimeline={offsetTopTimeline5}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline5 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1845,7 +2065,10 @@ export default function Page() {
                           ?.past_rabbis_section || []
                       }
                       rabbisData={SetListOfRabbis}
-                      offsetTopTimeline={offsetTopTimeline5}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline5 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                       rabbisPosts={rabbisPostsData5}
                     />
                   </Suspense>
@@ -1865,7 +2088,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_5?.history_timeline ||
                         []
                       }
-                      offsetTopTimeline={offsetTopTimeline5}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline5 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                 </div>
@@ -1904,7 +2130,9 @@ export default function Page() {
                         throw new Error("Function not implemented.");
                       }}
                       animWidthText={36.6}
-                      offsetTopTimeline={offsetTopTimeline6}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline6 : 0
+                      }
                       offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
@@ -1922,7 +2150,10 @@ export default function Page() {
                       data={
                         chroniclesPageData?.acf?.timeline_6?.text_section || ""
                       }
-                      offsetTopTimeline={offsetTopTimeline6}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline6 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1939,7 +2170,10 @@ export default function Page() {
                       data={
                         chroniclesPageData?.acf?.timeline_6?.single_image || ""
                       }
-                      offsetTopTimeline={offsetTopTimeline6}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline6 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1956,7 +2190,10 @@ export default function Page() {
                       data={
                         chroniclesPageData?.acf?.timeline_6?.card_section || []
                       }
-                      offsetTopTimeline={offsetTopTimeline6}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline6 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1974,7 +2211,10 @@ export default function Page() {
                       }
                       animWidthText={40}
                       panel={timeline6Ref}
-                      offsetTopTimeline={offsetTopTimeline6}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline6 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -1992,7 +2232,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_6?.mark_of_the_road ||
                         []
                       }
-                      offsetTopTimeline={offsetTopTimeline6}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline6 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -2010,7 +2253,10 @@ export default function Page() {
                         chroniclesPageData?.acf?.timeline_6
                           ?.image_with_text_section || []
                       }
-                      offsetTopTimeline={offsetTopTimeline6}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline6 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -2027,7 +2273,10 @@ export default function Page() {
                         OnlyImage2
                       }
                       animWidthText={43.5}
-                      offsetTopTimeline={offsetTopTimeline6}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline6 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                   <Suspense
@@ -2047,7 +2296,10 @@ export default function Page() {
                       boxClass={""}
                       data={QuoteData3}
                       panel={timeline6Ref}
-                      offsetTopTimeline={offsetTopTimeline6}
+                      offsetTopTimeline={
+                        pageDataFetched ? offsetTopTimeline6 : 0
+                      }
+                      offsetTopAdded={offsetTopAdded}
                     />
                   </Suspense>
                 </div>

@@ -29,6 +29,7 @@ interface ChildProps {
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 function RabbisTimeline2(props: ChildProps) {
   // Navigation
@@ -111,7 +112,11 @@ function RabbisTimeline2(props: ChildProps) {
   useGSAP(
     () => {
       const animations: gsap.core.Animation[] = [];
-      if (typeof window === "undefined" || !wrapper.current) {
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
         return;
       }
       // Selector
@@ -280,7 +285,7 @@ function RabbisTimeline2(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props?.data] },
+    { scope: wrapper, dependencies: [pathname, props?.offsetTopAdded] },
   );
 
   return (

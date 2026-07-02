@@ -21,6 +21,7 @@ interface ChildProps {
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function MarkOfTheRoad4(props: ChildProps) {
@@ -62,7 +63,11 @@ export default function MarkOfTheRoad4(props: ChildProps) {
     () => {
       const animations: gsap.core.Animation[] = [];
 
-      if (typeof window === "undefined" || !wrapper.current) {
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
         return;
       }
 
@@ -197,7 +202,7 @@ export default function MarkOfTheRoad4(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.data] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
 
   return (
@@ -216,6 +221,7 @@ export default function MarkOfTheRoad4(props: ChildProps) {
           overlayClass=""
           panel={props.panel}
           offsetTopTimeline={props.offsetTopTimeline}
+          offsetTopAdded={props.offsetTopAdded}
         />
       </div>
       <div className="section-row w-full h-full flex px-[6.3vw] py-[4.5vw] items-center relative z-30">

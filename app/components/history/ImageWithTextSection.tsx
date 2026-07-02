@@ -20,6 +20,7 @@ interface ChildProps {
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function ImageWithTextSection(props: ChildProps) {
@@ -51,7 +52,11 @@ export default function ImageWithTextSection(props: ChildProps) {
     () => {
       const animations: gsap.core.Animation[] = [];
 
-      if (typeof window === "undefined" || !wrapper.current) {
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
         return;
       }
       // Content Image 1
@@ -237,7 +242,7 @@ export default function ImageWithTextSection(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
   return (
     <section

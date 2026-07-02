@@ -25,6 +25,7 @@ interface ChildProps {
   data: { title: string; subtitle: string };
   timeline?: string;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function IntroductionContent(props: ChildProps) {
@@ -45,7 +46,11 @@ export default function IntroductionContent(props: ChildProps) {
   useGSAP(
     () => {
       const animations: gsap.core.Animation[] = [];
-      if (typeof window !== "undefined" && wrapper.current) {
+      if (
+        typeof window !== "undefined" &&
+        wrapper.current &&
+        props.offsetTopAdded
+      ) {
         document.fonts.ready.then(() => {
           // Section Title
           if (title.current && props?.data?.title !== "") {
@@ -118,7 +123,7 @@ export default function IntroductionContent(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props?.data] },
+    { scope: wrapper, dependencies: [pathname, props?.offsetTopAdded] },
   );
   return (
     <section
@@ -136,6 +141,7 @@ export default function IntroductionContent(props: ChildProps) {
           panel={props.panel}
           timeline={props.timeline}
           offsetTopTimeline={props.offsetTopTimeline}
+          offsetTopAdded={props.offsetTopAdded}
         />
       )}
       {props.bgOverlay !== "" && (

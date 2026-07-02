@@ -17,6 +17,7 @@ interface ChildProps {
   data?: any;
   offsetTopTimeline?: number;
   panel?: React.RefObject<HTMLDivElement | null>;
+  offsetTopAdded?: boolean;
 }
 
 export default function HistoryQuoteSection2(props: ChildProps) {
@@ -39,7 +40,12 @@ export default function HistoryQuoteSection2(props: ChildProps) {
     () => {
       const animations: gsap.core.Animation[] = [];
 
-      if (typeof window === "undefined" || !wrapper.current || !quote.current) {
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !quote.current ||
+        !props.offsetTopAdded
+      ) {
         return;
       }
       document.fonts.ready.then(() => {
@@ -99,7 +105,7 @@ export default function HistoryQuoteSection2(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.data] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
   return (
     <section
@@ -115,6 +121,7 @@ export default function HistoryQuoteSection2(props: ChildProps) {
           panel={""}
           animated={false}
           offsetTopTimeline={props.offsetTopTimeline}
+          offsetTopAdded={props.offsetTopAdded}
         />
       </div>
       <div

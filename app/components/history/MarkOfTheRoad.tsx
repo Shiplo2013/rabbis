@@ -19,6 +19,7 @@ interface ChildProps {
   animWidthText: number;
   data: any;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 export default function MarkOfTheRoad(props: ChildProps) {
   // Navigation
@@ -51,6 +52,15 @@ export default function MarkOfTheRoad(props: ChildProps) {
   useGSAP(
     () => {
       const animations: gsap.core.Animation[] = [];
+
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
+        return;
+      }
+
       document.fonts.ready.then(() => {
         // Section Title 1
         if (titleRef.current) {
@@ -225,7 +235,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.data] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
   return (
     <section

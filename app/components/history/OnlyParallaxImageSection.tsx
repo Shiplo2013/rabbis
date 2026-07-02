@@ -15,6 +15,7 @@ interface ChildProps {
   image: StaticImageData | any;
   panel?: RefObject<HTMLDivElement | null>;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function OnlyParallaxImageSection(props: ChildProps) {
@@ -36,7 +37,11 @@ export default function OnlyParallaxImageSection(props: ChildProps) {
     () => {
       const animations: gsap.core.Animation[] = [];
 
-      if (typeof window === "undefined" || !background.current) {
+      if (
+        typeof window === "undefined" ||
+        !background.current ||
+        !props.offsetTopAdded
+      ) {
         return;
       }
       // Banner Background
@@ -66,7 +71,7 @@ export default function OnlyParallaxImageSection(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: background, dependencies: [pathname, props.image] },
+    { scope: background, dependencies: [pathname, props.offsetTopAdded] },
   );
   return (
     <section

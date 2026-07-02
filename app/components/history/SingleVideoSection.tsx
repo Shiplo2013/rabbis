@@ -17,6 +17,7 @@ interface ChildProps {
   panel?: RefObject<HTMLDivElement | null>;
   data?: any;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function SingleVideoSection(props: ChildProps) {
@@ -50,7 +51,15 @@ export default function SingleVideoSection(props: ChildProps) {
     () => {
       const animations: gsap.core.Animation[] = [];
 
-      if (window !== undefined && wrapper.current) {
+      if (
+        typeof window === "undefined" ||
+        !wrapper.current ||
+        !props.offsetTopAdded
+      ) {
+        return;
+      }
+
+      if (window !== undefined && wrapper.current && props.offsetTopAdded) {
         // video element selector
         const video = wrapper.current?.querySelector(".section-overlay");
         if (video) {
@@ -78,7 +87,7 @@ export default function SingleVideoSection(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: wrapper, dependencies: [pathname, props.data] },
+    { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
 
   // video element selector

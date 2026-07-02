@@ -14,6 +14,7 @@ interface ChildProps {
   start: number;
   panel: any;
   offsetTopTimeline?: number;
+  offsetTopAdded?: boolean;
 }
 
 export default function BackgroundImage2(props: ChildProps) {
@@ -37,7 +38,11 @@ export default function BackgroundImage2(props: ChildProps) {
     () => {
       const animations: gsap.core.Animation[] = [];
 
-      if (typeof window === "undefined" || !background.current) {
+      if (
+        typeof window === "undefined" ||
+        !background.current ||
+        !props.offsetTopAdded
+      ) {
         return;
       }
       // Banner Background
@@ -68,7 +73,7 @@ export default function BackgroundImage2(props: ChildProps) {
         animations.forEach((animation) => animation.kill());
       };
     },
-    { scope: background, dependencies: [pathname] },
+    { scope: background, dependencies: [pathname, props?.offsetTopAdded] },
   );
   return (
     <div
