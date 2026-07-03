@@ -618,28 +618,66 @@ export default function Page() {
                                   return (
                                     <div
                                       key={index}
-                                      className="image1 mt-9 w-[40vw] h-[66vh]"
+                                      className="image1 mt-9 w-3xl max-w-full"
                                     >
-                                      <Image
-                                        className="w-full h-full object-cover object-center"
-                                        src={
-                                          item?.content?.image?.sizes?.large ||
-                                          item?.content?.image?.sizes
-                                            ?.medium_large ||
-                                          item?.content?.image?.sizes?.medium ||
-                                          item?.content?.image?.url ||
-                                          item?.content?.image?.src
-                                        }
-                                        width={758}
-                                        height={610}
-                                        alt="Community Image"
-                                        blurDataURL={CreateShimmerDataUrl(
-                                          758,
-                                          610,
-                                        )}
-                                        placeholder="blur"
-                                        loading="lazy"
-                                      />
+                                      <div className="image w-3xl max-w-full h-[66vh]">
+                                        <Image
+                                          className="w-full h-full object-cover object-center"
+                                          src={
+                                            item?.content?.image?.sizes
+                                              ?.large ||
+                                            item?.content?.image?.sizes
+                                              ?.medium_large ||
+                                            item?.content?.image?.sizes
+                                              ?.medium ||
+                                            item?.content?.image?.url ||
+                                            item?.content?.image?.src
+                                          }
+                                          width={758}
+                                          height={610}
+                                          alt="Community Image"
+                                          blurDataURL={CreateShimmerDataUrl(
+                                            758,
+                                            610,
+                                          )}
+                                          placeholder="blur"
+                                          loading="lazy"
+                                        />
+                                      </div>
+                                      {item?.content?.caption && (
+                                        <div className="caption w-full bg-black bg-opacity-50 text-white p-3 text-[18px] text-center font-bold">
+                                          <p>{item?.content?.caption}</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                }
+                                // Section Video
+                                if (item.field_type === "video") {
+                                  return (
+                                    <div
+                                      key={index}
+                                      className="video1 mt-9 w-4xl max-w-full"
+                                    >
+                                      <div className="video w-4xl max-w-full h-[66vh]">
+                                        <video
+                                          controls
+                                          className="w-full h-full object-contain object-center"
+                                        >
+                                          <source
+                                            src={
+                                              item?.content?.video?.url ||
+                                              item?.content?.video?.src
+                                            }
+                                            type="video/mp4"
+                                          />
+                                        </video>
+                                      </div>
+                                      {item?.content?.caption && (
+                                        <div className="caption w-full bg-black bg-opacity-50 text-white p-3 text-[18px] text-center font-bold">
+                                          <p>{item?.content?.caption}</p>
+                                        </div>
+                                      )}
                                     </div>
                                   );
                                 }
@@ -653,7 +691,7 @@ export default function Page() {
                                       <div className="text1 mt-8.5">
                                         {parse(item?.news_content?.text || "")}
                                       </div>
-                                      <div className="image1 mt-9 w-[40vw] h-[66vh]">
+                                      <div className="image1 mt-9 w-3xl max-w-full h-[66vh]">
                                         <Image
                                           className="w-full h-full object-cover object-center"
                                           src={
@@ -693,7 +731,7 @@ export default function Page() {
                                         </div>
                                       )}
                                       {item?.news_content?.image && (
-                                        <div className="highlight-image mt-10 w-[40vw] h-[66vh]">
+                                        <div className="highlight-image mt-10 w-3xl max-w-full h-[66vh]">
                                           <Image
                                             className="w-full h-full object-cover object-center"
                                             src={
@@ -812,7 +850,7 @@ export default function Page() {
                   <CloseIcon2 className="w-full h-auto" />
                 </button>
                 <button
-                  className="sidebar-open absolute top-25 right-0 bg-[#091B24] text-white p-2 cursor-pointer z-20 w-8 h-10 flex items-center justify-center"
+                  className={`sidebar-open absolute top-25 right-0 bg-[#091B24] text-white p-2 ${isSidebarOpen ? "cursor-default" : "cursor-pointer"} z-20 w-8 h-10 flex items-center justify-center opacity-0 visibility-hidden`}
                   onClick={() => setIsSidebarOpen(true)}
                 >
                   <span className="block w-3 h-3 border-t border-r border-white rotate-45"></span>
