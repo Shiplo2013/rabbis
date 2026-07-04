@@ -391,10 +391,6 @@ export default function Page() {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("Post data updated:", post?.acf?.community_gallery);
-  }, [post]);
-
   return (
     post && (
       <div ref={main} id="main" className="relative">
@@ -520,7 +516,7 @@ export default function Page() {
                               return (
                                 <div
                                   key={index}
-                                  className="pagination-item w-7.5 h-22.5 rounded-full bg-[#C3A13F] cursor-pointer"
+                                  className="pagination-item w-7.5 h-22.5 bg-[#C3A13F] cursor-pointer"
                                   onClick={() => {
                                     swiperRef.current?.swiper.slideTo(index);
                                   }}
@@ -540,18 +536,21 @@ export default function Page() {
                               return (
                                 <div
                                   key={index}
-                                  className="pagination-item w-7.5 h-22.5 rounded-full bg-[#C3A13F] cursor-pointer"
+                                  className="pagination-item w-7.5 h-22.5 bg-[#C3A13F] cursor-pointer rounded flex items-center justify-center"
                                   onClick={() => {
                                     swiperRef.current?.swiper.slideTo(index);
                                   }}
                                 >
-                                  <Image
-                                    className="w-full h-full object-cover object-center"
-                                    src={item.video?.icon || item.src}
-                                    width={90}
-                                    height={90}
-                                    alt="Community Image"
-                                  />
+                                  <svg
+                                    fill="#000000"
+                                    height="20px"
+                                    width="20px"
+                                    viewBox="0 0 490.718 490.718"
+                                  >
+                                    <g>
+                                      <path d="M245.359,0.359C109.852,0.359,0,110.049,0,245.358s109.852,245,245.359,245s245.359-109.691,245.359-245   S380.866,0.359,245.359,0.359z M176.828,341.011V140.824l187.489,100.098L176.828,341.011z" />
+                                    </g>
+                                  </svg>
                                 </div>
                               );
                             }
