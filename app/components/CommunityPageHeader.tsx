@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HambergerIcon from "../assets/icons/HambergerIcon";
 import logo from "../assets/images/logo.png";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
@@ -11,8 +11,13 @@ if (typeof window !== "undefined") {
 }
 
 export default function CommunityPageHeader({
+  data,
   animationStatus,
 }: {
+  data: {
+    headerLeft: any;
+    headerRight: any;
+  };
   animationStatus: boolean;
 }) {
   const SectionData = {
@@ -111,6 +116,11 @@ export default function CommunityPageHeader({
   useGSAP(() => {
     isMenuActive ? menuTimeline.play() : menuTimeline.reverse();
   }, [isMenuActive]);
+
+  useEffect(() => {
+    console.log("Header Data:", data);
+  }, [data]);
+
   return (
     <>
       <header className="community-page-header bg-[#091B24] text-white py-6 px-10 z-30 w-full opacity-0 relative">
@@ -124,7 +134,7 @@ export default function CommunityPageHeader({
               <HambergerIcon />
             </button>
             <div className="menu flex items-center gap-x-9">
-              {SectionData.rightMenu.map((item, index) => (
+              {data?.headerRight.map((item: any, index: number) => (
                 <Link
                   key={index}
                   href={item.link}
@@ -151,7 +161,7 @@ export default function CommunityPageHeader({
           </div>
           <div className="header-left">
             <div className="menu flex items-center gap-x-9">
-              {SectionData.leftMenu.map((item, index) => (
+              {data?.headerLeft.map((item: any, index: number) => (
                 <Link
                   key={index}
                   href={item.link}

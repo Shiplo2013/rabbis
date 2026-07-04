@@ -47,8 +47,10 @@ export default function Page() {
   const params = useParams();
   const slug = params?.slug as string;
   const [post, setPost] = useState<CommunityPost | null>(null);
+  const [header, setHeader] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [communityTabs, setCommunityTabs] = useState<
     Array<{ title: string; content: any }>
   >([]);
@@ -58,24 +60,35 @@ export default function Page() {
     let isMounted = true;
 
     const loadRabbisPageData = async () => {
-      try {
-        const response = await fetch(`/api/communities/posts/${slug}`, {
-          cache: "no-store",
-        });
+      const response = fetch(`/api/communities/posts/${slug}`, {
+        cache: "no-store",
+      });
+      const response2 = fetch(`/api/communities/header/`, {
+        cache: "no-store",
+      });
 
-        if (!response.ok) {
+      try {
+        const [postData, headerData] = await Promise.all([response, response2]);
+
+        if (!postData.ok) {
           throw new Error("Failed to load community page data.");
         }
+        if (!headerData.ok) {
+          throw new Error("Failed to load community header data.");
+        }
 
-        const data = await response.json();
+        const data = await postData.json();
+        const header = await headerData.json();
 
         if (isMounted) {
           setPost(data);
+          setHeader(header);
         }
       } catch (error) {
         console.error(error);
+        setError("Failed to load home page data.");
       } finally {
-        setPageDataFetched(true);
+        setIsLoading(false);
       }
     };
 
@@ -105,7 +118,7 @@ export default function Page() {
         content: post?.acf?.community_updates,
       },
     ]);
-  }, [pageDataFetched]);
+  }, [post]);
 
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
@@ -391,11 +404,21 @@ export default function Page() {
     };
   }, []);
 
+  useEffect(() => {
+    console.log("Header Data:", header);
+  }, [header]);
+
   return (
     post && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <CommunityPageHeader animationStatus={isAllAnimationComplete} />
+        <CommunityPageHeader
+          data={{
+            headerLeft: header?.acf?.header_left,
+            headerRight: header?.acf?.header_right,
+          }}
+          animationStatus={isAllAnimationComplete}
+        />
         <SmoothWrapper>
           <main
             ref={page}
@@ -489,7 +512,7 @@ export default function Page() {
                                   <div className="w-full h-[50vh]">
                                     <video
                                       controls
-                                      className="w-full h-full object-cover object-center"
+                                      className="w-full h-full object-contain object-center"
                                     >
                                       <source
                                         src={item.video?.url || item.video?.src}
@@ -856,42 +879,47 @@ export default function Page() {
                 </button>
                 <div className="sidebar-wrapper h-full">
                   <div className="sidebar-scrollbar w-full h-full overflow-auto">
-                    <h2 className="text-[#D1A941] text-[65px] leading-[86%]">
-                      קול מבין הסטנדרים
-                    </h2>
+                    {header?.acf?.sidebar?.title && (
+                      <h2 className="text-[#D1A941] text-[65px] leading-[86%]">
+                        {parse(header?.acf?.sidebar?.title)}
+                      </h2>
+                    )}
                     <div className="related-news mt-[9.4vh]">
                       <div className="icon mb-7 w-10 h-auto">
                         <WishIcon2 />
                       </div>
                       <div className="news-list">
-                        <PostItem2
-                          title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
-                          content={"בוגר מחזור כ״ה "}
-                          subtitle={"י״ג בחשוון תשפ״ו"}
-                          buttonLabel={"קהילת בני ברק"}
-                          buttonColor={"bg-[#C3A13F] hover:bg-[#c59811]"}
-                        />
-                        <PostItem2
-                          title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
-                          content={"בוגר מחזור כ״ה "}
-                          subtitle={"י״ג בחשוון תשפ״ו"}
-                          buttonLabel={"קהילת בני ברק"}
-                          buttonColor={"bg-[#5A7C4E] hover:bg-[#2b6018]"}
-                        />
-                        <PostItem2
-                          title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
-                          content={"בוגר מחזור כ״ה "}
-                          subtitle={"י״ג בחשוון תשפ״ו"}
-                          buttonLabel={"קהילת בני ברק"}
-                          buttonColor={"bg-[#C3A13F] hover:bg-[#c59811]"}
-                        />
-                        <PostItem2
-                          title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
-                          content={"בוגר מחזור כ״ה "}
-                          subtitle={"י״ג בחשוון תשפ״ו"}
-                          buttonLabel={"קהילת בני ברק"}
-                          buttonColor={"bg-[#5A7C4E] hover:bg-[#2b6018]"}
-                        />
+                        {header?.acf?.sidebar?.sidebar_news?.map(
+                          (item: any, index: number) => {
+                            if (index % 2 === 0) {
+                              return (
+                                <PostItem2
+                                  title={item.title}
+                                  content={item.text}
+                                  subtitle={item.date}
+                                  buttonLabel={"קהילת בני ברק"}
+                                  buttonColor={
+                                    "bg-[#C3A13F] hover:bg-[#c59811]"
+                                  }
+                                  buttonLink={item.link}
+                                />
+                              );
+                            } else {
+                              return (
+                                <PostItem2
+                                  title={item.title}
+                                  content={item.text}
+                                  subtitle={item.date}
+                                  buttonLabel={"קהילת בני ברק"}
+                                  buttonColor={
+                                    "bg-[#5A7C4E] hover:bg-[#2b6018]"
+                                  }
+                                  buttonLink={item.link}
+                                />
+                              );
+                            }
+                          },
+                        )}
                       </div>
                     </div>
                     <div className="related-event mt-[9.4vh]">
@@ -899,30 +927,20 @@ export default function Page() {
                         <EventIcon />
                       </div>
                       <div className="event-list">
-                        <EventItem
-                          title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
-                          content={`במעמד נשאו ראשי הישיבה דברים בענייני דיומא ודברי חיזוק לקהילה כשהם מדגישים כי המקום המהווה...`}
-                          subtitle={"י״ג בחשוון תשפ״ו"}
-                          buttonLabel={"קהילת בני ברק"}
-                        />
-                        <EventItem
-                          title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
-                          content={`במעמד נשאו ראשי הישיבה דברים בענייני דיומא ודברי חיזוק לקהילה כשהם מדגישים כי המקום המהווה...`}
-                          subtitle={"י״ג בחשוון תשפ״ו"}
-                          buttonLabel={"קהילת בני ברק"}
-                        />
-                        <EventItem
-                          title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
-                          content={`במעמד נשאו ראשי הישיבה דברים בענייני דיומא ודברי חיזוק לקהילה כשהם מדגישים כי המקום המהווה...`}
-                          subtitle={"י״ג בחשוון תשפ״ו"}
-                          buttonLabel={"קהילת בני ברק"}
-                        />
-                        <EventItem
-                          title={"מזל טוב לרב אשר שוורץ להולדת הנכדה"}
-                          content={`במעמד נשאו ראשי הישיבה דברים בענייני דיומא ודברי חיזוק לקהילה כשהם מדגישים כי המקום המהווה...`}
-                          subtitle={"י״ג בחשוון תשפ״ו"}
-                          buttonLabel={"קהילת בני ברק"}
-                        />
+                        {header?.acf?.sidebar?.sidebar_events?.map(
+                          (item: any, index: number) => {
+                            return (
+                              <EventItem
+                                title={item.title}
+                                content={item.text}
+                                subtitle={item.date}
+                                buttonLabel={"קהילת בני ברק"}
+                                buttonColor={"bg-[#5A7C4E] hover:bg-[#2b6018]"}
+                                buttonLink={item.link}
+                              />
+                            );
+                          },
+                        )}
                       </div>
                     </div>
                   </div>
@@ -934,15 +952,18 @@ export default function Page() {
         </SmoothWrapper>
         <div
           ref={communityLoader}
-          className="community-loader fixed top-0 left-0 w-full h-full bg-[#C3A13F] flex items-center justify-center z-999"
+          className="community-loader fixed top-0 left-0 w-full h-full bg-[#C3A13F] flex items-center justify-center z-999 text-[#091B24]"
         >
-          <h2 className="loader-heading text-[130px] leading-[80%] font-bold text-[#091B24] text-center">
-            חברון
-            <br />
-            היכל יחזקאל
-            <br />
-            פתח תקווה
-          </h2>
+          <div className="loader-content max-w-full w-195 h-auto">
+            <h2 className="loader-heading text-[130px] leading-[80%] font-bold text-center">
+              {parse(post?.title || "")}
+            </h2>
+            {post?.acf?.subtitle && (
+              <h4 className="text-[44px] leading-[1em] mt-3 text-center">
+                {parse(post?.acf?.subtitle || "")}
+              </h4>
+            )}
+          </div>
         </div>
       </div>
     )
