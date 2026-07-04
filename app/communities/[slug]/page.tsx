@@ -934,15 +934,18 @@ export default function Page() {
         </SmoothWrapper>
         <div
           ref={communityLoader}
-          className="community-loader fixed top-0 left-0 w-full h-full bg-[#C3A13F] flex items-center justify-center z-999"
+          className="community-loader fixed top-0 left-0 w-full h-full bg-[#C3A13F] flex items-center justify-center z-999 text-[#091B24]"
         >
-          <h2 className="loader-heading text-[130px] leading-[80%] font-bold text-[#091B24] text-center">
-            חברון
-            <br />
-            היכל יחזקאל
-            <br />
-            פתח תקווה
-          </h2>
+          <div className="loader-content max-w-full w-195 h-auto">
+            <h2 className="loader-heading text-[130px] leading-[80%] font-bold text-center">
+              {parse(post?.title || "")}
+            </h2>
+            {post?.acf?.subtitle && (
+              <h4 className="text-[44px] leading-[1em] mt-3 text-center">
+                {parse(post?.acf?.subtitle || "")}
+              </h4>
+            )}
+          </div>
         </div>
       </div>
     )
