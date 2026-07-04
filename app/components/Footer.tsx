@@ -216,7 +216,7 @@ function Footer(props: ChildProps) {
           scrollTrigger: {
             trigger: footerRef.current,
             start: "top 60%",
-            toggleActions: "play none none reverse",
+            toggleActions: "play none none none",
           },
           ease: "easeInOut",
           duration: 1,
@@ -237,7 +237,7 @@ function Footer(props: ChildProps) {
         scrollTrigger: {
           trigger: footerRef.current,
           start: "top 30%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
         },
         ease: "easeInOut",
         duration: 1,
@@ -257,7 +257,7 @@ function Footer(props: ChildProps) {
         scrollTrigger: {
           trigger: footerRef.current,
           start: "top 30%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
         },
         ease: "easeInOut",
         duration: 1,
@@ -278,7 +278,7 @@ function Footer(props: ChildProps) {
         scrollTrigger: {
           trigger: footerRef.current,
           start: "top 30%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
         },
         ease: "easeInOut",
         duration: 1,
@@ -299,7 +299,7 @@ function Footer(props: ChildProps) {
         scrollTrigger: {
           trigger: footerRef.current,
           start: "top 20%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
         },
         ease: "easeInOut",
         duration: 1,
@@ -319,7 +319,7 @@ function Footer(props: ChildProps) {
         scrollTrigger: {
           trigger: footerRef.current,
           start: "top 20%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
         },
         ease: "easeInOut",
         duration: 1,
