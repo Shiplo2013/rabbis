@@ -23,6 +23,7 @@ export default function Page() {
   // Selectors
   const [knessetPageData, setKnessetPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [postLoading, setPostLoading] = useState(true);
@@ -52,46 +53,132 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadKnessetPageData = async () => {
+      const response = fetch("/api/the-knesset-of-customs", {
+        cache: "no-store",
+      });
+      const response3 = fetch("/api/the-knesset-of-customs/categories", {
+        cache: "no-store",
+      });
+      const normalizedSearch = submittedSearch.trim();
+      const normalizedCategory = selectedCategory?.trim();
+      const postsUrl = normalizedSearch
+        ? `/api/the-knesset-of-customs/posts?search=${encodeURIComponent(normalizedSearch)}${normalizedCategory ? `&knesset_cat=${encodeURIComponent(normalizedCategory)}` : ""}`
+        : normalizedCategory
+          ? `/api/the-knesset-of-customs/posts?knesset_cat=${encodeURIComponent(normalizedCategory)}`
+          : "/api/the-knesset-of-customs/posts";
+      const response2 = fetch(postsUrl, {
+        cache: "no-store",
+      });
+      const response4 = fetch("/api/header", {
+        cache: "force-cache",
+      });
       try {
-        const response = await fetch("/api/the-knesset-of-customs", {
-          cache: "no-store",
-        });
-        const response3 = await fetch(
-          "/api/the-knesset-of-customs/categories",
-          {
-            cache: "no-store",
-          },
+        const [pageData1, pageData2, pageData3, headerData] = await Promise.all(
+          [response, response3, response2, response4],
         );
-        const normalizedSearch = submittedSearch.trim();
-        const normalizedCategory = selectedCategory?.trim();
-        const postsUrl = normalizedSearch
-          ? `/api/the-knesset-of-customs/posts?search=${encodeURIComponent(normalizedSearch)}${normalizedCategory ? `&knesset_cat=${encodeURIComponent(normalizedCategory)}` : ""}`
-          : normalizedCategory
-            ? `/api/the-knesset-of-customs/posts?knesset_cat=${encodeURIComponent(normalizedCategory)}`
-            : "/api/the-knesset-of-customs/posts";
-        const response2 = await fetch(postsUrl, {
-          cache: "no-store",
-        });
 
-        if (!response.ok) {
+        if (!pageData1.ok) {
+          //throw new Error("Failed to load the knesset of customs page data.");
+          fetchError = true;
+        }
+
+        if (!pageData2.ok) {
+          //throw new Error("Failed to load the knesset of customs posts data.");
+          fetchError = true;
+        }
+
+        if (!pageData3.ok) {
+          // throw new Error(
+          //   "Failed to load the knesset of customs categories data.",
+          // );
+          fetchError = true;
+        }
+
+        if (!headerData.ok) {
+          //throw new Error("Failed to load the header data.");
+          fetchError = true;
+        }
+
+        const data = await pageData1.json();
+        const data2 = await pageData2.json();
+        const data3 = await pageData3.json();
+        const header = await headerData.json();
+
+        if (isMounted) {
+          setKnessetPageData({
+            pageData: data,
+            postsData: data2,
+            categoriesData: data3,
+          });
+          setHeaderData(header);
+        }
+      } catch (error) {
+        console.error(error);
+        if (isMounted) {
+          setError("Failed to load the knesset of customs page data.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+          setPostLoading(false);
+        }
+      }
+    };
+
+    loadKnessetPageData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+  // Search and Category Filter
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadKnessetPageData = async () => {
+      const response = fetch("/api/the-knesset-of-customs", {
+        cache: "no-store",
+      });
+      const response3 = fetch("/api/the-knesset-of-customs/categories", {
+        cache: "no-store",
+      });
+      const normalizedSearch = submittedSearch.trim();
+      const normalizedCategory = selectedCategory?.trim();
+      const postsUrl = normalizedSearch
+        ? `/api/the-knesset-of-customs/posts?search=${encodeURIComponent(normalizedSearch)}${normalizedCategory ? `&knesset_cat=${encodeURIComponent(normalizedCategory)}` : ""}`
+        : normalizedCategory
+          ? `/api/the-knesset-of-customs/posts?knesset_cat=${encodeURIComponent(normalizedCategory)}`
+          : "/api/the-knesset-of-customs/posts";
+      const response2 = fetch(postsUrl, {
+        cache: "no-store",
+      });
+      try {
+        const [pageData1, pageData2, pageData3] = await Promise.all([
+          response,
+          response3,
+          response2,
+        ]);
+
+        if (!pageData1.ok) {
           throw new Error("Failed to load the knesset of customs page data.");
         }
 
-        if (!response2.ok) {
+        if (!pageData2.ok) {
           throw new Error("Failed to load the knesset of customs posts data.");
         }
 
-        if (!response3.ok) {
+        if (!pageData3.ok) {
           throw new Error(
             "Failed to load the knesset of customs categories data.",
           );
         }
 
-        const data = await response.json();
-        const data2 = await response2.json();
-        const data3 = await response3.json();
+        const data = await pageData1.json();
+        const data2 = await pageData2.json();
+        const data3 = await pageData3.json();
 
         if (isMounted) {
           setKnessetPageData({
@@ -118,7 +205,7 @@ export default function Page() {
     return () => {
       isMounted = false;
     };
-  }, [pathname, submittedSearch, selectedCategory]);
+  }, [submittedSearch, selectedCategory]);
 
   useEffect(() => {
     if (!knessetPageData) {
@@ -476,6 +563,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,
@@ -529,7 +617,7 @@ export default function Page() {
     knessetPageData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

@@ -31,6 +31,7 @@ export default function Page() {
   const main = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLDivElement>(null);
   const [pageData, setPageData] = useState<ContactPageData | null>(null);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -63,20 +64,26 @@ export default function Page() {
     let fetchError = false;
 
     const loadPageData = async () => {
+      const response = fetch("/api/contact", {
+        cache: "force-cache",
+      });
+      const response2 = fetch("/api/header", {
+        cache: "force-cache",
+      });
       try {
-        const response = await fetch("/api/contact", {
-          cache: "force-cache",
-        });
+        const [pageData, headerData] = await Promise.all([response, response2]);
 
-        if (!response.ok) {
-          //throw new Error("Failed to load page data.");
+        if (!pageData.ok || !headerData.ok) {
+          //throw new Error("Failed to load home page data.");
           fetchError = true;
         }
 
-        const data = fetchError ? staticData : await response.json();
+        const data = fetchError ? null : await pageData.json();
+        const header = fetchError ? null : await headerData.json();
 
         if (isMounted) {
           setPageData(data);
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -328,7 +335,7 @@ export default function Page() {
     pageData && (
       <div ref={main} className="relative overflow-hidden">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

@@ -26,6 +26,7 @@ export default function Page() {
   const pathname = usePathname();
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
+  const [headerData, setHeaderData] = useState(null);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
 
   // Load Page
@@ -213,7 +214,7 @@ export default function Page() {
   return (
     <div ref={main} className="relative overflow-hidden">
       <LoadingEffect animated={setAnimationPlayed} />
-      <Header animationStatus={false} />
+      <Header data={headerData} animationStatus={false} />
       <SmoothWrapper>
         <main
           ref={page}

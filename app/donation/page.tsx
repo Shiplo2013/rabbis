@@ -23,6 +23,7 @@ if (typeof window !== "undefined") {
 export default function Page() {
   const [donationPageData, setDonationPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [error, setError] = useState<string | null>(null);
@@ -49,22 +50,29 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadDonationPageData = async () => {
+      const response = fetch("/api/donation", {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/header", {
+        cache: "force-cache",
+      });
       try {
-        setIsLoading(true);
-        const response = await fetch("/api/donation", {
-          cache: "no-store",
-        });
+        const [pageData, headerData] = await Promise.all([response, response2]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load donation page data.");
+        if (!pageData.ok || !headerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        const data = await response.json();
+        const data = fetchError ? null : await pageData.json();
+        const header = fetchError ? null : await headerData.json();
 
         if (isMounted) {
           setDonationPageData(data);
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -610,9 +618,9 @@ export default function Page() {
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Testimonials Not Found</h1>
+          <h1 className="text-2xl font-bold">Donation Page Not Found</h1>
           <p className="text-gray-600">
-            The requested testimonials could not be found.
+            The requested donation page could not be found.
           </p>
         </div>
       </div>
@@ -623,7 +631,7 @@ export default function Page() {
     donationPageData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

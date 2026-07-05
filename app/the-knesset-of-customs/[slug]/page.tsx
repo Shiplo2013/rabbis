@@ -54,6 +54,7 @@ export default function Page() {
   const slug = params?.slug as string;
   const [post, setPost] = useState<KnessetPosts | null>(null);
   const [allPosts, setAllPosts] = useState<AllPosts | null | any>(null);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -64,34 +65,39 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadKnessetPageData = async () => {
+      const response = fetch(`/api/the-knesset-of-customs/posts/${slug}`, {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/the-knesset-of-customs/posts", {
+        cache: "no-store",
+      });
+      const response3 = fetch("/api/header", {
+        cache: "force-cache",
+      });
+
       try {
-        setIsLoading(true);
-        const response = await fetch(
-          `/api/the-knesset-of-customs/posts/${slug}`,
-          {
-            cache: "no-store",
-          },
-        );
-        const response2 = await fetch("/api/the-knesset-of-customs/posts", {
-          cache: "no-store",
-        });
+        const [pageData, pageData2, headerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load the knesset of customs page data.");
+        if (!pageData.ok || !pageData2.ok || !headerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        if (!response2.ok) {
-          throw new Error("Failed to load the knesset of customs posts data.");
-        }
-
-        const data = await response.json();
-        const data2 = await response2.json();
+        const data = fetchError ? null : await pageData.json();
+        const data2 = fetchError ? null : await pageData2.json();
+        const header = fetchError ? null : await headerData.json();
 
         if (isMounted) {
           setPost(data);
           setAllPosts(data2);
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -349,6 +355,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,
@@ -402,7 +409,7 @@ export default function Page() {
     post && (
       <div ref={main} className="relative overflow-hidden">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={false} />
+        <Header data={headerData} animationStatus={false} />
         <SmoothWrapper>
           <main
             ref={page}

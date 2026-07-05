@@ -77,6 +77,7 @@ export default function Page() {
   const pathname = usePathname();
   const [chroniclesPageData, setChroniclesPageData] = useState<any | []>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadTimeline1, setLoadTimeline1] = useState(true);
@@ -98,6 +99,7 @@ export default function Page() {
   useEffect(() => {
     let isMounted = true;
     let fetchError = false;
+
     const controller = new AbortController();
 
     const cacheKey = `${CHRONICLES_CACHE_KEY}:${pathname}`;
@@ -174,19 +176,24 @@ export default function Page() {
     }
 
     const loadChroniclesPageData = async () => {
+      const response = fetch("/api/chronicles", {
+        //next: { revalidate: 3000 },
+        cache: "force-cache",
+        signal: controller.signal,
+      });
+      const response2 = fetch("/api/header", {
+        cache: "force-cache",
+      });
       try {
-        const response = await fetch("/api/chronicles", {
-          //next: { revalidate: 3000 },
-          cache: "force-cache",
-          signal: controller.signal,
-        });
+        const [pageData, headerData] = await Promise.all([response, response2]);
 
-        if (!response.ok) {
-          //throw new Error("Failed to load chronicles page data.");
+        if (!pageData.ok || !headerData.ok) {
+          //throw new Error("Failed to load home page data.");
           fetchError = true;
         }
 
-        const data = fetchError ? staticData : await response.json();
+        const data = fetchError ? staticData : await pageData.json();
+        const header = fetchError ? null : await headerData.json();
 
         if (isMounted) {
           if (
@@ -302,6 +309,7 @@ export default function Page() {
             });
           }
           setChroniclesPageData(data);
+          setHeaderData(header);
         }
       } catch (error) {
         if ((error as Error)?.name === "AbortError") return;
@@ -1221,7 +1229,7 @@ export default function Page() {
     chroniclesPageData && (
       <div ref={main} id="page" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

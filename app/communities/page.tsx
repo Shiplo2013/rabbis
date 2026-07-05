@@ -22,6 +22,7 @@ export default function Page() {
   const pathname = usePathname();
   const [communityPageData, setCommunityPageData] = useState<any | []>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +31,7 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const fetchJsonWithRetry = async (url: string, retries = 2) => {
       let attempt = 0;
@@ -68,8 +70,8 @@ export default function Page() {
           Boolean(category?.term_id),
         );
 
-        const postsByCategory = await Promise.all(
-          validCategories.map(async (category: any) => {
+        const validCategoryQuery = validCategories.map(
+          async (category: any) => {
             const categoryId = category?.term_id;
             const categoryTitle = category?.name;
             try {
@@ -88,8 +90,23 @@ export default function Page() {
               );
               return null;
             }
-          }),
+          },
         );
+
+        const response2 = fetch("/api/header", {
+          cache: "force-cache",
+        });
+
+        const [postsByCategory, headerData] = await Promise.all([
+          Promise.all(validCategoryQuery),
+          response2,
+        ]);
+
+        if (!headerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
+        }
+        const header = fetchError ? null : await headerData.json();
 
         const successfulCategories = postsByCategory.filter(
           (
@@ -116,6 +133,7 @@ export default function Page() {
             pageData: data,
             postsData: successfulCategories,
           });
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -440,7 +458,7 @@ export default function Page() {
     communityPageData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

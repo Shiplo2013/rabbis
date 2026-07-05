@@ -47,6 +47,7 @@ type NewsPostData = {
 export default function Page() {
   const [pageData, setPageData] = useState<NewsPageData | null>(null);
   const [pagePosts, setPagePosts] = useState<any[]>([]);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -94,23 +95,28 @@ export default function Page() {
 
     const loadPageData = async () => {
       try {
-        const [response, response2] = await Promise.all([
+        const [response, response2, response3] = await Promise.all([
           fetch("/api/news", {
             cache: "no-store",
           }),
           fetch("/api/news/posts", {
             cache: "no-store",
           }),
+          fetch("/api/header", {
+            cache: "force-cache",
+          }),
         ]);
 
         const hasPageError = !response.ok;
         const hasPostsError = !response2.ok;
-        fetchError = hasPageError || hasPostsError;
+        const hasHeaderError = !response3.ok;
+        fetchError = hasPageError || hasPostsError || hasHeaderError;
 
         const data = hasPageError ? staticData : await response.json();
         const postsData = hasPostsError
           ? { posts: staticPosts }
           : await response2.json();
+        const header = hasHeaderError ? null : await response3.json();
 
         if (isMounted) {
           setPageData(data);
@@ -131,6 +137,7 @@ export default function Page() {
               };
             }) || [];
           setPagePosts(posts);
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -759,7 +766,7 @@ export default function Page() {
     pageData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

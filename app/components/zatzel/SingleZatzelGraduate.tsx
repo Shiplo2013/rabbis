@@ -14,6 +14,7 @@ interface ChildProps {
 
 export default function SingleZatzelGraduate(props: ChildProps) {
   const ItemData = props.data;
+
   return (
     <div
       dir="ltr"
@@ -23,7 +24,11 @@ export default function SingleZatzelGraduate(props: ChildProps) {
       <div className="post-image w-full h-101.5 mb-8.5 relative overflow-hidden backface-hidden">
         <Image
           className="w-full object-cover object-center h-full relative z-10 group-hover:scale-105 transition-transform duration-500 ease-in-out backface-hidden"
-          src={ItemData?.image?.url || ItemData?.image?.src}
+          src={
+            ItemData?.image?.sizes?.medium ||
+            ItemData?.image?.url ||
+            ItemData?.image?.src
+          }
           width="389"
           height="406"
           blurDataURL={

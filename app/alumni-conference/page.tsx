@@ -46,6 +46,7 @@ export default function Page() {
     null,
   );
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [error, setError] = useState<string | null>(null);
@@ -88,22 +89,29 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadZatzelGraduatesPageData = async () => {
+      const response = fetch("/api/alumni-conference", {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/header", {
+        cache: "force-cache",
+      });
       try {
-        setIsLoading(true);
-        const response = await fetch("/api/alumni-conference", {
-          cache: "no-store",
-        });
+        const [pageData, headerData] = await Promise.all([response, response2]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load alumni conference page data.");
+        if (!pageData.ok || !headerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        const data = await response.json();
+        const data = fetchError ? null : await pageData.json();
+        const header = fetchError ? null : await headerData.json();
 
         if (isMounted) {
           setAlumniConferenceData(data);
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -516,6 +524,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       if (main.current) {
         const mainAnim = gsap.to(main.current, {
           opacity: 0,
@@ -582,7 +591,7 @@ export default function Page() {
     alumniConferenceData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}
