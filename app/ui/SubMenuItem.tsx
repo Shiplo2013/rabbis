@@ -5,7 +5,7 @@ import Caret from "../assets/icons/Caret";
 
 interface ChildProps {
   itemText: string;
-  subItem: { id: number; title: string; link: string }[];
+  subItem: { title: string; link: string }[];
 }
 
 export default function SubMenuItem(props: ChildProps) {
@@ -52,8 +52,8 @@ export default function SubMenuItem(props: ChildProps) {
         }}
         className="child-menu overflow-hidden transition-[max-height,opacity] duration-500 ease-in-out"
       >
-        {props.subItem.map((item) => (
-          <li key={item.id} className="relative pr-5">
+        {props.subItem.map((item, index) => (
+          <li key={index} className="relative pr-5">
             <span className="w-1.75 h-1.75 bg-[#D1A941] block rounded-full absolute top-1/2 right-0 -mt-1"></span>
             <Link
               href={item.link}

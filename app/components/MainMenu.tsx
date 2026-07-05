@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import CloseIcon from "../assets/icons/CloseIcon";
 import Search from "../assets/icons/Search";
 import bagImage from "../assets/images/main-menu-bg.jpg";
@@ -12,99 +12,23 @@ interface MainMenuProps {
   active: boolean;
   hideMenu: (status: boolean) => void;
   timeLine: any;
+  data?: any;
 }
 
 export default function MainMenu({
   active,
   hideMenu,
   timeLine,
+  data,
 }: MainMenuProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchMessage, setSearchMessage] = useState("");
 
-  const pageIndex = useMemo(
-    () => [
-      { label: "דף הבית", path: "/" },
-      { label: "לבקר בהיכלו", path: "/visit-temple" },
-      { label: "דברי הימים", path: "/chronicles" },
-      { label: "רבני הישיבה", path: "/yeshiva-rabbis" },
-      { label: "מועדים וזמנים", path: "/the-circle-of-the-year" },
-      { label: "צור קשר", path: "/contact" },
-      { label: "תרומות", path: "/donation" },
-      { label: "כנסת הבוגרים", path: "/yeshiva-graduates" },
-      { label: "קהילות", path: "/communities" },
-      { label: "גליונות - ביטאון", path: "/communities/sheets" },
-      { label: "בוגרים זצ״ל", path: "/zatzel-graduates" },
-      { label: "כנס הבוגרים", path: "/alumni-conference" },
-      { label: "תמונות מחזור", path: "/cycle-pictures" },
-      { label: "כנסת המנהגים", path: "/the-knesset-of-customs" },
-      { label: "חדשות", path: "/news" },
-    ],
-    [],
-  );
-
-  const navigateAndClose = (path: string) => {
-    hideMenu(false);
-    setQuery("");
-    setSearchMessage("");
-    router.push(path);
-  };
-
-  const handleSearch = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const trimmedQuery = query.trim();
-    if (!trimmedQuery) {
-      return;
-    }
-
-    const normalized = trimmedQuery.toLowerCase();
-    const pageMatch = pageIndex.find((item) =>
-      item.label.toLowerCase().includes(normalized),
-    );
-
-    if (pageMatch) {
-      navigateAndClose(pageMatch.path);
-      return;
-    }
-
-    setIsSearching(true);
-    setSearchMessage("");
-
-    try {
-      const response = await fetch(
-        `/api/search?q=${encodeURIComponent(trimmedQuery)}`,
-        {
-          cache: "no-store",
-        },
-      );
-
-      if (!response.ok) {
-        setSearchMessage("שגיאה בחיפוש, נסה שוב.");
-        return;
-      }
-
-      const data = (await response.json()) as {
-        results?: Array<{ path: string }>;
-      };
-
-      const firstResult = Array.isArray(data.results)
-        ? data.results[0]
-        : undefined;
-      if (firstResult?.path) {
-        navigateAndClose(firstResult.path);
-        return;
-      }
-
-      setSearchMessage("לא נמצאו תוצאות.");
-    } catch {
-      setSearchMessage("שגיאה בחיפוש, נסה שוב.");
-    } finally {
-      setIsSearching(false);
-    }
-  };
+  useEffect(() => {
+    console.log("MainMenu data:", data);
+  }, [data]);
 
   const SUBMENU = [
     { id: 1, title: "שם הרב", link: "#" },
@@ -145,186 +69,134 @@ export default function MainMenu({
         <CloseIcon className="group-hover:rotate-180 transition-all duration-300" />
       </button>
       <div className="menu-wrapper w-[80%] h-auto text-[#E2D7C3] text-[24px]">
-        <div className="main-menu-top pr-4 flex overflow-hidden">
+        <div className="main-menu-top pr-4 flex overflow-hidden gap-[2vw]">
           <div className="menu-right w-1/4">
-            <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
-              <Link href="/">כנסת ישראל</Link>
-            </h3>
+            {data?.right_menu?.menu_title && (
+              <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
+                {data.right_menu?.menu_title_link ? (
+                  <Link href={data.right_menu?.menu_title_link}>
+                    {data.right_menu?.menu_title}
+                  </Link>
+                ) : (
+                  data.right_menu?.menu_title
+                )}
+              </h3>
+            )}
+            {!data?.right_menu?.menu_title && (
+              <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
+                <Link href="/">כנסת ישראל</Link>
+              </h3>
+            )}
             <div className="menu-list">
               <ul className="main-menu-list">
-                <li className="group relative">
-                  <Link
-                    href={"/"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    דף הבית
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
-                <li className="group relative">
-                  <Link
-                    href={"#"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500 ease-in-out"
-                  >
-                    לבקר בהיכלו
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
-                <li className="group relative">
-                  <SubMenuItem itemText="דברי הימים" subItem={SUBMENU2} />
-                </li>
-                <li className="group relative submenu-parent">
-                  <SubMenuItem itemText="מזקנים אתבונן" subItem={SUBMENU} />
-                </li>
-                <li className="group relative">
-                  <Link
-                    href={"/yeshiva-rabbis"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    רבני הישיבה
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
-                <li className="group relative">
-                  <Link
-                    href={"/the-circle-of-the-year"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    עוז וחדוה במקומו
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
+                {data?.right_menu?.menu_1?.map((item: any, index: number) => {
+                  const haveSubmenu = item.sub_menu && item.sub_menu.length > 0;
+                  return (
+                    <li className="group relative" key={index}>
+                      {haveSubmenu ? (
+                        <SubMenuItem
+                          itemText={item.title}
+                          subItem={item.sub_menu || SUBMENU2}
+                        />
+                      ) : (
+                        <Link
+                          href={item.link}
+                          className="hover:text-[#C3A13F] transition-colors duration-500"
+                        >
+                          {item.title}
+                        </Link>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
               <ul className="bottom-menu mt-10">
-                <li className="group relative">
-                  <Link
-                    href={"/contact"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    צור קשר
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
-                <li className="group relative">
-                  <Link
-                    href={"/donation"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    תרומות
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
+                {data?.right_menu?.menu_2?.map((item: any, index: number) => (
+                  <li className="group relative" key={index}>
+                    <Link
+                      href={item.link}
+                      className="hover:text-[#C3A13F] transition-colors duration-500"
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
           <div className="menu-left w-1/4">
-            <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
-              <Link href="/yeshiva-graduates">כנסת הבוגרים</Link>
-            </h3>
+            {data?.left_menu && (
+              <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
+                {data.left_menu?.menu_title_link ? (
+                  <Link href={data.left_menu?.menu_title_link}>
+                    {data.left_menu?.menu_title}
+                  </Link>
+                ) : (
+                  data.left_menu?.menu_title
+                )}
+              </h3>
+            )}
+            {!data?.left_menu && (
+              <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
+                <Link href="/">כנסת הבוגרים</Link>
+              </h3>
+            )}
             <div className="menu-list">
               <ul className="menu-list-items">
-                <li className="group relative">
-                  <Link
-                    href={"#"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    בוגרי הישיבה
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
-                <li className="group relative">
-                  <Link
-                    href={"#"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    ראיונות - עדויות
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
-                <li className="group relative">
-                  <SubMenuItem itemText="קהילות" subItem={SUBMENU3} />
-                </li>
-                <li className="group relative">
-                  <Link
-                    href={"/communities/sheets"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    גליונות - ביטאון
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
-                <li className="group relative">
-                  <Link
-                    href={"/zatzel-graduates"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    בוגרים זצ״ל
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
-                <li className="group relative">
-                  <Link
-                    href={"/alumni-conference"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    כנס הבוגרים
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
-                <li className="group relative">
-                  <Link
-                    href={"/cycle-pictures"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    תמונות מחזור
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
+                {data?.left_menu?.menu_1?.map((item: any, index: number) => {
+                  const haveSubmenu = item.sub_menu && item.sub_menu.length > 0;
+                  return (
+                    <li className="group relative" key={index}>
+                      {haveSubmenu ? (
+                        <SubMenuItem
+                          itemText={item.title}
+                          subItem={item.sub_menu || SUBMENU3}
+                        />
+                      ) : (
+                        <>
+                          <Link
+                            href={item.link}
+                            className="hover:text-[#C3A13F] transition-colors duration-500"
+                          >
+                            {item.title}
+                          </Link>
+                          <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
+                        </>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
               <ul className="bottom-menu mt-10">
-                <li className="group relative">
-                  <Link
-                    href={"/the-knesset-of-customs"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    כנסת המנהגים
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
-                <li className="group relative">
-                  <Link
-                    href={"#"}
-                    className="hover:text-[#C3A13F] transition-colors duration-500"
-                  >
-                    עד שבחברון - חדשות
-                  </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-                </li>
+                {data?.left_menu?.menu_2?.map((item: any, index: number) => (
+                  <li className="group relative" key={index}>
+                    <Link
+                      href={item.link}
+                      className="hover:text-[#C3A13F] transition-colors duration-500"
+                    >
+                      {item.title}
+                    </Link>
+                    <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
         </div>
-        <div className="main-menu-bottom pr-4 mt-17 flex items-end overflow-hidden">
+        <div className="main-menu-bottom pr-4 mt-17 flex items-end overflow-hidden gap-[2vw]">
           <div className="bottom-menu w-1/4">
             <ul className="bottom-menu">
-              <li className="group relative">
-                <Link
-                  href={"/"}
-                  className="hover:text-[#C3A13F] transition-colors duration-500"
-                >
-                  הצהרת נגישות
-                </Link>
-                <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-              </li>
-              <li className="group relative">
-                <Link
-                  href={"/"}
-                  className="hover:text-[#C3A13F] transition-colors duration-500"
-                >
-                  מדיניות פרטיות
-                </Link>
-                <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
-              </li>
+              {data?.right_menu?.menu_3?.map((item: any, index: number) => (
+                <li className="group relative" key={index}>
+                  <Link
+                    href={item.link}
+                    className="hover:text-[#C3A13F] transition-colors duration-500"
+                  >
+                    {item.title}
+                  </Link>
+                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="bottom-search w-1/4">
@@ -333,7 +205,7 @@ export default function MainMenu({
             </p>
             <form
               className="search relative h-10 bg-[#FDF9F5] w-50 flex justify-stretch"
-              onSubmit={handleSearch}
+              //onSubmit={handleSearch}
             >
               <input
                 className="w-full h-full border outline-0 text-black pl-8 text-[18px] leading-[1em] p-2"

@@ -21,6 +21,7 @@ if (typeof window !== "undefined") {
 export default function Page() {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -48,29 +49,38 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadRabbisPageData = async () => {
+      const response = fetch("/api/past-rabbis", {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/past-rabbis/posts", {
+        cache: "no-store",
+      });
+      const response3 = fetch("/api/header", {
+        cache: "force-cache",
+      });
+
       try {
-        const response = await fetch("/api/past-rabbis", {
-          cache: "no-store",
-        });
-        const response2 = await fetch("/api/past-rabbis/posts", {
-          cache: "no-store",
-        });
+        const [pageData, pageData2, headerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load rabbis page data.");
+        if (!pageData.ok || !pageData2.ok || !headerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        if (!response2.ok) {
-          throw new Error("Failed to load rabbis posts data.");
-        }
-
-        const data = await response.json();
-        const data2 = await response2.json();
+        const data = fetchError ? null : await pageData.json();
+        const data2 = fetchError ? null : await pageData2.json();
+        const header = fetchError ? null : await headerData.json();
 
         if (isMounted) {
           setRabbisPageData({ pageData: data, posts: data2.posts });
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -453,7 +463,7 @@ export default function Page() {
     rabbisPageData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

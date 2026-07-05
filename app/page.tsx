@@ -318,6 +318,7 @@ export default function Home() {
   const [homePageData, setHomePageData] = useState<HomePageApiResponse | null>(
     null,
   );
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -338,20 +339,26 @@ export default function Home() {
     let fetchError = false;
 
     const loadHomePageData = async () => {
+      const response = fetch("/api/home-page", {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/header", {
+        cache: "force-cache",
+      });
       try {
-        const response = await fetch("/api/home-page", {
-          cache: "no-store",
-        });
+        const [pageData, headerData] = await Promise.all([response, response2]);
 
-        if (!response.ok) {
+        if (!pageData.ok || !headerData.ok) {
           //throw new Error("Failed to load home page data.");
           fetchError = true;
         }
 
-        const data = fetchError ? staticData : await response.json();
+        const data = fetchError ? staticData : await pageData.json();
+        const header = fetchError ? null : await headerData.json();
 
         if (isMounted) {
           setHomePageData(data);
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -379,6 +386,7 @@ export default function Home() {
 
   // Load Page
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     document.fonts.ready.then(() => {
       // Selectors
       const headerLeft = main.current?.querySelector(".header-left");
@@ -588,8 +596,14 @@ export default function Home() {
             "-=2",
           );
         }
+        animations.push(tl);
       }
     });
+
+    // Return
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
   }, [pageDataFetched, animationPlayed]);
 
   // Container width
@@ -786,7 +800,7 @@ export default function Home() {
     homePageData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

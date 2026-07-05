@@ -39,6 +39,9 @@ export function createWordPressPageHandler(options: {
   uri: string;
   restSlug?: string;
   pageName: string;
+  fetchCache?: RequestCache;
+  fetchRevalidate?: number;
+  responseCacheControl?: string;
 }) {
   const { uri, pageName } = options;
   const restSlug =
@@ -48,12 +51,22 @@ export function createWordPressPageHandler(options: {
     try {
       const restUrl = `${WORDPRESS_PAGES_ENDPOINT}?acf_format=standard&slug=${encodeURIComponent(restSlug)}&_fields=id,slug,link,title,content,modified,acf`;
 
-      const restResponse = await fetch(restUrl, {
-        cache: "no-store",
+      const fetchOptions: RequestInit & {
+        next?: {
+          revalidate: number;
+        };
+      } = {
+        cache: options.fetchCache ?? "no-store",
         headers: {
           Accept: "application/json",
         },
-      });
+      };
+
+      if (typeof options.fetchRevalidate === "number") {
+        fetchOptions.next = { revalidate: options.fetchRevalidate };
+      }
+
+      const restResponse = await fetch(restUrl, fetchOptions);
 
       if (!restResponse.ok) {
         return NextResponse.json(
@@ -123,7 +136,13 @@ export function createWordPressPageHandler(options: {
         source: "rest",
       };
 
-      return NextResponse.json(mergedPage);
+      const response = NextResponse.json(mergedPage);
+
+      if (options.responseCacheControl) {
+        response.headers.set("Cache-Control", options.responseCacheControl);
+      }
+
+      return response;
     } catch {
       return NextResponse.json(
         { error: `Unexpected error while loading ${pageName} data.` },

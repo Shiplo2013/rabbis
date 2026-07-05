@@ -151,6 +151,7 @@ export default function Page() {
   const slug = params?.slug as string;
   const [post, setPost] = useState<RabbiPost | null>(null);
   const [allPosts, setAllPosts] = useState<AllPosts | null | any>(null);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -165,10 +166,10 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadRabbisPageData = async () => {
       try {
-        setIsLoading(true);
         const response = await fetch(`/api/past-rabbis/posts/${slug}`, {
           cache: "no-store",
         });
@@ -690,6 +691,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,

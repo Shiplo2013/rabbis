@@ -23,6 +23,7 @@ export default function Page() {
   const pathname = usePathname();
   const [sheetPageData, setSheetPageData] = useState<any | []>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [containerWidth, setContainerWidth] = useState(300);
@@ -41,32 +42,41 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
+
     const loadSheetsPageData = async () => {
+      const response = fetch("/api/communities/sheets", {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/communities/sheets/categories", {
+        cache: "no-store",
+      });
+      const response3 = fetch("/api/header", {
+        cache: "force-cache",
+      });
       try {
-        const response = await fetch("/api/communities/sheets", {
-          cache: "no-store",
-        });
-        const response3 = await fetch("/api/communities/sheets/categories", {
-          cache: "no-store",
-        });
+        const [pageData, pageData2, headerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load community page data.");
+        if (!pageData.ok || !pageData2.ok || !headerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        if (!response3.ok) {
-          throw new Error("Failed to load magazines categories data.");
-        }
-
-        const data = await response.json();
-        const data3 = await response3.json();
+        const data = fetchError ? null : await pageData.json();
+        const data2 = fetchError ? null : await pageData2.json();
+        const header = fetchError ? null : await headerData.json();
 
         if (isMounted) {
           setSheetPageData({
             pageData: data,
             postsData: null,
-            categoriesTree: data3?.taxonomyTree || [],
+            categoriesTree: data2?.taxonomyTree || [],
           });
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -603,7 +613,7 @@ export default function Page() {
     sheetPageData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

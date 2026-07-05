@@ -139,6 +139,7 @@ export default function Page() {
   const pathname = usePathname();
   const [visitTempleData, setVisitTempleData] = useState<any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [headerData, setHeaderData] = useState(null);
   const [sectionWidth, setSectionWidth] = useState(100);
   const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
   const [error, setError] = useState<string | null>(null);
@@ -502,7 +503,7 @@ export default function Page() {
     visitTempleData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

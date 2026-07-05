@@ -141,6 +141,7 @@ export default function Page() {
   const id = params?.id as string;
   const [visitTempleData, setVisitTempleData] = useState<any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [headerData, setHeaderData] = useState<any>(null);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
   const [error, setError] = useState<string | null>(null);
@@ -169,21 +170,29 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadVisitTempleData = async () => {
+      const response = fetch("/api/visit-temple", {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/header", {
+        cache: "force-cache",
+      });
       try {
-        const response = await fetch("/api/visit-temple", {
-          cache: "no-store",
-        });
+        const [pageData, headerData] = await Promise.all([response, response2]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load visit temple page data.");
+        if (!pageData.ok || !headerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        const data = await response.json();
+        const data = await pageData.json();
+        const header = await headerData.json();
 
         if (isMounted) {
           setVisitTempleData(data);
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -540,7 +549,7 @@ export default function Page() {
     visitTempleData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

@@ -27,6 +27,7 @@ export default function Page() {
   // Selectors
   const [zatzelPageData, setZatzelPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [error, setError] = useState<string | null>(null);
@@ -68,19 +69,25 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadZatzelGraduatesPageData = async () => {
+      const response = fetch("/api/zatzel-graduates", {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/header", {
+        cache: "force-cache",
+      });
       try {
-        setIsLoading(true);
-        const response = await fetch("/api/zatzel-graduates", {
-          cache: "no-store",
-        });
+        const [pageData, headerData] = await Promise.all([response, response2]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load zatzel graduates page data.");
+        if (!pageData.ok || !headerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        const data = await response.json();
+        const data = await pageData.json();
+        const header = fetchError ? null : await headerData.json();
 
         const sections = Array.isArray(data?.acf?.sections)
           ? data.acf.sections
@@ -133,6 +140,7 @@ export default function Page() {
             introduction: data?.acf?.introduction || [],
             sections: mappedSections.length ? mappedSections : [],
           });
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -707,18 +715,18 @@ export default function Page() {
   }, [activePopup]);
 
   // Scroll Position on Page Change
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY < 1920) {
-        setActivePosition(window.scrollY);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (window.scrollY < 1920) {
+  //       setActivePosition(window.scrollY);
+  //     }
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
+  //   window.addEventListener("scroll", handleScroll);
 
-    // Cleanup listener on unmount
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  //   // Cleanup listener on unmount
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [pageDataFetched]);
 
   useGSAP(() => {
     // Page Overflow Hidden
@@ -726,6 +734,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,
@@ -781,7 +790,7 @@ export default function Page() {
     zatzelPageData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}

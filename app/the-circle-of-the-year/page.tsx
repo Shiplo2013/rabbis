@@ -25,6 +25,7 @@ export default function Page() {
   // Selectors
   const [musicPageData, setMusicPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
+  const [headerData, setHeaderData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   // Router Path
@@ -33,29 +34,38 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadMusicPageData = async () => {
+      const response = fetch("/api/the-circle-of-the-year", {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/the-circle-of-the-year/posts", {
+        cache: "no-store",
+      });
+      const response3 = fetch("/api/header", {
+        cache: "force-cache",
+      });
+
       try {
-        const response = await fetch("/api/the-circle-of-the-year", {
-          cache: "no-store",
-        });
-        const response2 = await fetch("/api/the-circle-of-the-year/posts", {
-          cache: "no-store",
-        });
+        const [pageData, pageData2, headerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load music page data.");
+        if (!pageData.ok || !pageData2.ok || !headerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        if (!response2.ok) {
-          throw new Error("Failed to load holiday posts data.");
-        }
-
-        const data = await response.json();
-        const data2 = await response2.json();
+        const data = fetchError ? null : await pageData.json();
+        const data2 = fetchError ? null : await pageData2.json();
+        const header = fetchError ? null : await headerData.json();
 
         if (isMounted) {
           setMusicPageData({ musicPage: data, holidayPosts: data2 });
+          setHeaderData(header);
         }
       } catch (error) {
         console.error(error);
@@ -442,7 +452,7 @@ export default function Page() {
     musicPageData && (
       <div ref={main} id="main" className="relative">
         <LoadingEffect animated={setAnimationPlayed} />
-        <Header animationStatus={isAllAnimationComplete} />
+        <Header data={headerData} animationStatus={isAllAnimationComplete} />
         <SmoothWrapper>
           <main
             ref={page}
