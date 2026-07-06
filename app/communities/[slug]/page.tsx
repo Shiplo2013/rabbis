@@ -640,27 +640,27 @@ export default function Page() {
                                   return (
                                     <div
                                       key={index}
-                                      className="image1 mt-9 w-3xl max-w-full"
+                                      className="image1 mt-9 w-xl max-w-full"
                                     >
-                                      <div className="image w-3xl max-w-full h-[66vh]">
+                                      <div className="image w-xl max-w-full h-auto">
                                         <Image
                                           className="w-full h-full object-cover object-center"
                                           src={
                                             item?.content?.image?.sizes
+                                              ?.medium ||
+                                            item?.content?.image?.sizes
                                               ?.large ||
                                             item?.content?.image?.sizes
                                               ?.medium_large ||
-                                            item?.content?.image?.sizes
-                                              ?.medium ||
                                             item?.content?.image?.url ||
                                             item?.content?.image?.src
                                           }
-                                          width={758}
-                                          height={610}
+                                          width={576}
+                                          height={576}
                                           alt="Community Image"
                                           blurDataURL={CreateShimmerDataUrl(
-                                            758,
-                                            610,
+                                            576,
+                                            576,
                                           )}
                                           placeholder="blur"
                                           loading="lazy"
@@ -679,9 +679,9 @@ export default function Page() {
                                   return (
                                     <div
                                       key={index}
-                                      className="video1 mt-9 w-4xl max-w-full"
+                                      className="video1 mt-9 w-xl max-w-full"
                                     >
-                                      <div className="video w-4xl max-w-full h-[66vh]">
+                                      <div className="video w-xl max-w-full h-auto">
                                         <video
                                           controls
                                           className="w-full h-full object-contain object-center"
@@ -706,32 +706,35 @@ export default function Page() {
                                 // Section Content 1
                                 if (item.field_type === "content1") {
                                   return (
-                                    <div key={index} className="content1">
+                                    <div
+                                      key={index}
+                                      className="content1 mt-8.5"
+                                    >
                                       <h2 className="text-[33px] leading-[90%] font-bold">
                                         {parse(item?.news_content?.title || "")}
                                       </h2>
                                       <div className="text1 mt-8.5">
                                         {parse(item?.news_content?.text || "")}
                                       </div>
-                                      <div className="image1 mt-9 w-3xl max-w-full h-[66vh]">
+                                      <div className="image1 mt-9 w-xl max-w-full h-auto">
                                         <Image
                                           className="w-full h-full object-cover object-center"
                                           src={
                                             item?.content?.image?.sizes
-                                              ?.large ||
+                                              ?.medium ||
                                             item?.content?.image?.sizes
                                               ?.medium_large ||
                                             item?.content?.image?.sizes
-                                              ?.medium ||
+                                              ?.large ||
                                             item?.news_content?.image?.url ||
                                             item?.news_content?.image?.src
                                           }
-                                          width={800}
-                                          height={480}
+                                          width={576}
+                                          height={576}
                                           alt="Community Image"
                                           blurDataURL={CreateShimmerDataUrl(
-                                            800,
-                                            480,
+                                            576,
+                                            576,
                                           )}
                                           placeholder="blur"
                                           loading="lazy"
@@ -753,25 +756,25 @@ export default function Page() {
                                         </div>
                                       )}
                                       {item?.news_content?.image && (
-                                        <div className="highlight-image mt-10 w-3xl max-w-full h-[66vh]">
+                                        <div className="highlight-image mt-10 w-xl max-w-full h-[66vh]">
                                           <Image
                                             className="w-full h-full object-cover object-center"
                                             src={
                                               item?.news_content?.image?.sizes
+                                                ?.medium ||
+                                              item?.news_content?.image?.sizes
                                                 ?.large ||
                                               item?.news_content?.image?.sizes
                                                 ?.medium_large ||
-                                              item?.news_content?.image?.sizes
-                                                ?.medium ||
                                               item?.news_content?.image?.url ||
                                               item?.news_content?.image?.src
                                             }
-                                            width={800}
-                                            height={474}
+                                            width={576}
+                                            height={576}
                                             alt="Community Image"
                                             blurDataURL={CreateShimmerDataUrl(
-                                              800,
-                                              474,
+                                              576,
+                                              576,
                                             )}
                                             placeholder="blur"
                                             loading="lazy"
@@ -894,6 +897,7 @@ export default function Page() {
                             if (index % 2 === 0) {
                               return (
                                 <PostItem2
+                                  key={index}
                                   title={item.title}
                                   content={item.text}
                                   subtitle={item.date}
@@ -907,6 +911,7 @@ export default function Page() {
                             } else {
                               return (
                                 <PostItem2
+                                  key={index}
                                   title={item.title}
                                   content={item.text}
                                   subtitle={item.date}
@@ -931,6 +936,7 @@ export default function Page() {
                           (item: any, index: number) => {
                             return (
                               <EventItem
+                                key={index}
                                 title={item.title}
                                 content={item.text}
                                 subtitle={item.date}
