@@ -1,8 +1,9 @@
 "use client";
 
+import parse from "html-react-parser";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CloseIcon from "../assets/icons/CloseIcon";
 import Search from "../assets/icons/Search";
 import bagImage from "../assets/images/main-menu-bg.jpg";
@@ -25,10 +26,7 @@ export default function MainMenu({
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchMessage, setSearchMessage] = useState("");
-
-  useEffect(() => {
-    console.log("MainMenu data:", data);
-  }, [data]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const SUBMENU = [
     { id: 1, title: "שם הרב", link: "#" },
@@ -47,6 +45,107 @@ export default function MainMenu({
   //    const closeMenu = () => {
   //     timeLine.reversed() ? timeLine.play() : timeLine.reverse();
   //    }
+  const searchResultsRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!query.trim()) {
+      setSearchMessage("אנא הזן מונח חיפוש");
+      return;
+    }
+    setIsSearching(true);
+    setSearchMessage("");
+    setSearchResults([]);
+    let isMounted = true;
+    try {
+      const response = await fetch(
+        `https://dovp7.sg-host.com/wp-json/wp/v2/search?search=${encodeURIComponent(query)}&per_page=100&_fields=id,title,url,subtype`,
+        {
+          cache: "no-store",
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Failed to load search data.");
+        isMounted = false;
+      }
+
+      const data = await response.json();
+
+      if (isMounted) {
+        if (data.length > 0) {
+          console.log("Search results:", data);
+          setSearchResults(data);
+        } else {
+          setSearchMessage("לא נמצאו תוצאות");
+        }
+      }
+    } catch (error) {
+      console.error("Search error:", error);
+      setSearchMessage("אירעה שגיאה בעת החיפוש");
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  useEffect(() => {
+    if (searchResults.length > 0) {
+      searchResultsRef.current?.classList.remove(
+        "opacity-0",
+        "visibility-hidden",
+      );
+    } else {
+      searchResultsRef.current?.classList.add("opacity-0", "visibility-hidden");
+    }
+  }, [searchResults]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchResultsRef.current &&
+        !searchResultsRef.current.contains(event.target as Node) &&
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        searchResultsRef.current?.classList.add(
+          "opacity-0",
+          "visibility-hidden",
+        );
+      } else {
+        searchResultsRef.current?.classList.remove(
+          "opacity-0",
+          "visibility-hidden",
+        );
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const getLinkUrl = (link: string, type: string) => {
+    const segments = new URL(link).pathname.match(/[^/]+/g);
+    const slug = segments ? segments.pop() : "";
+    if (type === "post") {
+      return `/news/${slug}`;
+    } else if (type === "page") {
+      return `/${slug}`;
+    } else if (type === "knesset-of-customs") {
+      return `/the-knesset-of-customs/${slug}`;
+    } else if (type === "zatzel-graduates") {
+      return `/zatzel-graduates`;
+    } else if (type === "communities") {
+      return `/communities/${slug}`;
+    } else if (type === "past-rabbis") {
+      return `/past-rabbis/${slug}`;
+    } else if (type === "holidays") {
+      return `/the-circle-of-the-year/${slug}`;
+    } else {
+      return `/${slug}`;
+    }
+  };
+
   return (
     <div
       id="main-menu"
@@ -183,7 +282,7 @@ export default function MainMenu({
             </div>
           </div>
         </div>
-        <div className="main-menu-bottom pr-4 mt-17 flex items-end overflow-hidden gap-[2vw]">
+        <div className="main-menu-bottom pr-4 mt-17 flex items-end gap-[2vw]">
           <div className="bottom-menu w-1/4">
             <ul className="bottom-menu">
               {data?.right_menu?.menu_3?.map((item: any, index: number) => (
@@ -204,10 +303,11 @@ export default function MainMenu({
               חפש באתר
             </p>
             <form
-              className="search relative h-10 bg-[#FDF9F5] w-50 flex justify-stretch"
-              //onSubmit={handleSearch}
+              className="search relative h-10 bg-[#FDF9F5] w-50 flex justify-stretch group"
+              onSubmit={handleSearch}
             >
               <input
+                ref={searchRef}
                 className="w-full h-full border outline-0 text-black pl-8 text-[18px] leading-[1em] p-2"
                 type="text"
                 placeholder=""
@@ -222,9 +322,27 @@ export default function MainMenu({
               >
                 <Search />
               </button>
+              {searchResults.length > 0 && (
+                <div
+                  ref={searchResultsRef}
+                  className="search-result absolute w-full max-h-60 bg-white left-0 bottom-full overflow-y-auto opacity-0 visibility-hidden"
+                >
+                  <div className="search-link-list">
+                    {searchResults.map((result) => (
+                      <Link
+                        key={result.id}
+                        href={getLinkUrl(result.url, result.subtype)}
+                        className="block py-3 px-3 text-[16px] leading-[1em] text-black hover:bg-gray-200 transition-all duration-300 not-last:border-b not-last:border-b-[#C3A13F]"
+                      >
+                        {parse(result.title)}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </form>
             {searchMessage ? (
-              <p className="text-[14px] text-[#E2D7C3] mt-2">{searchMessage}</p>
+              <p className="text-[14px] text-red-500 mt-2">{searchMessage}</p>
             ) : null}
           </div>
         </div>
