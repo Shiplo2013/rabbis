@@ -38,7 +38,6 @@ export default function SingleZatzelGraduate(props: ChildProps) {
           loading="lazy"
           alt="Rabbis"
         />
-        <div className="post-image-overlay absolute top-0 left-0 w-[calc(100%+10px)] h-full bg-[#1a1a1a] z-20 -ml-2.5 backface-hidden"></div>
       </div>
       <div className="post-text text-[28px] text-(--theme-color) leading-[0.9em] text-right">
         <h2 className="post-title font-extralight mb-2">
