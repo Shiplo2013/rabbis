@@ -48,6 +48,7 @@ export default function Page() {
   const [pageData, setPageData] = useState<NewsPageData | null>(null);
   const [pagePosts, setPagePosts] = useState<any[]>([]);
   const [headerData, setHeaderData] = useState<any | null>(null);
+  const [footerData, setFooterData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -95,7 +96,7 @@ export default function Page() {
 
     const loadPageData = async () => {
       try {
-        const [response, response2, response3] = await Promise.all([
+        const [response, response2, response3, response4] = await Promise.all([
           fetch("/api/news", {
             cache: "no-store",
           }),
@@ -105,18 +106,24 @@ export default function Page() {
           fetch("/api/header", {
             cache: "force-cache",
           }),
+          fetch("/api/footer", {
+            cache: "force-cache",
+          }),
         ]);
 
         const hasPageError = !response.ok;
         const hasPostsError = !response2.ok;
         const hasHeaderError = !response3.ok;
-        fetchError = hasPageError || hasPostsError || hasHeaderError;
+        const hasFooterError = !response4.ok;
+        fetchError =
+          hasPageError || hasPostsError || hasHeaderError || hasFooterError;
 
         const data = hasPageError ? staticData : await response.json();
         const postsData = hasPostsError
           ? { posts: staticPosts }
           : await response2.json();
         const header = hasHeaderError ? null : await response3.json();
+        const footer = hasFooterError ? null : await response4.json();
 
         if (isMounted) {
           setPageData(data);
@@ -138,6 +145,7 @@ export default function Page() {
             }) || [];
           setPagePosts(posts);
           setHeaderData(header);
+          setFooterData(footer);
         }
       } catch (error) {
         console.error(error);
@@ -189,7 +197,7 @@ export default function Page() {
     // Update Section Width on Data Change
     const updateSectionWidth = () => {
       const newSectionWidth =
-        20 + pagePosts?.length * 53 + pagePosts?.length * 12.5 + 280 / 19.2;
+        20 + pagePosts?.length * 53 + pagePosts?.length * 12.5;
 
       setSectionWidth(newSectionWidth);
       setContainerWidth(newSectionWidth + 100);
@@ -813,7 +821,7 @@ export default function Page() {
               </div>
             </div>
           </main>
-          <Footer className={"relative z-20"} />
+          <Footer data={footerData} className={"relative z-20"} />
         </SmoothWrapper>
         <div
           ref={waveLine}

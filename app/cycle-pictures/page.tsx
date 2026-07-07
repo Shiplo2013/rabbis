@@ -23,6 +23,7 @@ export default function Page() {
   const [picturesPageData, setPicturesPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [headerData, setHeaderData] = useState<any | null>(null);
+  const [footerData, setFooterData] = useState<any | null>(null);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [error, setError] = useState<string | null>(null);
@@ -68,15 +69,25 @@ export default function Page() {
       const response4 = fetch("/api/header", {
         cache: "force-cache",
       });
+      const response5 = fetch("/api/footer", {
+        cache: "force-cache",
+      });
       try {
-        const [pageData, postsData, categoriesData, headerData] =
-          await Promise.all([response, response2, response3, response4]);
+        const [pageData, postsData, categoriesData, headerData, footerData] =
+          await Promise.all([
+            response,
+            response2,
+            response3,
+            response4,
+            response5,
+          ]);
 
         if (
           !pageData.ok ||
           !postsData.ok ||
           !categoriesData.ok ||
-          !headerData.ok
+          !headerData.ok ||
+          !footerData.ok
         ) {
           //throw new Error("Failed to load home page data.");
           fetchError = true;
@@ -86,6 +97,7 @@ export default function Page() {
         const posts = fetchError ? null : await postsData.json();
         const categories = fetchError ? null : await categoriesData.json();
         const header = fetchError ? null : await headerData.json();
+        const footer = fetchError ? null : await footerData.json();
 
         if (isMounted) {
           setPicturesPageData({
@@ -96,6 +108,7 @@ export default function Page() {
           setTotalPostPages(posts?.pagination?.total_pages || 1);
           setPostPagination(posts?.pagination?.page || 1);
           setHeaderData(header);
+          setFooterData(footer);
         }
       } catch (error) {
         console.error(error);
@@ -694,7 +707,7 @@ export default function Page() {
               </div>
             </div>
           </main>
-          <Footer className={"relative z-20"} />
+          <Footer data={footerData} className={"relative z-20"} />
         </SmoothWrapper>
         <div
           ref={waveLine}

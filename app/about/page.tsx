@@ -27,6 +27,7 @@ export default function Page() {
   // Animation State
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [headerData, setHeaderData] = useState(null);
+  const [footerData, setFooterData] = useState(null);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
 
   // Load Page
@@ -231,7 +232,7 @@ export default function Page() {
             data={sectionData}
           />
         </main>
-        <Footer className={"relative z-20"} />
+        <Footer data={footerData} className={"relative z-20"} />
       </SmoothWrapper>
     </div>
   );

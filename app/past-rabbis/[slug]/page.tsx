@@ -152,6 +152,7 @@ export default function Page() {
   const [post, setPost] = useState<RabbiPost | null>(null);
   const [allPosts, setAllPosts] = useState<AllPosts | null | any>(null);
   const [headerData, setHeaderData] = useState<any | null>(null);
+  const [footerData, setFooterData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -169,28 +170,35 @@ export default function Page() {
     let fetchError = false;
 
     const loadRabbisPageData = async () => {
+      const response = fetch(`/api/past-rabbis/posts/${slug}`, {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/past-rabbis/posts", {
+        cache: "no-store",
+      });
+      const response3 = fetch("/api/footer", {
+        cache: "force-cache",
+      });
       try {
-        const response = await fetch(`/api/past-rabbis/posts/${slug}`, {
-          cache: "no-store",
-        });
-        const response2 = await fetch("/api/past-rabbis/posts", {
-          cache: "no-store",
-        });
+        const [pageData, allPosts, footerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load rabbis page data.");
+        if (!pageData.ok || !allPosts.ok || !footerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        if (!response2.ok) {
-          throw new Error("Failed to load rabbis posts data.");
-        }
-
-        const data = await response.json();
-        const data2 = await response2.json();
+        const data = await pageData.json();
+        const data2 = await allPosts.json();
+        const footer = await footerData.json();
 
         if (isMounted) {
           setPost(data);
           setAllPosts(data2);
+          setFooterData(footer);
         }
       } catch (error) {
         console.error(error);
@@ -856,7 +864,7 @@ export default function Page() {
               </div>
             </div>
           </main>
-          <Footer className={"relative z-20"} />
+          <Footer data={footerData} className={"relative z-20"} />
         </SmoothWrapper>
 
         {post?.acf?.popup_1 && (

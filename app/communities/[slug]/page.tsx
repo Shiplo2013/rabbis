@@ -48,6 +48,7 @@ export default function Page() {
   const slug = params?.slug as string;
   const [post, setPost] = useState<CommunityPost | null>(null);
   const [header, setHeader] = useState<any | null>(null);
+  const [footerData, setFooterData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,9 +67,16 @@ export default function Page() {
       const response2 = fetch(`/api/communities/header/`, {
         cache: "no-store",
       });
+      const response3 = fetch("/api/footer", {
+        cache: "force-cache",
+      });
 
       try {
-        const [postData, headerData] = await Promise.all([response, response2]);
+        const [postData, headerData, footerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
         if (!postData.ok) {
           throw new Error("Failed to load community page data.");
@@ -76,13 +84,18 @@ export default function Page() {
         if (!headerData.ok) {
           throw new Error("Failed to load community header data.");
         }
+        if (!footerData.ok) {
+          throw new Error("Failed to load footer data.");
+        }
 
         const data = await postData.json();
         const header = await headerData.json();
+        const footer = await footerData.json();
 
         if (isMounted) {
           setPost(data);
           setHeader(header);
+          setFooterData(footer);
         }
       } catch (error) {
         console.error(error);
@@ -954,7 +967,7 @@ export default function Page() {
               </div>
             </section>
           </main>
-          <Footer className={"relative z-20"} />
+          <Footer data={footerData} className={"relative z-20"} />
         </SmoothWrapper>
         <div
           ref={communityLoader}
