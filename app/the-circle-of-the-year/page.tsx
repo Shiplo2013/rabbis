@@ -26,6 +26,7 @@ export default function Page() {
   const [musicPageData, setMusicPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [headerData, setHeaderData] = useState<any | null>(null);
+  const [footerData, setFooterData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   // Router Path
@@ -46,15 +47,16 @@ export default function Page() {
       const response3 = fetch("/api/header", {
         cache: "force-cache",
       });
+      const response4 = fetch("/api/footer", {
+        cache: "force-cache",
+      });
 
       try {
-        const [pageData, pageData2, headerData] = await Promise.all([
-          response,
-          response2,
-          response3,
-        ]);
+        const [pageData, pageData2, headerData, footerData] = await Promise.all(
+          [response, response2, response3, response4],
+        );
 
-        if (!pageData.ok || !pageData2.ok || !headerData.ok) {
+        if (!pageData.ok || !pageData2.ok || !headerData.ok || !footerData.ok) {
           //throw new Error("Failed to load home page data.");
           fetchError = true;
         }
@@ -62,10 +64,12 @@ export default function Page() {
         const data = fetchError ? null : await pageData.json();
         const data2 = fetchError ? null : await pageData2.json();
         const header = fetchError ? null : await headerData.json();
+        const footer = fetchError ? null : await footerData.json();
 
         if (isMounted) {
           setMusicPageData({ musicPage: data, holidayPosts: data2 });
           setHeaderData(header);
+          setFooterData(footer);
         }
       } catch (error) {
         console.error(error);
@@ -514,7 +518,7 @@ export default function Page() {
               </div>
             </div>
           </main>
-          <Footer className={"relative z-20"} />
+          <Footer data={footerData} className={"relative z-20"} />
         </SmoothWrapper>
         <div
           ref={hoverImage}

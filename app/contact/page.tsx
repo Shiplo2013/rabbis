@@ -32,6 +32,7 @@ export default function Page() {
   const page = useRef<HTMLDivElement>(null);
   const [pageData, setPageData] = useState<ContactPageData | null>(null);
   const [headerData, setHeaderData] = useState<any | null>(null);
+  const [footerData, setFooterData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -70,20 +71,29 @@ export default function Page() {
       const response2 = fetch("/api/header", {
         cache: "force-cache",
       });
+      const response3 = fetch("/api/footer", {
+        cache: "force-cache",
+      });
       try {
-        const [pageData, headerData] = await Promise.all([response, response2]);
+        const [pageData, headerData, footerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
-        if (!pageData.ok || !headerData.ok) {
+        if (!pageData.ok || !headerData.ok || !footerData.ok) {
           //throw new Error("Failed to load home page data.");
           fetchError = true;
         }
 
         const data = fetchError ? null : await pageData.json();
         const header = fetchError ? null : await headerData.json();
+        const footer = fetchError ? null : await footerData.json();
 
         if (isMounted) {
           setPageData(data);
           setHeaderData(header);
+          setFooterData(footer);
         }
       } catch (error) {
         console.error(error);
@@ -363,7 +373,7 @@ export default function Page() {
               <div className="w-screen min-w-screen h-full bg-white"></div>
             }
           >
-            <Footer className={"relative z-20"} />
+            <Footer data={footerData} className={"relative z-20"} />
           </Suspense>
         </SmoothWrapper>
       </div>

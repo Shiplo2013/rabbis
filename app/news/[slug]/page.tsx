@@ -51,6 +51,8 @@ export default function Page() {
   const slug = params?.slug as string;
   const [post, setPost] = useState<NewsPostData | null>(null);
   const [allPosts, setAllPosts] = useState<AllPosts | null>(null);
+  const [headerData, setHeaderData] = useState<any | null>(null);
+  const [footerData, setFooterData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -116,31 +118,38 @@ export default function Page() {
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
+    let fetchError = false;
 
     const loadRabbisPageData = async () => {
+      const response = fetch(`/api/news/posts/${slug}`, {
+        cache: "no-store",
+      });
+      const response2 = fetch("/api/news/posts", {
+        cache: "no-store",
+      });
+      const response3 = fetch("/api/footer", {
+        cache: "force-cache",
+      });
       try {
-        setIsLoading(true);
-        const response = await fetch(`/api/news/posts/${slug}`, {
-          cache: "no-store",
-        });
-        const response2 = await fetch("/api/news/posts", {
-          cache: "no-store",
-        });
+        const [pageData, allPosts, footerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load news page data.");
+        if (!pageData.ok || !allPosts.ok || !footerData.ok) {
+          //throw new Error("Failed to load home page data.");
+          fetchError = true;
         }
 
-        if (!response2.ok) {
-          throw new Error("Failed to load rabbis posts data.");
-        }
-
-        const data = await response.json();
-        const data2 = await response2.json();
+        const data = await pageData.json();
+        const data2 = await allPosts.json();
+        const footer = await footerData.json();
 
         if (isMounted) {
           setPost(data);
           setAllPosts(data2);
+          setFooterData(footer);
           //console.log(data, "News Post Data");
           //console.log(data2, "All News Posts Data");
         }
@@ -177,32 +186,34 @@ export default function Page() {
     ) {
       //setPageContentAnimation();
       // Overflow body
-      const scurbScale = true;
+      if (window.innerHeight < newsContentRef.current.offsetHeight) {
+        const scurbScale = true;
 
-      // Vertical Section
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: page.current,
-          start: "top top",
-          end: "+=" + newsContentRef.current?.offsetHeight,
-          scrub: scurbScale,
-          pin: true,
-        },
-      });
-      timeline.to(newsContentRef.current, {
-        y: () =>
-          newsContentRef.current
-            ? window.innerHeight - newsContentRef.current.offsetHeight - 150
-            : 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: page.current,
-          start: page.current?.offsetTop,
-          end: "+=" + newsContentRef.current?.offsetHeight,
-          scrub: scurbScale,
-        },
-      });
-      setVerticalSection(timeline);
+        // Vertical Section
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: page.current,
+            start: "top top",
+            end: "+=" + newsContentRef.current?.offsetHeight,
+            scrub: scurbScale,
+            pin: true,
+          },
+        });
+        timeline.to(newsContentRef.current, {
+          y: () =>
+            newsContentRef.current
+              ? window.innerHeight - newsContentRef.current.offsetHeight - 150
+              : 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: page.current,
+            start: page.current?.offsetTop,
+            end: "+=" + newsContentRef.current?.offsetHeight,
+            scrub: scurbScale,
+          },
+        });
+        setVerticalSection(timeline);
+      }
     }
     // Return
     return () => {
@@ -332,6 +343,7 @@ export default function Page() {
     document.body.classList.add("!overflow-hidden");
     // Set onbeforeunload to fade out page
     window.onbeforeunload = function () {
+      setIsLoading(true);
       gsap.to(main.current, {
         opacity: 0,
         duration: 0.1,
@@ -525,7 +537,7 @@ export default function Page() {
               posts={allPosts?.posts || []}
             />
           </div>
-          <Footer className={"relative z-20"} />
+          <Footer data={footerData} className={"relative z-20"} />
         </SmoothWrapper>
         <div
           ref={movingButtonRef}

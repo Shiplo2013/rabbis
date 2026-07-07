@@ -24,6 +24,7 @@ export default function Page() {
   const [knessetPageData, setKnessetPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [headerData, setHeaderData] = useState<any | null>(null);
+  const [footerData, setFooterData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [postLoading, setPostLoading] = useState(true);
@@ -75,29 +76,26 @@ export default function Page() {
       const response4 = fetch("/api/header", {
         cache: "force-cache",
       });
+      const response5 = fetch("/api/footer", {
+        cache: "force-cache",
+      });
       try {
-        const [pageData1, pageData2, pageData3, headerData] = await Promise.all(
-          [response, response3, response2, response4],
-        );
+        const [pageData1, pageData2, pageData3, headerData, footerData] =
+          await Promise.all([
+            response,
+            response3,
+            response2,
+            response4,
+            response5,
+          ]);
 
-        if (!pageData1.ok) {
-          //throw new Error("Failed to load the knesset of customs page data.");
-          fetchError = true;
-        }
-
-        if (!pageData2.ok) {
-          //throw new Error("Failed to load the knesset of customs posts data.");
-          fetchError = true;
-        }
-
-        if (!pageData3.ok) {
-          // throw new Error(
-          //   "Failed to load the knesset of customs categories data.",
-          // );
-          fetchError = true;
-        }
-
-        if (!headerData.ok) {
+        if (
+          !pageData1.ok ||
+          !pageData2.ok ||
+          !pageData3.ok ||
+          !headerData.ok ||
+          !footerData.ok
+        ) {
           //throw new Error("Failed to load the header data.");
           fetchError = true;
         }
@@ -106,7 +104,7 @@ export default function Page() {
         const data2 = await pageData2.json();
         const data3 = await pageData3.json();
         const header = await headerData.json();
-
+        const footer = await footerData.json();
         if (isMounted) {
           setKnessetPageData({
             pageData: data,
@@ -114,6 +112,7 @@ export default function Page() {
             categoriesData: data3,
           });
           setHeaderData(header);
+          setFooterData(footer);
         }
       } catch (error) {
         console.error(error);
@@ -666,7 +665,7 @@ export default function Page() {
               </div>
             </div>
           </main>
-          <Footer className={"relative z-20"} />
+          <Footer data={footerData} className={"relative z-20"} />
         </SmoothWrapper>
         <div
           ref={waveLine}

@@ -142,6 +142,7 @@ export default function Page() {
   const [visitTempleData, setVisitTempleData] = useState<any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [headerData, setHeaderData] = useState<any>(null);
+  const [footerData, setFooterData] = useState<any>(null);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
   const [error, setError] = useState<string | null>(null);
@@ -179,20 +180,29 @@ export default function Page() {
       const response2 = fetch("/api/header", {
         cache: "force-cache",
       });
+      const response3 = fetch("/api/footer", {
+        cache: "force-cache",
+      });
       try {
-        const [pageData, headerData] = await Promise.all([response, response2]);
+        const [pageData, headerData, footerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
-        if (!pageData.ok || !headerData.ok) {
+        if (!pageData.ok || !headerData.ok || !footerData.ok) {
           //throw new Error("Failed to load home page data.");
           fetchError = true;
         }
 
         const data = await pageData.json();
         const header = await headerData.json();
+        const footer = await footerData.json();
 
         if (isMounted) {
           setVisitTempleData(data);
           setHeaderData(header);
+          setFooterData(footer);
         }
       } catch (error) {
         console.error(error);
@@ -599,7 +609,7 @@ export default function Page() {
               </div>
             </div>
           </main>
-          <Footer className={"relative z-20"} />
+          <Footer data={footerData} className={"relative z-20"} />
         </SmoothWrapper>
         <TabMenu
           data={visitTempleData?.acf?.temple_tabs}

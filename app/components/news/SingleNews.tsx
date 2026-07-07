@@ -46,7 +46,9 @@ export default function SingleNews(props: ChildProps) {
       </div>
       <div className="single-news-content flex flex-col gap-y-8.5 text-[#D1A941] w-[15vw] relative z-20">
         <h2 className="text-[55px] leading-[70%]">
-          {parse(props.data?.title || "")}
+          <Link href={`/news/${props.data?.slug || "#"}`}>
+            {parse(props.data?.title || "")}
+          </Link>
         </h2>
         <div className="text-[28px] leading-[90%] font-light">
           {parse(props.data?.excerpt || "")}

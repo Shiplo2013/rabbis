@@ -21,6 +21,7 @@ export default function Page() {
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [headerData, setHeaderData] = useState<any | null>(null);
+  const [footerData, setFooterData] = useState<any | null>(null);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [error, setError] = useState<string | null>(null);
@@ -56,16 +57,24 @@ export default function Page() {
       const response2 = fetch("/api/header", {
         cache: "force-cache",
       });
+      const response3 = fetch("/api/footer", {
+        cache: "force-cache",
+      });
       try {
-        const [pageData, headerData] = await Promise.all([response, response2]);
+        const [pageData, headerData, footerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
-        if (!pageData.ok || !headerData.ok) {
+        if (!pageData.ok || !headerData.ok || !footerData.ok) {
           //throw new Error("Failed to load home page data.");
           fetchError = true;
         }
 
         const data = fetchError ? null : await pageData.json();
         const header = fetchError ? null : await headerData.json();
+        const footer = fetchError ? null : await footerData.json();
 
         const sections = Array.isArray(data?.acf?.section)
           ? data.acf.section
@@ -114,6 +123,7 @@ export default function Page() {
         if (isMounted) {
           setRabbisPageData(mappedSections.length ? mappedSections : []);
           setHeaderData(header);
+          setFooterData(footer);
         }
       } catch (error) {
         console.error(error);
@@ -517,7 +527,7 @@ export default function Page() {
               </div>
             </div>
           </main>
-          <Footer className={"relative z-20"} />
+          <Footer data={footerData} className={"relative z-20"} />
         </SmoothWrapper>
         <div
           ref={ArrowButtonRef}

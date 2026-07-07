@@ -78,6 +78,7 @@ export default function Page() {
   const [chroniclesPageData, setChroniclesPageData] = useState<any | []>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [headerData, setHeaderData] = useState<any | null>(null);
+  const [footerData, setFooterData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadTimeline1, setLoadTimeline1] = useState(true);
@@ -184,16 +185,24 @@ export default function Page() {
       const response2 = fetch("/api/header", {
         cache: "force-cache",
       });
+      const response3 = fetch("/api/footer", {
+        cache: "force-cache",
+      });
       try {
-        const [pageData, headerData] = await Promise.all([response, response2]);
+        const [pageData, headerData, footerData] = await Promise.all([
+          response,
+          response2,
+          response3,
+        ]);
 
-        if (!pageData.ok || !headerData.ok) {
+        if (!pageData.ok || !headerData.ok || !footerData.ok) {
           //throw new Error("Failed to load home page data.");
           fetchError = true;
         }
 
         const data = fetchError ? staticData : await pageData.json();
         const header = fetchError ? null : await headerData.json();
+        const footer = fetchError ? null : await footerData.json();
 
         if (isMounted) {
           if (
@@ -310,6 +319,7 @@ export default function Page() {
           }
           setChroniclesPageData(data);
           setHeaderData(header);
+          setFooterData(footer);
         }
       } catch (error) {
         if ((error as Error)?.name === "AbortError") return;
@@ -2316,7 +2326,7 @@ export default function Page() {
           </main>
           {pageDataFetched && (
             <Suspense fallback={<div className="w-screen h-screen bg-black" />}>
-              <Footer className={"relative z-20"} />
+              <Footer data={footerData} className={"relative z-20"} />
             </Suspense>
           )}
         </SmoothWrapper>
