@@ -439,7 +439,7 @@ export default function Page() {
           start: () => {
             return window.innerWidth * 0.3;
           },
-          toggleActions: "restart pause resume reverse",
+          toggleActions: "restart none none reverse",
         },
       });
     }
@@ -470,7 +470,7 @@ export default function Page() {
                 start: () => {
                   return GetRightPosition(section) - window.innerWidth * 0.5;
                 },
-                toggleActions: "restart pause resume reverse",
+                toggleActions: "restart none none reverse",
               },
             });
           }
@@ -480,7 +480,6 @@ export default function Page() {
               const postExcerpt = item.querySelector(
                 ".post-text .post-excerpt",
               );
-              const postOverlay = item.querySelector(".post-image-overlay");
               // Post Title
               if (postExcerpt) {
                 const postExcerptSplit = TextSplitLines(postExcerpt);
@@ -502,7 +501,7 @@ export default function Page() {
                     start: () => {
                       return GetRightPosition(item) - window.innerWidth * 0.5;
                     },
-                    toggleActions: "restart pause resume reverse",
+                    toggleActions: "restart none none reverse",
                   },
                 });
               }
@@ -527,22 +526,7 @@ export default function Page() {
                     start: () => {
                       return GetRightPosition(item) - window.innerWidth * 0.5;
                     },
-                    toggleActions: "restart pause resume reverse",
-                  },
-                });
-              }
-              // Image Overlay
-              if (postOverlay) {
-                gsap.to(postOverlay, {
-                  yPercent: -100,
-                  ease: "expo.inOut",
-                  duration: 1.5,
-                  delay: 0,
-                  scrollTrigger: {
-                    start: () => {
-                      return GetRightPosition(item) - window.innerWidth * 0.5;
-                    },
-                    toggleActions: "restart pause resume reverse",
+                    toggleActions: "restart none none reverse",
                   },
                 });
               }

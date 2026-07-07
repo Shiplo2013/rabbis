@@ -1,7 +1,7 @@
 import parse from "html-react-parser";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Cookies from "../assets/icons/Cookies";
 import FooterProject from "../ui/FooterProject";
 import { gsap, ScrollToPlugin, ScrollTrigger, useGSAP } from "../ui/plugins";
@@ -12,6 +12,7 @@ if (typeof window !== "undefined") {
 
 interface ChildProps {
   className: string;
+  data?: FooterApiResponse | null;
 }
 
 type FooterApiResponse = {
@@ -45,7 +46,9 @@ type FooterApiResponse = {
 function Footer(props: ChildProps) {
   // Footer Ref
   const footerRef = useRef<HTMLElement | null>(null);
-  const [footerData, setFooterData] = useState<FooterApiResponse | null>(null);
+  const [footerData, setFooterData] = useState<FooterApiResponse | null>(
+    props.data || null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -121,41 +124,6 @@ function Footer(props: ChildProps) {
 
   // Router Path
   const pathname = usePathname();
-  // Get Page Data From backend
-  useEffect(() => {
-    let isMounted = true;
-    let fetchError = false;
-
-    const loadFooterData = async () => {
-      try {
-        const response = await fetch("/api/footer", {
-          cache: "force-cache",
-        });
-
-        if (!response.ok) {
-          //throw new Error("Failed to load footer data.");
-          fetchError = true;
-        }
-
-        const data = fetchError ? staticData : await response.json();
-
-        if (isMounted) {
-          setFooterData(data);
-        }
-      } catch (error) {
-        console.error(error);
-        setError("Failed to load footer data.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadFooterData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [pathname]);
 
   // Footer Animations
   useGSAP(() => {
