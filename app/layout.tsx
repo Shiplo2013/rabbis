@@ -39,17 +39,50 @@ const customFont = localFont({
   variable: "--custom-font",
 });
 
-export default function RootLayout({
+// async function getGlobalData() {
+//   // Next.js automatically caches and memoizes this native fetch request
+//   const headerRes = fetch(
+//     "https://dovp7.sg-host.com/wp-json/wp/v2/pages?slug=header&_fields=id,acf",
+//     {
+//       next: { revalidate: 86400 }, // Cache data for 24 hours
+//       cache: "force-cache",
+//     },
+//   );
+//   const footerRes = fetch(
+//     "https://dovp7.sg-host.com/wp-json/wp/v2/pages?slug=footer&_fields=id,acf",
+//     {
+//       next: { revalidate: 86400 }, // Cache data for 24 hours
+//       cache: "force-cache",
+//     },
+//   );
+
+//   const [headerData, footerData] = await Promise.all([headerRes, footerRes]);
+
+//   if (!headerData.ok || !footerData.ok) {
+//     throw new Error("Failed to load data.");
+//   }
+//   const header = await headerData.json();
+//   const footer = await footerData.json();
+
+//   return {
+//     header,
+//     footer,
+//   };
+// }
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  //const globalData = await getGlobalData();
   return (
     <html lang="en" dir="rtl" suppressHydrationWarning>
       <body
         suppressHydrationWarning
         className={`${customFont.className} antialiased bg-black text-white overflow-hidden`}
       >
+        {/* <Header2 data={globalData?.header} animationStatus={true} /> */}
         {children}
       </body>
     </html>

@@ -67,6 +67,19 @@ export default function Page() {
     }),
   );
 
+  // Default Data
+  const defaultZatzelPageData = {
+    introduction: {
+      title: "זכרון להולכים",
+      content:
+        "במשך מאה וחמישים שנות ממלכת התורה, כנסת ישראל לדורותיה, הצמיחה הישיבה דורות של תלמידים אשר האירו את העולם בתורתם, בחכמתם ובמעשיהם הטובים. במדור זה נציב נר זיכרון לדמויות בוגרי הישיבה אשר הלכו לעולמם, למען תהיה דמותם חקוקה בליבנו. זכרם יעמוד לנגד עינינו כעמוד אש וענן, להאיר לנו את הדרך, להדריך את צעדינו ולהמשיך ולהנחיל את מורשת התורה לדורות הבאים.",
+    },
+    sections: {
+      section_title: "זכרון להולכים",
+      section_posts: [],
+    },
+  };
+
   // Get Page Data From backend
   useEffect(() => {
     let isMounted = true;
@@ -94,7 +107,7 @@ export default function Page() {
           fetchError = true;
         }
 
-        const data = await pageData.json();
+        const data = fetchError ? null : await pageData.json();
         const header = fetchError ? null : await headerData.json();
         const footer = fetchError ? null : await footerData.json();
 
@@ -116,7 +129,7 @@ export default function Page() {
             }
 
             const sectionPostsResponse = await fetch(
-              `/api/zatzel-graduates/posts?include=${sectionPostIds.join(",")}&orderby=include&per_page=100`,
+              `/api/zatzel-graduates/posts?include=${sectionPostIds.join(",")}&orderby=include&per_page=100&_fields=id,slug,acf`,
               { cache: "no-store" },
             );
 
@@ -146,8 +159,11 @@ export default function Page() {
 
         if (isMounted) {
           setZatzelPageData({
-            introduction: data?.acf?.introduction || [],
-            sections: mappedSections.length ? mappedSections : [],
+            introduction:
+              data?.acf?.introduction || defaultZatzelPageData.introduction,
+            sections: mappedSections.length
+              ? mappedSections
+              : defaultZatzelPageData.sections,
           });
           setHeaderData(header);
           setFooterData(footer);
@@ -807,7 +823,10 @@ export default function Page() {
                   animationStatus={isAllAnimationComplete}
                   bgImage={IntroBG}
                   bgOverlay={""}
-                  data={zatzelPageData.introduction}
+                  data={
+                    zatzelPageData.introduction ||
+                    defaultZatzelPageData.introduction
+                  }
                   extraClass={
                     "first-intro panel-section will-change-transform min-w-screen w-screen"
                   }
@@ -822,7 +841,9 @@ export default function Page() {
                 <ZatzelContentSection
                   extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
                   animWidthText={1}
-                  sectionData={zatzelPageData.sections}
+                  sectionData={
+                    zatzelPageData.sections || defaultZatzelPageData.sections
+                  }
                 />
               </div>
             </div>
