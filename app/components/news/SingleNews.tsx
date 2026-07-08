@@ -26,7 +26,12 @@ export default function SingleNews(props: ChildProps) {
               >
                 <Image
                   className="w-full h-full object-cover object-center"
-                  src={item.image?.sizes?.large || item?.src || ""}
+                  src={
+                    item.image?.sizes?.medium ||
+                    item.image?.sizes?.large ||
+                    item?.src ||
+                    ""
+                  }
                   width={item.image?.width}
                   height={item.image?.height}
                   alt={`News Image ${index + 1}`}

@@ -4,7 +4,11 @@ import PauseIconVisible from "../assets/icons/PauseIconVisible";
 import PlayIconVisible from "../assets/icons/PlayIconVisible";
 
 interface NewsSingleVideoProps {
-  data: any;
+  data: {
+    url?: string;
+    src?: string;
+    poster?: string;
+  };
 }
 
 export default function NewsSingleVideo({ data }: NewsSingleVideoProps) {
@@ -17,8 +21,8 @@ export default function NewsSingleVideo({ data }: NewsSingleVideoProps) {
         onPlay={() => setIsVideoPlaying(true)}
         onPause={() => setIsVideoPlaying(false)}
         className="w-full h-full object-cover object-center z-10"
-        src={data.video?.url || data.video?.src}
-        poster={data.video?.poster}
+        src={data.url || data.src}
+        poster={data.poster}
         preload="metadata"
       />
       <button

@@ -35,6 +35,7 @@ type NewsPostData = {
       type?: string;
       image?: any;
       video?: any;
+      caption?: string;
     }[];
   };
 };
@@ -124,7 +125,7 @@ export default function Page() {
       const response = fetch(`/api/news/posts/${slug}`, {
         cache: "no-store",
       });
-      const response2 = fetch("/api/news/posts", {
+      const response2 = fetch("/api/news/posts?_fields=id,title,slug,acf", {
         cache: "no-store",
       });
       const response3 = fetch("/api/footer", {
@@ -150,8 +151,8 @@ export default function Page() {
           setPost(data);
           setAllPosts(data2);
           setFooterData(footer);
-          //console.log(data, "News Post Data");
-          //console.log(data2, "All News Posts Data");
+          console.log(data, "News Post Data");
+          console.log(data2, "All News Posts Data");
         }
       } catch (error) {
         console.error(error);
@@ -481,46 +482,63 @@ export default function Page() {
                       <SwiperSlide key={index}>
                         {item.type === "image" ? (
                           <div className="post-image w-full h-full relative">
-                            <Image
-                              className="w-full h-full object-cover object-center"
-                              src={item?.image?.sizes?.large || item.image?.src}
-                              width={item.image?.width}
-                              height={item.image?.height}
-                              alt="News Slide"
-                              blurDataURL={
-                                CreateShimmerDataUrl(
-                                  item.image?.width,
-                                  item.image?.height,
-                                ) || item.image?.blurDataURL
-                              }
-                              placeholder={
-                                item.image?.blurDataURL ? "blur" : "empty"
-                              }
-                              loading="lazy"
-                            />
+                            <div className=" w-full h-full relative">
+                              <Image
+                                className="w-full h-full object-cover object-center"
+                                src={
+                                  item?.image?.sizes?.large ||
+                                  item?.image?.src ||
+                                  ""
+                                }
+                                width={item.image?.width}
+                                height={item.image?.height}
+                                alt="News Slide"
+                                blurDataURL={
+                                  CreateShimmerDataUrl(
+                                    item.image?.width,
+                                    item.image?.height,
+                                  ) || item.image?.blurDataURL
+                                }
+                                placeholder={
+                                  item.image?.blurDataURL ? "blur" : "empty"
+                                }
+                                loading="lazy"
+                              />
+                            </div>
+
+                            {item?.caption && (
+                              <div className="caption bg-black text-white absolute bottom-0 left-0 w-full py-3.5 px-5 text-center text-[22px] leading-[1.4em] z-50">
+                                {parse(item.caption || "")}
+                              </div>
+                            )}
                           </div>
                         ) : (
-                          <NewsSingleVideo data={item} />
+                          <div className="post-video w-full h-full relative">
+                            <NewsSingleVideo data={item?.video} />
+
+                            {item?.caption && (
+                              <div className="caption bg-black text-white absolute bottom-0 left-0 w-full py-3.5 px-5 text-center text-[22px] leading-[1.4em] z-50">
+                                {parse(item.caption || "")}
+                              </div>
+                            )}
+                          </div>
                         )}
                       </SwiperSlide>
                     ))}
                   </Swiper>
-                </div>
-                <div className="caption bg-black text-white absolute bottom-0 left-0 w-full py-3.5 px-5 text-center text-[22px] leading-[1.4em] z-50">
-                  {parse(post?.acf?.gallery_title || NewsPostsData?.caption)}
                 </div>
               </div>
               <div className="news-left-content w-[60%] pr-[4.16vw] pl-[7.5vw] py-[9vh] overflow-hidden">
                 <div className="border-line origin-top w-2 h-[30vh] bg-[#C3A13F] absolute top-0 left-13"></div>
                 <div ref={newsContentRef} className="content-wrapper">
                   <h2
-                    dir="ltr"
+                    dir="rtl"
                     className="post-title text-[55px] leading-[70%] text-[#C3A13F] text-right pt-2"
                   >
                     {parse(post?.title || NewsPostsData?.title)}
                   </h2>
                   <div
-                    dir="ltr"
+                    dir="rtl"
                     className="content mt-14 [&>p:not(:last-child)]:mb-7.5 [&>blockquote]:border-r-3 [&>blockquote]:border-[#C3A13F] [&>blockquote]:pr-7 [&>blockquote]:mr-5 [&>blockquote]:mb-7.5 [&>blockquote]:text-[28px] [&>blockquote]:leading-[1.1em] [&>blockquote]:font-bold text-right"
                   >
                     {parse(post?.content || NewsPostsData?.summary)}

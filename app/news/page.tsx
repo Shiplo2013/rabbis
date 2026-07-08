@@ -814,7 +814,7 @@ export default function Page() {
                   }}
                 />
                 <NewsContentSection
-                  extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[10vh] px-[6.25vw]`}
+                  extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[10vh] px-[10vw]`}
                   animWidthText={1}
                   data={pagePosts}
                 />
