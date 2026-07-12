@@ -1,25 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import HambergerIcon from "../assets/icons/HambergerIcon";
 import logo from "../assets/images/logo.png";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
-import MainMenu from "./MainMenu";
+import { useAppState } from "./AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-export default function CommunityPageHeader({
-  data,
-  animationStatus,
-}: {
-  data: {
-    headerLeft: any;
-    headerRight: any;
-  };
-  animationStatus: boolean;
-}) {
+export default function CommunityPageHeader() {
+  const { appData, animationPlayed } = useAppState();
   const SectionData = {
     leftMenu: [
       {
@@ -117,10 +109,6 @@ export default function CommunityPageHeader({
     isMenuActive ? menuTimeline.play() : menuTimeline.reverse();
   }, [isMenuActive]);
 
-  useEffect(() => {
-    console.log("Header Data:", data);
-  }, [data]);
-
   return (
     <>
       <header className="community-page-header bg-[#091B24] text-white py-6 px-10 z-30 w-full opacity-0 relative">
@@ -128,21 +116,23 @@ export default function CommunityPageHeader({
           <div className="header-right flex items-center gap-x-9">
             <button
               onClick={() => setIsMenuActive(!isMenuActive)}
-              disabled={!animationStatus}
+              disabled={!animationPlayed}
               className="hamburger-btn cursor-pointer w-10 h-10 flex justify-center items-center"
             >
               <HambergerIcon />
             </button>
             <div className="menu flex items-center gap-x-9">
-              {data?.headerRight.map((item: any, index: number) => (
-                <Link
-                  key={index}
-                  href={item.link}
-                  className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
-                >
-                  {item.title}
-                </Link>
-              ))}
+              {appData?.headerCommunity?.headerRight.map(
+                (item: any, index: number) => (
+                  <Link
+                    key={index}
+                    href={item.link}
+                    className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
+                  >
+                    {item.title}
+                  </Link>
+                ),
+              )}
             </div>
           </div>
           <div className="header-center">
@@ -161,25 +151,21 @@ export default function CommunityPageHeader({
           </div>
           <div className="header-left">
             <div className="menu flex items-center gap-x-9">
-              {data?.headerLeft.map((item: any, index: number) => (
-                <Link
-                  key={index}
-                  href={item.link}
-                  className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
-                >
-                  {item.title}
-                </Link>
-              ))}
+              {appData?.headerCommunity?.headerLeft.map(
+                (item: any, index: number) => (
+                  <Link
+                    key={index}
+                    href={item.link}
+                    className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
+                  >
+                    {item.title}
+                  </Link>
+                ),
+              )}
             </div>
           </div>
         </div>
       </header>
-
-      <MainMenu
-        active={isMenuActive}
-        hideMenu={setIsMenuActive}
-        timeLine={menuTimeline}
-      />
     </>
   );
 }

@@ -2,31 +2,33 @@
 
 import parse from "html-react-parser";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import CloseIcon from "../assets/icons/CloseIcon";
 import Search from "../assets/icons/Search";
 import bagImage from "../assets/images/main-menu-bg.jpg";
 import SubMenuItem from "../ui/SubMenuItem";
+import { useAppState } from "./AppContext";
 
 interface MainMenuProps {
-  active: boolean;
-  hideMenu: (status: boolean) => void;
-  timeLine: any;
   data?: any;
 }
 
-export default function MainMenu({
-  active,
-  hideMenu,
-  timeLine,
-  data,
-}: MainMenuProps) {
+export default function MainMenu() {
   const router = useRouter();
+  const pathname = usePathname();
+  const {
+    isLoading,
+    setIsLoading,
+    activeHamburgerMenu,
+    setActiveHamburgerMenu,
+    appData,
+  } = useAppState();
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchMessage, setSearchMessage] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
+  const data = appData?.header?.acf?.hamburger_menu || {};
 
   const SUBMENU = [
     { id: 1, title: "שם הרב", link: "#" },
@@ -59,7 +61,7 @@ export default function MainMenu({
     let isMounted = true;
     try {
       const response = await fetch(
-        `https://dovp7.sg-host.com/wp-json/wp/v2/search?search=${encodeURIComponent(query)}&per_page=100&_fields=id,title,url,subtype`,
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/search?search=${encodeURIComponent(query)}&per_page=100&_fields=id,title,url,subtype`,
         {
           cache: "no-store",
         },
@@ -146,6 +148,19 @@ export default function MainMenu({
     }
   };
 
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      activeHamburgerMenu && setActiveHamburgerMenu(!activeHamburgerMenu);
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     <div
       id="main-menu"
@@ -160,8 +175,7 @@ export default function MainMenu({
       ></div>
       <button
         onClick={() => {
-          hideMenu(false);
-          //closeMenu();
+          setActiveHamburgerMenu(!activeHamburgerMenu);
         }}
         className="menu-close group absolute top-8 right-12.5 w-18 h-18 flex justify-center items-center cursor-pointer border border-[#C3A13F] rounded-full bg-[#0000007f]"
       >
@@ -173,7 +187,10 @@ export default function MainMenu({
             {data?.right_menu?.menu_title && (
               <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
                 {data.right_menu?.menu_title_link ? (
-                  <Link href={data.right_menu?.menu_title_link}>
+                  <Link
+                    href={data.right_menu?.menu_title_link}
+                    onClick={handleLinkClick}
+                  >
                     {data.right_menu?.menu_title}
                   </Link>
                 ) : (
@@ -183,7 +200,9 @@ export default function MainMenu({
             )}
             {!data?.right_menu?.menu_title && (
               <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
-                <Link href="/">כנסת ישראל</Link>
+                <Link href="/" onClick={handleLinkClick}>
+                  כנסת ישראל
+                </Link>
               </h3>
             )}
             <div className="menu-list">
@@ -196,10 +215,13 @@ export default function MainMenu({
                         <SubMenuItem
                           itemText={item.title}
                           subItem={item.sub_menu || SUBMENU2}
+                          active={activeHamburgerMenu}
+                          hideMenu={setActiveHamburgerMenu}
                         />
                       ) : (
                         <Link
                           href={item.link}
+                          onClick={handleLinkClick}
                           className="hover:text-[#C3A13F] transition-colors duration-500"
                         >
                           {item.title}
@@ -214,6 +236,7 @@ export default function MainMenu({
                   <li className="group relative" key={index}>
                     <Link
                       href={item.link}
+                      onClick={handleLinkClick}
                       className="hover:text-[#C3A13F] transition-colors duration-500"
                     >
                       {item.title}
@@ -227,7 +250,10 @@ export default function MainMenu({
             {data?.left_menu && (
               <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
                 {data.left_menu?.menu_title_link ? (
-                  <Link href={data.left_menu?.menu_title_link}>
+                  <Link
+                    href={data.left_menu?.menu_title_link}
+                    onClick={handleLinkClick}
+                  >
                     {data.left_menu?.menu_title}
                   </Link>
                 ) : (
@@ -237,7 +263,9 @@ export default function MainMenu({
             )}
             {!data?.left_menu && (
               <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
-                <Link href="/">כנסת הבוגרים</Link>
+                <Link href="/" onClick={handleLinkClick}>
+                  כנסת הבוגרים
+                </Link>
               </h3>
             )}
             <div className="menu-list">
@@ -250,11 +278,14 @@ export default function MainMenu({
                         <SubMenuItem
                           itemText={item.title}
                           subItem={item.sub_menu || SUBMENU3}
+                          active={activeHamburgerMenu}
+                          hideMenu={setActiveHamburgerMenu}
                         />
                       ) : (
                         <>
                           <Link
                             href={item.link}
+                            onClick={handleLinkClick}
                             className="hover:text-[#C3A13F] transition-colors duration-500"
                           >
                             {item.title}
@@ -271,6 +302,7 @@ export default function MainMenu({
                   <li className="group relative" key={index}>
                     <Link
                       href={item.link}
+                      onClick={handleLinkClick}
                       className="hover:text-[#C3A13F] transition-colors duration-500"
                     >
                       {item.title}
@@ -284,11 +316,12 @@ export default function MainMenu({
         </div>
         <div className="main-menu-bottom pr-4 mt-17 flex items-end gap-[2vw]">
           <div className="bottom-menu w-1/4">
-            <ul className="bottom-menu">
+            <ul className="menu-list">
               {data?.right_menu?.menu_3?.map((item: any, index: number) => (
                 <li className="group relative" key={index}>
                   <Link
                     href={item.link}
+                    onClick={handleLinkClick}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     {item.title}
@@ -332,6 +365,7 @@ export default function MainMenu({
                       <Link
                         key={result.id}
                         href={getLinkUrl(result.url, result.subtype)}
+                        onClick={handleLinkClick}
                         className="block py-3 px-3 text-[16px] leading-[1em] text-black hover:bg-gray-200 transition-all duration-300 not-last:border-b not-last:border-b-[#C3A13F]"
                       >
                         {parse(result.title)}

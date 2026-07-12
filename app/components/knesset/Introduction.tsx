@@ -17,7 +17,7 @@ interface ChildProps {
   data: IntroData;
 }
 
-type IntroData = { title: { rendered: string }; content: { rendered: string } };
+type IntroData = { title: string; content: string };
 
 export default function Introduction(props: ChildProps) {
   // Section Selector
@@ -57,10 +57,10 @@ export default function Introduction(props: ChildProps) {
       <div dir="ltr" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-right flex flex-col items-end gap-x-[3.75vw]">
           <h1 className="intro-title text-[208px] text-[#AC832E] leading-[0.6em] overflow-hidden relative z-20 py-7.5 font-bold">
-            {parse(introData?.title?.rendered)}
+            {parse(introData?.title)}
           </h1>
           <h4 className="intro-content overflow-hidden text-[28px] leading-[1em] text-[#FBF4E6] mt-3 relative z-30 max-w-188.75">
-            {parse(introData?.content?.rendered)}
+            {parse(introData?.content)}
           </h4>
         </div>
       </div>

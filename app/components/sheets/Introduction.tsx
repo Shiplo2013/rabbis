@@ -20,6 +20,7 @@ interface ChildProps {
 export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+
   return (
     <section
       ref={wrapper}

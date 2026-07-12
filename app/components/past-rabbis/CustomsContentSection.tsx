@@ -19,6 +19,7 @@ export default function CustomsContentSection(props: ChildProps) {
     >
       <div className="rabbis-wrapper w-full h-full flex gap-x-[10vw]">
         {rabbisPosts.map((item: any, index: number) => {
+          console.log("Rendering item:", item);
           return (
             <div
               key={index}
@@ -28,10 +29,18 @@ export default function CustomsContentSection(props: ChildProps) {
                 <div className="image w-full h-[57.2vh] relative">
                   <Image
                     className="w-full h-full object-cover object-center"
-                    src={item?.acf?.thumbnail?.url || item?.acf?.thumbnail?.src}
+                    src={
+                      item?.acf?.thumbnail?.sizes?.medium_large ||
+                      item?.acf?.thumbnail?.url ||
+                      item?.acf?.thumbnail?.src
+                    }
                     width={522}
                     height={532}
-                    alt={item.title}
+                    alt={
+                      item?.acf?.thumbnail?.alt ||
+                      item?.title?.rendered ||
+                      "Past Rabbi"
+                    }
                     blurDataURL={CreateShimmerDataUrl(522, 532)}
                     placeholder="blur"
                     loading="lazy"
@@ -53,7 +62,9 @@ export default function CustomsContentSection(props: ChildProps) {
               </div>
               <div className="rabbis-content w-[28vw] text-[#D1A941]">
                 <h2 className="text-[55px] leading-[0.7em] overflow-hidden relative">
-                  {parse(item.title)}
+                  {parse(
+                    item.title?.rendered ? item.title.rendered : item.title,
+                  )}
                 </h2>
                 <div className="content text-[33px] leading-[1em] mt-5 relative">
                   {parse(item?.acf?.time)}

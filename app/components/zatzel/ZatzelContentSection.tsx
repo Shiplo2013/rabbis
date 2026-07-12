@@ -26,7 +26,7 @@ export default function ZatzelContentSection(props: ChildProps) {
       dir="rtl"
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
-      <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[10vw]">
+      <div className="sheet-wrapper w-full min-w-full h-auto flex items-center gap-x-[10vw]">
         <div className="sheet-sidebar w-70 min-w-70 h-full will-change-transform">
           <div className="sheet-sidebar-wrapper">
             <Sidebar />

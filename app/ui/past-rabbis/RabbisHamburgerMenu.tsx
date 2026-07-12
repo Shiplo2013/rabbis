@@ -1,12 +1,13 @@
 import CloseIcon from "@/app/assets/icons/CloseIcon";
+import { useAppState } from "@/app/components/AppContext";
 import { useGSAP } from "@gsap/react";
 import parse from "html-react-parser";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import { gsap } from "../../ui/plugins";
 import TextSplitLines from "../TextSplitLines";
+import PastRabbisThumbnail from "./PastRabbisThumbnail";
 
 interface RabbisHamburgerMenuProps {
   extraClass?: string;
@@ -17,25 +18,24 @@ interface RabbisHamburgerMenuProps {
 
 type MenuPost = {
   id?: number;
-  title?: string;
+  title?: { rendered?: string };
   slug?: string;
   acf?: {
     title?: string;
-    thumbnail?: { url?: string; src?: string };
+    thumbnail?: { url?: string; src?: string; sizes?: { thumbnail?: string } };
   };
 };
 
-export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
+export default function RabbisHamburgerMenu() {
   // Selector
   const hamurgerMenu = useRef<HTMLDivElement>(null);
   const menuOverlay = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const pathname = usePathname();
-  const allPosts: MenuPost[] = Array.isArray(props.data)
-    ? props.data
-    : Array.isArray(props.data?.posts)
-      ? props.data.posts
-      : [];
+  const { allRabbisPosts, activeHamburgerMenu, setActiveHamburgerMenu } =
+    useAppState();
+
+  const allPosts: MenuPost[] = allRabbisPosts || [];
 
   // Menu State
   const [menuTimeline] = useState(
@@ -46,7 +46,6 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
 
   // Handle Menu Close
   useGSAP(() => {
-    //console.log(allPosts);
     // Set Animations
     const closeButton = hamurgerMenu.current?.querySelector(".menu-close");
     const menuItemsTitle = hamurgerMenu.current?.querySelectorAll(
@@ -185,16 +184,16 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
   }, [pathname]);
 
   useGSAP(() => {
-    props.activeMenu ? menuTimeline.play() : menuTimeline.reverse();
+    activeHamburgerMenu ? menuTimeline.play() : menuTimeline.reverse();
 
-    if (props.activeMenu) {
+    if (activeHamburgerMenu) {
       document.body.classList.add("!overflow-hidden");
       document.body.classList.remove("!overflow-auto");
     } else {
       document.body.classList.remove("!overflow-hidden");
       document.body.classList.add("!overflow-auto");
     }
-  }, [props.activeMenu]);
+  }, [activeHamburgerMenu]);
   return (
     <>
       <div
@@ -207,7 +206,7 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
         <div className="menu-wrapper overflow-hidden">
           <button
             onClick={() => {
-              props.activeMenuFunction?.(false);
+              setActiveHamburgerMenu(false);
             }}
             className="menu-close w-18 h-18 flex items-center justify-center rounded-full border border-[#C3A13F] absolute top-6 right-12.5 z-30 cursor-pointer"
           >
@@ -230,26 +229,14 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
                 className="burger-menu-item group flex gap-x-2.5"
               >
                 <div className="image w-29.5 h-29.5 overflow-hidden border-dashed border-transparent group-hover:border-[#D1A941]">
-                  <div className="image-inner w-full h-full group-hover:scale-110 transition-all duration-300 grayscale group-hover:grayscale-0">
-                    <Image
-                      className="w-full h-full object-cover object-center"
-                      src={
-                        item?.acf?.thumbnail?.url ||
-                        item?.acf?.thumbnail?.src ||
-                        ""
-                      }
-                      width={122}
-                      height={125}
-                      alt={item?.acf?.title || "Rabbi image"}
-                    />
-                  </div>
+                  <PastRabbisThumbnail item={item} />
                 </div>
                 <div
                   dir="ltr"
                   className="title text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
                 >
                   <p className="text">
-                    {parse(item?.title || item?.acf?.title || "")}
+                    {parse(item?.title?.rendered || item?.acf?.title || "")}
                   </p>
                 </div>
               </Link>
@@ -260,7 +247,7 @@ export default function RabbisHamburgerMenu(props: RabbisHamburgerMenuProps) {
       <div
         ref={menuOverlay}
         onClick={() => {
-          props.activeMenuFunction?.(false);
+          setActiveHamburgerMenu(false);
         }}
         className="overlay fixed top-0 right-0 w-screen h-screen z-50 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"
       ></div>

@@ -114,10 +114,7 @@ export default function SheetContentSection(props: ChildProps) {
             Array.isArray(sectionData?.posts) &&
             sectionData.posts.map((item: any, index: number) => (
               <Fragment key={`sheet-entry-${index}`}>
-                <SheetContentItem
-                  data={item}
-                  loading={sectionData?.isPostLoaded}
-                />
+                <SheetContentItem data={item} />
                 {index === 1 && (
                   <div className="subscribe-form bg-[#C3A13F] text-white px-[2.5vw] py-[3.7vh] w-[26.35vw] will-change-transform">
                     <h2 className="2xl:text-[38px] xl:text-[30px] sm:text-[24px] leading-[0.8em]">

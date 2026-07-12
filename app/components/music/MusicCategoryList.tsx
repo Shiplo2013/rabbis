@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import SimpleBar from "simplebar-react";
 import { gsap, useGSAP } from "../../ui/plugins";
+import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -22,6 +23,8 @@ export default function MusicCategoryList(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const catList = props.data as any[];
+  const { isLoading, setIsLoading, activeMusicItem, setActiveMusicItem } =
+    useAppState();
   // Item Click Handler
   const handleClick = (index: number) => {
     props.setActiveMusicItem(index);

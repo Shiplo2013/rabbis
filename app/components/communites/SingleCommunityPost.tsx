@@ -3,7 +3,8 @@ import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useAppState } from "../AppContext";
 
 interface ChildProps {
   data: any;
@@ -11,11 +12,21 @@ interface ChildProps {
 
 export default function SingleCommunityPost(props: ChildProps) {
   const postData = props.data;
+  const pathname = usePathname();
+  const router = useRouter();
+  const { setIsLoading } = useAppState();
 
-  useEffect(() => {
-    // Preload the image
-    console.log("Preloading image:", postData?.acf?.post_thumbnail);
-  }, [postData]);
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
 
   return (
     <div
@@ -25,6 +36,7 @@ export default function SingleCommunityPost(props: ChildProps) {
       <Link
         href={postData?.slug ? `/communities/${postData.slug}` : "#"}
         className="block w-full h-full"
+        onClick={handleLinkClick}
       >
         <div className="post-image w-full h-66.75 mb-8.5 relative overflow-hidden backface-hidden">
           <Image
@@ -44,7 +56,7 @@ export default function SingleCommunityPost(props: ChildProps) {
         </div>
         <div className="post-text text-[28px] text-(--theme-color) leading-[0.9em] text-right">
           <h2 className="post-title font-extralight mb-4">
-            {parse(postData?.title)}
+            {parse(postData?.title?.rendered || "")}
           </h2>
           <h5 className="post-location font-bold">
             {parse(postData?.acf?.subtitle)}

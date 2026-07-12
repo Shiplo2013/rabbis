@@ -1,5 +1,7 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useAppState } from "../components/AppContext";
 
 interface ChildProps {
   extraClass?: string;
@@ -16,9 +18,28 @@ interface ChildProps {
 }
 
 export default function ThemeButton(props: ChildProps) {
+  // states
+  const { isLoading, setIsLoading } = useAppState();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // OnClick Handler for Link Navigation
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
   return (
     <div className="theme-button will-change-transform">
       <Link
+        onClick={(e) => {
+          handleLinkClick(e);
+        }}
         className={`group flex items-center gap-x-2 overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[22px]"} ${props?.extraClass}`}
         href={props.buttonLink ? props.buttonLink : "/"}
       >

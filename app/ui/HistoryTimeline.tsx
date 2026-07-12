@@ -1,9 +1,9 @@
 "use client";
-import { MouseEvent, Ref, useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 
 interface ChildProps {
-  wrapperRef: Ref<HTMLDivElement>;
-  progressRef: Ref<HTMLDivElement>;
+  wrapperId: string;
+  progressId: string;
   timelineData: { id: number; title: string }[];
 }
 export default function HistoryTimeline(props: ChildProps) {
@@ -59,7 +59,7 @@ export default function HistoryTimeline(props: ChildProps) {
   };
   return (
     <div
-      ref={props.wrapperRef}
+      id={props.wrapperId}
       className="history-timeline fixed bottom-[5vh] right-0 w-screen h-auto z-30 opacity-0"
     >
       <div className="timeline-wrapper w-[80%] mx-auto overflow-hidden relative">
@@ -87,7 +87,7 @@ export default function HistoryTimeline(props: ChildProps) {
           })}
         </div>
         <div
-          ref={props.progressRef}
+          id={props.progressId}
           className="absolute w-0 h-2 bg-(--theme-color)"
         ></div>
       </div>

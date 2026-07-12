@@ -32,7 +32,9 @@ export default function SingleZatzelGraduate(props: ChildProps) {
           width="389"
           height="406"
           blurDataURL={
-            ItemData?.image?.blurDataURL || CreateShimmerDataUrl(389, 406)
+            ItemData?.image?.sizes?.thumbnail ||
+            ItemData?.image?.blurDataURL ||
+            CreateShimmerDataUrl(389, 406)
           }
           placeholder={"blur"}
           loading="lazy"

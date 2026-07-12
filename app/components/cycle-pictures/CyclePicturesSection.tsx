@@ -27,6 +27,11 @@ export default function CyclePicturesSection(props: ChildProps) {
     console.log("Load More Posts Clicked");
   };
 
+  // Check data availability
+  useEffect(() => {
+    console.log("Section Data:", SectionData);
+  }, [SectionData]);
+
   // Section Animation
   useEffect(() => {
     const selectYears = scrollbarRef.current?.querySelectorAll(".year-month");
@@ -85,7 +90,7 @@ export default function CyclePicturesSection(props: ChildProps) {
           </div>
         </div>
         <div className="sheet-content flex items-center gap-x-[10vw] will-change-transform">
-          {SectionData?.posts?.map((item: any, index: number) => (
+          {SectionData?.map((item: any, index: number) => (
             <SingleCyclePicture key={index} data={item} />
           ))}
         </div>

@@ -1,19 +1,14 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import Wave from "../assets/images/wave.svg";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import LoadingEffect from "../components/LoadingEffect";
-import GallerySection from "../components/visit-temple/GallerySection";
-import Introduction from "../components/visit-temple/Introduction";
-import VisitTempleSection from "../components/visit-temple/VisitTempleSection";
-import BigTitleSplitLines from "../ui/BigTitleSplitLines";
-import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
-import SmoothWrapper from "../ui/SmoothWrapper";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useAppState } from "../../components/AppContext";
+import Introduction from "../../components/visit-temple/Introduction";
+import VisitTempleSection from "../../components/visit-temple/VisitTempleSection";
+import BigTitleSplitLines from "../../ui/BigTitleSplitLines";
+import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
 type VisitTempleAcf = {
@@ -134,23 +129,30 @@ function buildGalleryAnalysisByTab(
   });
 }
 
-export default function Page() {
+export default function VisitTempleScriptProvider({ data }: { data: any }) {
   // Router Path
   const pathname = usePathname();
   const [visitTempleData, setVisitTempleData] = useState<any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [headerData, setHeaderData] = useState(null);
-  const [sectionWidth, setSectionWidth] = useState(100);
+  const [sectionWidth, setSectionWidth] = useState(200);
   const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    animationPlayed,
+    setAnimationPlayed,
+    isLoading,
+    setIsLoading,
+    templeTabData,
+    setTempleTabData,
+    templeActiveTab,
+    setTempleActiveTab,
+  } = useAppState();
   const [activeTab, setActiveTab] = useState(0);
   const [tabGalleryData, setTabGalleryData] = useState<GalleryAnalysisByTab[]>(
     [],
   );
 
   // Animation State
-  const [animationPlayed, setAnimationPlayed] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
   // Vertical Section
   const [verticalSection, setVerticalSection] =
@@ -158,62 +160,60 @@ export default function Page() {
 
   // Page Refs
   const main = useRef<HTMLDivElement>(null);
-  const page = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
-  const waveLine = useRef<HTMLDivElement>(null);
-  const waveMask = useRef<HTMLDivElement>(null);
-  const progress = useRef<HTMLDivElement>(null);
 
   // Get Page Data From backend
   useEffect(() => {
-    let isMounted = true;
-
-    const loadVisitTempleData = async () => {
-      try {
-        const response = await fetch("/api/visit-temple", {
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to load visit temple page data.");
-        }
-
-        const data = await response.json();
-
-        if (isMounted) {
-          setVisitTempleData(data);
-        }
-      } catch (error) {
-        console.error(error);
-        setError("Failed to load visit temple page data.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadVisitTempleData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [pathname]);
+    if (!data) {
+      setError("No data provided.");
+      return;
+    }
+    setVisitTempleData(data);
+    templeTabData.length === 0 &&
+      setTempleTabData(
+        data?.acf?.temple_tabs.map((tab: any) => ({
+          tab_title: tab.tab_title,
+        })) || [],
+      );
+  }, [data]);
 
   useEffect(() => {
     if (!visitTempleData?.acf) {
       return;
     }
-
     const galleryAnalysisByTab = buildGalleryAnalysisByTab(visitTempleData.acf);
     setTabGalleryData(galleryAnalysisByTab);
+    let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10;
+    galleryAnalysisByTab[activeTab]?.images.forEach((tab) => {
+      if (tab.orientation === "landscape") {
+        minSectionWidth += 32;
+      } else {
+        minSectionWidth += 22;
+      }
+    });
+    setSectionWidth(minSectionWidth);
+    setContainerWidth(minSectionWidth + 100);
     setPageDataFetched(true);
+    setIsLoading(false);
   }, [visitTempleData]);
 
   // Page Section Animation
   useGSAP(() => {
+    const animations: gsap.core.Animation[] = [];
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
       setPageContentAnimation();
       // Overflow body
+      const progress = document.getElementById(
+        "progress",
+      ) as HTMLElement | null;
+      const waveLine = document.getElementById(
+        "wave-line",
+      ) as HTMLElement | null;
+      const arrowButton = document.getElementById(
+        "arrow-button",
+      ) as HTMLElement | null;
+      waveLine?.classList.remove("hidden");
       const scurbScale = 2;
 
       // Vertical Section
@@ -225,19 +225,23 @@ export default function Page() {
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
-            gsap.to(progress.current, { width: `${100 * self.progress}%` });
-            if (self.progress > 0.97) {
-              gsap.to(waveLine.current, {
-                opacity: 0,
-                duration: 0.1,
-                delay: 0,
-              });
-            } else {
-              gsap.to(waveLine.current, {
-                opacity: 1,
-                duration: 0.1,
-                delay: 0,
-              });
+            if (progress) {
+              gsap.to(progress, { width: `${100 * self.progress}%` });
+            }
+            if (waveLine) {
+              if (self.progress > 0.97) {
+                gsap.to(waveLine, {
+                  opacity: 0,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              } else {
+                gsap.to(waveLine, {
+                  opacity: 1,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
             }
           },
         },
@@ -253,15 +257,14 @@ export default function Page() {
           scrub: scurbScale,
         },
       });
-      setVerticalSection(timeline);
+      animations.push(timeline);
     }
     // Return
+
     return () => {
-      if (verticalSection) {
-        verticalSection.kill();
-      }
+      animations.forEach((animation) => animation.kill());
     };
-  }, [pathname, pageDataFetched]);
+  }, [pathname, pageDataFetched, activeTab, containerWidth]);
 
   // Load Page
   useGSAP(() => {
@@ -269,11 +272,18 @@ export default function Page() {
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
       document.fonts.ready.then(() => {
         // Selectors
-        const headerLeft = main.current?.querySelector(".header-left");
-        const headerRight = main.current?.querySelector(".header-right");
-        const introTitle = main.current?.querySelector(
+        const page = document.querySelector(
+          "#page-wrapper",
+        ) as HTMLElement | null;
+        const headerLeft = document.querySelector(
+          ".header-left",
+        ) as HTMLElement | null;
+        const headerRight = document.querySelector(
+          ".header-right",
+        ) as HTMLElement | null;
+        const introTitle = document.querySelector(
           ".first-intro h1.intro-title",
-        );
+        ) as HTMLElement | null;
         const introImage = main.current?.querySelector(
           ".first-intro .intro-image",
         );
@@ -307,11 +317,12 @@ export default function Page() {
               setIsAllAnimationComplete(true);
             },
           });
-          if (main.current) {
-            tl.to(main.current, {
+          if (page) {
+            tl.to(page, {
               opacity: 1,
               ease: "none",
               duration: 0.5,
+              delay: 0,
             });
           }
           if (headerLeft) {
@@ -328,17 +339,6 @@ export default function Page() {
                 opacity: 1,
                 ease: "none",
                 duration: 1,
-              },
-              "-=1",
-            );
-          }
-          if (page.current) {
-            tl.to(
-              page.current,
-              {
-                opacity: 1,
-                ease: "none",
-                duration: 0,
               },
               "-=1",
             );
@@ -373,9 +373,12 @@ export default function Page() {
             );
           }
           // Wave Line Animation
-          if (waveMask.current) {
+          const waveLine = document.getElementById(
+            "wave-line",
+          ) as HTMLElement | null;
+          if (waveLine) {
             tl.to(
-              waveMask.current,
+              waveLine,
               {
                 translateY: 0,
                 opacity: 1,
@@ -410,10 +413,11 @@ export default function Page() {
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
+    const animations: gsap.core.Animation[] = [];
     // Page Content Animation
     const introImage = main.current?.querySelector(".first-intro .intro-image");
     if (introImage) {
-      gsap.to(introImage, {
+      const introImageAnimation = gsap.to(introImage, {
         x: "-30vw",
         ease: "none",
         scrollTrigger: {
@@ -426,7 +430,11 @@ export default function Page() {
           scrub: 2,
         },
       });
+      animations.push(introImageAnimation);
     }
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
   };
 
   // Set Body Overflow Hidden
@@ -444,50 +452,6 @@ export default function Page() {
     };
   }, [isAllAnimationComplete]);
 
-  // Active Tab Change Animation
-  useEffect(() => {
-    gsap.to(window, {
-      scrollTo: window.innerWidth * 2,
-      duration: 0.5,
-      ease: "power3.inOut",
-    });
-  }, [activeTab]);
-
-  useGSAP(() => {
-    // Page Overflow Hidden
-    document.body.classList.remove("!overflow-auto", "overflow-hidden");
-    document.body.classList.add("!overflow-hidden");
-    // Set onbeforeunload to fade out page
-    window.onbeforeunload = function () {
-      if (main.current) {
-        gsap.to(main.current, {
-          opacity: 0,
-          duration: 0.1,
-        });
-      }
-      if (page.current) {
-        gsap.to(page.current, {
-          opacity: 0,
-          duration: 0,
-          onComplete: () => {
-            window.scrollTo(0, 0);
-          },
-        });
-      }
-    };
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center text-center">
@@ -501,87 +465,60 @@ export default function Page() {
 
   return (
     visitTempleData && (
-      <div ref={main} id="main" className="relative">
-        <LoadingEffect animated={setAnimationPlayed} />
-        <Header data={headerData} animationStatus={isAllAnimationComplete} />
-        <SmoothWrapper>
-          <main
-            ref={page}
-            id="page"
-            dir="ltr"
-            className="main relative overflow-hidden z-10 opacity-0"
-          >
-            <div
-              ref={panel}
-              id="panel-wrapper"
-              className="w-screen h-screen flex items-end justify-end"
-            >
-              <div
-                ref={wrapper}
-                id="section-wrapper"
-                className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
-              >
-                <Introduction
-                  animated={isAllAnimationComplete}
-                  animationStatus={isAllAnimationComplete}
-                  bgImage={visitTempleData?.acf?.introduction?.background}
-                  bgOverlay={""}
-                  data={visitTempleData?.acf?.introduction}
-                  extraClass={
-                    "first-intro panel-section will-change-transform min-w-screen w-screen"
-                  }
-                  panel={panel}
-                  bgPosition=""
-                  overlayClass="bg-[#000000] opacity-0"
-                  bgClass=""
-                  audioControl={function (): void {
-                    throw new Error("Function not implemented.");
-                  }}
-                />
-                <VisitTempleSection
-                  extraClass={`w-[${sectionWidth}vw] panel-section will-change-transform`}
-                  animWidthText={0.8}
-                  sectionData={{
-                    videoSection: visitTempleData?.acf?.video_section,
-                    templeTabs: visitTempleData?.acf?.temple_tabs,
-                  }}
-                  activeTab={activeTab}
-                  setActiveTab={setActiveTab}
-                  sectionWidth={sectionWidth}
-                  tabGalleryData={tabGalleryData}
-                />
-              </div>
-            </div>
-          </main>
-          <GallerySection
-            tabGalleryData={tabGalleryData}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            tabData={visitTempleData?.acf?.temple_tabs[activeTab]}
-            tabDataHead={visitTempleData?.acf?.temple_tabs?.map((tab: any) => ({
-              tab_title: tab.tab_title,
-            }))}
-          />
-          <Footer className={"relative z-20"} />
-        </SmoothWrapper>
+      <main
+        ref={main}
+        id="page"
+        dir="ltr"
+        className="main relative overflow-hidden z-10"
+      >
         <div
-          ref={waveLine}
-          className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30"
+          ref={panel}
+          id="panel-wrapper"
+          className="w-screen h-screen flex items-end justify-end"
         >
           <div
-            ref={waveMask}
-            style={{
-              maskImage: `url(${Wave.src})`,
-            }}
-            className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
+            ref={wrapper}
+            id="section-wrapper"
+            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
           >
-            <div
-              ref={progress}
-              className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#0a0a0a] z-10"
-            ></div>
+            <Introduction
+              animated={isAllAnimationComplete}
+              animationStatus={isAllAnimationComplete}
+              bgImage={visitTempleData?.acf?.introduction?.background}
+              bgOverlay={""}
+              data={visitTempleData?.acf?.introduction}
+              extraClass={
+                "first-intro panel-section will-change-transform min-w-screen w-screen"
+              }
+              panel={panel}
+              bgPosition=""
+              overlayClass="bg-[#000000] opacity-0"
+              bgClass=""
+              audioControl={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
+            <Suspense
+              fallback={
+                <div className={`w-[${sectionWidth}vw] h-screen bg-black`}>
+                  Loading...
+                </div>
+              }
+            >
+              <VisitTempleSection
+                extraClass={`w-[${sectionWidth}vw] panel-section will-change-transform`}
+                animWidthText={0.8}
+                sectionData={{
+                  videoSection: visitTempleData?.acf?.video_section,
+                  templeTabs: visitTempleData?.acf?.temple_tabs,
+                }}
+                sectionWidth={sectionWidth}
+                tabGalleryData={tabGalleryData}
+              />
+            </Suspense>
           </div>
         </div>
-      </div>
+      </main>
     )
   );
 }

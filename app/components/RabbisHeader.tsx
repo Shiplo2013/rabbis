@@ -1,25 +1,45 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import ArrowRight from "../assets/icons/ArrowRight";
 import logo from "../assets/images/logo.png";
 import ThemeButton2 from "../ui/ThemeButton2";
 import RabbisHamburgerMenu from "../ui/past-rabbis/RabbisHamburgerMenu";
+import { useAppState } from "./AppContext";
 
 interface RabbisHeaderProps {
   link: string;
   data: any;
 }
 
-export default function RabbisHeader(props: RabbisHeaderProps) {
+export default function RabbisHeader() {
   const [activeHamburgerMenu, setActiveHamburgerMenu] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  const { isLoading, setIsLoading } = useAppState();
+
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     <>
       <header className="rabbis-header w-25 h-screen bg-black fixed top-0 right-0 z-99 px-3 py-10 opacity-0 border-l border-[rgba(212,175,55,0.30)]">
         <div className="header-content w-full h-full flex flex-col items-center justify-center">
           <div className="back-link mt-0 mb-auto">
             <Link
-              href={props.link}
+              href={"/past-rabbis"}
+              onClick={handleLinkClick}
               className="group w-14 h-14 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300"
             >
               <div className="w-8 h-auto transition-all duration-300 group-hover:translate-x-1">
@@ -29,7 +49,7 @@ export default function RabbisHeader(props: RabbisHeaderProps) {
           </div>
           <div className="logo mb-auto">
             <div className="small-logo w-18 h-13">
-              <Link href={"/"}>
+              <Link href={"/"} onClick={handleLinkClick}>
                 <Image
                   className="w-auto h-auto white-image"
                   src={logo.src}
@@ -59,12 +79,7 @@ export default function RabbisHeader(props: RabbisHeaderProps) {
         </div>
       </header>
 
-      <RabbisHamburgerMenu
-        extraClass=""
-        data={props.data}
-        activeMenu={activeHamburgerMenu}
-        activeMenuFunction={setActiveHamburgerMenu}
-      />
+      <RabbisHamburgerMenu />
     </>
   );
 }

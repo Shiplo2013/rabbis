@@ -7,6 +7,7 @@ import VerticalBackgroundImage from "@/app/ui/VerticalBackgroundImage";
 import parse from "html-react-parser";
 import { StaticImageData } from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 import ContactForm from "./ContactForm";
 
 interface ChildProps {
@@ -17,6 +18,10 @@ interface ChildProps {
 }
 
 export default function ContactSection(props: ChildProps) {
+  useEffect(() => {
+    console.log("ContactSection props.data:", props.data);
+  }, [props.data]);
+
   return (
     <section
       dir="rtl"
@@ -37,7 +42,10 @@ export default function ContactSection(props: ChildProps) {
       <div className="contact-wrapper w-full h-full relative z-30 py-[15vh] px-[10vw]">
         <div className="contact-content flex justify-between">
           <div className="contact-right flex flex-col gap-y-[10vh]">
-            <div dir="ltr" className="contact-heading text-right">
+            <div
+              dir="ltr"
+              className="contact-heading text-right flex justify-end"
+            >
               <h2 className="text-[40px] leading-[1em] text-[#FBF4E6] font-bold max-w-96.75">
                 {parse(
                   props.data?.contact_info?.title ||

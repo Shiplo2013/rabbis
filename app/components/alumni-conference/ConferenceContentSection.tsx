@@ -1,4 +1,5 @@
-import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
+import ConferenceGalleryImage from "@/app/ui/conference/ConferenceGalleryImage";
+import ConferenceGalleryImage2 from "@/app/ui/conference/ConferenceGalleryImage2";
 import FsLightbox from "fslightbox-react";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -23,10 +24,6 @@ interface ChildProps {
 export default function ConferenceContentSection(props: ChildProps) {
   // Selector
   const scrollbarRef = useRef<HTMLDivElement>(null);
-  const imageBlurPlaceholder = useMemo(
-    () => CreateShimmerDataUrl(1920, 1080),
-    [],
-  );
   // Section Data
   const SectionData = props?.sectionData;
 
@@ -109,65 +106,9 @@ export default function ConferenceContentSection(props: ChildProps) {
           {SectionData?.gallery?.map((item: any, index: number) => {
             const dimensions = props.galleryImageSizes?.[index];
             if (dimensions === "landscape") {
-              return (
-                <div
-                  key={index}
-                  className="single-gallery will-change-transform w-[39.4vw] h-[47.25vh] overflow-hidden"
-                >
-                  <div
-                    className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
-                  >
-                    <Image
-                      className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
-                      src={item?.sizes?.large || item?.image?.src}
-                      width={
-                        item?.sizes?.large?.width || item?.image?.width || 1920
-                      }
-                      height={
-                        item?.sizes?.large?.height ||
-                        item?.image?.height ||
-                        1080
-                      }
-                      blurDataURL={
-                        item?.image?.blurDataURL || imageBlurPlaceholder
-                      }
-                      placeholder={"blur"}
-                      loading="lazy"
-                      alt="Gallery Image"
-                    />
-                  </div>
-                </div>
-              );
+              return <ConferenceGalleryImage item={item} index={index} />;
             } else {
-              return (
-                <div
-                  key={index}
-                  className="single-gallery will-change-transform w-[26.56vw] h-[81.48vh] overflow-hidden"
-                >
-                  <div
-                    className={`single-gallery-image w-[60vw] h-[85vh] absolute top-1/2 left-1/2 -translate-[50%]`}
-                  >
-                    <Image
-                      className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
-                      src={item?.sizes?.large || item?.image?.src}
-                      width={
-                        item?.sizes?.large?.width || item?.image?.width || 1920
-                      }
-                      height={
-                        item?.sizes?.large?.height ||
-                        item?.image?.height ||
-                        1080
-                      }
-                      blurDataURL={
-                        item?.image?.blurDataURL || imageBlurPlaceholder
-                      }
-                      placeholder={"blur"}
-                      loading="lazy"
-                      alt="Gallery Image"
-                    />
-                  </div>
-                </div>
-              );
+              return <ConferenceGalleryImage2 item={item} index={index} />;
             }
           })}
         </div>
