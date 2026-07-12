@@ -13,6 +13,16 @@ export default async function page() {
     throw new Error("Failed to load data.");
   }
 
-  const pageData = await pageRes.json();
+  let pageData = [
+    { id: 0, title: { rendered: "" }, content: { rendered: "" }, acf: {} },
+  ];
+
+  try {
+    const parsed = await pageRes.json();
+    pageData = Array.isArray(parsed) ? parsed : [parsed];
+  } catch (error) {
+    console.error("Failed to parse page data JSON:", error);
+  }
+
   return <ConferenceScriptProvider data={pageData[0]} />;
 }
