@@ -1,5 +1,5 @@
-import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 import GetRightPosition from "./GetRightPosition";

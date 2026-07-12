@@ -45,7 +45,7 @@ export default function CustomsContentSection(props: ChildProps) {
           />
         </div>
         <div className="sheet-content flex items-stretch gap-x-[3.2vw] will-change-transform">
-          {sectionData?.posts?.map((item: any, index: number) => (
+          {sectionData?.map((item: any, index: number) => (
             <CustomContentItem
               key={index}
               data={item}

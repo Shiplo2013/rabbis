@@ -6,13 +6,13 @@ import FsLightbox from "fslightbox-react";
 import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 import Album1 from "../../assets/images/album-icon1.png";
 import Album2 from "../../assets/images/album-icon2.png";
 import BgImage from "../../assets/images/mirros-bg.jpg";
 import { gsap, ScrollSmoother, ScrollTrigger, useGSAP } from "../../ui/plugins";
-// import required modules
+import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -30,9 +30,17 @@ export default function MirrorsSection(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const imageTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
   // Use State
   const pageData = props.data || {};
   const nextPost = props.nextPost || {};
+  const {
+    isLoading,
+    setIsLoading,
+    activeMusicItem,
+    setActiveMusicItem,
+    musicPageData,
+  } = useAppState();
 
   // Lightbox State
   const [toggler, setToggler] = useState(false);
@@ -153,6 +161,19 @@ export default function MirrorsSection(props: ChildProps) {
       behavior: "smooth",
     });
   };
+
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     <section
       ref={wrapper}
@@ -264,19 +285,23 @@ export default function MirrorsSection(props: ChildProps) {
             })}
           </div>
         </div>
-        <div className="mirror-next absolute left-[4vw] top-1/2">
-          <Link
-            className="group flex flex-col items-start justify-start"
-            href={"/the-circle-of-the-year/" + nextPost?.slug}
-          >
-            <span className="icon w-5.25 transition-all duration-300 ease-in-out group-hover:-translate-x-6">
-              <ArrowLeftIcon />
-            </span>
-            <span className="title text-[36px] text-[#F4EDDD] font-thin">
-              {parse(nextPost?.title)}
-            </span>
-          </Link>
-        </div>
+        {nextPost && (
+          <div className="mirror-next absolute left-[4vw] top-1/2">
+            <Link
+              data-id={activeMusicItem}
+              className="group flex flex-col items-start justify-start"
+              href={"/the-circle-of-the-year/" + nextPost?.slug}
+              onClick={handleLinkClick}
+            >
+              <span className="icon w-5.25 transition-all duration-300 ease-in-out group-hover:-translate-x-6">
+                <ArrowLeftIcon />
+              </span>
+              <span className="title text-[36px] text-[#F4EDDD] font-thin">
+                {parse(nextPost?.title.rendered || "")}
+              </span>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -27,11 +27,7 @@ function getImageSrc(image: any) {
   }
 
   return (
-    image?.sizes?.large?.url ||
-    image?.sizes?.full?.url ||
-    image?.url ||
-    image?.src ||
-    ""
+    image?.sizes?.large || image?.sizes?.url || image?.url || image?.src || ""
   );
 }
 
@@ -40,8 +36,7 @@ export default function SingleCyclePicture(props: ChildProps) {
   const SingleData = props.data || {};
   const imageSrc = getImageSrc(SingleData?.acf?.image);
   const lightboxImageSrc =
-    SingleData?.acf?.image?.sizes?.xlarge?.url ||
-    SingleData?.acf?.image?.sizes?.large?.url ||
+    SingleData?.acf?.image?.sizes?.large ||
     SingleData?.acf?.image?.url ||
     SingleData?.acf?.image?.src ||
     "";
@@ -194,7 +189,7 @@ export default function SingleCyclePicture(props: ChildProps) {
 
       <div className="cycle-title mt-[5.8vh]">
         <h2 className="text-[55px] text-[#D1A941] leading-[70%] text-center">
-          {parse(SingleData?.title)}
+          {parse(SingleData?.title?.rendered || "")}
         </h2>
       </div>
     </div>

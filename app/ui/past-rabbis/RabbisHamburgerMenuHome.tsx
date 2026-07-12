@@ -1,4 +1,5 @@
 import CloseIcon from "@/app/assets/icons/CloseIcon";
+import { useAppState } from "@/app/components/AppContext";
 import { useGSAP } from "@gsap/react";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -11,10 +12,7 @@ import TextSplitLines from "../TextSplitLines";
 
 interface RabbisHamburgerMenuProps {
   extraClass?: string;
-  data?: any;
-  activeMenu?: boolean;
-  activeMenuFunction?: (state: boolean) => void;
-  data2?: PastRabbis[];
+  data?: PastRabbis[];
 }
 
 type PastRabbis = {
@@ -70,7 +68,8 @@ export default function RabbisHamburgerMenuHome(
   const menuOverlay = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const pathname = usePathname();
-  const allPosts = props.data2 || ([] as PastRabbis[]);
+  const allPosts = props.data || ([] as PastRabbis[]);
+  const { activeRabbisMenu, setActiveRabbisMenu } = useAppState();
 
   // Menu State
   const [menuTimeline] = useState(
@@ -222,16 +221,16 @@ export default function RabbisHamburgerMenuHome(
   }, [pathname]);
 
   useGSAP(() => {
-    props.activeMenu ? menuTimeline.play() : menuTimeline.reverse();
+    activeRabbisMenu ? menuTimeline.play() : menuTimeline.reverse();
 
-    if (props.activeMenu) {
+    if (activeRabbisMenu) {
       document.body.classList.add("!overflow-hidden");
       document.body.classList.remove("!overflow-auto");
     } else {
       document.body.classList.remove("!overflow-hidden");
       document.body.classList.add("!overflow-auto");
     }
-  }, [props.activeMenu]);
+  }, [activeRabbisMenu]);
   return (
     <>
       <div
@@ -244,7 +243,7 @@ export default function RabbisHamburgerMenuHome(
         <div className="menu-wrapper overflow-hidden">
           <button
             onClick={() => {
-              props.activeMenuFunction?.(false);
+              setActiveRabbisMenu(false);
             }}
             className="menu-close w-18 h-18 flex items-center justify-center rounded-full border border-[#C3A13F] absolute top-6 right-12.5 z-30 cursor-pointer"
           >
@@ -302,7 +301,7 @@ export default function RabbisHamburgerMenuHome(
       <div
         ref={menuOverlay}
         onClick={() => {
-          props.activeMenuFunction?.(false);
+          setActiveRabbisMenu(false);
         }}
         className="overlay fixed top-0 right-0 w-screen h-screen z-50 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"
       ></div>

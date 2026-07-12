@@ -1,3 +1,4 @@
+import { useAppState } from "@/app/components/AppContext";
 import BackgroundImage3 from "@/app/ui/BackgroundImage3";
 import BackgroundImage4 from "@/app/ui/BackgroundImage4";
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
@@ -6,6 +7,7 @@ import FsLightbox from "fslightbox-react";
 import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
 import Album1 from "../../assets/images/album-icon1.png";
@@ -31,8 +33,6 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   data: TabsData[];
-  activeTab: number;
-  setActiveTab: (index: number) => void;
   sectionWidth?: number;
   tabGalleryData?: any;
 }
@@ -41,14 +41,16 @@ export default function TempleTabs(props: ChildProps) {
   const tabsData = props.data as TabsData[];
   const wrapper = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
-  const activeTab = props.activeTab ?? 0;
-  const setActiveTab = props.setActiveTab ?? (() => {});
 
   // Lightbox State
   const [toggler, setToggler] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const { isLoading, setIsLoading, templeActiveTab, setTempleActiveTab } =
+    useAppState();
 
-  const videos = Array.isArray(tabsData[props.activeTab]?.videos)
-    ? tabsData[props.activeTab].videos
+  const videos = Array.isArray(tabsData[templeActiveTab]?.videos)
+    ? tabsData[templeActiveTab].videos
     : [];
   const videoSources = useMemo(
     () => videos.map((item: any) => item?.video).filter(Boolean),
@@ -58,27 +60,34 @@ export default function TempleTabs(props: ChildProps) {
   // UseGSAP for gallery animation
   useGSAP(() => {
     // Gallery Images
-    const GalleryImages =
-      galleryRef.current?.querySelectorAll(".single-gallery");
+    const GalleryImages = galleryRef.current?.querySelectorAll(
+      ".single-gallery",
+    ) as NodeListOf<HTMLElement> | undefined;
 
     // Custom Content Item
-    gsap.from(galleryRef.current, {
-      opacity: 0,
-      ease: "slow(0.1,1,false)",
-      duration: 1.5,
-      delay: 0,
-      scrollTrigger: {
-        start: () => {
-          return GetRightPosition(galleryRef.current) - window.innerWidth * 0.5;
+    if (galleryRef.current) {
+      gsap.from(galleryRef.current, {
+        opacity: 0,
+        ease: "slow(0.1,1,false)",
+        duration: 1.5,
+        delay: 0,
+        scrollTrigger: {
+          start: () => {
+            return (
+              GetRightPosition(galleryRef.current) - window.innerWidth * 0.5
+            );
+          },
+          toggleActions: "restart none none reverse",
         },
-        toggleActions: "restart pause resume reverse",
-      },
-    });
+      });
+    }
     // Contents
     if (GalleryImages) {
       GalleryImages.forEach((item, index) => {
         // Item BG Animation
-        const image = item.querySelector(".single-gallery-image");
+        const image = item.querySelector(
+          ".single-gallery-image",
+        ) as HTMLElement | null;
         if (image) {
           // Banner Background
           gsap.set(image, { scale: 1.2, x: "10vw" });
@@ -99,7 +108,19 @@ export default function TempleTabs(props: ChildProps) {
         }
       });
     }
-  }, [activeTab]);
+  }, [templeActiveTab]);
+
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
 
   return (
     <section
@@ -118,12 +139,13 @@ export default function TempleTabs(props: ChildProps) {
               <Link
                 href={`/visit-temple/${index}`}
                 key={index}
-                className={`group flex text-[24px] leading-[1.2em] relative cursor-pointer ${activeTab === index ? "active" : ""}`}
+                onClick={handleLinkClick}
+                className={`group flex text-[24px] leading-[1.2em] relative cursor-pointer ${templeActiveTab === index ? "active" : ""}`}
               >
                 <span className="relative">
                   {tab.tab_title}
                   <div
-                    className={`w-full h-0.5  bg-[#FBF4E6] ${activeTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-all duration-300`}
+                    className={`w-full h-0.5  bg-[#FBF4E6] ${templeActiveTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-all duration-300`}
                   ></div>
                 </span>
               </Link>
@@ -135,17 +157,17 @@ export default function TempleTabs(props: ChildProps) {
             <BackgroundImage4 bgImage={tabContentBG} start={1} panel={""} />
           </div>
           <div className="tabs-content-wrapper relative z-30 w-full h-full flex items-center justify-start">
-            {tabsData[activeTab] && (
+            {tabsData[templeActiveTab] && (
               <div className="tab-content w-full flex items-center justify-between gap-x-[5vw]">
                 <div className={`tab-content-item w-[32vw] min-w-[32vw]`}>
                   <div className="title mb-[6vh]">
                     <h2 className="text-[#C3A13F66] text-[114px] leading-[70%] font-bold max-w-76">
-                      {parse(tabsData[activeTab]?.title || "")}
+                      {parse(tabsData[templeActiveTab]?.title || "")}
                     </h2>
                   </div>
                   <div className="subtitle mb-[4vh]">
                     <h3 className="text-[45px] leading-[1em] text-[#EEECDD]">
-                      {parse(tabsData[activeTab]?.subtitle || "")}
+                      {parse(tabsData[templeActiveTab]?.subtitle || "")}
                     </h3>
                   </div>
 
@@ -158,12 +180,12 @@ export default function TempleTabs(props: ChildProps) {
                     autoHide={false}
                   >
                     <div className="content text-[#EEECDD] text-[21px] leading-[1.3em] [&>p]:not(:last-child):mb-5">
-                      {parse(tabsData[activeTab]?.text || "")}
+                      {parse(tabsData[templeActiveTab]?.text || "")}
                     </div>
                   </SimpleBar>
                 </div>
 
-                {tabsData[activeTab]?.videos?.length > 0 && (
+                {tabsData[templeActiveTab]?.videos?.length > 0 && (
                   <div className="video-gallery relative w-25 h-auto flex z-50">
                     {videoSources.length > 0 && (
                       <FsLightbox
@@ -206,58 +228,62 @@ export default function TempleTabs(props: ChildProps) {
                     ref={galleryRef}
                     className="gallery-wrapper w-full h-full flex items-center will-change-transform"
                   >
-                    {Object.values(tabsData[activeTab]?.gallery || []).map(
-                      (item: any, index: number) => {
-                        const orientation =
-                          props.tabGalleryData?.[activeTab]?.images[index]
-                            ?.orientation;
-                        if (orientation === "landscape") {
-                          return (
+                    {Object.values(
+                      tabsData[templeActiveTab]?.gallery || [],
+                    ).map((item: any, index: number) => {
+                      const orientation =
+                        props.tabGalleryData?.[templeActiveTab]?.images[index]
+                          ?.orientation;
+                      if (orientation === "landscape") {
+                        return (
+                          <div
+                            key={index}
+                            className="single-gallery will-change-transform w-[32vw] h-[40vh] overflow-hidden"
+                          >
                             <div
-                              key={index}
-                              className="single-gallery will-change-transform w-[32vw] h-[40vh] overflow-hidden"
+                              className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%] cursor-none pointer-events-none`}
                             >
-                              <div
-                                className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%] cursor-none pointer-events-none`}
-                              >
-                                <Image
-                                  className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
-                                  src={item?.sizes?.large || item?.image?.src}
-                                  width={1200}
-                                  height={1200}
-                                  blurDataURL={CreateShimmerDataUrl(1000, 1000)}
-                                  placeholder={"blur"}
-                                  loading="lazy"
-                                  alt="Gallery Image"
-                                />
-                              </div>
+                              <Image
+                                className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+                                src={item?.sizes?.large || item?.image?.src}
+                                width={1200}
+                                height={1200}
+                                blurDataURL={
+                                  item?.sizes?.thumbnail ||
+                                  item?.image?.medium ||
+                                  CreateShimmerDataUrl(1000, 1000)
+                                }
+                                placeholder={"blur"}
+                                loading="lazy"
+                                alt="Gallery Image"
+                              />
                             </div>
-                          );
-                        } else {
-                          return (
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div
+                            key={index}
+                            className="single-gallery will-change-transform w-[22vw] h-[70vh] overflow-hidden"
+                          >
                             <div
-                              key={index}
-                              className="single-gallery will-change-transform w-[22vw] h-[70vh] overflow-hidden"
+                              className={`single-gallery-image w-[60vw] h-[85vh] absolute top-1/2 left-1/2 -translate-[50%]`}
                             >
-                              <div
-                                className={`single-gallery-image w-[60vw] h-[85vh] absolute top-1/2 left-1/2 -translate-[50%]`}
-                              >
-                                <Image
-                                  className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
-                                  src={item?.sizes?.large || item?.image?.src}
-                                  width={1200}
-                                  height={1200}
-                                  blurDataURL={CreateShimmerDataUrl(1000, 1000)}
-                                  placeholder={"blur"}
-                                  loading="lazy"
-                                  alt="Gallery Image"
-                                />
-                              </div>
+                              <Image
+                                className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+                                src={item?.sizes?.large || item?.image?.src}
+                                width={1200}
+                                height={1200}
+                                blurDataURL={CreateShimmerDataUrl(1000, 1000)}
+                                placeholder={"blur"}
+                                loading="lazy"
+                                alt="Gallery Image"
+                              />
                             </div>
-                          );
-                        }
-                      },
-                    )}
+                          </div>
+                        );
+                      }
+                    })}
                   </div>
                 </div>
               </div>

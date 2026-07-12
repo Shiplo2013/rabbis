@@ -1,10 +1,12 @@
+"use client";
 import parse from "html-react-parser";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import Cookies from "../assets/icons/Cookies";
 import FooterProject from "../ui/FooterProject";
 import { gsap, ScrollToPlugin, ScrollTrigger, useGSAP } from "../ui/plugins";
+import { useAppState } from "./AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, useGSAP);
@@ -12,7 +14,6 @@ if (typeof window !== "undefined") {
 
 interface ChildProps {
   className: string;
-  data?: FooterApiResponse | null;
 }
 
 type FooterApiResponse = {
@@ -45,12 +46,13 @@ type FooterApiResponse = {
 
 function Footer(props: ChildProps) {
   // Footer Ref
+  const router = useRouter();
   const footerRef = useRef<HTMLElement | null>(null);
-  const [footerData, setFooterData] = useState<FooterApiResponse | null>(
-    props.data || null,
-  );
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoading, setIsLoading, appData } = useAppState();
+  const [footerData, setFooterData] = useState<FooterApiResponse | null>(
+    appData?.footer || null,
+  );
 
   // Static Data
   const staticData: FooterApiResponse = {
@@ -304,6 +306,18 @@ function Footer(props: ChildProps) {
     };
   }, [pathname, footerData]);
 
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     footerData && (
       <footer
@@ -329,6 +343,7 @@ function Footer(props: ChildProps) {
                     <li key={index}>
                       <Link
                         href={item.link}
+                        onClick={handleLinkClick}
                         className="hover:text-(--theme-color) transition-colors duration-300"
                       >
                         {item.title}
@@ -368,6 +383,7 @@ function Footer(props: ChildProps) {
                   <span key={index}>
                     <Link
                       href={item.link}
+                      onClick={handleLinkClick}
                       className="hover:text-(--theme-color) transition-colors duration-300"
                     >
                       {item.title}

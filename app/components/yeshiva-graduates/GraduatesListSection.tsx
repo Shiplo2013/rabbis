@@ -2,10 +2,12 @@ import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import SingleGraduates from "@/app/ui/SingleGraduates";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef } from "react";
 import image1 from "../../assets/images/graduates-banner-image1.png";
 import image2 from "../../assets/images/graduates-banner-image2.png";
 import { gsap, useGSAP } from "../../ui/plugins";
+import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -19,6 +21,10 @@ interface ChildProps {
 }
 
 export default function GraduateListSection(props: ChildProps) {
+  // state
+  const pathname = usePathname();
+  const router = useRouter();
+  const { isLoading, setIsLoading } = useAppState();
   // Data
   const PageLinks = props.pageLinks || [
     {
@@ -71,6 +77,19 @@ export default function GraduateListSection(props: ChildProps) {
       }
     }
   });
+
+  // OnClick Handler for Link Navigation
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     <section
       ref={wrapper}
@@ -91,6 +110,7 @@ export default function GraduateListSection(props: ChildProps) {
             >
               <Link
                 href={item.page_link}
+                onClick={handleLinkClick}
                 onMouseEnter={handleMouseOver}
                 onMouseLeave={handleMouseOut}
                 data-index={index}

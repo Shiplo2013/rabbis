@@ -4,6 +4,7 @@ import PauseIcon2 from "@/app/assets/icons/PauseIcon2";
 import PlayIcon from "@/app/assets/icons/PlayIcon";
 import { useEffect, useRef, useState } from "react";
 import thumb from "../../assets/images/video-thumb2.jpg";
+import { useAppState } from "../AppContext";
 
 interface VideoPopupProps {
   videoControl: {
@@ -12,10 +13,11 @@ interface VideoPopupProps {
   };
 }
 
-export default function VideoPopup(props: VideoPopupProps) {
+export default function VideoPopup() {
   // Refs
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
+  const { isVideoPopupOpen, setIsVideoPopupOpen } = useAppState();
   // Data
   const video = "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
   const videoData = {
@@ -41,17 +43,17 @@ export default function VideoPopup(props: VideoPopupProps) {
 
   // Effect to Play/Pause Video based on Popup State
   useEffect(() => {
-    if (props.videoControl.isVideoPopupOpen) {
+    if (isVideoPopupOpen) {
       playVideo();
     } else {
       pauseVideo();
     }
-  }, [props.videoControl.isVideoPopupOpen]);
+  }, [isVideoPopupOpen]);
 
   return (
     <div className="video-popup fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex items-center justify-center z-999 backdrop-blur-sm opacity-0 invisible">
       <div
-        onClick={() => props.videoControl.setIsVideoPopupOpen(false)}
+        onClick={() => setIsVideoPopupOpen(false)}
         className="close-video w-15 h-15 p-3 border border-white rounded-full flex items-center justify-center absolute top-5 right-5 cursor-pointer z-50"
       >
         <CloseIcon2 />

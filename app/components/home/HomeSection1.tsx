@@ -1,15 +1,16 @@
 "use client";
 import BackgroundImage2 from "@/app/ui/BackgroundImage2";
+import ThemeButton2 from "@/app/ui/ThemeButton2";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
 import ArrowLeft from "../../assets/icons/ArrowLeft";
 import WishIcon from "../../assets/icons/WishIcon";
 import CardSlider from "../../ui/CardSlider";
 import PostItem from "../../ui/PostItem";
-import ThemeButton from "../../ui/ThemeButton";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
+import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -101,10 +102,12 @@ export default function HomeSection1(props: ChildProps) {
   const [isSlideOut, setIsSlideOut] = useState(false);
   // Route
   const pathname = usePathname();
+  const router = useRouter();
   const sectionData = props.sectionData as SectionData;
 
   // Get Communite Posts
   const [homePosts, setHomePosts] = useState<HomePost[]>([]);
+  const { isLoading, setIsLoading } = useAppState();
 
   useEffect(() => {
     let isMounted = true;
@@ -243,6 +246,17 @@ export default function HomeSection1(props: ChildProps) {
     }
   }, [isSlideOut]);
 
+  // OnClick Handler for Link Navigation
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     <section
       ref={wrapper}
@@ -281,6 +295,9 @@ export default function HomeSection1(props: ChildProps) {
           <div className="post-grid bg-[#F1EADA] text-[#C3A13F] p-11 max-h-100 relative">
             <Link
               href={"/communities"}
+              onClick={(e) => {
+                handleLinkClick(e);
+              }}
               className="absolute top-5 left-5 w-4 cursor-pointer"
             >
               <ArrowLeft extraClass="fill-[#C3A13F]" />
@@ -317,9 +334,9 @@ export default function HomeSection1(props: ChildProps) {
           <div
             ref={CTAbutton}
             onClick={() => setIsSlideOut(!isSlideOut)}
-            className="wish-icon py-5"
+            className="wish-icon py-5 cursor-pointer"
           >
-            <ThemeButton
+            <ThemeButton2
               extraClass="w-13 h-13 flex item-center justify-center"
               bgColor="bg-[#ffffff]"
               textColor="text-[#000000]"

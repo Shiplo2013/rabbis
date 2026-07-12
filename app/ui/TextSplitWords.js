@@ -3,9 +3,17 @@ import {
     SplitText
 } from "./plugins";
 
-gsap.registerPlugin(SplitText);
+let pluginsRegistered = false;
+
+function ensurePluginsRegistered() {
+  if (typeof window !== "undefined" && !pluginsRegistered) {
+    gsap.registerPlugin(SplitText);
+    pluginsRegistered = true;
+  }
+}
 
 export default function TextSplitWords(item) {
+    ensurePluginsRegistered();
     // Title Split
     var content = SplitText.create(item, { 
         type: "words", 

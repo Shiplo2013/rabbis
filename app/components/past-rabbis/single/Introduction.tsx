@@ -61,7 +61,11 @@ export default function Introduction(props: ChildProps) {
           <div className="rabbis-image w-[27.1vw] h-[57.2vh] relative opacity-0">
             <Image
               className="w-full h-full object-cover object-center"
-              src={rabbisPosts?.thumbnail?.url || rabbisPosts?.thumbnail?.src}
+              src={
+                rabbisPosts?.thumbnail?.sizes?.medium_large ||
+                rabbisPosts?.thumbnail?.url ||
+                rabbisPosts?.thumbnail?.src
+              }
               width={522}
               height={532}
               alt={`${parse(rabbisPosts?.title)}`}

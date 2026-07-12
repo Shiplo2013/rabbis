@@ -78,7 +78,7 @@ export default function TabMenu(props: ChildProps) {
         <Image
           src={HeadBG?.src}
           width={210}
-          height={window.innerHeight}
+          height={1080}
           blurDataURL={HeadBG.blurDataURL}
           placeholder={"blur"}
           loading="lazy"

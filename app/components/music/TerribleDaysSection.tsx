@@ -41,6 +41,7 @@ export default function TerribleDaysSection(props: ChildProps) {
   const pathname = usePathname();
   // Page Data
   const pageData = props.data || {};
+
   // Timeline Selector
   const timeline = props.panel;
   const getTimelineOffset = () => {
@@ -128,20 +129,22 @@ export default function TerribleDaysSection(props: ChildProps) {
   useGSAP(
     () => {
       // Banner Background
-      gsap.set(background.current, { scale: 1.2, x: "20vw" });
-      gsap.to(background.current, {
-        x: "-50vw",
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * props.animWidthText;
+      if (background.current) {
+        gsap.set(background.current, { scale: 1.2, x: "20vw" });
+        gsap.to(background.current, {
+          x: "-50vw",
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * props.animWidthText;
+            },
+            end: () => {
+              return "+=" + window.innerWidth * 3;
+            },
+            scrub: 2,
           },
-          end: () => {
-            return "+=" + window.innerWidth * 3;
-          },
-          scrub: 2,
-        },
-      });
+        });
+      }
     },
     { scope: wrapper },
   );
@@ -168,6 +171,7 @@ export default function TerribleDaysSection(props: ChildProps) {
             <Image
               className="float-image w-full object-contain object-center h-full"
               src={
+                pageData?.acf?.introduction?.album_image_1?.sizes?.thumbnail ||
                 pageData?.acf?.introduction?.album_image_1?.url ||
                 pageData?.acf?.introduction?.album_image_1?.src
               }
@@ -200,6 +204,7 @@ export default function TerribleDaysSection(props: ChildProps) {
             <Image
               className="float-image w-full object-contain object-center h-full"
               src={
+                pageData?.acf?.introduction?.album_image_2?.sizes?.thumbnail ||
                 pageData?.acf?.introduction?.album_image_2?.url ||
                 pageData?.acf?.introduction?.album_image_2?.src
               }

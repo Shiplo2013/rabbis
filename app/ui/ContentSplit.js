@@ -8,7 +8,7 @@ gsap.registerPlugin(SplitText);
 export default function ContenteSplit(item, type) {
     // Title Split
     var content = SplitText.create(item, { 
-        type: "words,lines", 
+        type: "words,lines",
         linesClass: "line overflow-hidden", 
         autoSplit: true, 
         mask: "lines" 
