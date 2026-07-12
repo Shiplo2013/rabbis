@@ -47,21 +47,21 @@ const customFont = localFont({
 async function getGlobalData() {
   // Next.js automatically caches and memoizes this native fetch request
   const headerRes = fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=header&_fields=id,acf`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=header&acf_format=standard&_fields=id,acf`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
       cache: "force-cache",
     },
   );
   const headerCommunityRes = fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=header-community&_fields=id,acf`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=header-community&acf_format=standard&_fields=id,acf`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
       cache: "force-cache",
     },
   );
   const footerRes = fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=footer&_fields=id,acf`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=footer&acf_format=standard&_fields=id,acf`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
       cache: "force-cache",
