@@ -299,7 +299,7 @@ export default function KnessetScriptProvider({
           }
           if (headerLeft) {
             tl.to(headerLeft, {
-              opacity: 1,
+              autoAlpha: 1,
               ease: "none",
               duration: 1,
             });
@@ -308,7 +308,7 @@ export default function KnessetScriptProvider({
             tl.to(
               headerRight,
               {
-                opacity: 1,
+                autoAlpha: 1,
                 ease: "none",
                 duration: 1,
               },

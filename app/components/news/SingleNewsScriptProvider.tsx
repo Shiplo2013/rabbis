@@ -304,6 +304,28 @@ export default function SingleNewsScriptProvider({
     };
   }, [isAllAnimationComplete]);
 
+  // On Pathname Change
+  useEffect(() => {
+    const headerLeft = document.querySelector(
+      "#header .header-left",
+    ) as HTMLDivElement | null;
+    const headerRight = document.querySelector(
+      "#header .header-right",
+    ) as HTMLDivElement | null;
+    if (headerLeft) {
+      gsap.set(headerLeft, {
+        autoAlpha: 0,
+        duration: 0,
+      });
+    }
+    if (headerRight) {
+      gsap.set(headerRight, {
+        autoAlpha: 0,
+        duration: 0,
+      });
+    }
+  }, [pathname]);
+
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center text-center">
@@ -319,9 +341,9 @@ export default function SingleNewsScriptProvider({
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <h1 className="text-2xl font-bold">News Not Found</h1>
           <p className="text-gray-600">
-            The requested rabbi post could not be found.
+            The requested news post could not be found.
           </p>
         </div>
       </div>

@@ -140,7 +140,7 @@ export default function ContactScriptProvider({
           }
           if (headerLeft) {
             tl.to(headerLeft, {
-              opacity: 1,
+              autoAlpha: 1,
               ease: "none",
               duration: 1,
             });
@@ -149,7 +149,7 @@ export default function ContactScriptProvider({
             tl.to(
               headerRight,
               {
-                opacity: 1,
+                autoAlpha: 1,
                 ease: "none",
                 duration: 1,
               },
