@@ -1,6 +1,7 @@
 import BackgroundImage from "../../ui/BackgroundImage";
 import { gsap, useGSAP } from "../../ui/plugins";
 import ScrollButton from "../../ui/ScrollButton";
+import HomeBannerVideo from "./HomeBannerVideo";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -12,6 +13,7 @@ interface BannerData {
   title_3?: string;
   subtitle?: string;
   banner_background?: any;
+  banner_video?: any;
 }
 
 interface ChildProps {
@@ -51,12 +53,16 @@ export default function HomeBanner(props: ChildProps) {
       className={`${props.extraClass} home-banner overflow-hidden relative`}
     >
       <div className="banner-background-wrapper absolute top-0 left-0 w-full h-full z-10">
-        <BackgroundImage
-          bgImage={bannerData?.banner_background}
-          animated={props.animated}
-          panel={props.panel}
-          overlayClass="opacity-40"
-        />
+        {bannerData?.banner_video ? (
+          <HomeBannerVideo bannerData={bannerData} />
+        ) : (
+          <BackgroundImage
+            bgImage={bannerData?.banner_background}
+            animated={props.animated}
+            panel={props.panel}
+            overlayClass="opacity-40"
+          />
+        )}
         <div className="banner-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30"></div>
       </div>
       <div dir="rtl" className="flex items-center h-full relative z-30">

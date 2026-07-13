@@ -384,7 +384,7 @@ export default function NewsScriptProvider({
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [pathname, pageDataFetched, animationPlayed]);
+  }, [pageDataFetched, animationPlayed]);
 
   // On Mouse Move
   useGSAP(() => {

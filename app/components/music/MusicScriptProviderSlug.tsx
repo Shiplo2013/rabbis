@@ -267,7 +267,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
         }
       });
     }
-  }, [pageDataFetched, isAllAnimationComplete, pathname]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   useGSAP(() => {

@@ -227,7 +227,7 @@ export default function YeshivaRabbisScriptProvider({
       }
     }
     setPageContentAnimation();
-  }, [pageDataFetched, pathname, animationPlayed]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

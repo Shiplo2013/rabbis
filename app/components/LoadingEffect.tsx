@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAppState } from "./AppContext";
 import Loading from "./Loading";
 
 function LoadingEffect(props: { animated: (value: boolean) => void }) {
@@ -8,6 +9,7 @@ function LoadingEffect(props: { animated: (value: boolean) => void }) {
   const [isFirstVisit, setIsFirstVisit] = useState(false);
   const pathname = usePathname();
   const [hardRefresh, setHardRefresh] = useState(false);
+  const { animationPlayed, setAnimationPlayed } = useAppState();
   // Check localStorage on component mount
   useEffect(() => {
     // Loading effect for first time visitors
@@ -36,11 +38,11 @@ function LoadingEffect(props: { animated: (value: boolean) => void }) {
       //localStorage.setItem("hasVisited", "true");
       setIsFirstVisit(true);
     } else {
-      props.animated(true);
+      setAnimationPlayed(true);
       setIsFirstVisit(false);
     }
     if (pathname !== "/") {
-      props.animated(true);
+      setAnimationPlayed(true);
       localStorage.setItem("hasVisited", "true");
     }
   }, [pathname]);

@@ -435,7 +435,7 @@ export default function CyclePicturesScriptProvider({
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [pathname, pageDataFetched, animationPlayed]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

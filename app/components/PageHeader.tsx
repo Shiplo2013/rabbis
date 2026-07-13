@@ -124,7 +124,7 @@ function PageHeader() {
   );
   // Animate on active
   useGSAP(() => {
-    const mainMenu = document.querySelector("#main-menu") as HTMLElement | null;
+    const mainMenu = document.getElementById("main-menu") as HTMLElement | null;
     const menuCloseButton = mainMenu?.querySelector(
       ".menu-close",
     ) as HTMLElement | null;

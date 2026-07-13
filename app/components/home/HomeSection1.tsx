@@ -22,6 +22,7 @@ interface ChildProps {
   animWidthSlider: number;
   panel: any;
   sectionData: SectionData;
+  postsData: HomePost[];
 }
 
 type SectionData = {
@@ -35,64 +36,17 @@ type SectionData = {
 
 type HomePost = {
   id: number;
-  title: string;
-  content: string;
-  excerpt: string;
-  date?: string;
-  acf: Record<string, unknown> | unknown[] | null;
+  title: {
+    rendered: string;
+  };
+  slug: string;
+  acf: {
+    subtitle?: string;
+    informations?: {
+      established?: string;
+    };
+  };
 };
-
-function parseCommunityPosts(input: unknown): unknown[] {
-  if (Array.isArray(input)) {
-    return input;
-  }
-
-  if (typeof input === "string") {
-    try {
-      const parsed = JSON.parse(input);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-
-  return [];
-}
-
-function extractPostId(item: unknown): number | undefined {
-  if (typeof item === "number") {
-    return Number.isFinite(item) ? item : undefined;
-  }
-
-  if (typeof item === "string") {
-    const parsed = Number(item);
-    return Number.isFinite(parsed) ? parsed : undefined;
-  }
-
-  if (item && typeof item === "object") {
-    const candidate = (item as Record<string, unknown>).ID;
-    const fallback = (item as Record<string, unknown>).id;
-    const value = candidate ?? fallback;
-
-    if (typeof value === "number") {
-      return Number.isFinite(value) ? value : undefined;
-    }
-
-    if (typeof value === "string") {
-      const parsed = Number(value);
-      return Number.isFinite(parsed) ? parsed : undefined;
-    }
-  }
-
-  return undefined;
-}
-
-function stripHtml(value: string) {
-  return value
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 export default function HomeSection1(props: ChildProps) {
   // Selectors
@@ -110,69 +64,10 @@ export default function HomeSection1(props: ChildProps) {
   const { isLoading, setIsLoading } = useAppState();
 
   useEffect(() => {
-    let isMounted = true;
-
-    const loadCommunityPosts = async () => {
-      const communityPosts = parseCommunityPosts(sectionData?.community_posts);
-      const ids = communityPosts
-        .map(extractPostId)
-        .filter((id): id is number => typeof id === "number");
-
-      if (!ids.length) {
-        if (isMounted) {
-          setHomePosts([]);
-        }
-        return;
-      }
-
-      const uniqueIds = [...new Set(ids)];
-      const params = new URLSearchParams({
-        include: uniqueIds.join(","),
-        per_page: String(uniqueIds.length),
-        orderby: "include",
-        order: "asc",
-      });
-
-      try {
-        const response = await fetch(
-          `/api/communities/posts?${params.toString()}`,
-          {
-            cache: "no-store",
-          },
-        );
-
-        if (!response.ok) {
-          if (isMounted) {
-            setHomePosts([]);
-          }
-          return;
-        }
-
-        const data = (await response.json()) as { posts?: HomePost[] };
-        const posts = Array.isArray(data.posts) ? data.posts : [];
-        const orderIndex = new Map(uniqueIds.map((id, index) => [id, index]));
-        const sortedPosts = [...posts].sort((a, b) => {
-          const aIndex = orderIndex.get(a.id) ?? Number.MAX_SAFE_INTEGER;
-          const bIndex = orderIndex.get(b.id) ?? Number.MAX_SAFE_INTEGER;
-          return aIndex - bIndex;
-        });
-
-        if (isMounted) {
-          setHomePosts(sortedPosts);
-        }
-      } catch {
-        if (isMounted) {
-          setHomePosts([]);
-        }
-      }
-    };
-
-    loadCommunityPosts();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [sectionData?.community_posts]);
+    if (props.postsData && props.postsData.length > 0) {
+      setHomePosts(props.postsData);
+    }
+  }, [props.postsData]);
 
   // // Check data
   // useEffect(() => {
@@ -310,10 +205,8 @@ export default function HomeSection1(props: ChildProps) {
                 {homePosts.map((post: any, index: number) => (
                   <PostItem
                     key={post.id}
-                    title={stripHtml(post.title)}
-                    content={stripHtml(
-                      post?.acf?.subtitle || post.excerpt || "",
-                    )}
+                    title={post.title.rendered}
+                    content={post?.acf?.subtitle || post.excerpt || ""}
                     subtitle={
                       post.acf?.informations?.established
                         ? `נוסדה בשנת ${post?.acf?.informations?.established}`

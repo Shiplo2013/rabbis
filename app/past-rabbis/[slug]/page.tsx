@@ -26,11 +26,7 @@ export default async function Page({ params }: PageProps) {
     allPostsRes,
   ]);
 
-  if (!postsDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
-  if (!allPostsDataRes.ok) {
+  if (!postsDataRes.ok || !allPostsDataRes.ok) {
     throw new Error("Failed to load data.");
   }
 

@@ -300,7 +300,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
         }
       });
     }
-  }, [pathname, pageDataFetched]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

@@ -33,10 +33,10 @@ export async function sendFormData(prevState: unknown, formData: FormData) {
       result.payload = formData;
     }
 
-    console.log("Form data sent successfully:", result);
+    //console.log("Form data sent successfully:", result);
     return result;
   } catch (error) {
-    console.error("Error sending form data:", error);
+    //console.error("Error sending form data:", error);
     //throw error;
     return {
       success: false,

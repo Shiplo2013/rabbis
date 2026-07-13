@@ -376,7 +376,7 @@ export default function CommunitiesSheetsScriptProvider({
         }
       });
     }
-  }, [pathname, pageDataFetched, animationPlayed]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

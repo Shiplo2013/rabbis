@@ -305,7 +305,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
         duration: 0,
       });
     }
-  }, [pageDataFetched]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

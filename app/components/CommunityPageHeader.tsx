@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import HambergerIcon from "../assets/icons/HambergerIcon";
 import logo from "../assets/images/logo.png";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
@@ -11,7 +10,12 @@ if (typeof window !== "undefined") {
 }
 
 export default function CommunityPageHeader() {
-  const { appData, animationPlayed } = useAppState();
+  const {
+    appData,
+    animationPlayed,
+    activeHamburgerMenu,
+    setActiveHamburgerMenu,
+  } = useAppState();
   const SectionData = {
     leftMenu: [
       {
@@ -50,64 +54,6 @@ export default function CommunityPageHeader() {
       },
     ],
   };
-  // Menu Activation
-  const [isMenuActive, setIsMenuActive] = useState(false);
-  const [menuTimeline] = useState(
-    gsap.timeline({
-      paused: true,
-    }),
-  );
-  // Animate on active
-  useGSAP(() => {
-    // Close button
-    gsap.set(".menu-close", {
-      scale: 0,
-      rotate: 360,
-    });
-    gsap.set(".menu-right, .menu-left, .bottom-menu, .bottom-search", {
-      yPercent: 100,
-      opacity: 0,
-    });
-    // Animate on active
-    menuTimeline
-      .to("#main-menu", {
-        opacity: 1,
-        visibility: "visible",
-        duration: 0,
-        delay: 0,
-      })
-      .to(".menu-background", {
-        clipPath: "circle(150% at 100% 0%)",
-        ease: "expo.inOut",
-        duration: 2,
-        delay: 0,
-      })
-      .to(
-        ".menu-right, .menu-left, .bottom-menu, .bottom-search",
-        {
-          yPercent: 0,
-          ease: "expo.inOut",
-          duration: 1.5,
-          opacity: 1,
-          delay: 0,
-        },
-        "-=1.5",
-      )
-      .to(
-        ".menu-close",
-        {
-          scale: 1,
-          ease: "expo.inOut",
-          duration: 1.5,
-          rotate: 0,
-          delay: 0,
-        },
-        "-=1.5",
-      );
-  }, []);
-  useGSAP(() => {
-    isMenuActive ? menuTimeline.play() : menuTimeline.reverse();
-  }, [isMenuActive]);
 
   return (
     <>
@@ -115,7 +61,7 @@ export default function CommunityPageHeader() {
         <div className="header-wrapper flex items-center justify-between">
           <div className="header-right flex items-center gap-x-9">
             <button
-              onClick={() => setIsMenuActive(!isMenuActive)}
+              onClick={() => setActiveHamburgerMenu(!activeHamburgerMenu)}
               disabled={!animationPlayed}
               className="hamburger-btn cursor-pointer w-10 h-10 flex justify-center items-center"
             >
