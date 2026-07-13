@@ -216,7 +216,7 @@ export default function CommunitiesScriptProvider({
           }
           if (headerLeft) {
             tl.to(headerLeft, {
-              opacity: 1,
+              autoAlpha: 1,
               ease: "none",
               duration: 1,
             });
@@ -225,7 +225,7 @@ export default function CommunitiesScriptProvider({
             tl.to(
               headerRight,
               {
-                opacity: 1,
+                autoAlpha: 1,
                 ease: "none",
                 duration: 1,
               },

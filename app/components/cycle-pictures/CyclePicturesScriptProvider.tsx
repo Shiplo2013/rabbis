@@ -142,7 +142,7 @@ export default function CyclePicturesScriptProvider({
     }
     if (headerLeft) {
       const headerLeftAnim = gsap.to(headerLeft, {
-        opacity: 1,
+        autoAlpha: 1,
         ease: "none",
         duration: 1,
       });
@@ -150,7 +150,7 @@ export default function CyclePicturesScriptProvider({
     }
     if (headerRight) {
       const headerRightAnim = gsap.to(headerRight, {
-        opacity: 1,
+        autoAlpha: 1,
         ease: "none",
         duration: 0,
       });

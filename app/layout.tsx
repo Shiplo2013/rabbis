@@ -68,23 +68,196 @@ async function getGlobalData() {
     },
   );
 
-  const [headerData, headerCommunityData, footerData] = await Promise.all([
-    headerRes,
-    headerCommunityRes,
-    footerRes,
-  ]);
+  const [headerDataRes, headerCommunityDataRes, footerDataRes] =
+    await Promise.all([headerRes, headerCommunityRes, footerRes]);
 
-  if (!headerData.ok || !headerCommunityData.ok || !footerData.ok) {
+  if (!headerDataRes.ok || !headerCommunityDataRes.ok || !footerDataRes.ok) {
     throw new Error("Failed to load data.");
   }
-  const header = await headerData.json();
-  const headerCommunity = await headerCommunityData.json();
-  const footer = await footerData.json();
+
+  let headerData = [
+    {
+      acf: {
+        header_logo: [],
+        header_right: {
+          donation_button: {
+            title: "",
+            link: "",
+          },
+          menu: [
+            {
+              title: "",
+              link: "",
+              have_sub_menu: false,
+              sub_menu: [],
+            },
+          ],
+        },
+        header_top: {
+          community_button: {
+            title: "",
+            link: "",
+          },
+          donation_button: {
+            title: "",
+            link: "",
+          },
+          music_button: {
+            title: "",
+            link: "",
+          },
+        },
+        hamburger_menu: {
+          left_menu: {
+            menu_title: "",
+            menu_title_link: "",
+            menu_1: [
+              {
+                title: "",
+                link: "",
+                have_sub_menu: false,
+                sub_menu: [],
+              },
+            ],
+            menu_2: [
+              {
+                title: "",
+                link: "",
+              },
+            ],
+          },
+          right_menu: {
+            menu_title: "",
+            menu_title_link: "",
+            menu_1: [
+              {
+                title: "",
+                link: "",
+                have_sub_menu: false,
+                sub_menu: [],
+              },
+            ],
+            menu_2: [
+              {
+                title: "",
+                link: "",
+              },
+            ],
+            menu_3: [
+              {
+                title: "",
+                link: "",
+              },
+            ],
+          },
+        },
+      },
+    },
+  ];
+  let headerCommunityData = [
+    {
+      acf: {
+        header_left: [
+          {
+            title: "",
+            link: "",
+          },
+        ],
+        header_right: [
+          {
+            title: "",
+            link: "",
+          },
+        ],
+        sidebar: {
+          title: "",
+          sidebar_events: [
+            {
+              title: "",
+              link: "",
+              text: "",
+              date: "",
+            },
+          ],
+          sidebar_news: [
+            {
+              title: "",
+              link: "",
+              text: "",
+              date: "",
+            },
+          ],
+        },
+      },
+    },
+  ];
+  let footerData = [
+    {
+      acf: {
+        big_menu: [
+          {
+            title: "",
+            link: "",
+            image: [],
+          },
+        ],
+        footer_menu: [
+          {
+            title: "",
+            link: "",
+          },
+        ],
+        widget_1: {
+          widget_title: "",
+          content: "",
+        },
+        widget_2: {
+          widget_title: "",
+          content: "",
+        },
+        widget_3: {
+          menu_items: [
+            {
+              title: "",
+              link: "",
+            },
+          ],
+        },
+      },
+    },
+  ];
+
+  try {
+    const parsedHeaderData = await headerDataRes.json();
+    headerData = Array.isArray(parsedHeaderData)
+      ? parsedHeaderData
+      : [parsedHeaderData];
+  } catch (error) {
+    console.error("Failed to parse header data JSON:", error);
+  }
+
+  try {
+    const parsedHeaderCommunityData = await headerCommunityDataRes.json();
+    headerCommunityData = Array.isArray(parsedHeaderCommunityData)
+      ? parsedHeaderCommunityData
+      : [parsedHeaderCommunityData];
+  } catch (error) {
+    console.error("Failed to parse header community data JSON:", error);
+  }
+
+  try {
+    const parsedFooterData = await footerDataRes.json();
+    footerData = Array.isArray(parsedFooterData)
+      ? parsedFooterData
+      : [parsedFooterData];
+  } catch (error) {
+    console.error("Failed to parse footer data JSON:", error);
+  }
 
   return {
-    header,
-    headerCommunity,
-    footer,
+    header: headerData[0],
+    headerCommunity: headerCommunityData[0],
+    footer: footerData[0],
   };
 }
 
@@ -102,9 +275,9 @@ export default async function RootLayout({
       >
         <AppProvider
           appData={{
-            header: globalData.header[0],
-            headerCommunity: globalData.headerCommunity[0],
-            footer: globalData.footer[0],
+            header: globalData.header,
+            headerCommunity: globalData.headerCommunity,
+            footer: globalData.footer,
           }}
         >
           <div id="main" className="relative min-h-screen min-w-screen">

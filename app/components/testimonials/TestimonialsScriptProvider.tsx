@@ -204,7 +204,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
           }
           if (headerLeft) {
             tl.to(headerLeft, {
-              opacity: 1,
+              autoAlpha: 1,
               ease: "none",
               duration: 1,
             });
@@ -213,7 +213,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
             tl.to(
               headerRight,
               {
-                opacity: 1,
+                autoAlpha: 1,
                 ease: "none",
                 duration: 1,
               },

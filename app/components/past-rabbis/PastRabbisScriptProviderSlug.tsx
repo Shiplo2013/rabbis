@@ -143,8 +143,6 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
   const slug = params?.slug as string;
   const [post, setPost] = useState<RabbiPost | null>(null);
   const [allPosts, setAllPosts] = useState<AllPosts | null | any>(null);
-  const [headerData, setHeaderData] = useState<any | null>(null);
-  const [footerData, setFooterData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const {
     isLoading,
@@ -661,6 +659,28 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
   useGSAP(() => {
     activeBookPopup ? bookPopupTimeline.play() : bookPopupTimeline.reverse();
   }, [activeBookPopup]);
+
+  // On Pathname Change
+  useEffect(() => {
+    const headerLeft = document.querySelector(
+      "#header .header-left",
+    ) as HTMLDivElement | null;
+    const headerRight = document.querySelector(
+      "#header .header-right",
+    ) as HTMLDivElement | null;
+    if (headerLeft) {
+      gsap.set(headerLeft, {
+        autoAlpha: 0,
+        duration: 0,
+      });
+    }
+    if (headerRight) {
+      gsap.set(headerRight, {
+        autoAlpha: 0,
+        duration: 0,
+      });
+    }
+  }, [pathname]);
 
   if (error) {
     return (

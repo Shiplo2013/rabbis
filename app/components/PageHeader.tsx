@@ -221,7 +221,10 @@ function PageHeader() {
 
   return (
     <>
-      <header className="fixed w-screen h-0 top-0 left-0 flex justify-between items-start z-99 pl-10">
+      <header
+        id="header"
+        className="fixed w-screen h-0 top-0 left-0 flex justify-between items-start z-99 pl-10"
+      >
         <div className="header-right flex items-start pr-17 opacity-0">
           <div className="horizontal-menu bg-[#000000B2] border border-[#DBBD5C80] h-screen fixed top-0 right-0">
             <button

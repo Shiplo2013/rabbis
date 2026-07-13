@@ -30,11 +30,7 @@ if (typeof window !== "undefined") {
 
 type CommunityPost = {
   id: number;
-  slug: string;
-  link: string;
   title: { rendered: string };
-  content: string;
-  excerpt: string;
   acf: any;
 };
 
@@ -77,7 +73,6 @@ export default function CommunitiesSlugScriptProvider({
       setError("No data available.");
       return;
     }
-    console.log(appData);
     setPost(data);
   }, [data]);
 
@@ -359,6 +354,28 @@ export default function CommunitiesSlugScriptProvider({
       });
     };
   }, [isSidebarOpen]);
+
+  // On Pathname Change
+  useEffect(() => {
+    const headerLeft = document.querySelector(
+      "#header .header-left",
+    ) as HTMLDivElement | null;
+    const headerRight = document.querySelector(
+      "#header .header-right",
+    ) as HTMLDivElement | null;
+    if (headerLeft) {
+      gsap.set(headerLeft, {
+        autoAlpha: 0,
+        duration: 0,
+      });
+    }
+    if (headerRight) {
+      gsap.set(headerRight, {
+        autoAlpha: 0,
+        duration: 0,
+      });
+    }
+  }, [pathname]);
 
   return (
     post && (
@@ -781,9 +798,9 @@ export default function CommunitiesSlugScriptProvider({
             </button>
             <div className="sidebar-wrapper h-full">
               <div className="sidebar-scrollbar w-full h-full overflow-auto">
-                {appData?.acf?.sidebar?.title && (
+                {appData?.headerCommunity?.acf?.sidebar?.title && (
                   <h2 className="text-[#D1A941] text-[65px] leading-[86%]">
-                    {parse(appData?.acf?.sidebar?.title)}
+                    {parse(appData?.headerCommunity?.acf?.sidebar?.title)}
                   </h2>
                 )}
                 <div className="related-news mt-[9.4vh]">
@@ -791,7 +808,7 @@ export default function CommunitiesSlugScriptProvider({
                     <WishIcon2 />
                   </div>
                   <div className="news-list">
-                    {appData?.acf?.sidebar?.sidebar_news?.map(
+                    {appData?.headerCommunity?.acf?.sidebar?.sidebar_news?.map(
                       (item: any, index: number) => {
                         if (index % 2 === 0) {
                           return (
@@ -827,7 +844,7 @@ export default function CommunitiesSlugScriptProvider({
                     <EventIcon />
                   </div>
                   <div className="event-list">
-                    {appData?.acf?.sidebar?.sidebar_events?.map(
+                    {appData?.headerCommunity?.acf?.sidebar?.sidebar_events?.map(
                       (item: any, index: number) => {
                         return (
                           <EventItem

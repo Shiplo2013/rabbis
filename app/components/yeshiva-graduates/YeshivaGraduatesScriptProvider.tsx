@@ -196,7 +196,6 @@ export default function YeshivaGraduatesScriptProvider({
         const headerRight = document.querySelector(
           ".header-right",
         ) as HTMLElement | null;
-        const rabbisContent = main.current?.querySelectorAll(".rabbis-section");
         // Banner Button
         const introTitle = main.current?.querySelector(
           ".first-intro .intro-title",
@@ -261,7 +260,7 @@ export default function YeshivaGraduatesScriptProvider({
           }
           if (headerLeft) {
             tl.to(headerLeft, {
-              opacity: 1,
+              autoAlpha: 1,
               ease: "none",
               duration: 1,
             });
@@ -270,7 +269,7 @@ export default function YeshivaGraduatesScriptProvider({
             tl.to(
               headerRight,
               {
-                opacity: 1,
+                autoAlpha: 1,
                 ease: "none",
                 duration: 1,
               },

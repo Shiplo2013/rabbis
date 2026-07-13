@@ -301,7 +301,7 @@ export default function NewsScriptProvider({
           }
           if (headerLeft) {
             tl.to(headerLeft, {
-              opacity: 1,
+              autoAlpha: 1,
               ease: "none",
               duration: 1,
             });
@@ -310,7 +310,7 @@ export default function NewsScriptProvider({
             tl.to(
               headerRight,
               {
-                opacity: 1,
+                autoAlpha: 1,
                 ease: "none",
                 duration: 1,
               },
@@ -689,9 +689,9 @@ export default function NewsScriptProvider({
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <h1 className="text-2xl font-bold">News Not Found</h1>
           <p className="text-gray-600">
-            The requested rabbi post could not be found.
+            The requested news post could not be found.
           </p>
         </div>
       </div>

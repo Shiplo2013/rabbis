@@ -122,17 +122,18 @@ export default function CommunityPageHeader() {
               <HambergerIcon />
             </button>
             <div className="menu flex items-center gap-x-9">
-              {appData?.headerCommunity?.headerRight.map(
-                (item: any, index: number) => (
-                  <Link
-                    key={index}
-                    href={item.link}
-                    className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
-                  >
-                    {item.title}
-                  </Link>
-                ),
-              )}
+              {appData?.headerCommunity &&
+                appData?.headerCommunity?.acf?.header_right.map(
+                  (item: any, index: number) => (
+                    <Link
+                      key={index}
+                      href={item.link}
+                      className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
+                    >
+                      {item.title}
+                    </Link>
+                  ),
+                )}
             </div>
           </div>
           <div className="header-center">
@@ -151,17 +152,18 @@ export default function CommunityPageHeader() {
           </div>
           <div className="header-left">
             <div className="menu flex items-center gap-x-9">
-              {appData?.headerCommunity?.headerLeft.map(
-                (item: any, index: number) => (
-                  <Link
-                    key={index}
-                    href={item.link}
-                    className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
-                  >
-                    {item.title}
-                  </Link>
-                ),
-              )}
+              {appData?.headerCommunity &&
+                appData?.headerCommunity?.acf?.header_left.map(
+                  (item: any, index: number) => (
+                    <Link
+                      key={index}
+                      href={item.link}
+                      className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
+                    >
+                      {item.title}
+                    </Link>
+                  ),
+                )}
             </div>
           </div>
         </div>

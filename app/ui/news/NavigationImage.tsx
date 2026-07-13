@@ -1,12 +1,9 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CreateShimmerDataUrl from "../CreateShimmerDataUrl";
 
 export default function NavigationImage({ image }: { image: any }) {
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    console.log("NavigationImage image:", image);
-  }, [image]);
   return (
     <div className="w-full h-full flex items-center justify-center">
       {loading && (

@@ -18,7 +18,26 @@ export default async function page({ params }: PageProps) {
     throw new Error("Failed to load data.");
   }
 
-  const pageData = await pageRes.json();
+  let pageData = [
+    {
+      id: 0,
+      title: { rendered: "" },
+      acf: {
+        introduction: {
+          title: "",
+          content: "",
+          background: null,
+        },
+      },
+    },
+  ];
+
+  try {
+    const parsedData = await pageRes.json();
+    pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
+  } catch (error) {
+    console.error("Failed to parse page data JSON:", error);
+  }
 
   return <CommunitiesSlugScriptProvider data={pageData[0]} />;
 }
