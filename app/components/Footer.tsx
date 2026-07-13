@@ -3,7 +3,6 @@ import parse from "html-react-parser";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import Cookies from "../assets/icons/Cookies";
 import FooterForm from "../ui/footer/FooterForm";
 import FooterProject from "../ui/FooterProject";
 import { gsap, ScrollToPlugin, ScrollTrigger, useGSAP } from "../ui/plugins";
@@ -400,18 +399,6 @@ function Footer(props: ChildProps) {
                 ))}
               </p>
             </div>
-          </div>
-        </div>
-
-        <div className="footer-cookies absolute left-6 bottom-10 flex items-center">
-          <div className="cookies-icon ml-2">
-            <Cookies />
-          </div>
-          <div className="cookies-text text-[14px] leading-[1em] bg-black text-white py-2 px-5 h-10 flex items-center">
-            <p>האתר הזה משתמש בעוגיות</p>
-          </div>
-          <div className="cookies-text text-[17px] leading-[1em] bg-(--theme-color) text-[#010101] py-2 px-5 h-10 flex items-center">
-            <p>אישור</p>
           </div>
         </div>
       </footer>

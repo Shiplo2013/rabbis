@@ -39,7 +39,7 @@ export default function FooterForm() {
         >
           {state?.message && (
             <p
-              className={`${state?.status === "mail_sent" ? "text-green-500 border-green-500" : "text-red-500 border-red-500"} px-4 py-2.5 border text-center leading-[1.2em]`}
+              className={`${state?.status === "mail_sent" ? "text-black" : "text-red-500"} text-center leading-[1.2em]`}
             >
               {state.message}
             </p>

@@ -127,6 +127,13 @@ export default async function page() {
       parseRabbisData(rabbisPost5, 5),
     ]);
 
+  // console.log("Page Data:", pageData);
+  // console.log("Rabbis Data 1:", rabbisData1);
+  // console.log("Rabbis Data 2:", rabbisData2);
+  // console.log("Rabbis Data 3:", rabbisData3);
+  // console.log("Rabbis Data 4:", rabbisData4);
+  // console.log("Rabbis Data 5:", rabbisData5);
+
   return (
     <HistoryScriptProvider
       data={{

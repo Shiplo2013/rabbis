@@ -15,6 +15,12 @@ export default function SingleCommunityPost(props: ChildProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { setIsLoading } = useAppState();
+  const thumbnailSrc =
+    postData?.acf?.post_thumbnail?.sizes?.medium_large ||
+    postData?.acf?.post_thumbnail?.src;
+  const isWpUploadImage =
+    typeof thumbnailSrc === "string" &&
+    thumbnailSrc.includes("dovp7.sg-host.com/wp-content/uploads/");
 
   // Handle Link Click
   const handleLinkClick = (
@@ -41,16 +47,14 @@ export default function SingleCommunityPost(props: ChildProps) {
         <div className="post-image w-full h-66.75 mb-8.5 relative overflow-hidden backface-hidden">
           <Image
             className="w-full object-cover object-center h-full relative z-10 group-hover:scale-105 transition-transform duration-500 ease-in-out"
-            src={
-              postData?.acf?.post_thumbnail?.sizes?.medium_large ||
-              postData?.acf?.post_thumbnail?.src
-            }
+            src={thumbnailSrc}
             width="467"
             height="267"
             blurDataURL={CreateShimmerDataUrl(467, 267)}
             placeholder={"blur"}
             loading="lazy"
             alt="Rabbis"
+            unoptimized={isWpUploadImage}
           />
           {/* <div className="post-image-overlay absolute top-0 left-0 w-[calc(100%+10px)] h-full bg-black z-20 -ml-2.5"></div> */}
         </div>

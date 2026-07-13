@@ -12,6 +12,7 @@
     "@apollo/client": "^4.1.6",
     "@gsap/react": "^2.1.2",
     "@hebcal/core": "^6.4.1",
+    "cookies-next": "^6.1.1",
     "fslightbox-react": "^2.0.3",
     "graphql": "^16.13.1",
     "graphql-client": "^2.0.1",

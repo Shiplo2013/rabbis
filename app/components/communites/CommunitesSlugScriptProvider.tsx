@@ -377,6 +377,10 @@ export default function CommunitiesSlugScriptProvider({
     }
   }, [pathname]);
 
+  useEffect(() => {
+    console.log("CommunitiesSlugScriptProvider post:", post);
+  }, [post]);
+
   return (
     post && (
       <main

@@ -3,7 +3,7 @@ import TimelineCardItem from "@/app/ui/TimelineCardItem";
 import VideoItem from "@/app/ui/VideoItem";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
-import { RefObject, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import rabbisImage1 from "../../assets/images/timeline4image1.jpg";
 import rabbisImage2 from "../../assets/images/timeline4image2.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
@@ -179,6 +179,10 @@ export default function RabbisTimeline4(props: ChildProps) {
     },
     { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
+
+  useEffect(() => {
+    console.log("RabbisTimeline4 props.data:", props.data);
+  }, [props.data]);
   return (
     <section
       ref={wrapper}

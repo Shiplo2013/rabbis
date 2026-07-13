@@ -634,7 +634,7 @@ export default function HomeScriptProvider({
           },
           toggleActions: "restart pause play reverse",
         },
-        opacity: 1,
+        autoAlpha: 1,
         y: 0,
         ease: "none",
         duration: 0.5,
@@ -669,31 +669,6 @@ export default function HomeScriptProvider({
       });
     }
   }, [isAllAnimationComplete]);
-
-  // Play Pause State
-  const { isPlaying, setIsPlaying } = useAppState();
-  function isAudioPlaying(value: { paused: any } | null) {
-    return value ? !value.paused : false;
-  }
-  const togglePlayPause = () => {
-    const audio = document.getElementById(
-      "audio-player",
-    ) as HTMLAudioElement | null;
-    if (isAudioPlaying(audio)) {
-      gsap.to(audio, {
-        volume: 0,
-        duration: 2,
-        onComplete: () => {
-          audio?.pause();
-        },
-      });
-      setIsPlaying(false);
-    } else {
-      gsap.to(audio, { volume: 1, duration: 2 });
-      audio?.play();
-      setIsPlaying(true);
-    }
-  };
 
   // Set Body Overflow Hidden
   useEffect(() => {
@@ -752,7 +727,6 @@ export default function HomeScriptProvider({
               }
             >
               <HomeBanner
-                audioControl={togglePlayPause}
                 animated={isAllAnimationComplete}
                 extraClass={
                   "panel-section will-change-transform min-w-screen w-screen cursor-pointer"

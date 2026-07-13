@@ -1,6 +1,7 @@
 import BackgroundImage from "../../ui/BackgroundImage";
 import { gsap, useGSAP } from "../../ui/plugins";
 import ScrollButton from "../../ui/ScrollButton";
+import { useAppState } from "../AppContext";
 import HomeBannerVideo from "./HomeBannerVideo";
 
 if (typeof window !== "undefined") {
@@ -19,13 +20,13 @@ interface BannerData {
 interface ChildProps {
   extraClass: string;
   animated: boolean;
-  audioControl: () => void;
   panel: any;
   bannerData?: BannerData | string | null;
 }
 
 export default function HomeBanner(props: ChildProps) {
   const { contextSafe } = useGSAP();
+  const { isPlaying, setIsPlaying } = useAppState();
   const bannerData = props.bannerData as BannerData;
   // Cursor Follower Function
   const moveCircle = contextSafe(
@@ -46,7 +47,7 @@ export default function HomeBanner(props: ChildProps) {
 
   return (
     <section
-      onClick={props.audioControl}
+      onClick={() => setIsPlaying(!isPlaying)}
       onMouseMove={moveCircle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -54,7 +55,12 @@ export default function HomeBanner(props: ChildProps) {
     >
       <div className="banner-background-wrapper absolute top-0 left-0 w-full h-full z-10">
         {bannerData?.banner_video ? (
-          <HomeBannerVideo bannerData={bannerData} />
+          <HomeBannerVideo
+            bannerData={{
+              banner_video: bannerData.banner_video,
+              banner_background: bannerData.banner_background,
+            }}
+          />
         ) : (
           <BackgroundImage
             bgImage={bannerData?.banner_background}
