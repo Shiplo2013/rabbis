@@ -6,18 +6,43 @@ export default function CommunityImage({ item }: { item: any }) {
   const [loading, setLoading] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
   const maxRetries = 3;
+  const baseImageSrc =
+    item?.content?.image?.sizes?.medium ||
+    item?.content?.image?.sizes?.medium_large ||
+    item?.content?.image?.sizes?.large ||
+    item?.content?.image?.url ||
+    item?.content?.image?.src;
 
-  // Append a cache-busting query string if a retry is triggered
-  const imageSrc =
-    retryCount > 0
-      ? `${item?.content?.image?.sizes?.medium}`
-      : item?.content?.image?.sizes?.medium;
+  const [imageSrc, setImageSrc] = useState(baseImageSrc);
+  const isWpUploadImage =
+    typeof imageSrc === "string" &&
+    imageSrc.includes("dovp7.sg-host.com/wp-content/uploads/");
+
+  const removeWpSizeSuffix = (url: string) =>
+    url.replace(/-\d+x\d+(?=\.[a-zA-Z]+(?:\?|$))/, "");
+
+  const addRetryQuery = (url: string) =>
+    `${url}${url.includes("?") ? "&" : "?"}retry=${Date.now()}`;
 
   const handleError = () => {
+    if (
+      typeof imageSrc === "string" &&
+      /-\d+x\d+(?=\.[a-zA-Z]+(?:\?|$))/.test(imageSrc)
+    ) {
+      const fallbackSrc = removeWpSizeSuffix(imageSrc);
+      if (fallbackSrc !== imageSrc) {
+        setImageSrc(fallbackSrc);
+        return;
+      }
+    }
+
     if (retryCount < maxRetries) {
       // Delay slightly before retrying to give a flapping network time to recover
       setTimeout(() => {
         setRetryCount((prev) => prev + 1);
+        if (typeof imageSrc === "string") {
+          setImageSrc(addRetryQuery(imageSrc));
+        }
       }, 1000);
     } else {
       console.error(`Image failed to load after ${maxRetries} attempts.`);
@@ -39,6 +64,7 @@ export default function CommunityImage({ item }: { item: any }) {
         blurDataURL={CreateShimmerDataUrl(576, 576)}
         placeholder="blur"
         loading="lazy"
+        unoptimized={isWpUploadImage}
       />
     </div>
   );

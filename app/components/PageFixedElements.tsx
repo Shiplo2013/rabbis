@@ -19,6 +19,7 @@ import { gsap, useGSAP } from "../ui/plugins";
 import SlidingArrow from "../ui/SlidingArrow";
 import ThemeButton2 from "../ui/ThemeButton2";
 import { useAppState } from "./AppContext";
+import CookieBanner from "./CookieBanner";
 import CursorFollow from "./CursorFollow";
 import NotificationPopup from "./history/NotificationPopup";
 import VideoPopup from "./history/VideoPopup";
@@ -108,29 +109,39 @@ export default function PageFixedElements() {
     },
   ];
 
-  // Check if Audio is Playing
-  function isAudioPlaying(value: { paused: any } | null) {
-    return value ? !value.paused : false;
-  }
-  const togglePlayPause = () => {
-    const audioElement = document.getElementById(
-      "audio-player",
-    ) as HTMLAudioElement | null;
-    if (isAudioPlaying(audioElement)) {
-      gsap.to(audioElement, {
-        volume: 0,
-        duration: 2,
-        onComplete: () => {
-          audioElement?.pause();
-        },
-      });
-      setIsPlaying(false);
+  // Video mute/unmute Effect
+  useEffect(() => {
+    const video = document.getElementById(
+      "banner-video-element",
+    ) as HTMLVideoElement | null;
+    const isMuted = video?.muted;
+    const volume = video?.volume;
+    if (isPlaying) {
+      if (video) {
+        gsap.set(video, {
+          volume: 0,
+        });
+        video.muted = false;
+        gsap.to(video, {
+          volume: 1,
+          duration: 2,
+          ease: "none",
+        });
+      }
     } else {
-      gsap.to(audioElement, { volume: 1, duration: 2 });
-      audioElement?.play();
-      setIsPlaying(true);
+      if (video) {
+        gsap.to(video, {
+          volume: 0,
+          duration: 2,
+          ease: "none",
+          onComplete: () => {
+            video.muted = true;
+          },
+        });
+      }
     }
-  };
+  }, [isPlaying]);
+
   // On Video End
   useEffect(() => {
     const audioElement = document.getElementById(
@@ -189,6 +200,9 @@ export default function PageFixedElements() {
         </div>
       )}
       {/* End of Loading Effect */}
+      {/** Page Cookie Popup **/}
+      <CookieBanner />
+      {/* End of Page Cookie Popup */}
       {/* Loading Effect */}
       <LoadingEffect animated={setAnimationPlayed} />
       {/* End of Loading Effect */}
@@ -229,8 +243,10 @@ export default function PageFixedElements() {
       <div
         id="audio-button"
         ref={audioButton}
-        onClick={togglePlayPause}
-        className="equalizer-button flex gap-2 items-center fixed py-1 px-3 bottom-5 right-20 z-40 cursor-pointer bg-[#c3a23fb0] text-[#000000] opacity-0 hover:opacity-100 translate-y-5 rounded-full"
+        onClick={() => {
+          setIsPlaying(!isPlaying);
+        }}
+        className="equalizer-button flex gap-2 items-center fixed py-1 px-3 bottom-5 right-20 z-40 cursor-pointer bg-[#c3a23fb0] text-[#000000] opacity-0 hover:opacity-100 invisible translate-y-5 rounded-full"
       >
         <span>{isPlaying ? "ON" : "OFF"}</span>
         <div className="equalizer flex items-end justify-center gap-0.5 h-4">

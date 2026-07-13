@@ -1,0 +1,95 @@
+"use client";
+
+import { hasCookie, setCookie } from "cookies-next";
+import { useEffect, useRef, useState } from "react";
+import Cookies from "../assets/icons/Cookies";
+import { gsap, useGSAP } from "../ui/plugins";
+import { useAppState } from "./AppContext";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP);
+}
+
+export default function CookieBanner() {
+  const [showBanner, setShowBanner] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
+  const { animationPlayed, setAnimationPlayed } = useAppState();
+
+  useEffect(() => {
+    // Check if the user has already made a choice
+    if (!hasCookie("localConsent")) {
+      setShowBanner(true);
+    }
+  }, []);
+
+  const acceptCookies = () => {
+    // Set cookie for 1 year
+    setCookie("localConsent", "true", { maxAge: 60 * 60 * 24 * 365 });
+    setShowBanner(false);
+    if (bannerRef.current) {
+      gsap.to(bannerRef.current, {
+        y: 100,
+        autoAlpha: 0,
+        duration: 0.5,
+        ease: "power2.in",
+      });
+    }
+  };
+
+  const declineCookies = () => {
+    setCookie("localConsent", "false", { maxAge: 60 * 60 * 24 * 365 });
+    setShowBanner(false);
+    if (bannerRef.current) {
+      gsap.to(bannerRef.current, {
+        y: 100,
+        autoAlpha: 0,
+        duration: 0.5,
+        ease: "power2.in",
+      });
+    }
+  };
+
+  useGSAP(() => {
+    if (!hasCookie("localConsent") && bannerRef.current && animationPlayed) {
+      const timeout = setTimeout(() => {
+        if (bannerRef.current) {
+          gsap.to(bannerRef.current, {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        }
+      }, 10000); // Delay to ensure the component is mounted
+
+      return () => clearTimeout(timeout);
+    }
+  }, [animationPlayed]);
+
+  return (
+    <div
+      ref={bannerRef}
+      className="cookie-banner fixed left-6 bottom-6 flex items-center translate-y-20 opacity-0 invisible z-50"
+    >
+      <div className="cookies-icon ml-2">
+        <Cookies />
+      </div>
+      <div className="cookies-text text-[14px] leading-[1em] bg-black text-white py-2 px-5 h-10 flex items-center">
+        <p>האתר הזה משתמש בעוגיות</p>
+      </div>
+      <div
+        onClick={() => {
+          acceptCookies();
+          console.log(
+            "Cookies accepted",
+            hasCookie("localConsent"),
+            showBanner,
+          );
+        }}
+        className="cookies-text text-[17px] leading-[1em] bg-(--theme-color) text-[#010101] py-2 px-5 h-10 flex items-center cursor-pointer"
+      >
+        <p>אישור</p>
+      </div>
+    </div>
+  );
+}

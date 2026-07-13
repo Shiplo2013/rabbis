@@ -5,15 +5,11 @@ export async function sendSubscribeData(
   subscribeFormData: FormData,
 ) {
   // Perform server-side processing with the form data
-  const email = subscribeFormData.get("form-email") as string;
-  console.log("Email:", email);
-  console.log("Form Data:", subscribeFormData);
-  // Perform server-side processing with the form data
-  subscribeFormData.append("_wpcf7_unit_tag", "0bfccca");
+  subscribeFormData.append("_wpcf7_unit_tag", "65f4655");
 
   try {
     const response = await fetch(
-      `https://dovp7.sg-host.com/wp-json/contact-form-7/v1/contact-forms/2702/feedback`,
+      `https://dovp7.sg-host.com/wp-json/contact-form-7/v1/contact-forms/2703/feedback`,
       {
         method: "POST",
         body: subscribeFormData,

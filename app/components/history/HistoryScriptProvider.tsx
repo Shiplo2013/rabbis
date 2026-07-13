@@ -176,20 +176,6 @@ export default function HistoryScriptProvider({
       setRabbisPostsData3(cachedData.rabbisPostsData3 || []);
       setRabbisPostsData4(cachedData.rabbisPostsData4 || []);
       setRabbisPostsData5(cachedData.rabbisPostsData5 || []);
-      setIsLoading(false);
-      return () => {
-        isMounted = false;
-        controller.abort();
-      };
-    }
-    if (cachedData && isMounted) {
-      setChroniclesPageData(cachedData.chroniclesPageData);
-      setRabbisPostsData1(cachedData.rabbisPostsData1 || []);
-      setRabbisPostsData2(cachedData.rabbisPostsData2 || []);
-      setRabbisPostsData3(cachedData.rabbisPostsData3 || []);
-      setRabbisPostsData4(cachedData.rabbisPostsData4 || []);
-      setRabbisPostsData5(cachedData.rabbisPostsData5 || []);
-      setIsLoading(false);
       return () => {
         isMounted = false;
         controller.abort();
@@ -558,7 +544,7 @@ export default function HistoryScriptProvider({
 
   // Active Timeline
   function activeTimeline(selector: string) {
-    const intro = document.querySelector(`.history-timeline ${selector}`);
+    const intro = document.querySelector(`#history-timeline ${selector}`);
     if (!intro) return 0;
     const hasActiveClass = intro.classList.contains("active");
     if (!hasActiveClass) {
@@ -567,7 +553,7 @@ export default function HistoryScriptProvider({
   }
 
   function toggleHeaderLeftOnScroll() {
-    const headerLeft = main.current?.querySelector(".header-left");
+    const headerLeft = document.querySelector("#header .header-left");
     if (!headerLeft) return;
 
     const shouldHide = window.scrollY > 200;
@@ -584,7 +570,7 @@ export default function HistoryScriptProvider({
 
   // Inactive Timeline
   function inActiveTimeline(selector: string) {
-    const intro = document.querySelector(`.history-timeline ${selector}`);
+    const intro = document.querySelector(`#history-timeline ${selector}`);
     if (!intro) return 0;
     const hasActiveClass = intro.classList.contains("active");
     if (hasActiveClass) {
