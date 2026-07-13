@@ -78,7 +78,6 @@ export default function SingleNewsScriptProvider({
 
   // Page Refs
   const main = useRef<HTMLDivElement>(null);
-  const page = useRef<HTMLDivElement>(null);
   const newsContentRef = useRef<HTMLDivElement>(null);
 
   // Page Data
@@ -147,7 +146,7 @@ export default function SingleNewsScriptProvider({
   useGSAP(() => {
     if (
       typeof window !== "undefined" &&
-      page.current &&
+      main.current &&
       newsContentRef.current
     ) {
       //setPageContentAnimation();
@@ -158,7 +157,7 @@ export default function SingleNewsScriptProvider({
         // Vertical Section
         const timeline = gsap.timeline({
           scrollTrigger: {
-            trigger: page.current,
+            trigger: main.current,
             start: "top top",
             end: "+=" + newsContentRef.current?.offsetHeight,
             scrub: scurbScale,
@@ -172,22 +171,22 @@ export default function SingleNewsScriptProvider({
               : 0,
           ease: "none",
           scrollTrigger: {
-            trigger: page.current,
-            start: page.current?.offsetTop,
+            trigger: main.current,
+            start: main.current?.offsetTop,
             end: "+=" + newsContentRef.current?.offsetHeight,
             scrub: scurbScale,
           },
         });
         setVerticalSection(timeline);
       }
+      // Return
+      return () => {
+        if (verticalSection) {
+          verticalSection.kill();
+        }
+      };
     }
-    // Return
-    return () => {
-      if (verticalSection) {
-        verticalSection.kill();
-      }
-    };
-  }, [pathname, pageDataFetched]);
+  }, [isAllAnimationComplete]);
 
   // Load Page
   useGSAP(() => {
@@ -247,42 +246,48 @@ export default function SingleNewsScriptProvider({
       ySetter(e.clientY);
     });
     // Show view on mouse hover
-    const pageNav = main.current?.querySelector(".post-navigation");
+    const pageNav = main.current?.querySelectorAll(
+      ".post-navigation a.nav-link",
+    ) as NodeListOf<HTMLAnchorElement> | null;
     if (pageNav) {
-      pageNav.addEventListener("mouseenter", () => {
-        gsap.to(movingButtonRef, {
-          opacity: 1,
-          scaleY: 1,
-          duration: 0.3,
+      pageNav.forEach((nav) => {
+        nav.addEventListener("mouseenter", () => {
+          gsap.to(movingButtonRef, {
+            opacity: 1,
+            scaleY: 1,
+            duration: 0.3,
+          });
         });
-      });
-      pageNav.addEventListener("mouseleave", () => {
-        gsap.to(movingButtonRef, {
-          opacity: 0,
-          scaleY: 0,
-          duration: 0.3,
+        nav.addEventListener("mouseleave", () => {
+          gsap.to(movingButtonRef, {
+            opacity: 0,
+            scaleY: 0,
+            duration: 0.3,
+          });
         });
       });
     }
 
     return () => {
-      window.addEventListener("mousemove", (e) => {
+      window.removeEventListener("mousemove", (e) => {
         xSetter(e.clientX);
         ySetter(e.clientY);
       });
       if (pageNav) {
-        pageNav.addEventListener("mouseenter", () => {
-          gsap.to(movingButtonRef, {
-            opacity: 1,
-            scaleY: 2,
-            duration: 0.3,
+        pageNav.forEach((nav) => {
+          nav.removeEventListener("mouseenter", () => {
+            gsap.to(movingButtonRef, {
+              opacity: 1,
+              scaleY: 2,
+              duration: 0.3,
+            });
           });
-        });
-        pageNav.addEventListener("mouseleave", () => {
-          gsap.to(movingButtonRef, {
-            opacity: 0,
-            scaleY: 0,
-            duration: 0.3,
+          nav.removeEventListener("mouseleave", () => {
+            gsap.to(movingButtonRef, {
+              opacity: 0,
+              scaleY: 0,
+              duration: 0.3,
+            });
           });
         });
       }

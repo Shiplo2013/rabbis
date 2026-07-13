@@ -10,15 +10,21 @@ export default function FooterForm() {
       className="form w-full flex flex-col text-[20px] leading-[1em]"
     >
       <div className="form-col flex items-stretch h-10">
+        <input
+          type="hidden"
+          name="text-name"
+          id="text-name"
+          value="footer-subscribe-form"
+        />
         <div className="input-field w-3/4 flex items-center justify-center">
           <input
             dir="rtl"
             className="bg-[#000000] text-white focus:outline-0 w-full h-full px-4 py-2 placeholder:text-white"
-            id="subscribe-email"
-            name="subscribe-email"
+            id="email-subscibe"
+            name="email-subscibe"
             type="email"
             placeholder="מייל"
-            defaultValue={state?.payload?.get("subscribe-email") || ""}
+            defaultValue={state?.payload?.get("email-subscibe") || ""}
           />
         </div>
         <div className="submit-button w-1/4 flex items-center justify-center">

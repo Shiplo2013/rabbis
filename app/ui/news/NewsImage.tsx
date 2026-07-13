@@ -17,7 +17,7 @@ export default function NewsImage({
       )}
       <Image
         className={`w-full h-full object-cover object-center transition-all duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
-        onLoadingComplete={() => setLoading(false)}
+        onLoad={() => setLoading(false)}
         src={
           item.image?.sizes?.medium_large ||
           item.image?.sizes?.large ||

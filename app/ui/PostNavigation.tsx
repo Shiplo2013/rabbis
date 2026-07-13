@@ -47,7 +47,7 @@ export default function PostNavigation(props: ChildProps) {
         <Link
           href={navigationData?.nextPost?.link}
           onClick={handleLinkClick}
-          className="next-post relative group"
+          className="next-post nav-link relative group"
         >
           <div className="image w-[12vw] h-[12vw] overflow-hidden">
             <NavigationImage image={navigationData?.nextPost?.image} />
@@ -65,7 +65,7 @@ export default function PostNavigation(props: ChildProps) {
       {navigationData?.prevPost && (
         <Link
           href={navigationData?.prevPost?.link}
-          className="prev-post relative group mr-auto"
+          className="prev-post nav-link relative group mr-auto"
           onClick={handleLinkClick}
         >
           <div className="image w-[12vw] h-[12vw] overflow-hidden">

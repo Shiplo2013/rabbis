@@ -13,7 +13,7 @@ export default function SinglePostImage(item: any) {
 
       <Image
         className={`w-full h-full object-cover object-center transition-all duration-300`}
-        onLoadingComplete={() => setLoading(false)}
+        onLoad={() => setLoading(false)}
         src={
           item?.image?.sizes?.news_slider_image ||
           item?.image?.sizes?.large ||

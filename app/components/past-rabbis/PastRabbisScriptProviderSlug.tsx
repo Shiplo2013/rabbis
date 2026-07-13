@@ -442,42 +442,48 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
           ySetter(e.clientY);
         });
         // Show view on mouse hover
-        const pageNav = main.current?.querySelector(".rabbis-navigation");
+        const pageNav = main.current?.querySelectorAll(
+          ".rabbis-navigation a.nav-link",
+        ) as NodeListOf<HTMLAnchorElement> | null;
         if (pageNav) {
-          pageNav.addEventListener("mouseenter", () => {
-            gsap.to(movingButtonRef, {
-              opacity: 1,
-              scaleY: 1,
-              duration: 0.3,
+          pageNav.forEach((nav) => {
+            nav.addEventListener("mouseenter", () => {
+              gsap.to(movingButtonRef, {
+                opacity: 1,
+                scaleY: 1,
+                duration: 0.3,
+              });
             });
-          });
-          pageNav.addEventListener("mouseleave", () => {
-            gsap.to(movingButtonRef, {
-              opacity: 0,
-              scaleY: 0,
-              duration: 0.3,
+            nav.addEventListener("mouseleave", () => {
+              gsap.to(movingButtonRef, {
+                opacity: 0,
+                scaleY: 0,
+                duration: 0.3,
+              });
             });
           });
         }
 
         return () => {
-          window.addEventListener("mousemove", (e) => {
+          window.removeEventListener("mousemove", (e) => {
             xSetter(e.clientX);
             ySetter(e.clientY);
           });
           if (pageNav) {
-            pageNav.addEventListener("mouseenter", () => {
-              gsap.to(movingButtonRef, {
-                opacity: 1,
-                scaleY: 2,
-                duration: 0.3,
+            pageNav.forEach((nav) => {
+              nav.removeEventListener("mouseenter", () => {
+                gsap.to(movingButtonRef, {
+                  opacity: 1,
+                  scaleY: 2,
+                  duration: 0.3,
+                });
               });
-            });
-            pageNav.addEventListener("mouseleave", () => {
-              gsap.to(movingButtonRef, {
-                opacity: 0,
-                scaleY: 0,
-                duration: 0.3,
+              nav.removeEventListener("mouseleave", () => {
+                gsap.to(movingButtonRef, {
+                  opacity: 0,
+                  scaleY: 0,
+                  duration: 0.3,
+                });
               });
             });
           }

@@ -646,28 +646,30 @@ export default function CommunitiesSlugScriptProvider({
                                   <div className="text1 mt-8.5">
                                     {parse(item?.news_content?.text || "")}
                                   </div>
-                                  <div className="image1 mt-9 w-xl max-w-full h-auto">
-                                    <Image
-                                      className="w-full h-full object-cover object-center"
-                                      src={
-                                        item?.content?.image?.sizes?.medium ||
-                                        item?.content?.image?.sizes
-                                          ?.medium_large ||
-                                        item?.content?.image?.sizes?.large ||
-                                        item?.news_content?.image?.url ||
-                                        item?.news_content?.image?.src
-                                      }
-                                      width={576}
-                                      height={576}
-                                      alt="Community Image"
-                                      blurDataURL={CreateShimmerDataUrl(
-                                        576,
-                                        576,
-                                      )}
-                                      placeholder="blur"
-                                      loading="lazy"
-                                    />
-                                  </div>
+                                  {item?.content?.image && (
+                                    <div className="image1 mt-9 w-xl max-w-full h-auto">
+                                      <Image
+                                        className="w-full h-full object-cover object-center"
+                                        src={
+                                          item?.content?.image?.sizes?.medium ||
+                                          item?.content?.image?.sizes
+                                            ?.medium_large ||
+                                          item?.content?.image?.sizes?.large ||
+                                          item?.news_content?.image?.url ||
+                                          item?.news_content?.image?.src
+                                        }
+                                        width={576}
+                                        height={576}
+                                        alt="Community Image"
+                                        blurDataURL={CreateShimmerDataUrl(
+                                          576,
+                                          576,
+                                        )}
+                                        placeholder="blur"
+                                        loading="lazy"
+                                      />
+                                    </div>
+                                  )}
                                 </div>
                               );
                             }
