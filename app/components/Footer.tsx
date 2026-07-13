@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import Cookies from "../assets/icons/Cookies";
+import FooterForm from "../ui/footer/FooterForm";
 import FooterProject from "../ui/FooterProject";
 import { gsap, ScrollToPlugin, ScrollTrigger, useGSAP } from "../ui/plugins";
 import { useAppState } from "./AppContext";
@@ -337,7 +338,7 @@ function Footer(props: ChildProps) {
               ))}
             </div>
             <div className="footer-widgets mt-34 flex justify-between overflow-hidden">
-              <div className="footer-widget3">
+              <div className="footer-widget3 w-1/4">
                 <ul className="flex flex-col text-2xl leading-[2em]">
                   {footerData?.acf?.widget_3?.menu_items?.map((item, index) => (
                     <li key={index}>
@@ -352,7 +353,7 @@ function Footer(props: ChildProps) {
                   ))}
                 </ul>
               </div>
-              <div className="footer-widget2">
+              <div className="footer-widget2 w-1/3">
                 {footerData?.acf?.widget_2?.widget_title && (
                   <h3 className="text-[52px] leading-[0.9] font-bold mb-4">
                     {footerData?.acf?.widget_2?.widget_title}
@@ -364,7 +365,10 @@ function Footer(props: ChildProps) {
                   </div>
                 )}
               </div>
-              <div className="footer-widget1">
+              <div
+                className="footer-widget1 w-1/4
+              "
+              >
                 {footerData?.acf?.widget_1?.widget_title && (
                   <h3 className="text-[52px] leading-[0.9] font-bold mb-4">
                     {footerData?.acf?.widget_1?.widget_title}
@@ -375,6 +379,9 @@ function Footer(props: ChildProps) {
                     {parse(footerData?.acf?.widget_1?.content || "")}
                   </div>
                 )}
+                <div className="footer-form mt-7.5">
+                  <FooterForm />
+                </div>
               </div>
             </div>
             <div className="privacy-policy text-2xl leading-[1.2em] mt-5">
@@ -395,6 +402,7 @@ function Footer(props: ChildProps) {
             </div>
           </div>
         </div>
+
         <div className="footer-cookies absolute left-6 bottom-10 flex items-center">
           <div className="cookies-icon ml-2">
             <Cookies />

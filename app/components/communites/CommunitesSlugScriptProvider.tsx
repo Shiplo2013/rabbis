@@ -173,7 +173,7 @@ export default function CommunitiesSlugScriptProvider({
         animation.kill();
       });
     };
-  }, [pageDataFetched, pathname, animationPlayed]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   //   const setPageContentAnimation = () => {

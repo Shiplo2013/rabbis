@@ -305,7 +305,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
         }
       });
     }
-  }, [pathname, pageDataFetched]);
+  }, [animationPlayed, pageDataFetched]);
 
   // Set Page Content Animation
   useGSAP(() => {

@@ -292,7 +292,7 @@ export default function CommunitiesScriptProvider({
         }
       });
     }
-  }, [pageDataFetched]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Body Overflow Hidden
   useEffect(() => {

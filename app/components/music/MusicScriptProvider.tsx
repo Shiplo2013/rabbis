@@ -200,7 +200,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
         }
       });
     }
-  }, [pageDataFetched]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Page Section Animation
   useGSAP(() => {

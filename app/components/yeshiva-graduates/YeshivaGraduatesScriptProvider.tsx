@@ -388,7 +388,7 @@ export default function YeshivaGraduatesScriptProvider({
         animation.kill();
       });
     };
-  }, [pageData, pageDataFetched, pathname, animationPlayed]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

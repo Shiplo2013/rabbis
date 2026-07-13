@@ -13,8 +13,7 @@ function Loading(props: { animated: (value: boolean) => void }) {
   // State
   const [animComplete, setAnimComplete] = useState(false);
   // Video Link
-  const videoLink =
-    "https://dovp7.sg-host.com/wp-content/uploads/2026/02/doors.mp4";
+  const videoLink = "/doors.mp4";
 
   // GSAP Animation
   useGSAP(() => {

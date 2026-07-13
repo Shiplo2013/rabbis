@@ -409,7 +409,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [pageDataFetched]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

@@ -269,7 +269,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
         }
       });
     }
-  }, [pathname, pageDataFetched]);
+  }, [animationPlayed, pageDataFetched]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

@@ -139,7 +139,7 @@ export default function KnessetScriptProviderSlug({
         }
       });
     }
-  }, [pageDataFetched]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Body Overflow Hidden
   useEffect(() => {

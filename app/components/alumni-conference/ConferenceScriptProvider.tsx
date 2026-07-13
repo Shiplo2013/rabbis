@@ -357,7 +357,7 @@ export default function ConferenceScriptProvider({
     return () => {
       animations.forEach((anim) => anim.kill());
     };
-  }, [pathname, pageDataFetched]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

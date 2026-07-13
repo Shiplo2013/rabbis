@@ -232,7 +232,7 @@ export default function SingleNewsScriptProvider({
         }
       });
     }
-  }, [animationPlayed, pathname, pageDataFetched]);
+  }, [animationPlayed, pageDataFetched]);
 
   // On Mouse Move
   useGSAP(() => {

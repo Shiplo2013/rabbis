@@ -375,7 +375,7 @@ export default function KnessetScriptProvider({
         }
       });
     }
-  }, [pageDataFetched]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

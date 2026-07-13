@@ -25,9 +25,6 @@ if (typeof window !== "undefined") {
 
 type HomePageApiResponse = {
   id: number;
-  slug: string;
-  link: string;
-  title: { rendered: string };
   acf: any | HomePageAcf | null;
 };
 
@@ -69,10 +66,26 @@ type HomePageAcf = {
   };
 };
 
+type HomePost = {
+  id: number;
+  title: {
+    rendered: string;
+  };
+  slug: string;
+  acf: {
+    subtitle?: string;
+    informations?: {
+      established?: string;
+    };
+  };
+};
+
 export default function HomeScriptProvider({
   data,
+  postsData,
 }: {
   data: HomePageApiResponse;
+  postsData: HomePost[];
 }) {
   // Static Data
   const staticData = {
@@ -316,7 +329,7 @@ export default function HomeScriptProvider({
 
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
-  const { animationPlayed, setAnimationPlayed } = useAppState();
+  const { animationPlayed, setAnimationPlayed, setAudioFile } = useAppState();
   // Vertical Section
   const [verticalSection, setVerticalSection] =
     useState<gsap.core.Timeline | null>(null);
@@ -329,9 +342,18 @@ export default function HomeScriptProvider({
       return;
     }
     setHomePageData(data);
-    setPageDataFetched(true);
-    setIsLoading(false);
+    if (data?.acf?.banner_section?.audio_music?.url) {
+      setAudioFile(data.acf.banner_section.audio_music.url);
+    }
   }, [data]);
+
+  // Check if have data
+  useEffect(() => {
+    if (homePageData) {
+      setPageDataFetched(true);
+      setIsLoading(false);
+    }
+  }, [homePageData]);
 
   // Load Page Animation
   useGSAP(() => {
@@ -554,7 +576,7 @@ export default function HomeScriptProvider({
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [pageDataFetched]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Container width
   //const [contWidth, setContWidth] = useState(0);
@@ -765,6 +787,7 @@ export default function HomeScriptProvider({
                 }
                 panel={panel}
                 sectionData={homePageData?.acf?.home_section_1}
+                postsData={postsData}
               />
             </Suspense>
             <Suspense

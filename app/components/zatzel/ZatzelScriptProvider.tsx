@@ -347,7 +347,7 @@ export default function ZatzelScriptProvider({
         }
       });
     }
-  }, [zatzelPageData, pageDataFetched, pathname, animationPlayed]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {

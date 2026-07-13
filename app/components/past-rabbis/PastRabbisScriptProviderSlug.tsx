@@ -275,155 +275,152 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
   }, [pathname, pageDataFetched]);
 
   // Load Page
-  useGSAP(
-    () => {
-      if (typeof window !== "undefined" && panel.current && wrapper.current) {
-        document.fonts.ready.then(() => {
-          // Selectors
-          const pageWrapper = document.querySelector(
-            "#page-wrapper",
-          ) as HTMLDivElement | null;
-          const rabbisHeader = document.querySelector(
-            ".rabbis-header",
-          ) as HTMLDivElement | null;
-          // Banner Button
-          const introTitle = main.current?.querySelector(
-            ".first-intro .intro-title",
-          );
-          // Rabbis Image
-          const rabbisImage = main.current?.querySelector(
-            ".first-intro .rabbis-image",
-          );
-          // Banner Button
-          const introContent = main.current?.querySelector(
-            ".first-intro .intro-content",
-          );
-          const bannerBackgroundOverlay = main.current?.querySelector(
-            ".first-intro .intro-background .intro-bg-mask",
-          );
-          // Split Title 1
-          let splitTitle;
-          if (introTitle) {
-            splitTitle = BigTitleSplitLines(introTitle);
-            gsap.set(introTitle, {
-              perspective: 400,
-            });
-            gsap.set(splitTitle, {
-              yPercent: 150,
-              opacity: 0,
+  useGSAP(() => {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+      document.fonts.ready.then(() => {
+        // Selectors
+        const pageWrapper = document.querySelector(
+          "#page-wrapper",
+        ) as HTMLDivElement | null;
+        const rabbisHeader = document.querySelector(
+          ".rabbis-header",
+        ) as HTMLDivElement | null;
+        // Banner Button
+        const introTitle = main.current?.querySelector(
+          ".first-intro .intro-title",
+        );
+        // Rabbis Image
+        const rabbisImage = main.current?.querySelector(
+          ".first-intro .rabbis-image",
+        );
+        // Banner Button
+        const introContent = main.current?.querySelector(
+          ".first-intro .intro-content",
+        );
+        const bannerBackgroundOverlay = main.current?.querySelector(
+          ".first-intro .intro-background .intro-bg-mask",
+        );
+        // Split Title 1
+        let splitTitle;
+        if (introTitle) {
+          splitTitle = BigTitleSplitLines(introTitle);
+          gsap.set(introTitle, {
+            perspective: 400,
+          });
+          gsap.set(splitTitle, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Split Title 2
+        let splitContent;
+        if (introContent) {
+          splitContent = TextSplitLines(introContent);
+          gsap.set(introContent, {
+            perspective: 400,
+          });
+          gsap.set(splitContent, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Set localStorage variable
+        const userVisit = localStorage.getItem("hasVisited");
+        if (userVisit === "true" && animationPlayed) {
+          // Timeline
+          const tl = gsap.timeline({
+            onComplete: () => {
+              // Set Animation Played to true
+              setIsAllAnimationComplete(true);
+            },
+          });
+          if (pageWrapper) {
+            tl.to(pageWrapper, {
+              opacity: 1,
+              ease: "none",
+              duration: 0.5,
+              delay: 0,
             });
           }
-          // Split Title 2
-          let splitContent;
-          if (introContent) {
-            splitContent = TextSplitLines(introContent);
-            gsap.set(introContent, {
-              perspective: 400,
-            });
-            gsap.set(splitContent, {
-              yPercent: 150,
-              opacity: 0,
+          if (rabbisHeader) {
+            tl.to(rabbisHeader, {
+              opacity: 1,
+              ease: "none",
+              duration: 1,
             });
           }
-          // Set localStorage variable
-          const userVisit = localStorage.getItem("hasVisited");
-          if (userVisit === "true" && animationPlayed) {
-            // Timeline
-            const tl = gsap.timeline({
-              onComplete: () => {
-                // Set Animation Played to true
-                setIsAllAnimationComplete(true);
-              },
-            });
-            if (pageWrapper) {
-              tl.to(pageWrapper, {
-                opacity: 1,
-                ease: "none",
-                duration: 0.5,
-                delay: 0,
-              });
-            }
-            if (rabbisHeader) {
-              tl.to(rabbisHeader, {
+          if (rabbisImage) {
+            tl.to(
+              rabbisImage,
+              {
                 opacity: 1,
                 ease: "none",
                 duration: 1,
-              });
-            }
-            if (rabbisImage) {
-              tl.to(
-                rabbisImage,
-                {
-                  opacity: 1,
-                  ease: "none",
-                  duration: 1,
-                },
-                "-=1",
-              );
-            }
-            if (introTitle && splitTitle) {
-              tl.to(
-                splitTitle,
-                {
-                  yPercent: 0,
-                  opacity: 1,
-                  duration: 3,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                },
-                "-=1.5",
-              );
-            }
-            if (introContent && splitContent) {
-              tl.to(
-                splitContent,
-                {
-                  yPercent: 0,
-                  opacity: 1,
-                  duration: 3,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
-            // Wave Line Animation
-            const waveMask = document.getElementById(
-              "wave-mask",
-            ) as HTMLDivElement | null;
-            if (waveMask) {
-              tl.to(
-                waveMask,
-                {
-                  translateY: 0,
-                  opacity: 1,
-                  ease: "expo.inOut",
-                  duration: 3,
-                  delay: 0,
-                },
-                "-=2.5",
-              );
-            }
-            if (bannerBackgroundOverlay) {
-              tl.to(
-                bannerBackgroundOverlay,
-                {
-                  translateY: "-100%",
-                  delay: 0,
-                  duration: 3,
-                  ease: "expo.inOut",
-                },
-                "-=2.5",
-              );
-            }
+              },
+              "-=1",
+            );
           }
-        });
-      }
-    },
-    { scope: main, dependencies: [animationPlayed, pathname, pageDataFetched] },
-  );
+          if (introTitle && splitTitle) {
+            tl.to(
+              splitTitle,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=1.5",
+            );
+          }
+          if (introContent && splitContent) {
+            tl.to(
+              splitContent,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+          // Wave Line Animation
+          const waveMask = document.getElementById(
+            "wave-mask",
+          ) as HTMLDivElement | null;
+          if (waveMask) {
+            tl.to(
+              waveMask,
+              {
+                translateY: 0,
+                opacity: 1,
+                ease: "expo.inOut",
+                duration: 3,
+                delay: 0,
+              },
+              "-=2.5",
+            );
+          }
+          if (bannerBackgroundOverlay) {
+            tl.to(
+              bannerBackgroundOverlay,
+              {
+                translateY: "-100%",
+                delay: 0,
+                duration: 3,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+        }
+      });
+    }
+  }, [animationPlayed, pageDataFetched]);
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
