@@ -32,8 +32,7 @@ export default function IntroductionBackground(props: ChildProps) {
     if (
       typeof window === "undefined" ||
       !background.current ||
-      props.animatePosition <= 0 ||
-      !props.offsetTopAdded
+      props.animatePosition <= 0
     ) {
       return;
     }
@@ -70,7 +69,7 @@ export default function IntroductionBackground(props: ChildProps) {
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [props.offsetTopAdded, pathname]);
+  }, [pathname]);
   return (
     <div
       ref={background}

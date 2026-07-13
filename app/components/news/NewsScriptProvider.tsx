@@ -144,8 +144,10 @@ export default function NewsScriptProvider({
     }
     // Update Section Width on Data Change
     const updateSectionWidth = () => {
+      const contentGap =
+        window.innerWidth < 768 ? 30 : window.innerWidth < 1024 ? 25 : 15;
       const newSectionWidth =
-        20 + pagePosts?.length * 53 + pagePosts?.length * 12.5;
+        20 + pagePosts?.length * 53 + pagePosts?.length * contentGap;
 
       setSectionWidth(newSectionWidth);
       setContainerWidth(newSectionWidth + 100);

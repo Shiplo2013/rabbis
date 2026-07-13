@@ -11,7 +11,7 @@ export default function NavigationImage({ image }: { image: any }) {
       )}
       <Image
         className={`w-full h-full object-cover object-center transition-all duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
-        onLoadingComplete={() => setLoading(false)}
+        onLoad={() => setLoading(false)}
         src={image?.sizes?.medium || image?.sizes?.thumbnail || image?.src}
         width={230}
         height={230}

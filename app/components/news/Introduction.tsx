@@ -33,6 +33,7 @@ export default function Introduction(props: ChildProps) {
             imagePosition={props.bgPosition}
             bgClass={props.bgClass}
             animatePosition={0.1}
+            panel={props.panel}
           />
           <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform"></div>
         </div>

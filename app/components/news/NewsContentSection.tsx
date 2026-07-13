@@ -18,7 +18,7 @@ export default function NewsContentSection(props: ChildProps) {
             <SidebarSearch />
           </div>
         </div> */}
-        <div className="news-content flex items-center gap-x-[15vw] will-change-transform">
+        <div className="news-content flex items-center gap-x-[10vw] md:gap-x-[30vw] lg:gap-x-[25vw] xl:gap-x-[20vw] 2xl:gap-x-[15vw] will-change-transform">
           {props.data?.map((item: any, index: number) => (
             <SingleNews key={index} data={item} />
           ))}
