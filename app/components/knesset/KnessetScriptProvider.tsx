@@ -36,6 +36,7 @@ export default function KnessetScriptProvider({
   const [sectionWidth, setSectionWidth] = useState(200);
   const [submittedSearch, setSubmittedSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [currentScrollPos, setCurrentScrollPos] = useState(0);
   // Vertical Section
   const [verticalSection, setVerticalSection] =
     useState<gsap.core.Timeline | null>(null);
@@ -60,13 +61,19 @@ export default function KnessetScriptProvider({
       let isMounted = true;
 
       const loadKnessetPostsData = async () => {
+        const fetchUrl = () => {
+          if (selectedCategory !== null && submittedSearch === "") {
+            return `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?knesset_cat=${selectedCategory}&acf_format=standard&_fields=id,title,excerpt,slug,acf.subtitle&per_page=20`;
+          } else if (submittedSearch !== "" && selectedCategory === null) {
+            return `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?search=${submittedSearch}&acf_format=standard&_fields=id,title,excerpt,slug,acf.subtitle&per_page=20`;
+          } else {
+            return `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?knesset_cat=${selectedCategory}&search=${submittedSearch}&acf_format=standard&_fields=id,title,excerpt,slug,acf.subtitle&per_page=20`;
+          }
+        };
         try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?knesset_cat=${selectedCategory}&_fields=id,title,slug,excerpt,acf.subtitle&per_page=20`,
-            {
-              cache: "no-store",
-            },
-          );
+          const response = await fetch(fetchUrl(), {
+            cache: "no-store",
+          });
 
           if (!response.ok) {
             throw new Error("Failed to load the knesset of customs page data.");
@@ -93,7 +100,7 @@ export default function KnessetScriptProvider({
         isMounted = false;
       };
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, submittedSearch]);
 
   useEffect(() => {
     if (!knessetPageData) {
@@ -197,8 +204,12 @@ export default function KnessetScriptProvider({
 
   // Revalidate Timeline
   useEffect(() => {
-    if (verticalSection) {
+    if (verticalSection && currentScrollPos > 0) {
+      let currentProgress = verticalSection.progress();
+      console.log("Current Scroll Position:", currentScrollPos);
+      console.log("Current Progress:", currentProgress);
       verticalSection.invalidate().restart();
+      verticalSection.progress(currentProgress);
     }
   }, [containerWidth, verticalSection]);
 
@@ -417,7 +428,7 @@ export default function KnessetScriptProvider({
             delay: 0,
             scrollTrigger: {
               start: () => {
-                return GetRightPosition(section) - window.innerWidth * 0.5;
+                return GetRightPosition(section) - window.innerWidth * 0.7;
               },
               //toggleActions: "restart pause resume reverse",
             },
@@ -439,7 +450,7 @@ export default function KnessetScriptProvider({
         delay: 0,
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * 1.5;
+            return GetRightPosition(subscribeForm) - window.innerWidth * 0.7;
           },
           //toggleActions: "restart pause resume reverse",
         },
@@ -459,7 +470,7 @@ export default function KnessetScriptProvider({
         delay: 0,
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * 2.5;
+            return GetRightPosition(sheetReadmore) - window.innerWidth * 0.7;
           },
           //toggleActions: "restart pause resume reverse",
         },
@@ -551,6 +562,7 @@ export default function KnessetScriptProvider({
               onSearchSubmit={setSubmittedSearch}
               setPostLoading={setPostLoading}
               postLoading={postLoading}
+              setCurrentScrollPos={setCurrentScrollPos}
             />
           </div>
         </div>

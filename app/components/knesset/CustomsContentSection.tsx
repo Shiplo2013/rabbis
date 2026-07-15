@@ -13,6 +13,7 @@ interface ChildProps {
   onSearchSubmit?: (value: string) => void;
   setPostLoading?: (value: boolean) => void;
   postLoading?: boolean;
+  setCurrentScrollPos?: (value: number) => void;
 }
 
 export default function CustomsContentSection(props: ChildProps) {
@@ -42,6 +43,7 @@ export default function CustomsContentSection(props: ChildProps) {
             onSearchChange={setSearchQuery}
             onSearchSubmit={props.onSearchSubmit}
             setPostLoading={props.setPostLoading}
+            setCurrentScrollPos={props.setCurrentScrollPos}
           />
         </div>
         <div className="sheet-content flex items-stretch gap-x-[3.2vw] will-change-transform">
