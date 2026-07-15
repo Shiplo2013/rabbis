@@ -12,6 +12,7 @@ interface SidebarProps {
   onSearchChange: (value: string) => void;
   onSearchSubmit?: (value: string) => void;
   setPostLoading?: (value: boolean) => void;
+  setCurrentScrollPos?: (value: number) => void;
 }
 
 export default function Sidebar({
@@ -22,6 +23,7 @@ export default function Sidebar({
   onSearchChange,
   onSearchSubmit,
   setPostLoading,
+  setCurrentScrollPos,
 }: SidebarProps) {
   // Menu State
   const [menuOpen, setMenuOpen] = useState(true);
@@ -91,6 +93,9 @@ export default function Sidebar({
                     onCategorySelect(String(item.id));
                     if (setPostLoading) {
                       setPostLoading(true);
+                    }
+                    if (setCurrentScrollPos) {
+                      setCurrentScrollPos(window.scrollY);
                     }
                   }}
                   className={`transition-all duration-300 cursor-pointer ${
