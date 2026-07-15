@@ -1,8 +1,8 @@
 "use client";
+import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
-import ContactSection from "../../components/contact/ContactSection";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 import TextSplitLines from "../../ui/TextSplitLines";
 import { useAppState } from "../AppContext";
@@ -11,26 +11,20 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText, ScrollTrigger, useGSAP);
 }
 
-type ContactPageData = {
-  acf: {
-    contact_info: {
-      title: string;
-      address: string;
-      email: string;
-      phone: string;
-      wase_link: string;
-    };
+type PageData = {
+  id: number;
+  title: {
+    rendered: string;
+  };
+  content: {
+    rendered: string;
   };
 };
 
-export default function ContactScriptProvider({
-  data,
-}: {
-  data: ContactPageData;
-}) {
+export default function ContactScriptProvider({ data }: { data: PageData }) {
   // Container Ref
   const main = useRef<HTMLDivElement>(null);
-  const [pageData, setPageData] = useState<ContactPageData | null>(null);
+  const [pageData, setPageData] = useState<PageData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   // Page Data
@@ -45,15 +39,14 @@ export default function ContactScriptProvider({
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
 
   // Static Data
-  const staticData: ContactPageData = {
-    acf: {
-      contact_info: {
-        title: "Contact Us",
-        address: "הרב חיים הלר 8 ירושלים ישראל",
-        email: "office@chevron.org.il",
-        phone: "02-6209331",
-        wase_link: "/#",
-      },
+  const staticData: PageData = {
+    id: 0,
+    title: {
+      rendered: "Privacy Policy",
+    },
+    content: {
+      rendered:
+        "Suggested text: When visitors leave comments on the site we collect the data shown in the comments form, and also the visitor’s IP address and browser user agent string to help spam detection. An anonymized string created from your email address (also called a hash) may be provided to the Gravatar service to see if you are using it. The Gravatar service privacy policy is available here: https://automattic.com/privacy/. After approval of your comment, your profile picture is visible to the public in the context of your comment.",
     },
   };
 
@@ -70,6 +63,7 @@ export default function ContactScriptProvider({
     if (!pageData) {
       return;
     }
+    console.log("Page Data Fetched:", pageData);
     if (animationPlayed) {
       setPageDataFetched(true);
       setIsLoading(false);
@@ -91,31 +85,30 @@ export default function ContactScriptProvider({
         const headerRight = document.querySelector(
           ".header-right",
         ) as HTMLElement | null;
-        // Banner Overlay
-        const bannerBackgroundOverlay = main.current?.querySelector(
-          ".contact-section .intro-background .intro-bg-mask",
+        // Privacy Policy Content
+        const privacyPolicyContent = main.current?.querySelector(
+          ".privacy-policy-content",
         ) as HTMLElement | null;
-        // Contact Form
-        const contactForm = main.current?.querySelector(
-          ".contact-section .contact-content .contact-form .contact-form-wrapper",
+        // Privacy Policy Heading
+        const privacyPolicyHeading = main.current?.querySelector(
+          "h1.privacy-policy-title",
         ) as HTMLElement | null;
-        // Contact Heading
-        const contactHeading = main.current?.querySelector(
-          ".contact-section .contact-content .contact-heading>h2",
-        ) as HTMLElement | null;
-        // Contact Info Item
-        const contactInfoItem = main.current?.querySelectorAll(
-          ".contact-section .contact-content .contact-info .info-item .info-item-wrapper",
-        ) as NodeListOf<HTMLElement> | null;
-        // Contact Heading
+        // Privacy Policy Heading
         let splitTitle;
-        if (contactHeading) {
-          splitTitle = TextSplitLines(contactHeading);
-          gsap.set(contactHeading, {
+        if (privacyPolicyHeading) {
+          splitTitle = TextSplitLines(privacyPolicyHeading);
+          gsap.set(privacyPolicyHeading, {
             perspective: 400,
           });
           gsap.set(splitTitle, {
             yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Privacy Policy Content
+        if (privacyPolicyContent) {
+          gsap.set(privacyPolicyContent, {
+            y: 100,
             opacity: 0,
           });
         }
@@ -157,8 +150,8 @@ export default function ContactScriptProvider({
             );
           }
 
-          // Contact Heading
-          if (contactHeading && splitTitle) {
+          // Privacy Policy Heading
+          if (privacyPolicyHeading && splitTitle) {
             tl.to(
               splitTitle,
               {
@@ -173,43 +166,15 @@ export default function ContactScriptProvider({
             );
           }
 
-          // Contact Info Item
-          if (contactInfoItem) {
-            tl.from(
-              contactInfoItem,
-              {
-                translateY: "100%",
-                opacity: 0,
-                delay: 0,
-                duration: 3,
-                ease: "expo.inOut",
-              },
-              "-=2.5",
-            );
-          }
-
-          // Contact Form
-          if (contactForm) {
-            tl.from(
-              contactForm,
-              {
-                translateY: "100%",
-                opacity: 0,
-                delay: 0,
-                duration: 3,
-                ease: "expo.inOut",
-              },
-              "-=2.5",
-            );
-          }
-
-          if (bannerBackgroundOverlay) {
+          // Privacy Policy Content
+          if (privacyPolicyContent) {
             tl.to(
-              bannerBackgroundOverlay,
+              privacyPolicyContent,
               {
-                translateY: "-100%",
-                delay: 0,
+                y: 0,
+                opacity: 1,
                 duration: 3,
+                delay: 0,
                 ease: "expo.inOut",
               },
               "-=2.5",
@@ -320,9 +285,9 @@ export default function ContactScriptProvider({
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Contact Not Found</h1>
+          <h1 className="text-2xl font-bold">Privacy Policy Not Found</h1>
           <p className="text-gray-600">
-            The requested contact page could not be found.
+            The requested privacy policy page could not be found.
           </p>
         </div>
       </div>
@@ -335,22 +300,20 @@ export default function ContactScriptProvider({
         ref={main}
         id="page"
         dir="ltr"
-        className="main relative overflow-hidden z-10"
+        className="main relative overflow-hidden z-10 will-change-transform"
       >
-        <Suspense
-          fallback={
-            <div className="w-screen min-w-screen h-full bg-black"></div>
-          }
-        >
-          <ContactSection
-            extraClass={
-              "contact-section w-screen min-h-[calc(100vh+100px)] h-auto"
-            }
-            animWidthText={0}
-            bgImage={IntroBG}
-            data={pageData?.acf}
-          />
-        </Suspense>
+        <div className="privacy-policy-page flex w-screen h-auto min-h-screen items-center justify-center relative overflow-hidden pt-[20vh] pb-[10vh]">
+          <div className="privacy-policy-container w-[80%] max-w-287.5">
+            <div className="privacy-policy-wrapper px-5">
+              <h1 className="privacy-policy-title text-6xl leading-[1em] font-bold mb-8">
+                {parse(pageData.title.rendered)}
+              </h1>
+              <div className="privacy-policy-content text-[18px] leading-[1.8em] text-[#c9c9c9] [&>h2]:text-3xl [&>h2]:font-bold [&>h2]:mb-3 [&>h3]:text-2xl [&>h3]:font-semibold [&>h3]:mb-2 [&>p:not(:last-child)]:mb-4 [&>ul]:list-disc [&>ul]:ml-5 [&>ul]:mb-4">
+                {parse(pageData.content.rendered)}
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     )
   );

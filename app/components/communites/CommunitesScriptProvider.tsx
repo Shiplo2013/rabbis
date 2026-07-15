@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 import CommunitesPostCat from "../../components/communites/CommunitiesPostCat";
 import Introduction from "../../components/communites/Introduction";
@@ -355,22 +355,32 @@ export default function CommunitiesScriptProvider({
                 throw new Error("Function not implemented.");
               }}
             />
-            <section
-              className={`panel-section will-change-transform min-w-screen w-[${sectionWidth}vw] px-[15vw] box-border`}
+            <Suspense
+              fallback={
+                <div
+                  className={`flex h-screen items-center justify-center w-screen min-w-screen w-[${sectionWidth}vw] bg-black`}
+                >
+                  Loading...
+                </div>
+              }
             >
-              <div className="w-full flex justify-end gap-x-[15vw]">
-                {communityPageData?.postsData &&
-                  communityPageData?.postsData?.map(
-                    (categoryData: any, index: number) => (
-                      <CommunitesPostCat
-                        key={index}
-                        postsContent={categoryData}
-                        className={`will-change-transform rabbis-section-${index}`}
-                      />
-                    ),
-                  )}
-              </div>
-            </section>
+              <section
+                className={`panel-section will-change-transform min-w-screen w-[${sectionWidth}vw] px-[15vw] box-border`}
+              >
+                <div className="w-full flex justify-end gap-x-[15vw]">
+                  {communityPageData?.postsData &&
+                    communityPageData?.postsData?.map(
+                      (categoryData: any, index: number) => (
+                        <CommunitesPostCat
+                          key={index}
+                          postsContent={categoryData}
+                          className={`will-change-transform rabbis-section-${index}`}
+                        />
+                      ),
+                    )}
+                </div>
+              </section>
+            </Suspense>
           </div>
         </div>
       </main>

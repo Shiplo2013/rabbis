@@ -2,7 +2,7 @@ import KnessetScriptProvider from "../components/knesset/KnessetScriptProvider";
 
 export default async function Page() {
   const pageRes = fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=the-knesset-of-customs&_fields=id,title,content,slug`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=the-knesset-of-customs&_fields=id,title,content,acf`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
       cache: "force-cache",
@@ -29,7 +29,13 @@ export default async function Page() {
     throw new Error("Failed to load data.");
   }
 
-  let pageData = [{ title: { rendered: "" }, content: { rendered: "" } }];
+  let pageData = [
+    {
+      title: { rendered: "" },
+      content: { rendered: "" },
+      acf: { read_more_button: { text: "", link: "" } },
+    },
+  ];
   let categoryData: any[] = [];
 
   try {
@@ -47,7 +53,7 @@ export default async function Page() {
   }
 
   const postsRes = await fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?knesset_cat?parent=0&_fields=id,title,slug,acf,excerpt&per_page=20`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?knesset_cat?parent=0&_fields=id,title,slug,excerpt,acf.subtitle&per_page=20`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
       cache: "force-cache",
@@ -73,6 +79,7 @@ export default async function Page() {
         pageData: {
           title: pageData[0]?.title?.rendered || "",
           content: pageData[0]?.content?.rendered || "",
+          acf: pageData[0]?.acf || { read_more_button: { text: "", link: "" } },
         },
         categoriesData: categoryData,
         postsData: postsData,

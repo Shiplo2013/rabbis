@@ -1,4 +1,4 @@
-import HistoryScriptProvider from "../components/history/HistoryScriptProvider";
+import { ChroniclesPageWithCache } from "../components/history/ChroniclesPageWithCache";
 
 export default async function page() {
   const pageRes = await fetch(
@@ -13,44 +13,96 @@ export default async function page() {
     throw new Error("Failed to load data.");
   }
 
-  const pageData = await pageRes.json();
+  let pageData = [
+    {
+      id: 0,
+      acf: {
+        timeline_1: {
+          past_rabbis_section: {
+            past_rabbis: [],
+          },
+        },
+        timeline_2: {
+          past_rabbis_section: {
+            past_rabbis: [],
+          },
+        },
+        timeline_3: {
+          past_rabbis_section: {
+            past_rabbis: [],
+          },
+        },
+        timeline_4: {
+          past_rabbis_section: {
+            past_rabbis: [],
+          },
+        },
+        timeline_5: {
+          past_rabbis_section: {
+            past_rabbis: [],
+          },
+        },
+      },
+    },
+  ];
+  try {
+    const parsedData = await pageRes.json();
+    pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
+  } catch (error) {
+    console.error("Failed to parse page data JSON:", error);
+  }
 
   const params1 = new URLSearchParams({
-    include: pageData[0].acf?.timeline_1?.past_rabbis_section?.past_rabbis,
+    include: (
+      pageData[0].acf?.timeline_1?.past_rabbis_section?.past_rabbis ?? []
+    ).toString(),
     per_page: String(
-      pageData[0].acf?.timeline_1?.past_rabbis_section?.past_rabbis.length,
+      (pageData[0].acf?.timeline_1?.past_rabbis_section?.past_rabbis ?? [])
+        .length,
     ),
     orderby: "include",
     order: "asc",
   });
   const params2 = new URLSearchParams({
-    include: pageData[0].acf?.timeline_2?.past_rabbis_section?.past_rabbis,
+    include: (
+      pageData[0].acf?.timeline_2?.past_rabbis_section?.past_rabbis ?? []
+    ).toString(),
     per_page: String(
-      pageData[0].acf?.timeline_2?.past_rabbis_section?.past_rabbis.length,
+      (pageData[0].acf?.timeline_2?.past_rabbis_section?.past_rabbis ?? [])
+        .length,
     ),
     orderby: "include",
     order: "asc",
   });
   const params3 = new URLSearchParams({
-    include: pageData[0].acf?.timeline_3?.past_rabbis_section?.past_rabbis,
+    include: (
+      pageData[0].acf?.timeline_3?.past_rabbis_section?.past_rabbis ?? []
+    ).toString(),
     per_page: String(
-      pageData[0].acf?.timeline_3?.past_rabbis_section?.past_rabbis.length,
+      (pageData[0].acf?.timeline_3?.past_rabbis_section?.past_rabbis ?? [])
+        .length,
     ),
     orderby: "include",
     order: "asc",
   });
   const params4 = new URLSearchParams({
-    include: pageData[0].acf?.timeline_4?.past_rabbis_section?.past_rabbis,
+    include: (
+      pageData[0].acf?.timeline_4?.past_rabbis_section?.past_rabbis ?? []
+    ).toString(),
     per_page: String(
-      pageData[0].acf?.timeline_4?.past_rabbis_section?.past_rabbis.length,
+      (pageData[0].acf?.timeline_4?.past_rabbis_section?.past_rabbis ?? [])
+        .length,
     ),
     orderby: "include",
     order: "asc",
   });
   const params5 = new URLSearchParams({
-    include: pageData[0].acf?.timeline_5?.past_rabbis_section?.past_rabbis,
+    include: (
+      pageData[0].acf?.timeline_5?.past_rabbis_section?.past_rabbis ?? []
+    ).toString(),
     per_page: String(
-      pageData[0].acf?.timeline_5?.past_rabbis_section?.past_rabbis.length,
+      (pageData[0].acf?.timeline_5?.past_rabbis_section?.past_rabbis ?? [])
+        .length,
     ),
     orderby: "include",
     order: "asc",
@@ -135,7 +187,7 @@ export default async function page() {
   // console.log("Rabbis Data 5:", rabbisData5);
 
   return (
-    <HistoryScriptProvider
+    <ChroniclesPageWithCache
       data={{
         pageData: pageData[0],
         rabbisData: [

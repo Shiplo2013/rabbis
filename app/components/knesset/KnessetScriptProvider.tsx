@@ -51,81 +51,49 @@ export default function KnessetScriptProvider({
       setError("No data provided.");
       return;
     }
-    console.log(data, "data");
     setKnessetPageData(data);
   }, [data]);
+
   // Search and Category Filter
-  //   useEffect(() => {
-  //     let isMounted = true;
+  useEffect(() => {
+    if (selectedCategory !== null) {
+      let isMounted = true;
 
-  //     const loadKnessetPageData = async () => {
-  //       const response = fetch("/api/the-knesset-of-customs", {
-  //         cache: "no-store",
-  //       });
-  //       const response3 = fetch("/api/the-knesset-of-customs/categories", {
-  //         cache: "no-store",
-  //       });
-  //       const normalizedSearch = submittedSearch.trim();
-  //       const normalizedCategory = selectedCategory?.trim();
-  //       const postsUrl = normalizedSearch
-  //         ? `/api/the-knesset-of-customs/posts?search=${encodeURIComponent(normalizedSearch)}${normalizedCategory ? `&knesset_cat=${encodeURIComponent(normalizedCategory)}` : ""}`
-  //         : normalizedCategory
-  //           ? `/api/the-knesset-of-customs/posts?knesset_cat=${encodeURIComponent(normalizedCategory)}`
-  //           : "/api/the-knesset-of-customs/posts";
-  //       const response2 = fetch(postsUrl, {
-  //         cache: "no-store",
-  //       });
-  //       try {
-  //         const [pageData1, pageData2, pageData3] = await Promise.all([
-  //           response,
-  //           response3,
-  //           response2,
-  //         ]);
+      const loadKnessetPostsData = async () => {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?knesset_cat=${selectedCategory}&_fields=id,title,slug,excerpt,acf.subtitle&per_page=20`,
+            {
+              cache: "no-store",
+            },
+          );
 
-  //         if (!pageData1.ok) {
-  //           throw new Error("Failed to load the knesset of customs page data.");
-  //         }
+          if (!response.ok) {
+            throw new Error("Failed to load the knesset of customs page data.");
+          }
 
-  //         if (!pageData2.ok) {
-  //           throw new Error("Failed to load the knesset of customs posts data.");
-  //         }
+          const data = await response.json();
 
-  //         if (!pageData3.ok) {
-  //           throw new Error(
-  //             "Failed to load the knesset of customs categories data.",
-  //           );
-  //         }
+          if (isMounted) {
+            knessetPageData.postsData = data;
+            setKnessetPageData({ ...knessetPageData });
+            setPostLoading(false);
+          }
+        } catch (error) {
+          console.error(error);
+          if (isMounted) {
+            setError("Failed to load the knesset of customs page data.");
+          }
+        }
+      };
 
-  //         const data = await pageData1.json();
-  //         const data2 = await pageData2.json();
-  //         const data3 = await pageData3.json();
+      loadKnessetPostsData();
 
-  //         if (isMounted) {
-  //           setKnessetPageData({
-  //             pageData: data,
-  //             postsData: data2,
-  //             categoriesData: data3,
-  //           });
-  //         }
-  //       } catch (error) {
-  //         console.error(error);
-  //         if (isMounted) {
-  //           setError("Failed to load the knesset of customs page data.");
-  //         }
-  //       } finally {
-  //         if (isMounted) {
-  //           setIsLoading(false);
-  //           setPostLoading(false);
-  //         }
-  //       }
-  //     };
-
-  //     loadKnessetPageData();
-
-  //     return () => {
-  //       isMounted = false;
-  //     };
-  //   }, [submittedSearch, selectedCategory]);
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [selectedCategory]);
 
   useEffect(() => {
     if (!knessetPageData) {
@@ -172,9 +140,6 @@ export default function KnessetScriptProvider({
       ) as HTMLElement | null;
       const waveLine = document.getElementById(
         "wave-line",
-      ) as HTMLElement | null;
-      const arrowButton = document.getElementById(
-        "arrow-button",
       ) as HTMLElement | null;
       waveLine?.classList.remove("hidden");
       const scurbScale = 2;
@@ -230,6 +195,13 @@ export default function KnessetScriptProvider({
     };
   }, [pageDataFetched]);
 
+  // Revalidate Timeline
+  useEffect(() => {
+    if (verticalSection) {
+      verticalSection.invalidate().restart();
+    }
+  }, [containerWidth, verticalSection]);
+
   // Load Page
   useGSAP(() => {
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
@@ -251,6 +223,9 @@ export default function KnessetScriptProvider({
         // Banner Button
         const introContent = main.current?.querySelector(
           ".first-intro .intro-content",
+        ) as HTMLElement | null;
+        const introContentButton = main.current?.querySelector(
+          ".first-intro .readmore-button",
         ) as HTMLElement | null;
         const bannerBackgroundOverlay = main.current?.querySelector(
           ".first-intro .intro-background .intro-bg-mask",
@@ -275,6 +250,13 @@ export default function KnessetScriptProvider({
             perspective: 400,
           });
           gsap.set(splitContent, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Intro Content Button
+        if (introContentButton) {
+          gsap.set(introContentButton, {
             yPercent: 150,
             opacity: 0,
           });
@@ -338,6 +320,19 @@ export default function KnessetScriptProvider({
                 duration: 3,
                 delay: 0,
                 stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+          if (introContentButton) {
+            tl.to(
+              introContentButton,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
                 ease: "expo.inOut",
               },
               "-=2.5",

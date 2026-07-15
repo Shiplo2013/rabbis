@@ -18,7 +18,13 @@ export default function RabbisHeader() {
   const [activeHamburgerMenu, setActiveHamburgerMenu] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { isLoading, setIsLoading } = useAppState();
+  const {
+    isLoading,
+    setIsLoading,
+    allRabbisPosts,
+    activeRabbisMenu,
+    setActiveRabbisMenu,
+  } = useAppState();
 
   // Handle Link Click
   const handleLinkClick = (
@@ -63,7 +69,7 @@ export default function RabbisHeader() {
           </div>
           <div
             onClick={() => {
-              setActiveHamburgerMenu(!activeHamburgerMenu);
+              setActiveRabbisMenu(!activeRabbisMenu);
             }}
             className="button cursor-pointer"
           >

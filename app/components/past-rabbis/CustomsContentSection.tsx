@@ -2,6 +2,9 @@ import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import ThemeButton from "@/app/ui/ThemeButton";
 import parse from "html-react-parser";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useAppState } from "../AppContext";
 
 interface ChildProps {
   extraClass: string;
@@ -11,7 +14,20 @@ interface ChildProps {
 
 export default function CustomsContentSection(props: ChildProps) {
   const rabbisPosts = props.data;
-
+  const router = useRouter();
+  const pathname = usePathname();
+  const { isLoading, setIsLoading } = useAppState();
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
   return (
     <section
       dir="rtl"
@@ -19,7 +35,6 @@ export default function CustomsContentSection(props: ChildProps) {
     >
       <div className="rabbis-wrapper w-full h-full flex gap-x-[10vw]">
         {rabbisPosts.map((item: any, index: number) => {
-          console.log("Rendering item:", item);
           return (
             <div
               key={index}
@@ -62,9 +77,11 @@ export default function CustomsContentSection(props: ChildProps) {
               </div>
               <div className="rabbis-content w-[28vw] text-[#D1A941]">
                 <h2 className="text-[55px] leading-[0.7em] overflow-hidden relative">
-                  {parse(
-                    item.title?.rendered ? item.title.rendered : item.title,
-                  )}
+                  <Link href={item?.slug ? `/past-rabbis/${item.slug}` : "#"}>
+                    {parse(
+                      item.title?.rendered ? item.title.rendered : item.title,
+                    )}
+                  </Link>
                 </h2>
                 <div className="content text-[33px] leading-[1em] mt-5 relative">
                   {parse(item?.acf?.time)}
