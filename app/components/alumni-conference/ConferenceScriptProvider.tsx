@@ -48,8 +48,6 @@ export default function ConferenceScriptProvider({
     null,
   );
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [headerData, setHeaderData] = useState<any | null>(null);
-  const [footerData, setFooterData] = useState<any | null>(null);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [error, setError] = useState<string | null>(null);

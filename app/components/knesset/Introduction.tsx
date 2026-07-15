@@ -1,7 +1,10 @@
+import ArrowLeft2 from "@/app/assets/icons/ArrowLeft2";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef } from "react";
+import { useAppState } from "../AppContext";
 
 interface ChildProps {
   extraClass: string;
@@ -17,12 +20,32 @@ interface ChildProps {
   data: IntroData;
 }
 
-type IntroData = { title: string; content: string };
+type IntroData = {
+  title: string;
+  content: string;
+  acf?: { read_more_button?: { text?: string; link?: string } };
+};
 
 export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const introData = (props.data as IntroData) || [];
+  const pathname = usePathname();
+  const router = useRouter();
+  const { isLoading, setIsLoading } = useAppState();
+
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     <section
       ref={wrapper}
@@ -62,6 +85,22 @@ export default function Introduction(props: ChildProps) {
           <h4 className="intro-content overflow-hidden text-[28px] leading-[1em] text-[#FBF4E6] mt-3 relative z-30 max-w-188.75">
             {parse(introData?.content)}
           </h4>
+          {introData?.acf?.read_more_button && (
+            <div className="readmore mt-4 overflow-hidden relative z-30">
+              <a
+                href={introData.acf.read_more_button.link}
+                onClick={handleLinkClick}
+                className="readmore-button text-[#AC832E] text-[28px] leading-[1em] flex items-center gap-x-2.5 relative z-30 flex-row-reverse hover:text-white group"
+              >
+                <span className="text transition-all duration-300">
+                  {introData.acf.read_more_button.text}
+                </span>
+                <span className="icon w-6 [&>svg>path]:fill-[#AC832E] [&>svg>path]:transition-all [&>svg>path]:duration-300 group-hover:[&>svg>path]:fill-white">
+                  <ArrowLeft2 />
+                </span>
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </section>

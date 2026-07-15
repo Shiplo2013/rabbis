@@ -445,7 +445,8 @@ export default function TimelineCardItem(props: ChildProps) {
                 className="w-full object-cover object-center h-full relative z-10"
                 src={
                   props.data?.image_1?.sizes?.large ||
-                  props.data?.images?.image1?.src
+                  props.data?.images?.image1?.src ||
+                  "/images/rabbis-timeline1.jpg"
                 }
                 width="553"
                 height="354"
@@ -464,7 +465,8 @@ export default function TimelineCardItem(props: ChildProps) {
               className="w-full object-cover object-center h-full relative z-10"
               src={
                 props.data?.image_2?.sizes?.large ||
-                props.data?.images?.image2?.src
+                props.data?.images?.image2?.src ||
+                "/images/rabbis-timeline2.jpg"
               }
               width="258"
               height="305"

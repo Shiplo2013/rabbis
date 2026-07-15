@@ -14,7 +14,16 @@ interface ChildProps {
 
 export default function SingleZatzelGraduate(props: ChildProps) {
   const ItemData = props.data;
-
+  const englishFormat = new Intl.DateTimeFormat("en-u-ca-hebrew", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(ItemData?.yearOfDeath));
+  const hebrewFormat = new Intl.DateTimeFormat("he-u-ca-hebrew", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(ItemData?.yearOfDeath))
   return (
     <div
       dir="ltr"
@@ -46,8 +55,7 @@ export default function SingleZatzelGraduate(props: ChildProps) {
           {parse(ItemData?.title || "כותרת פוסט")}
         </h2>
         <p className="post-excerpt">
-          <span>שנת פטירה:</span>{" "}
-          {parse(ItemData?.yearOfDeath) || `כ"ו בסיוון ה'תשע"א `}
+          <span>שנת פטירה:</span> {hebrewFormat || `כ"ו בסיוון ה'תשע"א `}
         </p>
       </div>
     </div>

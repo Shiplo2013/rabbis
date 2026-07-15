@@ -17,8 +17,6 @@ if (typeof window !== "undefined") {
 export default function PastRabbisScriptProvider({ data }: { data: any }) {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
-  const [headerData, setHeaderData] = useState<any | null>(null);
-  const [footerData, setFooterData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();

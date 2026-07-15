@@ -18,10 +18,6 @@ if (typeof window !== "undefined") {
 export default function DonationScriptProvider({ data }: { data: any }) {
   const [donationPageData, setDonationPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [headerData, setHeaderData] = useState<any | null>(null);
-  const [footerData, setFooterData] = useState<any | null>(null);
-  const [containerWidth, setContainerWidth] = useState(300);
-  const [sectionWidth, setSectionWidth] = useState(200);
   const [error, setError] = useState<string | null>(null);
   // Router Path
   const pathname = usePathname();
@@ -57,26 +53,6 @@ export default function DonationScriptProvider({ data }: { data: any }) {
       setIsLoading(false);
     }
   }, [donationPageData, animationPlayed]);
-
-  useEffect(() => {
-    if (!donationPageData) {
-      return;
-    }
-    // Update Section Width on Data Change
-    const updateSectionWidth = () => {
-      // const newSectionWidth =
-      //   testimonialsPageData?.acf?.testimonials?.length * (itemWidths / 19.2) +
-      //   donationPageData?.acf?.testimonials?.length * 10;
-      // setSectionWidth(newSectionWidth);
-      // setContainerWidth(newSectionWidth + 39.7);
-    };
-
-    updateSectionWidth();
-    window.addEventListener("resize", updateSectionWidth);
-    return () => {
-      window.removeEventListener("resize", updateSectionWidth);
-    };
-  }, [donationPageData]);
 
   // Page Section Animation
   useGSAP(() => {

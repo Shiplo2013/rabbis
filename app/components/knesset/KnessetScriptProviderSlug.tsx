@@ -160,7 +160,7 @@ export default function KnessetScriptProviderSlug({
     }
 
     const headerLeft = document.querySelector(
-      ".header-left",
+      "#header .header-left",
     ) as HTMLElement | null;
 
     if (!headerLeft) {

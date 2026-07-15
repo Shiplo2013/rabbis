@@ -34,7 +34,7 @@ export default function ConferenceGalleryImage({
           placeholder={"blur"}
           loading="lazy"
           alt="Gallery Image"
-          onLoadingComplete={() => setLoading(false)}
+          onLoad={() => setLoading(false)}
         />
       </div>
     </div>

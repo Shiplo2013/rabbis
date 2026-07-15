@@ -158,7 +158,7 @@ export default function ZatzelScriptProvider({
             if (self.progress > 0.97) {
               if (arrowButton) {
                 gsap.to(arrowButton, {
-                  opacity: 0,
+                  autoAlpha: 0,
                   duration: 0.1,
                   delay: 0,
                 });
@@ -166,7 +166,7 @@ export default function ZatzelScriptProvider({
             } else {
               if (arrowButton) {
                 gsap.to(arrowButton, {
-                  opacity: 1,
+                  autoAlpha: 1,
                   duration: 0.1,
                   delay: 0,
                 });
@@ -477,7 +477,7 @@ export default function ZatzelScriptProvider({
       });
       gsap.to(arrowWrapper, {
         xPercent: 0,
-        opacity: 1,
+        autoAlpha: 1,
         ease: "expo.inOut",
         duration: 1.5,
         delay: 0,
@@ -493,11 +493,11 @@ export default function ZatzelScriptProvider({
     if (sheetReadmore) {
       gsap.set(sheetReadmore, {
         xPercent: -50,
-        opacity: 0,
+        autoAlpha: 0,
       });
       gsap.to(sheetReadmore, {
         xPercent: 0,
-        opacity: 1,
+        autoAlpha: 1,
         ease: "expo.inOut",
         duration: 1,
         delay: 0,

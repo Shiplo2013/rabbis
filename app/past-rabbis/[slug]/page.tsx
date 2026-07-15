@@ -6,35 +6,61 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
-  const postsRes = fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&slug=${slug}&_fields=id,title,acf,content`,
-    {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
-    },
-  );
-  const allPostsRes = fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&_fields=id,title,slug,acf&per_page=20`,
-    {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
-    },
-  );
+  let postsDataRes: Response | null = null;
+  let allPostsDataRes: Response | null = null;
 
-  const [postsDataRes, allPostsDataRes] = await Promise.all([
-    postsRes,
-    allPostsRes,
-  ]);
-
-  if (!postsDataRes.ok || !allPostsDataRes.ok) {
-    throw new Error("Failed to load data.");
+  try {
+    [postsDataRes, allPostsDataRes] = await Promise.all([
+      fetch(
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&slug=${slug}&_fields=id,title,acf,content`,
+        {
+          next: { revalidate: 86400 }, // Cache data for 24 hours
+          cache: "force-cache",
+        },
+      ),
+      fetch(
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&_fields=id,title,slug,acf&per_page=20`,
+        {
+          next: { revalidate: 86400 }, // Cache data for 24 hours
+          cache: "force-cache",
+        },
+      ),
+    ]);
+  } catch (error) {
+    console.error("Failed to fetch past-rabbis slug data:", error);
   }
 
-  const postsData = await postsDataRes.json();
-  const allPostsData = await allPostsDataRes.json();
+  let postsData: any[] = [];
+  let allPostsData: any[] = [];
+
+  if (postsDataRes?.ok) {
+    try {
+      const parsed = await postsDataRes.json();
+      postsData = Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error("Failed to parse past-rabbis slug JSON:", error);
+    }
+  } else if (postsDataRes) {
+    console.error("Failed to load past-rabbis slug post:", postsDataRes.status);
+  }
+
+  if (allPostsDataRes?.ok) {
+    try {
+      const parsed = await allPostsDataRes.json();
+      allPostsData = Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error("Failed to parse past-rabbis list JSON:", error);
+    }
+  } else if (allPostsDataRes) {
+    console.error(
+      "Failed to load past-rabbis all posts:",
+      allPostsDataRes.status,
+    );
+  }
+
   return (
     <PastRabbisScriptProviderSlug
-      data={{ postsData: postsData[0], allPostsData: allPostsData }}
+      data={{ postsData: postsData[0] ?? {}, allPostsData }}
     />
   );
 }

@@ -45,7 +45,7 @@ export default function SheetContentItem(props: { data?: any }) {
                 itemData?.acf?.thumbnail?.sizes?.medium ||
                 sheetImg.src
               }
-              onLoadingComplete={() => setLoading(false)}
+              onLoad={() => setLoading(false)}
               width="337"
               height="476"
               blurDataURL={

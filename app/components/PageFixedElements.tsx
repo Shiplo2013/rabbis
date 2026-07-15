@@ -36,6 +36,7 @@ export default function PageFixedElements() {
   const pathname = usePathname();
   const audio = useRef<HTMLAudioElement>(null);
   const wishButton = useRef<HTMLDivElement>(null);
+  const moveButton = useRef<HTMLDivElement>(null);
   const audioButton = useRef<HTMLDivElement>(null);
 
   // Animation State
@@ -166,6 +167,67 @@ export default function PageFixedElements() {
     window.scrollTo({ top: scrollPost, behavior: "smooth" });
   };
 
+  // On Mouse Move
+  useGSAP(() => {
+    const movingButtonRef = moveButton.current;
+    if (movingButtonRef !== null) {
+      const xSetter = gsap.quickSetter(movingButtonRef, "x", "px");
+      const ySetter = gsap.quickSetter(movingButtonRef, "y", "px");
+
+      window.addEventListener("mousemove", (e) => {
+        xSetter(e.clientX);
+        ySetter(e.clientY);
+      });
+      // Show view on mouse hover
+      const pageNav = document.querySelectorAll(
+        ".rabbis-navigation a.nav-link",
+      ) as NodeListOf<HTMLAnchorElement> | null;
+      if (pageNav) {
+        pageNav.forEach((nav) => {
+          nav.addEventListener("mouseenter", () => {
+            gsap.to(movingButtonRef, {
+              opacity: 1,
+              scaleY: 1,
+              duration: 0.3,
+            });
+          });
+          nav.addEventListener("mouseleave", () => {
+            gsap.to(movingButtonRef, {
+              opacity: 0,
+              scaleY: 0,
+              duration: 0.3,
+            });
+          });
+        });
+      }
+
+      return () => {
+        window.removeEventListener("mousemove", (e) => {
+          xSetter(e.clientX);
+          ySetter(e.clientY);
+        });
+        if (pageNav) {
+          pageNav.forEach((nav) => {
+            nav.removeEventListener("mouseenter", () => {
+              gsap.to(movingButtonRef, {
+                opacity: 1,
+                scaleY: 2,
+                duration: 0.3,
+              });
+            });
+            nav.removeEventListener("mouseleave", () => {
+              gsap.to(movingButtonRef, {
+                opacity: 0,
+                scaleY: 0,
+                duration: 0.3,
+              });
+            });
+          });
+        }
+      };
+    }
+  }, [moveButton]);
+
   // Page default
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -240,26 +302,28 @@ export default function PageFixedElements() {
       )}
       {/* End of Wish Button */}
       {/* Audio Button */}
-      <div
-        id="audio-button"
-        ref={audioButton}
-        onClick={() => {
-          setIsPlaying(!isPlaying);
-        }}
-        className="equalizer-button flex gap-2 items-center fixed py-1 px-3 bottom-5 right-20 z-40 cursor-pointer bg-[#c3a23fb0] text-[#000000] opacity-0 hover:opacity-100 invisible translate-y-5 rounded-full"
-      >
-        <span>{isPlaying ? "ON" : "OFF"}</span>
-        <div className="equalizer flex items-end justify-center gap-0.5 h-4">
-          {[0.2, 0.4, 0.6, 0.8, 1.0].map((delay, index) => (
-            <div
-              key={index}
-              className={`w-0.5 h-full bg-[#000000] rounded-full transition-all ${
-                isPlaying ? `equalizer-animation` : "scale-30"
-              }`}
-            />
-          ))}
+      {pathname === "/" && (
+        <div
+          id="audio-button"
+          ref={audioButton}
+          onClick={() => {
+            setIsPlaying(!isPlaying);
+          }}
+          className="equalizer-button flex gap-2 items-center fixed py-1 px-3 bottom-5 right-20 z-40 cursor-pointer bg-[#c3a23fb0] text-[#000000] opacity-0 hover:opacity-100 invisible translate-y-5 rounded-full"
+        >
+          <span>{isPlaying ? "ON" : "OFF"}</span>
+          <div className="equalizer flex items-end justify-center gap-0.5 h-4">
+            {[0.2, 0.4, 0.6, 0.8, 1.0].map((delay, index) => (
+              <div
+                key={index}
+                className={`w-0.5 h-full bg-[#000000] rounded-full transition-all ${
+                  isPlaying ? `equalizer-animation` : "scale-30"
+                }`}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       {/* End of Audio Button */}
 
       {/* Visit Temple Navigation */}
@@ -307,7 +371,7 @@ export default function PageFixedElements() {
       {pathname === "/zatzel-graduates" && (
         <div
           id="arrow-button"
-          className="rabbis-arrow-wrapper fixed top-0 left-0 z-50 h-screen w-[20vw]"
+          className="rabbis-arrow-wrapper fixed top-0 left-0 z-50 h-screen w-[20vw] opacity-0 invisible"
         >
           <div className="rabbis-arrow w-full h-full flex items-center justify-center bg-linear-to-r from-black to-[rgba(0,0,0,0)] opacity-0">
             <button
@@ -448,6 +512,7 @@ export default function PageFixedElements() {
       {pathname.startsWith("/past-rabbis/") && (
         <>
           <div
+            ref={moveButton}
             id="moving-button"
             className="moving-button fixed top-0 left-0 mt-2 ml-2 z-30 flex items-center justify-center pointer-events-none bg-[#BBA588] rounded-3xl py-1 px-3 opacity-0"
           >

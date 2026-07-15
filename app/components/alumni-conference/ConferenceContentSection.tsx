@@ -103,14 +103,27 @@ export default function ConferenceContentSection(props: ChildProps) {
           </div>
         )}
         <div className="conference-gallery flex items-center will-change-transform">
-          {SectionData?.gallery?.map((item: any, index: number) => {
-            const dimensions = props.galleryImageSizes?.[index];
-            if (dimensions === "landscape") {
-              return <ConferenceGalleryImage item={item} index={index} />;
-            } else {
-              return <ConferenceGalleryImage2 item={item} index={index} />;
-            }
-          })}
+          {SectionData?.gallery &&
+            SectionData?.gallery?.map((item: any, index: number) => {
+              const dimensions = props.galleryImageSizes?.[index];
+              if (dimensions === "landscape") {
+                return (
+                  <ConferenceGalleryImage
+                    key={index}
+                    item={item}
+                    index={index}
+                  />
+                );
+              } else {
+                return (
+                  <ConferenceGalleryImage2
+                    key={index}
+                    item={item}
+                    index={index}
+                  />
+                );
+              }
+            })}
         </div>
       </div>
     </section>

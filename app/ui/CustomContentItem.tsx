@@ -14,7 +14,7 @@ export default function CustomContentItem({
   const parsedData = data || {};
   return (
     <div
-      className={`custom-content-item ${parsedData.category} bg-[#FBF4E6] border border-[#D1CECE] relative will-change-transform w-[25.4vw] py-[8.8vh] pr-7 pl-[4.5vw] text-[#000000]`}
+      className={`custom-content-item bg-[#FBF4E6] border border-[#D1CECE] relative will-change-transform w-[25.4vw] py-[8.8vh] pr-7 pl-[4.5vw] text-[#000000]`}
     >
       <div className="custom-content-wrapper">
         <h2 className="text-[#231F20] text-[38px] leading-[1em] font-bold mb-2">

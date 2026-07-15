@@ -1,6 +1,8 @@
 "use client";
 
 import { hasCookie, setCookie } from "cookies-next";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "../assets/icons/Cookies";
 import { gsap, useGSAP } from "../ui/plugins";
@@ -13,7 +15,9 @@ if (typeof window !== "undefined") {
 export default function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
-  const { animationPlayed, setAnimationPlayed } = useAppState();
+  const { animationPlayed, setAnimationPlayed, setIsLoading } = useAppState();
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     // Check if the user has already made a choice
@@ -66,14 +70,29 @@ export default function CookieBanner() {
     }
   }, [animationPlayed]);
 
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      window.open(e.currentTarget.href, "_blank");
+    }
+  };
+
   return (
     <div
       ref={bannerRef}
       className="cookie-banner fixed left-6 bottom-6 flex items-center translate-y-20 opacity-0 invisible z-50"
     >
-      <div className="cookies-icon ml-2">
+      <Link
+        href="/privacy-policy"
+        target="_blank"
+        onClick={handleLinkClick}
+        className="cookies-icon ml-2"
+      >
         <Cookies />
-      </div>
+      </Link>
       <div className="cookies-text text-[14px] leading-[1em] bg-black text-white py-2 px-5 h-10 flex items-center">
         <p>האתר הזה משתמש בעוגיות</p>
       </div>
@@ -86,7 +105,7 @@ export default function CookieBanner() {
             showBanner,
           );
         }}
-        className="cookies-text text-[17px] leading-[1em] bg-(--theme-color) text-[#010101] py-2 px-5 h-10 flex items-center cursor-pointer"
+        className="cookies-text text-[17px] leading-[1em] bg-(--theme-color) hover:bg-[#DBBD5C80] text-[#010101] py-2 px-5 h-10 flex items-center cursor-pointer"
       >
         <p>אישור</p>
       </div>
