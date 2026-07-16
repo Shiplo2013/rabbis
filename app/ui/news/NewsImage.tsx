@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import CreateShimmerDataUrl from "../CreateShimmerDataUrl";
+import { getNewsImageSrc, isWordPressUploadImage } from "./newsImageUtils";
 
 export default function NewsImage({
   item,
@@ -10,6 +11,13 @@ export default function NewsImage({
   index: number;
 }) {
   const [loading, setLoading] = useState(true);
+  const imageSrc = getNewsImageSrc(item?.image);
+  const isWpUploadImage = isWordPressUploadImage(imageSrc);
+
+  if (!imageSrc) {
+    return <div className="w-full h-full bg-gray-600" />;
+  }
+
   return (
     <div className="w-full h-full flex items-center justify-center">
       {loading && (
@@ -18,12 +26,7 @@ export default function NewsImage({
       <Image
         className={`w-full h-full object-cover object-center transition-all duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
         onLoad={() => setLoading(false)}
-        src={
-          item.image?.sizes?.medium_large ||
-          item.image?.sizes?.large ||
-          item?.src ||
-          ""
-        }
+        src={imageSrc}
         width={item.image?.width}
         height={item.image?.height}
         alt={`News Image ${index + 1}`}
@@ -33,6 +36,7 @@ export default function NewsImage({
         }
         placeholder="blur"
         loading="lazy"
+        unoptimized={isWpUploadImage}
       />
     </div>
   );
