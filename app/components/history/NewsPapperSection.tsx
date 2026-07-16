@@ -69,17 +69,21 @@ export default function NewsPapperSection(props: ChildProps) {
       const content2 = wrapper.current?.querySelector(".content-text2");
       const content3 = wrapper.current?.querySelector(".content-text3");
       const content4 = wrapper.current?.querySelector(".content-text4");
-      if (image1) {
-        const image1Animation = gsap.from(image1, {
-          y: 100,
-          opacity: 0,
+      if (image1Ref.current) {
+        gsap.set(image1Ref.current, {
+          y: 0,
+          opacity: 1,
+        });
+        const image1Animation = gsap.to(image1Ref.current, {
+          y: 0,
+          opacity: 1,
           duration: 1,
           delay: 0,
           scrollTrigger: {
             start: () => {
               return (
                 getTimelineOffset() +
-                GetRightPosition(image1) -
+                GetRightPosition(image1Ref.current) -
                 window.innerWidth * 0.5
               );
             },
@@ -88,17 +92,21 @@ export default function NewsPapperSection(props: ChildProps) {
         });
         animations.push(image1Animation);
       }
-      if (image2) {
-        const image2Animation = gsap.from(image2, {
+      if (image2Ref.current) {
+        gsap.set(image2Ref.current, {
           y: 100,
           opacity: 0,
+        });
+        const image2Animation = gsap.to(image2Ref.current, {
+          y: 0,
+          opacity: 1,
           duration: 1,
           delay: 0,
           scrollTrigger: {
             start: () => {
               return (
                 getTimelineOffset() +
-                GetRightPosition(image2) -
+                GetRightPosition(image2Ref.current) -
                 window.innerWidth * 0.5
               );
             },
@@ -107,17 +115,21 @@ export default function NewsPapperSection(props: ChildProps) {
         });
         animations.push(image2Animation);
       }
-      if (image3) {
-        const image3Animation = gsap.from(image3, {
+      if (image3Ref.current) {
+        gsap.set(image3Ref.current, {
           y: 100,
           opacity: 0,
+        });
+        const image3Animation = gsap.to(image3Ref.current, {
+          y: 0,
+          opacity: 1,
           duration: 1,
           delay: 0,
           scrollTrigger: {
             start: () => {
               return (
                 getTimelineOffset() +
-                GetRightPosition(image3) -
+                GetRightPosition(image3Ref.current) -
                 window.innerWidth * 0.5
               );
             },

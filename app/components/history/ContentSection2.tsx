@@ -1,10 +1,9 @@
-import BackgroundImage2 from "@/app/ui/BackgroundImage2";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
-import contentBG from "../../assets/images/content-bg.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
+import VideoBackground from "./VideoBackground";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -171,19 +170,9 @@ export default function ContentSection2(props: ChildProps) {
     <section
       className={`${props.extraClass} flex items-center justify-center flex-col relative overflow-hidden`}
     >
-      {/* <ImageRevealWithParallaxBG
-        bgImage={contentBG}
-        overlayLeft={false}
-        overlayLeftColor={""}
-        animatePosition={1}
-      /> */}
-      {props.loadAnimation && (
-        <BackgroundImage2
-          bgImage={contentBG}
-          start={props.animWidthText - 0.5}
-          panel={null}
-        />
-      )}
+      <div className="absolute top-0 left-0 w-full h-full z-10">
+        <VideoBackground />
+      </div>
       <div className="w-full h-full flex items-center justify-center flex-row-reverse text-[21px] text-[#3D3B37] gap-x-[7.5vw] px-[10.4vw] relative z-20">
         <div className="w-1/2">
           <div className="text-[44px] leading-[1em] mb-5 w-full">

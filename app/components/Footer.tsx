@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import FooterForm from "../ui/footer/FooterForm";
+import FooterCredits from "../ui/FooterCredits";
 import FooterProject from "../ui/FooterProject";
 import { gsap, ScrollToPlugin, ScrollTrigger, useGSAP } from "../ui/plugins";
 import { useAppState } from "./AppContext";
@@ -398,6 +399,9 @@ function Footer(props: ChildProps) {
                   </span>
                 ))}
               </p>
+            </div>
+            <div className="footer-credits hidden">
+              <FooterCredits />
             </div>
           </div>
         </div>

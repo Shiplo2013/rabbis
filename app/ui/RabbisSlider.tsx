@@ -1,6 +1,8 @@
 "use client";
 import parse from "html-react-parser";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -11,6 +13,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import SwipeLeft from "../assets/icons/SwipeLeft";
 import SwipeRight from "../assets/icons/SwipeRight";
 import RabbisThumb from "../assets/images/rabbis-thumb.jpg";
+import { useAppState } from "../components/AppContext";
 import ThemeButton from "./ThemeButton";
 
 function resolveNestedImageUrl(value: unknown): string | undefined {
@@ -50,17 +53,29 @@ function resolveImageSrc(image: unknown, fallback: string) {
 }
 
 interface ChildProps {
-  data: {
-    buttonText: string;
-    title: string;
-    subtitle: string;
-    text: string;
-    buttonLink?: string;
-  }[];
+  data: RabbiPost[];
 }
+
+type RabbiPost = {
+  title: string;
+  slug: string;
+  excerpt: string;
+  buttonText?: string;
+  buttonLink?: string;
+  thumbnail?: {
+    sizes?: {
+      past_rabbis_thumb?: any;
+      thumbnail?: any;
+    };
+  };
+  time?: string;
+};
 
 export default function RabbisSlider(props: ChildProps) {
   const swiperRef = useRef<SwiperRef>(null);
+  const pathname = usePathname();
+  const router = useRouter();
+  const { isLoading, setIsLoading } = useAppState();
   const paginationRef = useRef(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
@@ -68,6 +83,18 @@ export default function RabbisSlider(props: ChildProps) {
   const handleSlideChange = (s: any) => {
     setIsBeginning(s.isBeginning);
     setIsEnd(s.isEnd);
+  };
+
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
   };
 
   return (
@@ -87,7 +114,7 @@ export default function RabbisSlider(props: ChildProps) {
           },
         }}
       >
-        {props?.data?.map((item: any, index: number) => {
+        {props?.data?.map((item: RabbiPost, index: number) => {
           return (
             <SwiperSlide key={index}>
               <div className="rabbis-wrapper relative min-w-140 flex flex-col items-center justify-center group">
@@ -95,7 +122,9 @@ export default function RabbisSlider(props: ChildProps) {
                   <Image
                     className="w-full object-cover object-center h-full"
                     src={resolveImageSrc(
-                      item?.sizes?.past_rabbis_thumb ?? item?.thumbnail ?? item,
+                      item?.thumbnail?.sizes?.past_rabbis_thumb ??
+                        item?.thumbnail?.sizes?.thumbnail ??
+                        item,
                       RabbisThumb.src,
                     )}
                     width={"320"}
@@ -109,30 +138,37 @@ export default function RabbisSlider(props: ChildProps) {
                 <div className="rabbis-content w-full flex flex-col items-center justify-center gap-y-5 relative z-20 -mt-6.5">
                   <ThemeButton
                     extraClass="rounded-none px-5 py-1.5 max-w-37"
-                    text={item?.buttonText || "הרחב קריאה"}
+                    text={item.buttonText || "לפרטים נוספים"}
                     bgColor="bg-[#D1A941]"
                     textColor="text-[#000000]"
                     hoverBgColor="bg-[#ffffff]"
                     fontSize="text-[18px]"
                     svgIconClass={""}
-                    buttonLink={item?.buttonLink || "/past-rabbis"}
+                    buttonLink={item.buttonLink}
                   />
                   <div className="content leading-[1em] text-[#D1A941] flex justify-center flex-col items-center gap-y-2">
                     {item?.title && (
-                      <h3 className="text-[28px]">
-                        {parse(item?.title || "")}
+                      <h3 className="text-[28px] leading-[1em] text-center max-w-120">
+                        <Link
+                          href={item.buttonLink || "#"}
+                          onClick={handleLinkClick}
+                        >
+                          {parse(item?.title || "")}
+                        </Link>
                       </h3>
                     )}
-                    {item?.subtitle && (
-                      <h5 className="text-[18px]">
-                        {parse(item?.subtitle || "")}
-                      </h5>
+                    {item?.time && (
+                      <h5 className="text-[18px]">{parse(item?.time || "")}</h5>
                     )}
                   </div>
                 </div>
-                <div className="text-[20px] text-[#D1A941] text-center absolute top-[27%] z-30 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <p>{parse(item?.text || "")}</p>
-                </div>
+                {/* <div className="text-[20px] text-[#D1A941] text-center absolute top-[27%] z-30 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <p>
+                    {" "}
+                    מייסד וראש הישיבה. מראשי תנועת המוסר ידוע בכינויו הסבא
+                    מסלבודקה.
+                  </p>
+                </div> */}
               </div>
             </SwiperSlide>
           );

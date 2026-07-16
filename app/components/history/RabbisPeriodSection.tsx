@@ -19,19 +19,28 @@ interface ChildProps {
   activeMenu?: boolean;
   activeMenuFunction?: (state: boolean) => void;
   data: any;
-  rabbisData?: (data: SlideItem[]) => void;
+  rabbisData?: (data: RabbiPost[]) => void;
   offsetTopTimeline?: number;
   offsetTopAdded?: boolean;
-  rabbisPosts?: { posts: RabbiPost[] }; // Add this line to accept rabbisPosts as a prop
+  rabbisPosts?: RabbiPost[]; // Add this line to accept rabbisPosts as a prop
 }
 
 type RabbiPost = {
   id: number;
   slug: string;
-  title: string;
-  content: string;
+  title: {
+    rendered: string;
+  };
   excerpt: string;
-  acf: Record<string, unknown> | unknown[] | null;
+  acf: {
+    thumbnail: {
+      sizes: {
+        thumbnail: any;
+        RabbiPost: any;
+      };
+    };
+    time: string;
+  };
 };
 
 type SlideItem = {
@@ -42,58 +51,6 @@ type SlideItem = {
   text: string;
   buttonLink?: string;
 };
-
-function parsePastRabbis(input: unknown): unknown[] {
-  if (Array.isArray(input)) {
-    return input;
-  }
-
-  if (typeof input === "string") {
-    try {
-      const parsed = JSON.parse(input);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-
-  return [];
-}
-
-function extractPostId(item: unknown): number | undefined {
-  if (typeof item === "number") {
-    return Number.isFinite(item) ? item : undefined;
-  }
-
-  if (typeof item === "string") {
-    const parsed = Number(item);
-    return Number.isFinite(parsed) ? parsed : undefined;
-  }
-
-  if (item && typeof item === "object") {
-    const candidate = (item as Record<string, unknown>).ID;
-    const fallback = (item as Record<string, unknown>).id;
-    const value = candidate ?? fallback;
-
-    if (typeof value === "number") {
-      return Number.isFinite(value) ? value : undefined;
-    }
-
-    if (typeof value === "string") {
-      const parsed = Number(value);
-      return Number.isFinite(parsed) ? parsed : undefined;
-    }
-  }
-
-  return undefined;
-}
-
-function stripHtml(value: string) {
-  return value
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 export default function RabbisPeriodSection(props: ChildProps) {
   // Navigation
@@ -114,26 +71,21 @@ export default function RabbisPeriodSection(props: ChildProps) {
     );
   };
 
+  // Section Data
   useEffect(() => {
-    if (props.rabbisPosts?.posts && props.rabbisPosts.posts.length > 0) {
-      const mappedSlides: SlideItem[] = props.rabbisPosts?.posts.map((post) => {
-        const acf = (post.acf ?? {}) as Record<string, unknown>;
-        const title =
-          typeof acf?.title === "string" ? acf.title : post.title || "";
-        const subtitle = typeof acf.time === "string" ? acf.time : "";
-        const thumbnail = acf.thumbnail || null;
-
-        return {
+    if (props.rabbisPosts) {
+      const mappedData: SlideItem[] = props.rabbisPosts.map(
+        (post: RabbiPost) => ({
           buttonText: "הרחב קריאה",
-          title,
-          subtitle,
-          thumbnail,
-          text: "מייסד וראש הישיבה. מראשי תנועת המוסר ידוע בכינויו הסבא מסלבודקה.",
-          buttonLink: post.slug ? `/past-rabbis/${post.slug}` : "/past-rabbis",
-        };
-      });
-      setSlideData(mappedSlides);
-      props.rabbisData?.(mappedSlides);
+          title: post.title.rendered,
+          subtitle: post.acf?.time as string,
+          thumbnail: post.acf?.thumbnail,
+          text: post.acf?.time as string,
+          buttonLink: `/past-rabbis/${post.slug}`,
+        }),
+      );
+      console.log("Mapped Slide Data:", mappedData); // Debugging log
+      setSlideData(mappedData);
     }
   }, [props.rabbisPosts]);
 
@@ -182,7 +134,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
         });
       }
       // Section Slider
-      if (slideData.length > 0 && slider.current) {
+      if (slider.current) {
         const sliderAnimation = gsap.from(slider.current, {
           yPercent: 50,
           opacity: 0,
@@ -258,7 +210,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
           ref={button}
           onClick={() => {
             props.activeMenuFunction?.(!props.activeMenu);
-            props.rabbisData?.(slideData);
+            props.rabbisData?.(slideData as any);
           }}
           className="period-button absolute top-[7.8vh] left-[12.7vw] cursor-pointer"
         >
@@ -285,7 +237,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
           )}
         </div>
         <div ref={slider} className="period-slider max-w-155">
-          {slideData.length > 0 && <RabbisSlider data={slideData} />}
+          {props.rabbisPosts && <RabbisSlider data={slideData as any} />}
         </div>
       </div>
     </section>

@@ -544,7 +544,7 @@ function PageHeader() {
             </nav>
           </div>
 
-          <div className="small-logo pt-5 pb-5 w-12.5 h-10">
+          {/* <div className="small-logo pt-5 pb-5 w-12.5 h-10">
             {data?.acf?.header_logo && (
               <Image
                 className="w-auto h-auto white-image"
@@ -565,7 +565,7 @@ function PageHeader() {
                 alt="Small Logo"
               />
             )}
-          </div>
+          </div> */}
         </div>
         <div className="header-left flex items-center gap-6 pt-7 pb-7 opacity-0">
           {data?.acf?.header_top?.donation_button && (
@@ -630,7 +630,7 @@ function PageHeader() {
           </div>
           <div className="logo lg:w-25 sm:w-20 xl:w-30 2xl:w-36.5 w-36.5 h-28">
             {data?.acf?.header_logo && (
-              <Link onClick={handleLinkClick} href={"/"}>
+              <Link id="logo-light" onClick={handleLinkClick} href={"/"}>
                 <Image
                   className="w-full h-full object-contain object-center white-image"
                   src={data?.acf?.header_logo?.sizes?.thumbnail || logo.src}

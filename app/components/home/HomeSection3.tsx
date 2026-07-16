@@ -4,6 +4,7 @@ import TextSplitLines from "@/app/ui/TextSplitLines";
 import parse from "html-react-parser";
 import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 
@@ -16,6 +17,7 @@ interface Data {
   title?: string;
   text_1?: string;
   text_2?: string;
+  rabbis_link?: string;
   background_image?: any;
 }
 interface ChildProps {
@@ -102,6 +104,20 @@ export default function HomeSection3(props: ChildProps) {
     }
   }, [pathname]);
 
+  const getRabbisURL = (urlString: string) => {
+    if (!urlString) return;
+    // 1. Parse the string into a URL object
+    const url = new URL(urlString);
+
+    // 2. Split the pathname and filter out empty strings (caused by trailing slashes)
+    const segments = url.pathname.split("/").filter(Boolean);
+
+    // 3. Get the last segment
+    const slug = "/past-rabbis/" + segments[segments.length - 1];
+
+    return slug;
+  };
+
   return (
     <section
       ref={wrapper}
@@ -140,12 +156,22 @@ export default function HomeSection3(props: ChildProps) {
             dir="ltr"
             className="text-[55px] leading-[0.8] w-107.5 max-w-[70%] relative pb-2 flex flex-col z-40 text-right"
           >
-            <div className="text mb-7.5">
-              {parse(props.sectionData?.text_1 || "")}
-            </div>
-            <div className="text font-bold">
-              {parse(props.sectionData?.text_2 || "")}
-            </div>
+            <Link
+              href={getRabbisURL(props.sectionData?.rabbis_link || "#") || "#"}
+              className="block"
+            >
+              <div className="text mb-7.5">
+                {parse(props.sectionData?.text_1 || "")}
+              </div>
+            </Link>
+            <Link
+              href={getRabbisURL(props.sectionData?.rabbis_link || "#") || "#"}
+              className="block"
+            >
+              <div className="text font-bold">
+                {parse(props.sectionData?.text_2 || "")}
+              </div>
+            </Link>
           </div>
         </div>
       </div>

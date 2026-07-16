@@ -342,6 +342,7 @@ export default function HomeScriptProvider({
       return;
     }
     setHomePageData(data);
+    console.log("Home Page Data:", data);
     if (data?.acf?.banner_section?.audio_music?.url) {
       setAudioFile(data.acf.banner_section.audio_music.url);
     }

@@ -20,6 +20,7 @@
     "gsap": "^3.14.2",
     "html-react-parser": "^5.2.17",
     "inflight": "^1.0.6",
+    "lucide-react": "^1.24.0",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-cookie-consent": "^10.0.1",

@@ -1,5 +1,6 @@
 "use client";
 import { useAppState } from "@/app/components/AppContext";
+import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Introduction from "../../components/visit-temple/Introduction";
@@ -292,19 +293,147 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
 
   // Load Page
   useGSAP(() => {
-    if (pageDataFetched) {
-      setIsAllAnimationComplete(true);
-    }
-    const bannerBackgroundOverlay = main.current?.querySelector(
-      ".first-intro .intro-background .intro-bg-mask",
-    );
-    if (bannerBackgroundOverlay) {
-      gsap.to(bannerBackgroundOverlay, {
-        translateY: "-100%",
-        delay: 0,
-        duration: 0,
+    const animations: gsap.core.Animation[] = [];
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+      document.fonts.ready.then(() => {
+        // Selectors
+        const page = document.querySelector(
+          "#page-wrapper",
+        ) as HTMLElement | null;
+        const headerLeft = document.querySelector(
+          ".header-left",
+        ) as HTMLElement | null;
+        const headerRight = document.querySelector(
+          ".header-right",
+        ) as HTMLElement | null;
+        const introTitle = document.querySelector(
+          ".first-intro h1.intro-title",
+        ) as HTMLElement | null;
+        const introImage = main.current?.querySelector(
+          ".first-intro .intro-image",
+        );
+        const bannerBackgroundOverlay = main.current?.querySelector(
+          ".first-intro .intro-background .intro-bg-mask",
+        );
+        let splitIntroTitle;
+        if (introTitle) {
+          splitIntroTitle = BigTitleSplitLines(introTitle);
+          gsap.set(introTitle, {
+            perspective: 400,
+          });
+          gsap.set(splitIntroTitle, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        if (introImage) {
+          gsap.set(introImage, {
+            x: "10vw",
+            opacity: 0,
+          });
+        }
+        // Set localStorage variable
+        const userVisit = localStorage.getItem("hasVisited");
+        if (userVisit === "true" && animationPlayed && pageDataFetched) {
+          // Timeline
+          const tl = gsap.timeline({
+            onComplete: () => {
+              // Set Animation Played to true
+              setIsAllAnimationComplete(true);
+            },
+          });
+          if (page) {
+            tl.to(page, {
+              opacity: 1,
+              ease: "none",
+              duration: 0.5,
+              delay: 0,
+            });
+          }
+          if (headerLeft) {
+            tl.to(headerLeft, {
+              autoAlpha: 1,
+              ease: "none",
+              duration: 1,
+            });
+          }
+          if (headerRight) {
+            tl.to(
+              headerRight,
+              {
+                autoAlpha: 1,
+                ease: "none",
+                duration: 1,
+              },
+              "-=1",
+            );
+          }
+          // Intro Title Animation
+          if (introTitle && splitIntroTitle) {
+            tl.to(
+              splitIntroTitle,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=1.5",
+            );
+          }
+          // Intro Image Animation
+          if (introImage) {
+            tl.to(
+              introImage,
+              {
+                x: "0vw",
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                ease: "expo.inOut",
+              },
+              "-=1.5",
+            );
+          }
+          // Wave Line Animation
+          const waveLine = document.getElementById(
+            "wave-line",
+          ) as HTMLElement | null;
+          if (waveLine) {
+            tl.to(
+              waveLine,
+              {
+                translateY: 0,
+                opacity: 1,
+                ease: "expo.inOut",
+                duration: 3,
+                delay: 0,
+              },
+              "-=2.5",
+            );
+          }
+          if (bannerBackgroundOverlay) {
+            tl.to(
+              bannerBackgroundOverlay,
+              {
+                translateY: "-100%",
+                delay: 0,
+                duration: 3,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+          animations.push(tl);
+        }
       });
     }
+
+    return () => {
+      animations.forEach((animation) => animation.kill());
+    };
   }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
@@ -349,10 +478,6 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
       document.body.style.overflow = "auto";
     };
   }, [isAllAnimationComplete]);
-
-  useEffect(() => {
-    window.scrollTo({ top: window.innerWidth, behavior: "auto" });
-  }, [!isLoading]);
 
   if (error) {
     return (
