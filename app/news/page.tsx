@@ -28,7 +28,7 @@ export default async function page() {
         introduction: {
           title: "",
           content: "",
-          background: null,
+          background_image: null,
         },
       },
     },

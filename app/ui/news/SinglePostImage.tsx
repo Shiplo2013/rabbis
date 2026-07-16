@@ -2,9 +2,17 @@
 import Image from "next/image";
 import { useState } from "react";
 import CreateShimmerDataUrl from "../CreateShimmerDataUrl";
+import { getNewsImageSrc, isWordPressUploadImage } from "./newsImageUtils";
 
 export default function SinglePostImage(item: any) {
   const [loading, setLoading] = useState(true);
+  const imageSrc = getNewsImageSrc(item?.image);
+  const isWpUploadImage = isWordPressUploadImage(imageSrc);
+
+  if (!imageSrc) {
+    return <div className="w-full h-full bg-black/20 blur-md" />;
+  }
+
   return (
     <div className="w-full h-full relative">
       {loading && (
@@ -14,13 +22,7 @@ export default function SinglePostImage(item: any) {
       <Image
         className={`w-full h-full object-cover object-center transition-all duration-300`}
         onLoad={() => setLoading(false)}
-        src={
-          item?.image?.sizes?.news_slider_image ||
-          item?.image?.sizes?.large ||
-          item?.image?.sizes?.medium ||
-          item?.image?.src ||
-          ""
-        }
+        src={imageSrc}
         width={window.innerWidth * 0.4}
         height={window.innerHeight}
         alt="News Slide"
@@ -31,6 +33,7 @@ export default function SinglePostImage(item: any) {
         }
         placeholder="blur"
         loading="lazy"
+        unoptimized={isWpUploadImage}
       />
     </div>
   );

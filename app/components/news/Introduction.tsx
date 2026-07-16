@@ -1,4 +1,4 @@
-import IntroductionBackground from "@/app/ui/IntroductionBackground";
+import IntroductionBackground from "@/app/ui/news/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { useRef } from "react";
@@ -14,7 +14,7 @@ interface ChildProps {
   overlayClass: string;
   bgPosition: string;
   bgClass: string;
-  data: { title: string; content: string } | null;
+  data: { title: string; content: string; background_image?: any } | null;
 }
 
 export default function Introduction(props: ChildProps) {
@@ -29,6 +29,7 @@ export default function Introduction(props: ChildProps) {
         <div className="intro-background absolute top-0 left-0 w-full h-full z-10">
           <IntroductionBackground
             bgImage={props.bgImage}
+            apiImage={props.data?.background_image || null}
             overlayClass={props.overlayClass}
             imagePosition={props.bgPosition}
             bgClass={props.bgClass}

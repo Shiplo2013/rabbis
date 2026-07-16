@@ -77,5 +77,7 @@ export default async function Page() {
     }),
   );
 
+  console.log(pageData[0]);
+
   return <ZatzelScriptProvider data={pageData[0]} postData={mappedSections} />;
 }

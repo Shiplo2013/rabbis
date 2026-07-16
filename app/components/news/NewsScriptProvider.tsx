@@ -23,7 +23,7 @@ type NewsPageData = {
     introduction: {
       title: string;
       content: string;
-      background: any;
+      background_image: any;
     };
   };
 };
@@ -64,7 +64,7 @@ export default function NewsScriptProvider({
       introduction: {
         title: "עד שבחברון",
         content: "חדשות הישיבה",
-        background: IntroBG,
+        background_image: IntroBG,
       },
     },
   };

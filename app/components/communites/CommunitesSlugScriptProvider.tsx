@@ -9,6 +9,8 @@ import type { SwiperRef } from "swiper/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import NewsBG from "../../assets/images/news-bg.jpg";
 
+import ArrowLeft2 from "@/app/assets/icons/ArrowLeft2";
+import ArrowRight from "@/app/assets/icons/ArrowRight";
 import CalenderIcon2 from "@/app/assets/icons/CalenderIcon2";
 import CandelIcon from "@/app/assets/icons/CandelIcon";
 import CloseIcon2 from "@/app/assets/icons/CloseIcon2";
@@ -16,6 +18,7 @@ import EventIcon from "@/app/assets/icons/EventIcon";
 import MapMarker from "@/app/assets/icons/MapMarker";
 import UserIcon2 from "@/app/assets/icons/UserIcon2";
 import WishIcon2 from "@/app/assets/icons/WishIcon2";
+import CommunityGalleryImage from "@/app/ui/community/CommunityGalleryImage";
 import CommunityImage from "@/app/ui/community/CommunityImage";
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import EventItem from "@/app/ui/EventItem";
@@ -106,6 +109,7 @@ export default function CommunitiesSlugScriptProvider({
   // Page Refs
   const main = useRef<HTMLDivElement>(null);
   const swiperRef = useRef<SwiperRef>(null);
+  const galleryRef = useRef<SwiperRef>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -718,6 +722,59 @@ export default function CommunitiesSlugScriptProvider({
                                       />
                                     </div>
                                   )}
+                                </div>
+                              );
+                            }
+                            if (item.field_type === "gallery") {
+                              return (
+                                <div
+                                  key={index}
+                                  className="gallery mt-12 mb-12 w-full max-w-xl h-auto group relative"
+                                >
+                                  <Swiper
+                                    className="w-full max-h-144 relative z-10"
+                                    ref={galleryRef}
+                                    slidesPerView={1}
+                                    loop={true}
+                                  >
+                                    {item?.gallery &&
+                                      item?.gallery?.map(
+                                        (
+                                          galleryItem: any,
+                                          galleryIndex: number,
+                                        ) => (
+                                          <SwiperSlide
+                                            key={galleryIndex}
+                                            className="gallery-item mt-8.5 w-xl max-w-full h-auto"
+                                          >
+                                            <CommunityGalleryImage
+                                              item={galleryItem}
+                                            />
+                                            {galleryItem?.caption && (
+                                              <div className="caption w-full bg-black bg-opacity-50 text-white p-3 text-[18px] text-center font-bold">
+                                                <p>{galleryItem.caption}</p>
+                                              </div>
+                                            )}
+                                          </SwiperSlide>
+                                        ),
+                                      )}
+                                  </Swiper>
+                                  <button
+                                    onClick={() =>
+                                      galleryRef.current?.swiper.slidePrev()
+                                    }
+                                    className="w-10 h-10 rounded-full p-3 bg-black opacity-0 invisible group-hover:opacity-40 group-hover:visible hover:opacity-100 transition-opacity duration-300 absolute top-[50%] right-3 z-50 transform -translate-y-[50%] flex items-center justify-center cursor-pointer"
+                                  >
+                                    <ArrowRight />
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      galleryRef.current?.swiper.slideNext()
+                                    }
+                                    className="w-10 h-10 rounded-full p-3 bg-black opacity-0 invisible group-hover:opacity-40 group-hover:visible hover:opacity-100 transition-opacity duration-300 absolute top-[50%] left-3 z-50 transform -translate-y-[50%] flex items-center justify-center cursor-pointer"
+                                  >
+                                    <ArrowLeft2 />
+                                  </button>
                                 </div>
                               );
                             }

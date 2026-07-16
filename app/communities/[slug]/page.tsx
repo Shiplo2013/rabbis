@@ -23,10 +23,20 @@ export default async function page({ params }: PageProps) {
       id: 0,
       title: { rendered: "" },
       acf: {
-        introduction: {
-          title: "",
-          content: "",
-          background: null,
+        subtitle: "",
+        post_thumbnail: null,
+        content: "",
+        community_gallery: [],
+        informations: {
+          established: "",
+          location: "",
+          number_of_families: "",
+        },
+        community_events: [],
+        community_news: [],
+        community_updates: {
+          updates_1: [],
+          updates_2: [],
         },
       },
     },
