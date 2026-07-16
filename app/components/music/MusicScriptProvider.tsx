@@ -202,6 +202,13 @@ export default function MusicScriptProvider({ data }: { data: any }) {
     }
   }, [pageDataFetched, animationPlayed]);
 
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.add("white-image");
+  }, [pathname]);
+
   // Page Section Animation
   useGSAP(() => {
     if (typeof window !== "undefined" && panel.current && wrapper.current) {

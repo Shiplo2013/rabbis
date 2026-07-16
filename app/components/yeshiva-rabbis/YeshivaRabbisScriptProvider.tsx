@@ -229,6 +229,13 @@ export default function YeshivaRabbisScriptProvider({
     setPageContentAnimation();
   }, [pageDataFetched, animationPlayed]);
 
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.add("white-image");
+  }, [pathname]);
+
   // Set Page Content Animation
   const setPageContentAnimation = () => {
     const animations: gsap.core.Animation[] = [];

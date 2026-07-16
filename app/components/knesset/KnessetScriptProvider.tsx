@@ -383,6 +383,13 @@ export default function KnessetScriptProvider({
     }
   }, [pageDataFetched, animationPlayed]);
 
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.add("white-image");
+  }, [pathname]);
+
   // Set Page Content Animation
   const setPageContentAnimation = () => {
     // Page Content Animation

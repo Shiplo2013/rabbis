@@ -612,9 +612,9 @@ function PageHeader() {
                   handleLinkClick(e);
                 }}
               >
-                <div className="button-content w-19 h-19 rounded-full flex items-center justify-center relative p-2">
+                <div className="button-content w-19 h-19 rounded-full flex items-center justify-center relative p-2 text-[18px] leading-[1em]">
                   <div className="rounded-full w-full h-full flex items-center justify-center relative z-40">
-                    <div className="button-border absolute w-full h-full flex transition-all duration-500">
+                    <div className="button-border absolute w-full h-full flex transition-all duration-500 [&>svg]:w-full [&>svg]:h-auto">
                       <ButtonBorder />
                     </div>
                     <div className="button-text absolute w-full h-full flex p-2 transition-all duration-500">

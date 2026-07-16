@@ -83,7 +83,7 @@ export default function CookieBanner() {
   return (
     <div
       ref={bannerRef}
-      className="cookie-banner fixed left-6 bottom-6 flex items-center translate-y-20 opacity-0 invisible z-50"
+      className="cookie-banner fixed left-22 bottom-6 flex items-center translate-y-20 opacity-0 invisible z-50"
     >
       <Link
         href="/privacy-policy"

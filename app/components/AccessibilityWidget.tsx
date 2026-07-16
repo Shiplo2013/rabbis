@@ -5,12 +5,12 @@ import {
   EyeOff,
   Minus,
   Plus,
-  Settings,
   Type,
   Underline,
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import EyeIcon from "../assets/icons/EyeIcon";
 
 type TextSize = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
 
@@ -127,7 +127,7 @@ export default function AccessibilityWidget() {
   };
 
   return (
-    <div className="fixed bottom-5 left-15 z-50 flex flex-col items-end font-sans gap-4">
+    <div className="fixed bottom-5 left-5 z-50 flex flex-col items-end font-sans gap-4">
       {/* Widget Panel */}
       {isOpen && (
         <div className="w-72 rounded-lg border bg-white p-4 shadow-xl dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700">
@@ -154,19 +154,19 @@ export default function AccessibilityWidget() {
                 <button
                   onClick={() => changeTextSize(-1)}
                   aria-label="Decrease text size"
-                  className="rounded border bg-zinc-100 p-1.5 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200"
+                  className="rounded border bg-zinc-100 p-1.5 text-zinc-700 dark:bg-zinc-700 dark:text-[#dddddd]"
                 >
                   <Minus className="h-4 w-4" />
                 </button>
 
-                <span className="min-w-14 rounded border bg-zinc-50 px-2 py-1 text-center text-xs font-semibold text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200">
+                <span className="min-w-14 rounded border bg-zinc-50 px-2 py-1 text-center text-xs font-semibold text-zinc-800 dark:bg-zinc-700 dark:text-[#dddddd]">
                   {settings.textSize.toUpperCase()}
                 </span>
 
                 <button
                   onClick={() => changeTextSize(1)}
                   aria-label="Increase text size"
-                  className="rounded border bg-zinc-100 p-1.5 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200"
+                  className="rounded border bg-zinc-100 p-1.5 text-zinc-700 dark:bg-zinc-700 dark:text-[#dddddd]"
                 >
                   <Plus className="h-4 w-4" />
                 </button>
@@ -182,7 +182,7 @@ export default function AccessibilityWidget() {
                     className={`flex-1 rounded px-2 py-1 text-xs border ${
                       settings.textSize === size
                         ? "bg-[#ac832e] text-white font-bold"
-                        : "bg-zinc-100 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200"
+                        : "bg-zinc-100 text-zinc-700 dark:bg-zinc-700 dark:text-[#dddddd]"
                     }`}
                   >
                     {size.toUpperCase()}
@@ -304,7 +304,7 @@ export default function AccessibilityWidget() {
             {/* Reset */}
             <button
               onClick={handleReset}
-              className="w-full rounded bg-zinc-200 py-1.5 text-xs text-zinc-800 hover:bg-zinc-300 dark:bg-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-500"
+              className="w-full rounded bg-zinc-200 py-1.5 text-xs text-zinc-800 hover:bg-zinc-300 dark:bg-zinc-600 dark:text-[#dddddd] dark:hover:bg-zinc-500"
             >
               Reset Settings
             </button>
@@ -317,7 +317,7 @@ export default function AccessibilityWidget() {
         aria-label="Accessibility Settings"
         className="rounded-full bg-[#ac832e] p-3 text-white shadow-lg transition-transform hover:scale-105 cursor-pointer"
       >
-        <Settings className="h-6 w-6" />
+        <EyeIcon className="h-6 w-6" />
       </button>
     </div>
   );

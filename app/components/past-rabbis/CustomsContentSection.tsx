@@ -28,6 +28,7 @@ export default function CustomsContentSection(props: ChildProps) {
       router.push(e.currentTarget.href);
     }
   };
+
   return (
     <section
       dir="rtl"
@@ -38,6 +39,7 @@ export default function CustomsContentSection(props: ChildProps) {
           return (
             <div
               key={index}
+              data-id={item.id}
               className={`rabbis-item w-[58.4vw] min-w-[58.4vw] h-full flex items-center justify-center gap-x-[3.3vw] will-change-transform`}
             >
               <div className="rabbis-image w-[27.1vw] relative">

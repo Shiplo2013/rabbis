@@ -531,6 +531,13 @@ export default function HistoryScriptProvider({
     };
   }, [pageDataFetched, animationPlayed]);
 
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.add("white-image");
+  }, [pathname]);
+
   // Complete Timeline Function
   function completeTimeline(selector: string) {
     // Timeline Complete
@@ -1045,8 +1052,8 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                   }
-                  leftShape={false}
-                  rightShape={false}
+                  leftShape={true}
+                  rightShape={true}
                   panel={timeline1Ref}
                   data={
                     chroniclesPageData?.acf?.timeline_1?.title_section || ""
@@ -1221,8 +1228,8 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                   }
-                  leftShape={false}
-                  rightShape={false}
+                  leftShape={true}
+                  rightShape={true}
                   panel={timeline2Ref}
                   data={
                     chroniclesPageData?.acf?.timeline_2?.title_section || ""
@@ -1360,8 +1367,8 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                   }
-                  leftShape={false}
-                  rightShape={false}
+                  leftShape={true}
+                  rightShape={true}
                   panel={timeline3Ref}
                   data={
                     chroniclesPageData?.acf?.timeline_3?.title_section || ""
@@ -1527,8 +1534,8 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                   }
-                  leftShape={false}
-                  rightShape={false}
+                  leftShape={true}
+                  rightShape={true}
                   panel={timeline4Ref}
                   data={
                     chroniclesPageData?.acf?.timeline_4?.title_section || ""
@@ -1719,8 +1726,8 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
                   }
-                  leftShape={false}
-                  rightShape={false}
+                  leftShape={true}
+                  rightShape={true}
                   panel={timeline5Ref}
                   data={
                     chroniclesPageData?.acf?.timeline_5?.title_section || ""

@@ -579,6 +579,13 @@ export default function HomeScriptProvider({
     };
   }, [pageDataFetched, animationPlayed]);
 
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.add("white-image");
+  }, [pathname]);
+
   // Container width
   //const [contWidth, setContWidth] = useState(0);
   const panel = useRef<HTMLDivElement>(null);

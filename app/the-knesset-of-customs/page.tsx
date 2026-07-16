@@ -53,7 +53,7 @@ export default async function Page() {
   }
 
   const postsRes = await fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?knesset_cat?parent=0&_fields=id,title,slug,excerpt,acf.subtitle&per_page=20`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=20`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
       cache: "force-cache",

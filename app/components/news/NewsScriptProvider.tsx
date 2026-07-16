@@ -388,6 +388,13 @@ export default function NewsScriptProvider({
     };
   }, [pageDataFetched, animationPlayed]);
 
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.add("white-image");
+  }, [pathname]);
+
   // On Mouse Move
   useGSAP(() => {
     const viewRef = document.getElementById(

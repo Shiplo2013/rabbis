@@ -84,7 +84,6 @@ export default function RabbisPeriodSection(props: ChildProps) {
           buttonLink: `/past-rabbis/${post.slug}`,
         }),
       );
-      console.log("Mapped Slide Data:", mappedData); // Debugging log
       setSlideData(mappedData);
     }
   }, [props.rabbisPosts]);
