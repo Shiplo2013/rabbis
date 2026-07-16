@@ -184,8 +184,8 @@ export default function RabbisSlider(props: ChildProps) {
             backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
           }}
           className="group absolute left-0 bottom-0 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-22 h-22"
-          disabled={isBeginning}
-          onClick={() => swiperRef.current?.swiper.slidePrev()}
+          disabled={isEnd}
+          onClick={() => swiperRef.current?.swiper.slideNext()}
         >
           <div className="w-full h-full flex items-center justify-center bg-[#202325] rounded-full overflow-hidden relative">
             <span className="btn-bg absolute z-10 left-0 top-0 w-full h-full bg-[#000000] translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-[cubic-bezier(0.625,0.05,0,1)]"></span>
@@ -199,8 +199,8 @@ export default function RabbisSlider(props: ChildProps) {
             backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
           }}
           className="group absolute right-0 bottom-0 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-22 h-22"
-          disabled={isEnd}
-          onClick={() => swiperRef.current?.swiper.slideNext()}
+          disabled={isBeginning}
+          onClick={() => swiperRef.current?.swiper.slidePrev()}
         >
           <div className="w-full h-full flex items-center justify-center bg-[#202325] rounded-full overflow-hidden relative">
             <span className="btn-bg absolute z-10 left-0 top-0 w-full h-full bg-[#000000] translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-[cubic-bezier(0.625,0.05,0,1)]"></span>

@@ -4,6 +4,7 @@ import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useAppState } from "../AppContext";
 
 interface ChildProps {
@@ -15,12 +16,7 @@ export default function SingleCommunityPost(props: ChildProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { setIsLoading } = useAppState();
-  const thumbnailSrc =
-    postData?.acf?.post_thumbnail?.sizes?.medium_large ||
-    postData?.acf?.post_thumbnail?.src;
-  const isWpUploadImage =
-    typeof thumbnailSrc === "string" &&
-    thumbnailSrc.includes("dovp7.sg-host.com/wp-content/uploads/");
+  const [loading, setLoading] = useState(false);
 
   // Handle Link Click
   const handleLinkClick = (
@@ -45,18 +41,24 @@ export default function SingleCommunityPost(props: ChildProps) {
         onClick={handleLinkClick}
       >
         <div className="post-image w-full h-66.75 mb-8.5 relative overflow-hidden backface-hidden">
+          {loading && (
+            <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
+          )}
           <Image
-            className="w-full object-cover object-center h-full relative z-10 group-hover:scale-105 transition-transform duration-500 ease-in-out"
-            src={thumbnailSrc}
+            className={`w-full h-full object-cover object-center transition-transform group-hover:scale-105 duration-500 ease-in-out ${loading ? "opacity-0" : "opacity-100"}`}
+            onLoad={() => setLoading(false)}
+            src={
+              postData?.acf?.post_thumbnail?.sizes?.community_post_image ||
+              postData?.acf?.post_thumbnail?.sizes?.medium ||
+              postData?.acf?.post_thumbnail?.src
+            }
             width="467"
             height="267"
             blurDataURL={CreateShimmerDataUrl(467, 267)}
             placeholder={"blur"}
             loading="lazy"
             alt="Rabbis"
-            unoptimized={isWpUploadImage}
           />
-          {/* <div className="post-image-overlay absolute top-0 left-0 w-[calc(100%+10px)] h-full bg-black z-20 -ml-2.5"></div> */}
         </div>
         <div className="post-text text-[28px] text-(--theme-color) leading-[0.9em] text-right">
           <h2 className="post-title font-extralight mb-4">

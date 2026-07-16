@@ -69,7 +69,7 @@ export default function Introduction(props: ChildProps) {
         <div className="section-wrapper text-right flex justify-center flex-row-reverse items-center gap-x-[3.75vw]">
           <h1
             dir="rtl"
-            className="intro-title text-[228px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 flex justify-center"
+            className="intro-title text-[12vw] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 flex justify-center"
           >
             <span className="block text">
               {parse(sectionData?.title?.rendered || "")}

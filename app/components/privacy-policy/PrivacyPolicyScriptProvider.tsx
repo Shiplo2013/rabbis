@@ -191,6 +191,13 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
     };
   }, [pageDataFetched, animationPlayed]);
 
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.add("white-image");
+  }, [pathname]);
+
   // Set Body Overflow Hidden
   useEffect(() => {
     if (isAllAnimationComplete) {

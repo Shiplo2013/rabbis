@@ -733,3 +733,6 @@ html {
 [data-grayscale="true"] {
   filter: grayscale(100%);
 }
+body {
+  box-sizing: border-box;
+}

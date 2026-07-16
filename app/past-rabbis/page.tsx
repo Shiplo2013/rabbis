@@ -14,7 +14,7 @@ export default async function page() {
         },
       ),
       fetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&_fields=id,title,slug,acf&per_page=20`,
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,slug,acf&per_page=20`,
         {
           next: { revalidate: 86400 }, // Cache data for 24 hours
           cache: "force-cache",

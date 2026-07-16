@@ -145,6 +145,13 @@ export default function KnessetScriptProviderSlug({
   useEffect(() => {
     const logo = document.getElementById("logo-light");
     const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.add("white-image");
+  }, [pathname]);
+
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
     logoImage?.classList.remove("white-image");
   }, [pathname]);
 

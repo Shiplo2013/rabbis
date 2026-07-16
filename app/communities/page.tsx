@@ -21,7 +21,7 @@ export default async function page() {
     const categoryId = item?.term_id;
     const categoryTitle = item?.name;
     const categoryRes = await fetch(
-      `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/communities?communities_cat=${categoryId}&acf_format=standard&_fields=id,title,slug,acf.subtitle,acf.post_thumbnail&per_page=10`,
+      `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/communities?communities_cat=${categoryId}&orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,slug,acf.subtitle,acf.post_thumbnail&per_page=10`,
       {
         next: { revalidate: 86400 }, // Cache data for 24 hours
         cache: "force-cache",

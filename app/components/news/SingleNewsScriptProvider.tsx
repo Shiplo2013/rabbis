@@ -233,6 +233,13 @@ export default function SingleNewsScriptProvider({
     }
   }, [animationPlayed, pageDataFetched]);
 
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.add("white-image");
+  }, [pathname]);
+
   // On Mouse Move
   useGSAP(() => {
     const movingButtonRef = document.getElementById(
