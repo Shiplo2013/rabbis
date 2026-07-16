@@ -42,24 +42,29 @@ export default function CustomsContentSection(props: ChildProps) {
             >
               <div className="rabbis-image w-[27.1vw] relative">
                 <div className="image w-full h-[57.2vh] relative">
-                  <Image
-                    className="w-full h-full object-cover object-center"
-                    src={
-                      item?.acf?.thumbnail?.sizes?.medium_large ||
-                      item?.acf?.thumbnail?.url ||
-                      item?.acf?.thumbnail?.src
-                    }
-                    width={522}
-                    height={532}
-                    alt={
-                      item?.acf?.thumbnail?.alt ||
-                      item?.title?.rendered ||
-                      "Past Rabbi"
-                    }
-                    blurDataURL={CreateShimmerDataUrl(522, 532)}
-                    placeholder="blur"
-                    loading="lazy"
-                  />
+                  <Link
+                    href={item?.slug ? `/past-rabbis/${item.slug}` : "#"}
+                    onClick={handleLinkClick}
+                  >
+                    <Image
+                      className="w-full h-full object-cover object-center"
+                      src={
+                        item?.acf?.thumbnail?.sizes?.medium_large ||
+                        item?.acf?.thumbnail?.url ||
+                        item?.acf?.thumbnail?.src
+                      }
+                      width={522}
+                      height={532}
+                      alt={
+                        item?.acf?.thumbnail?.alt ||
+                        item?.title?.rendered ||
+                        "Past Rabbi"
+                      }
+                      blurDataURL={CreateShimmerDataUrl(522, 532)}
+                      placeholder="blur"
+                      loading="lazy"
+                    />
+                  </Link>
                 </div>
                 <div className="read-more absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 z-30">
                   <ThemeButton
@@ -76,8 +81,11 @@ export default function CustomsContentSection(props: ChildProps) {
                 </div>
               </div>
               <div className="rabbis-content w-[28vw] text-[#D1A941]">
-                <h2 className="text-[55px] leading-[0.7em] overflow-hidden relative">
-                  <Link href={item?.slug ? `/past-rabbis/${item.slug}` : "#"}>
+                <h2 className="text-[55px] leading-[0.85em] overflow-hidden relative">
+                  <Link
+                    href={item?.slug ? `/past-rabbis/${item.slug}` : "#"}
+                    onClick={handleLinkClick}
+                  >
                     {parse(
                       item.title?.rendered ? item.title.rendered : item.title,
                     )}

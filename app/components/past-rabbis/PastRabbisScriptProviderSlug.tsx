@@ -192,11 +192,13 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
   const [cardPopupTimeline] = useState(
     gsap.timeline({
       paused: true,
+      timeScale: 3,
     }),
   );
   const [bookPopupTimeline] = useState(
     gsap.timeline({
       paused: true,
+      timeScale: 3,
     }),
   );
 
@@ -454,36 +456,56 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     const popupCardRef = document.getElementById(
       "popup-card",
     ) as HTMLDivElement | null;
-    const popupOverlay = popupCardRef?.querySelector(".overlay");
-    const popupWrapper = popupCardRef?.querySelector(".popup-wrapper");
-    const closeButton = popupCardRef?.querySelector("button.close-btn");
+    const popupOverlay = popupCardRef?.querySelector(
+      ".overlay",
+    ) as HTMLDivElement | null;
+    const popupWrapper = popupCardRef?.querySelector(
+      ".card-popup-wrapper",
+    ) as HTMLDivElement | null;
+    const closeButton = popupCardRef?.querySelector(
+      "button.close-btn",
+    ) as HTMLButtonElement | null;
     // Book Popup Elements
     const popupBookRef = document.getElementById(
       "popup-book",
     ) as HTMLDivElement | null;
-    const popupBookOverlay = popupBookRef?.querySelector(".overlay");
-    const popupBookWrapper = popupBookRef?.querySelector(".popup-wrapper");
-    const closeBookButton = popupBookRef?.querySelector("button.close-btn");
+    const popupBookOverlay = popupBookRef?.querySelector(
+      ".overlay",
+    ) as HTMLDivElement | null;
+    const popupBookWrapper = popupBookRef?.querySelector(
+      ".popup-wrapper",
+    ) as HTMLDivElement | null;
+    const closeBookButton = popupBookRef?.querySelector(
+      "button.close-btn",
+    ) as HTMLButtonElement | null;
 
     // Card Popup Animation
     if (popupCardRef) {
-      cardPopupTimeline.to(popupCardRef, {
-        opacity: 1,
-        visibility: "visible",
-        duration: 0,
-        delay: 0,
-        ease: "none",
-      });
+      cardPopupTimeline.to(
+        popupCardRef,
+        {
+          opacity: 1,
+          visibility: "visible",
+          duration: 0,
+          delay: 0,
+          ease: "none",
+        },
+        "<",
+      );
     }
     // Overlay
     if (popupOverlay) {
-      cardPopupTimeline.to(popupOverlay, {
-        opacity: 1,
-        visibility: "visible",
-        duration: 0.5,
-        delay: 0,
-        ease: "none",
-      });
+      cardPopupTimeline.to(
+        popupOverlay,
+        {
+          opacity: 1,
+          visibility: "visible",
+          duration: 0,
+          delay: 0.5,
+          ease: "none",
+        },
+        "<",
+      );
     }
     // Animate Popup Content
     if (popupWrapper) {
@@ -495,31 +517,39 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
         {
           x: 0,
           duration: 1.5,
-          delay: 0.5,
+          delay: 0,
           ease: "expo.inOut",
         },
-        "-=1",
+        "<",
       );
     }
     // Book Popup Animation
     if (popupBookRef) {
-      bookPopupTimeline.to(popupBookRef, {
-        opacity: 1,
-        visibility: "visible",
-        duration: 0,
-        delay: 0,
-        ease: "none",
-      });
+      bookPopupTimeline.to(
+        popupBookRef,
+        {
+          opacity: 1,
+          visibility: "visible",
+          duration: 0,
+          delay: 0,
+          ease: "none",
+        },
+        "<",
+      );
     }
     // Overlay
     if (popupBookOverlay) {
-      bookPopupTimeline.to(popupBookOverlay, {
-        opacity: 1,
-        visibility: "visible",
-        duration: 0.5,
-        delay: 0,
-        ease: "none",
-      });
+      bookPopupTimeline.to(
+        popupBookOverlay,
+        {
+          opacity: 1,
+          visibility: "visible",
+          duration: 0.5,
+          delay: 0,
+          ease: "none",
+        },
+        "<",
+      );
     }
     // Animate Popup Content
     if (popupBookWrapper) {
@@ -531,10 +561,10 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
         {
           x: 0,
           duration: 1.5,
-          delay: 0.5,
+          delay: 0,
           ease: "expo.inOut",
         },
-        "-=1",
+        "<",
       );
     }
     // Card Button click Event
@@ -587,6 +617,11 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
         document.body.classList.add("!overflow-auto");
       });
     }
+    // Clear all animations and timelines on unmount
+    return () => {
+      cardPopupTimeline.kill();
+      bookPopupTimeline.kill();
+    };
   }, [pathname, pageDataFetched]);
   // Play Card Popup Animation
   useGSAP(() => {

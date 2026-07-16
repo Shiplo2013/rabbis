@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import AccessibilityWidget from "./components/AccessibilityWidget";
 import { AppProvider } from "./components/AppContext";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -289,6 +290,7 @@ export default async function RootLayout({
               </SmoothWrapper>
             </div>
             <PageFixedElements />
+            <AccessibilityWidget />
           </div>
         </AppProvider>
       </body>

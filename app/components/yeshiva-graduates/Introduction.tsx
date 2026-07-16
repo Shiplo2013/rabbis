@@ -2,7 +2,7 @@ import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface ChildProps {
   extraClass: string;
@@ -21,6 +21,9 @@ interface ChildProps {
 export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    console.log("Introduction Component Props:", props.data);
+  }, [props.data]);
   return (
     <section
       ref={wrapper}

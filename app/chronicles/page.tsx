@@ -62,6 +62,8 @@ export default async function page() {
     ),
     orderby: "include",
     order: "asc",
+    _fields: "id,title,slug,acf.thumbnail,acf.time",
+    acf_format: "standard",
   });
   const params2 = new URLSearchParams({
     include: (
@@ -73,6 +75,8 @@ export default async function page() {
     ),
     orderby: "include",
     order: "asc",
+    _fields: "id,title,slug,acf.thumbnail,acf.time",
+    acf_format: "standard",
   });
   const params3 = new URLSearchParams({
     include: (
@@ -84,6 +88,8 @@ export default async function page() {
     ),
     orderby: "include",
     order: "asc",
+    _fields: "id,title,slug,acf.thumbnail,acf.time",
+    acf_format: "standard",
   });
   const params4 = new URLSearchParams({
     include: (
@@ -95,6 +101,8 @@ export default async function page() {
     ),
     orderby: "include",
     order: "asc",
+    _fields: "id,title,slug,acf.thumbnail,acf.time",
+    acf_format: "standard",
   });
   const params5 = new URLSearchParams({
     include: (
@@ -106,6 +114,8 @@ export default async function page() {
     ),
     orderby: "include",
     order: "asc",
+    _fields: "id,title,slug,acf.thumbnail,acf.time",
+    acf_format: "standard",
   });
 
   const rabbisPostRes1 = fetch(

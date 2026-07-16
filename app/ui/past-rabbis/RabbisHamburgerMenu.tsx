@@ -1,13 +1,18 @@
 import CloseIcon from "@/app/assets/icons/CloseIcon";
 import { useAppState } from "@/app/components/AppContext";
 import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import parse from "html-react-parser";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useRef } from "react";
 import { gsap } from "../../ui/plugins";
 import TextSplitLines from "../TextSplitLines";
 import PastRabbisThumbnail from "./PastRabbisThumbnail";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 interface RabbisHamburgerMenuProps {
   extraClass?: string;
@@ -32,15 +37,16 @@ export default function RabbisHamburgerMenu() {
   const menuOverlay = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const pathname = usePathname();
-  const { allRabbisPosts, activeRabbisMenu, setActiveRabbisMenu } =
-    useAppState();
+  const router = useRouter();
+  const {
+    allRabbisPosts,
+    activeRabbisMenu,
+    setActiveRabbisMenu,
+    setIsLoading,
+  } = useAppState();
 
   // Menu State
-  const [menuTimeline] = useState(
-    gsap.timeline({
-      paused: true,
-    }),
-  );
+  const menuTimeline = useRef<gsap.core.Timeline | null>(null);
 
   // Handle Menu Close
   useGSAP(() => {
@@ -53,8 +59,6 @@ export default function RabbisHamburgerMenu() {
       const menuItemsImage = hamurgerMenu.current?.querySelectorAll(
         "a.burger-menu-item .image",
       );
-      console.log("menuItemsTitle", menuItemsTitle);
-      console.log("menuItemsImage", menuItemsImage);
       // intial state
       let titleSplit;
       if (title.current) {
@@ -80,6 +84,12 @@ export default function RabbisHamburgerMenu() {
           opacity: 0,
         });
       }
+      // Menu Items Image
+      if (menuItemsImage.length !== 0) {
+        gsap.set(menuItemsImage, {
+          clipPath: "inset(100% 0% 0% 0%)",
+        });
+      }
       // Close button
       if (closeButton) {
         gsap.set(closeButton, {
@@ -89,54 +99,46 @@ export default function RabbisHamburgerMenu() {
       }
 
       // Menu Animation
-      menuTimeline
-        .to(
-          menuOverlay.current,
-          {
-            opacity: 1,
-            visibility: "visible",
-            ease: "none",
-            duration: 0.1,
-            delay: 0,
-          },
-          "-=0.5",
-        )
-        .to(
-          hamurgerMenu.current,
-          {
-            opacity: 1,
-            visibility: "visible",
-            ease: "none",
-            duration: 0,
-            delay: 0,
-          },
-          "-=0.5",
-        )
-        .to(
-          hamurgerMenu.current,
-          {
-            clipPath: `inset(0 0 0% 0%)`,
-            ease: "expo.inOut",
-            duration: 1.5,
-            delay: 0,
-          },
-          "-=0.5",
-        );
+      menuTimeline.current = gsap.timeline({
+        paused: true,
+        timeScale: 1,
+      });
+      menuTimeline.current
+        .to(menuOverlay.current, {
+          opacity: 1,
+          visibility: "visible",
+          ease: "none",
+          duration: 0.1,
+          delay: 0,
+        })
+        .to(hamurgerMenu.current, {
+          opacity: 1,
+          visibility: "visible",
+          ease: "none",
+          duration: 0,
+          delay: 0,
+        })
+        .to(hamurgerMenu.current, {
+          clipPath: `inset(0 0 0% 0%)`,
+          ease: "expo.inOut",
+          duration: 1.5,
+          delay: 0,
+        });
       if (titleSplit && title.current) {
-        menuTimeline.to(
+        menuTimeline.current.to(
           titleSplit,
           {
             yPercent: 0,
             opacity: 1,
             ease: "expo.inOut",
             duration: 2,
-            delay: 0,
+            delay: 0.5,
           },
-          "-=1.3",
+          "<",
         );
       }
       if (menuItemSplit && menuItemsTitle.length !== 0) {
-        menuTimeline.to(
+        menuTimeline.current.to(
           menuItemSplit,
           {
             yPercent: 0,
@@ -146,26 +148,23 @@ export default function RabbisHamburgerMenu() {
             delay: 0,
             stagger: 0,
           },
-          "-=2",
+          "<",
         );
       }
       if (menuItemsImage.length !== 0) {
-        menuTimeline.fromTo(
+        menuTimeline.current.to(
           menuItemsImage,
-          {
-            clipPath: "inset(100% 0% 0% 0%)",
-          },
           {
             clipPath: "inset(0% 0% 0% 0%)",
             ease: "expo.inOut",
             duration: 1.5,
             delay: 0,
           },
-          "-=1.9",
+          "<",
         );
       }
       if (closeButton) {
-        menuTimeline.to(
+        menuTimeline.current.to(
           closeButton,
           {
             scale: 1,
@@ -174,14 +173,16 @@ export default function RabbisHamburgerMenu() {
             duration: 1.5,
             delay: 0,
           },
-          "-=1.5",
+          "<",
         );
       }
     }
   }, [allRabbisPosts]);
 
   useGSAP(() => {
-    activeRabbisMenu ? menuTimeline.play() : menuTimeline.reverse();
+    activeRabbisMenu
+      ? menuTimeline.current?.play()
+      : menuTimeline.current?.reverse();
 
     if (activeRabbisMenu) {
       document.body.classList.add("!overflow-hidden");
@@ -191,6 +192,21 @@ export default function RabbisHamburgerMenu() {
       document.body.classList.add("!overflow-auto");
     }
   }, [activeRabbisMenu]);
+
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setActiveRabbisMenu(false);
+      menuTimeline.current?.timeScale(10).reverse();
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     <>
       <div
@@ -224,6 +240,7 @@ export default function RabbisHamburgerMenu() {
                 <Link
                   href={item.slug ? `/past-rabbis/${item.slug}` : "#"}
                   key={index}
+                  onClick={handleLinkClick}
                   className="burger-menu-item group flex gap-x-2.5"
                 >
                   <div className="image w-29.5 h-29.5 overflow-hidden border-dashed border-transparent group-hover:border-[#D1A941]">

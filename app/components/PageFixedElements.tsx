@@ -521,12 +521,12 @@ export default function PageFixedElements() {
             </span>
           </div>
 
-          {currentRabbisPost?.acf?.popup_1 && (
+          {currentRabbisPost?.acf?.popup_1?.title !== "" && (
             <div
               id="popup-card"
               className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
             >
-              <div className="popup-wrapper bg-[#FBF4E6] w-150 h-full relative z-50 py-[9.3vh] px-[3.8vw]">
+              <div className="card-popup-wrapper bg-[#FBF4E6] w-150 h-full relative z-50 py-[9.3vh] px-[3.8vw]">
                 <div
                   id="popup-card-content"
                   className="popup-content w-full h-full relative z-30"
@@ -561,7 +561,7 @@ export default function PageFixedElements() {
             </div>
           )}
 
-          {currentRabbisPost?.acf?.popup_2 && (
+          {currentRabbisPost?.acf?.popup_2?.title !== "" && (
             <div
               id="popup-book"
               className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"

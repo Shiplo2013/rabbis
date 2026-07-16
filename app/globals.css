@@ -350,7 +350,8 @@
       }
       .direction-rtl3 {
         direction: rtl;
-        padding-top: 50px;
+        padding-top: 60px;
+        padding-bottom: 50px;
         margin-top: -50px;
         will-change: transform;
       }
@@ -618,4 +619,117 @@ body {
 body::-webkit-scrollbar,
 html::-webkit-scrollbar {
   display: none;
+}
+.sito-mark {
+  display: inline-block;
+  width: 96px;
+  opacity: 0.42;
+  color: currentColor;
+  text-decoration: none;
+  transition: 0.35s ease;
+}
+
+.sito-mark svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  fill: currentColor;
+}
+
+.sito-mark text {
+  font-size: 4px;
+  font-family: Arial, sans-serif;
+  letter-spacing: 0.9px;
+  opacity: 0.75;
+}
+
+.sito-mark:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.sito-mark:hover .bars rect {
+  animation: softScan 0.55s ease both;
+}
+
+@keyframes softScan {
+  0% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.65;
+  }
+}
+
+/* Base root variables for font sizing */
+:root {
+  --font-size-base: 16px;
+}
+[data-text-size="sm"] {
+  --font-size-base: 14px;
+}
+[data-text-size="md"] {
+  --font-size-base: 16px;
+}
+[data-text-size="lg"] {
+  --font-size-base: 18px;
+}
+[data-text-size="xs"] {
+  --font-size-base: 13px;
+}
+[data-text-size="xl"] {
+  --font-size-base: 20px;
+}
+[data-text-size="xxl"] {
+  --font-size-base: 22px;
+}
+
+html {
+  font-size: var(--font-size-base);
+  transition: font-size 0.2s ease;
+}
+
+/* High Contrast mode */
+[data-high-contrast="true"] {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+[data-high-contrast="true"] a {
+  color: #ffff00 !important;
+  text-decoration: underline !important;
+}
+
+/* Reduced Motion mode */
+[data-reduce-motion="true"] *,
+[data-reduce-motion="true"] *::before,
+[data-reduce-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Underline Links mode */
+[data-underline-links="true"] a {
+  text-decoration: underline !important;
+  text-underline-offset: 0.2em;
+}
+
+/* Readable Font mode */
+[data-readable-font="true"] body,
+[data-readable-font="true"] button,
+[data-readable-font="true"] input,
+[data-readable-font="true"] textarea,
+[data-readable-font="true"] select {
+  font-family: Verdana, Tahoma, Arial, sans-serif !important;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+/* Grayscale mode */
+[data-grayscale="true"] {
+  filter: grayscale(100%);
 }

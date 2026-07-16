@@ -3,6 +3,7 @@ import TextSplitLines from "@/app/ui/TextSplitLines";
 import parse from "html-react-parser";
 import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 
@@ -15,6 +16,7 @@ interface Data {
   title?: string;
   foating_image?: any;
   text?: string;
+  rabbis_link?: string;
 }
 
 interface ChildProps {
@@ -118,6 +120,21 @@ export default function HomeSection2(props: ChildProps) {
     // Any additional effect logic can go here
     //console.log(props.sectionData);
   }, [pathname]);
+
+  const getRabbisURL = (urlString: string) => {
+    if (!urlString) return;
+    // 1. Parse the string into a URL object
+    const url = new URL(urlString);
+
+    // 2. Split the pathname and filter out empty strings (caused by trailing slashes)
+    const segments = url.pathname.split("/").filter(Boolean);
+
+    // 3. Get the last segment
+    const slug = "/past-rabbis/" + segments[segments.length - 1];
+
+    return slug;
+  };
+
   return (
     <section
       ref={wrapper}
@@ -161,9 +178,14 @@ export default function HomeSection2(props: ChildProps) {
         </div>
         <div
           dir="ltr"
-          className="text text-[#EEECDD] text-[70px] leading-[0.8] w-4/5 relative z-40 text-right"
+          className="text-[#EEECDD] text-[70px] leading-[0.8] w-4/5 relative z-40 text-right"
         >
-          {parse(props.sectionData?.text || "")}
+          <Link
+            href={getRabbisURL(props.sectionData?.rabbis_link || "#") || "#"}
+            className="block"
+          >
+            <div className="text">{parse(props.sectionData?.text || "")}</div>
+          </Link>
         </div>
       </div>
     </section>

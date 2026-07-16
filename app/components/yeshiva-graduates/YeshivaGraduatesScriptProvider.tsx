@@ -118,9 +118,6 @@ export default function YeshivaGraduatesScriptProvider({
       const waveLine = document.getElementById(
         "wave-line",
       ) as HTMLElement | null;
-      const arrowButton = document.getElementById(
-        "arrow-button",
-      ) as HTMLElement | null;
       waveLine?.classList.remove("hidden");
       const scurbScale = 2;
 
@@ -129,7 +126,7 @@ export default function YeshivaGraduatesScriptProvider({
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 3,
+          end: "+=" + window.innerWidth * (containerWidth / 100),
           scrub: scurbScale,
           pin: true,
           onUpdate: (self) => {
@@ -163,7 +160,7 @@ export default function YeshivaGraduatesScriptProvider({
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 3 - 500),
+          end: "+=" + (window.innerWidth * (containerWidth / 100) - 500),
           scrub: scurbScale,
         },
       });
@@ -174,7 +171,7 @@ export default function YeshivaGraduatesScriptProvider({
         yeshivaVerticalSection.kill();
       }
     };
-  }, [!isLoading, pathname, pageDataFetched, animationPlayed]);
+  }, [pageDataFetched, animationPlayed]);
 
   useEffect(() => {
     if (isAllAnimationComplete) {
@@ -183,12 +180,12 @@ export default function YeshivaGraduatesScriptProvider({
   }, [isAllAnimationComplete]);
   // Load Page
   useGSAP(() => {
-    const animations: gsap.core.Animation[] = [];
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
+      setPageContentAnimation();
       document.fonts.ready.then(() => {
         // Selectors
-        const page = document.querySelector(
-          "#page-wrapper",
+        const pageWrapper = document.getElementById(
+          "page-wrapper",
         ) as HTMLElement | null;
         const headerLeft = document.querySelector(
           ".header-left",
@@ -198,7 +195,7 @@ export default function YeshivaGraduatesScriptProvider({
         ) as HTMLElement | null;
         // Banner Button
         const introTitle = main.current?.querySelector(
-          ".first-intro .intro-title",
+          ".first-intro h1.intro-title",
         );
         // Banner Button
         const introContent = main.current?.querySelector(
@@ -250,8 +247,8 @@ export default function YeshivaGraduatesScriptProvider({
               setIsAllAnimationComplete(true);
             },
           });
-          if (page) {
-            tl.to(page, {
+          if (pageWrapper) {
+            tl.to(pageWrapper, {
               opacity: 1,
               ease: "none",
               duration: 0.5,
@@ -376,18 +373,9 @@ export default function YeshivaGraduatesScriptProvider({
               },
             });
           }
-          animations.push(tl);
         }
       });
     }
-    setPageContentAnimation();
-
-    // Return
-    return () => {
-      animations.forEach((animation) => {
-        animation.kill();
-      });
-    };
   }, [pageDataFetched, animationPlayed]);
 
   // Set Page Content Animation
@@ -557,7 +545,7 @@ export default function YeshivaGraduatesScriptProvider({
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[320vw] h-screen items-center will-change-transform`}
+            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -578,7 +566,7 @@ export default function YeshivaGraduatesScriptProvider({
             />
 
             <GraduateListSection
-              extraClass="min-w-[185vw] w-[185vw] h-screen panel-section will-change-transform py-[5vw] pr-[6.25vw]"
+              extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] pr-[6.25vw]`}
               GraduateData={GraduateData}
               animWidthText={1}
               pageLinks={pageData?.acf?.page_links || []}

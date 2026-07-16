@@ -141,6 +141,13 @@ export default function KnessetScriptProviderSlug({
     }
   }, [pageDataFetched, animationPlayed]);
 
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.remove("white-image");
+  }, [pathname]);
+
   // Set Body Overflow Hidden
   useEffect(() => {
     if (isAllAnimationComplete) {
@@ -298,7 +305,7 @@ export default function KnessetScriptProviderSlug({
                     >
                       <Link
                         href={`/the-knesset-of-customs/${item.slug}`}
-                        className="text-[40px] leading-[70%] text-[#D1A941] hover:text-[#000000] transition-colors duration-300"
+                        className="text-[30px] leading-[70%] text-[#D1A941] hover:text-[#000000] transition-colors duration-300"
                       >
                         {parse(item?.title?.rendered)}
                       </Link>

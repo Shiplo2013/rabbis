@@ -493,6 +493,23 @@ export default function KnessetScriptProvider({
     };
   }, [isAllAnimationComplete]);
 
+  // Change logo on scroll to 200px
+  useEffect(() => {
+    const handleScroll = () => {
+      const logo = document.getElementById("logo-light");
+      const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+      if (window.scrollY > 200) {
+        logoImage?.classList.remove("white-image");
+      } else {
+        logoImage?.classList.add("white-image");
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [pathname]);
+
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center text-center">
