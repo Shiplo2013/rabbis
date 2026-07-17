@@ -1,6 +1,8 @@
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import parse from "html-react-parser";
+import { formatJewishDateInHebrew, toJewishDate } from "jewish-date";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface PostData {
   title: string;
@@ -14,16 +16,21 @@ interface ChildProps {
 
 export default function SingleZatzelGraduate(props: ChildProps) {
   const ItemData = props.data;
-  const englishFormat = new Intl.DateTimeFormat("en-u-ca-hebrew", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(ItemData?.yearOfDeath));
-  const hebrewFormat = new Intl.DateTimeFormat("he-u-ca-hebrew", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(ItemData?.yearOfDeath))
+
+  const [hebrewDateStr, setHebrewDateStr] = useState<string>("");
+
+  useEffect(() => {
+    const deathDate = new Date(props.data?.yearOfDeath);
+
+    // Convert native Gregorian date to Jewish calendar parts
+    const jewishDateObj = toJewishDate(deathDate);
+
+    // Format output directly into classic Hebrew Gematria patterns
+    // Token 'D' outputs day Gematria, 'MMMM' outputs Hebrew month, 'YYYY' outputs year Gematria
+    const formatted = formatJewishDateInHebrew(jewishDateObj, "D MMMM YYYY");
+
+    setHebrewDateStr(formatted);
+  }, [props.data?.yearOfDeath]);
   return (
     <div
       dir="ltr"
@@ -46,16 +53,16 @@ export default function SingleZatzelGraduate(props: ChildProps) {
             CreateShimmerDataUrl(389, 406)
           }
           placeholder={"blur"}
-          loading="lazy"
+          loading="eager"
           alt="Rabbis"
         />
       </div>
       <div className="post-text text-[28px] text-(--theme-color) leading-[0.9em] text-right">
-        <h2 className="post-title font-extralight mb-2">
+        <h2 className="post-title mb-2 font-bold">
           {parse(ItemData?.title || "כותרת פוסט")}
         </h2>
         <p className="post-excerpt">
-          <span>שנת פטירה:</span> {hebrewFormat || `כ"ו בסיוון ה'תשע"א `}
+          <span>שנת פטירה:</span> {hebrewDateStr || `כ"ו בסיוון ה'תשע"א `}
         </p>
       </div>
     </div>

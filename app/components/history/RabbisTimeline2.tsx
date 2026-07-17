@@ -5,7 +5,7 @@ import ParallaxBackgroundBigSection from "@/app/ui/ParallaxBackgroundBigSection"
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { RefObject, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import bookIcon from "../../assets/images/lamb-book-icon.png";
 import rabbisImage10 from "../../assets/images/rabbis-timeline10.jpg";
 import rabbisImage11 from "../../assets/images/rabbis-timeline11.jpg";
@@ -17,6 +17,7 @@ import rabbisImage7 from "../../assets/images/rabbis-timeline7.jpg";
 import rabbisImage8 from "../../assets/images/rabbis-timeline8.jpg";
 import rabbisImage9 from "../../assets/images/rabbis-timeline9.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
+import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -34,6 +35,7 @@ interface ChildProps {
 function RabbisTimeline2(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
+  const { setOpenNotificationPopup, setNotificationData } = useAppState();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const timeline = props.panel;
@@ -288,6 +290,10 @@ function RabbisTimeline2(props: ChildProps) {
     { scope: wrapper, dependencies: [pathname, props?.offsetTopAdded] },
   );
 
+  useEffect(() => {
+    console.log("Rabbis Timeline Data:", props.data);
+  }, [props.data]);
+
   return (
     <section
       ref={wrapper}
@@ -313,6 +319,12 @@ function RabbisTimeline2(props: ChildProps) {
               return (
                 <div
                   key={index}
+                  onClick={() => {
+                    setNotificationData(
+                      item?.notification_popup || { title: "", content: "" },
+                    );
+                    setOpenNotificationPopup(true);
+                  }}
                   className="timeline-content notification-button py-5 px-8 w-108 bg-[#5A7C4E] relative self-start pl-19 mx-auto z-40 mt-[14vh] -ml-[8vw] -mr-[12vw] cursor-pointer"
                 >
                   <div className="notify-icon w-50.5 h-33.75 absolute top-0 left-0 -translate-x-1/2">

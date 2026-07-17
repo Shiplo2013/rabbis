@@ -1,5 +1,4 @@
 import parse from "html-react-parser";
-import { useEffect } from "react";
 import SingleZatzelGraduate from "./SingleZatzelGraduate";
 
 interface ZatzelPost {
@@ -20,9 +19,6 @@ interface ChildProps {
 
 export default function ZatzelPostCat(props: ChildProps) {
   const zatzelCatData = props.postsContent;
-  useEffect(() => {
-    console.log("ZatzelPostCat props.postsContent:", props.postsContent);
-  }, [props.postsContent]);
   return (
     <section
       dir="rtl"

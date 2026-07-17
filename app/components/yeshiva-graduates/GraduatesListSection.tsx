@@ -3,7 +3,7 @@ import SingleGraduates from "@/app/ui/SingleGraduates";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import image1 from "../../assets/images/graduates-banner-image1.png";
 import image2 from "../../assets/images/graduates-banner-image2.png";
 import { gsap, useGSAP } from "../../ui/plugins";
@@ -90,6 +90,14 @@ export default function GraduateListSection(props: ChildProps) {
     }
   };
 
+  useEffect(() => {
+    console.log(
+      "GraduateListSection Props:",
+      props.GraduateData,
+      props.pageLinks,
+    );
+  }, [props.GraduateData, props.pageLinks]);
+
   return (
     <section
       ref={wrapper}
@@ -123,28 +131,32 @@ export default function GraduateListSection(props: ChildProps) {
           ))}
           <div
             ref={pageImage}
-            className="page-images absolute left-full top-1/2 w-[40vw] h-0"
+            className="page-images absolute left-full top-1/2 w-[20vw] h-0"
           >
             <div className="page-images-wrapper w-full h-full relative">
               {PageLinks.map((item, index) => (
                 <div
                   key={index}
                   data-index={index}
-                  className={`page-${index} w-full absolute h-screen -translate-y-1/2 px-[6vw] py-[5vh] bg-black opacity-0 mt-[100vh]`}
+                  className={`page-${index} w-full absolute h-auto -translate-y-1/2 px-[3vw] py-[5vh] opacity-0 mt-[100vh]`}
                 >
-                  <Image
-                    className="w-full object-cover object-center h-full relative z-10 will-change-transform"
-                    src={item.page_image?.sizes?.large || item.page_image?.src}
-                    width="356"
-                    height="534"
-                    blurDataURL={
-                      CreateShimmerDataUrl(356, 534) ||
-                      item.page_image?.blurDataURL
-                    }
-                    placeholder={"blur"}
-                    loading="lazy"
-                    alt="Rabbis"
-                  />
+                  {item.page_image && (
+                    <Image
+                      className="w-full object-cover object-center h-full relative z-10 will-change-transform"
+                      src={
+                        item.page_image?.sizes?.large || item.page_image?.src
+                      }
+                      width="356"
+                      height="534"
+                      blurDataURL={
+                        CreateShimmerDataUrl(356, 534) ||
+                        item.page_image?.blurDataURL
+                      }
+                      placeholder={"blur"}
+                      loading="lazy"
+                      alt="Rabbis"
+                    />
+                  )}
                 </div>
               ))}
             </div>

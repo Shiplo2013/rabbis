@@ -25,26 +25,18 @@ export default function YeshivaGraduatesScriptProvider({
 }) {
   // Router Path
   const pathname = usePathname();
-  const [pageData, setPageData] = useState<any>();
+  const [pageData, setPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const { animationPlayed, setAnimationPlayed, isLoading, setIsLoading } =
     useAppState();
-
-  // Set Section Width and Container Width
-  const sectionWidthRef =
-    pageData?.acf?.graduate_posts?.length * 19.27 +
-      (pageData?.acf?.graduate_posts?.length - 1) * 3.3 +
-      10 +
-      38 || 200;
-  const containerWidthRef = sectionWidthRef + 100;
-  const [sectionWidth, setSectionWidth] = useState(sectionWidthRef);
-  const [containerWidth, setContainerWidth] = useState(containerWidthRef);
+  const [sectionWidth, setSectionWidth] = useState(200);
+  const [containerWidth, setContainerWidth] = useState(300);
   const [error, setError] = useState<string | null>(null);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
   // Vertical Section
-  const [yeshivaVerticalSection, setYeshivaVerticalSection] =
+  const [verticalSection, setVerticalSection] =
     useState<gsap.core.Timeline | null>(null);
 
   // Page Refs
@@ -54,12 +46,14 @@ export default function YeshivaGraduatesScriptProvider({
 
   // Set Page Data Fetched
   useEffect(() => {
-    if (data) {
-      setPageData(data);
-    } else {
-      setError("No data available.");
+    if (!data?.acf) {
+      setError("Page data is missing or invalid.");
+      return;
     }
+    console.log("YeshivaGraduatesScriptProvider - Page Data:", data);
+    setPageData(data);
   }, [data]);
+
   useEffect(() => {
     if (!pageData?.acf) {
       return;
@@ -67,6 +61,30 @@ export default function YeshivaGraduatesScriptProvider({
     // Set Page Data Fetched
     setPageDataFetched(true);
     setIsLoading(false);
+  }, [pageData]);
+
+  // // Adjust Section Widths based on window size
+  useEffect(() => {
+    if (!pageData) {
+      return;
+    }
+    // Update Section Width on Data Change
+    const updateSectionWidth = () => {
+      const newSectionWidth =
+        pageData?.acf?.graduate_posts?.length * 19.27 +
+          (pageData?.acf?.graduate_posts?.length - 1) * 3.3 +
+          10 +
+          38 || 200;
+
+      setSectionWidth(newSectionWidth);
+      setContainerWidth(newSectionWidth + 100);
+    };
+
+    updateSectionWidth();
+    window.addEventListener("resize", updateSectionWidth);
+    return () => {
+      window.removeEventListener("resize", updateSectionWidth);
+    };
   }, [pageData]);
 
   // Page Data
@@ -118,6 +136,9 @@ export default function YeshivaGraduatesScriptProvider({
       const waveLine = document.getElementById(
         "wave-line",
       ) as HTMLElement | null;
+      const arrowButton = document.getElementById(
+        "arrow-button",
+      ) as HTMLElement | null;
       waveLine?.classList.remove("hidden");
       const scurbScale = 2;
 
@@ -133,21 +154,23 @@ export default function YeshivaGraduatesScriptProvider({
             if (progress) {
               gsap.to(progress, { width: `${100 * self.progress}%` });
             }
-            if (self.progress > 0.97) {
-              if (waveLine) {
-                gsap.to(waveLine, {
-                  opacity: 0,
-                  duration: 0.1,
-                  delay: 0,
-                });
-              }
-            } else {
-              if (waveLine) {
-                gsap.to(waveLine, {
-                  opacity: 1,
-                  duration: 0.1,
-                  delay: 0,
-                });
+            if (waveLine) {
+              if (self.progress > 0.97) {
+                if (waveLine) {
+                  gsap.to(waveLine, {
+                    opacity: 0,
+                    duration: 0.1,
+                    delay: 0,
+                  });
+                }
+              } else {
+                if (waveLine) {
+                  gsap.to(waveLine, {
+                    opacity: 1,
+                    duration: 0.1,
+                    delay: 0,
+                  });
+                }
               }
             }
           },
@@ -164,14 +187,15 @@ export default function YeshivaGraduatesScriptProvider({
           scrub: scurbScale,
         },
       });
+      setVerticalSection(timeline);
     }
     // Return
     return () => {
-      if (yeshivaVerticalSection) {
-        yeshivaVerticalSection.kill();
+      if (verticalSection) {
+        verticalSection.kill();
       }
     };
-  }, [pageDataFetched, animationPlayed]);
+  }, [pathname, pageDataFetched]);
 
   useEffect(() => {
     if (isAllAnimationComplete) {
@@ -517,9 +541,9 @@ export default function YeshivaGraduatesScriptProvider({
       // Body Overflow Hidden
       document.body.classList.remove("!overflow-hidden");
       document.body.classList.add("!overflow-auto");
-      yeshivaVerticalSection?.pause();
+      verticalSection?.pause();
     } else {
-      yeshivaVerticalSection?.resume();
+      verticalSection?.resume();
     }
     return () => {
       document.body.style.overflow = "auto";
@@ -553,7 +577,7 @@ export default function YeshivaGraduatesScriptProvider({
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            className={`sections-wrapper flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
