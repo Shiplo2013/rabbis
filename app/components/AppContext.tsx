@@ -96,6 +96,10 @@ type ContextType = {
   setListOfRabbis: (value: any) => void;
   isVideoPopupOpen: boolean;
   setIsVideoPopupOpen: (value: boolean) => void;
+  openNotificationPopup: boolean;
+  setOpenNotificationPopup: (value: boolean) => void;
+  notificationData: any;
+  setNotificationData: (value: any) => void;
 };
 
 const AppContext = createContext<ContextType | undefined>(undefined);
@@ -168,6 +172,8 @@ export function AppProvider({
   const [activeRabbisMenu, setActiveRabbisMenu] = useState<boolean>(false);
   const [listOfRabbis, setListOfRabbis] = useState<any>(null);
   const [isVideoPopupOpen, setIsVideoPopupOpen] = useState<boolean>(false);
+  const [openNotificationPopup, setOpenNotificationPopup] = useState(false);
+  const [notificationData, setNotificationData] = useState<any>(null);
 
   return (
     <AppContext.Provider
@@ -218,6 +224,10 @@ export function AppProvider({
         setListOfRabbis,
         isVideoPopupOpen,
         setIsVideoPopupOpen,
+        openNotificationPopup,
+        setOpenNotificationPopup,
+        notificationData,
+        setNotificationData,
         appData,
       }}
     >

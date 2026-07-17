@@ -11,6 +11,7 @@ import markImage3 from "../../assets/images/markofroad3-image3.jpg";
 import markImage4 from "../../assets/images/markofroad3-image4.jpg";
 import notifyIcon from "../../assets/images/notify-icon.png";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
+import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -27,6 +28,8 @@ interface ChildProps {
 export default function MarkOfTheRoad3(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
+  const { notificationData, setNotificationData, setOpenNotificationPopup } =
+    useAppState();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   // Section Ref
@@ -66,7 +69,9 @@ export default function MarkOfTheRoad3(props: ChildProps) {
         props?.data?.content_4?.title ||
         `שנת תרפ"ו:<br/>מינוי רבי  אריה יהודה לייב חסמן כמשגיח`,
       image: props?.data?.content_4?.image || markImage4,
-      notification: `מכתב מרן המשגיח רבי יהודה אריה לייב חסמן זצוק"ל אל ראשי הישיבה בחברון`,
+      notification:
+        props?.data?.content_4?.notification?.notification_title ||
+        `מכתב מרן המשגיח רבי יהודה אריה לייב חסמן זצוק"ל אל ראשי הישיבה בחברון`,
     },
   ];
   const secTitle5 =
@@ -269,7 +274,15 @@ export default function MarkOfTheRoad3(props: ChildProps) {
             className="group section-content flex flex-col items-start gap-y-[10vh] w-48.5vw self-end -mb-[9vh] px-[2.7vw] pt-[9vh] relative cursor-pointer"
           >
             {item?.notification !== "" && (
-              <div className="notifiaction notification-button py-5 px-8 w-108 bg-[#5A7C4E] relative pl-19 mx-auto z-20">
+              <div
+                onClick={() => {
+                  setNotificationData(
+                    props?.data?.content_4?.notification?.notification_popup,
+                  );
+                  setOpenNotificationPopup(true);
+                }}
+                className="notifiaction notification-button py-5 px-8 w-108 bg-[#5A7C4E] relative pl-19 mx-auto z-20 cursor-pointer select-none"
+              >
                 <div className="notify-icon w-33.75 h-25 absolute top-0 left-0 -translate-x-1/2">
                   <Image
                     className="w-full object-cover object-center h-full"

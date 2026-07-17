@@ -11,6 +11,7 @@ import LambImage2 from "../../assets/images/lamb-image2.jpg";
 import LambImage3 from "../../assets/images/lamb-image3.jpg";
 import contentBG from "../../assets/images/lamb-offering-bg.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
+import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -28,6 +29,8 @@ interface ChildProps {
 export default function LambOfferingSection(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
+  const { notificationData, setNotificationData, setOpenNotificationPopup } =
+    useAppState();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const image1Ref = useRef<HTMLDivElement>(null);
@@ -374,6 +377,7 @@ export default function LambOfferingSection(props: ChildProps) {
     },
     { scope: wrapper, dependencies: [pathname, props?.offsetTopAdded] },
   );
+
   return (
     <section
       ref={wrapper}
@@ -456,7 +460,15 @@ export default function LambOfferingSection(props: ChildProps) {
               />
             </div>
           </Draggable>
-          <div className="notifiaction notification-button py-5 px-8 w-108 bg-[#5A7C4E] absolute pl-19 mx-auto bottom-[6.38vh] right-[21vw] z-40 cursor-pointer">
+          <div
+            onClick={() => {
+              setNotificationData(
+                props?.data?.notification?.notification_popup,
+              );
+              setOpenNotificationPopup(true);
+            }}
+            className="notifiaction notification-button py-5 px-8 w-108 bg-[#5A7C4E] absolute pl-19 mx-auto bottom-[6.38vh] right-[21vw] z-40 cursor-pointer select-none"
+          >
             <div className="notify-icon w-50.5 h-33.75 absolute top-0 left-0 -translate-x-1/2">
               <Image
                 className="w-full object-cover object-center h-full"
