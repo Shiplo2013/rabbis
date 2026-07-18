@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import PageFixedElements from "./components/PageFixedElements";
 import "./globals.css";
+import { parseJsonResponse } from "./lib/parseJsonResponse";
 import SmoothWrapper from "./ui/SmoothWrapper";
 
 export const metadata: Metadata = {
@@ -228,32 +229,32 @@ async function getGlobalData() {
     },
   ];
 
-  try {
-    const parsedHeaderData = await headerDataRes.json();
-    headerData = Array.isArray(parsedHeaderData)
-      ? parsedHeaderData
-      : [parsedHeaderData];
-  } catch (error) {
-    console.error("Failed to parse header data JSON:", error);
-  }
+  const parsedHeaderData = await parseJsonResponse<any[]>(
+    headerDataRes,
+    headerData,
+    "layout-header",
+  );
+  headerData = Array.isArray(parsedHeaderData)
+    ? parsedHeaderData
+    : [parsedHeaderData];
 
-  try {
-    const parsedHeaderCommunityData = await headerCommunityDataRes.json();
-    headerCommunityData = Array.isArray(parsedHeaderCommunityData)
-      ? parsedHeaderCommunityData
-      : [parsedHeaderCommunityData];
-  } catch (error) {
-    console.error("Failed to parse header community data JSON:", error);
-  }
+  const parsedHeaderCommunityData = await parseJsonResponse<any[]>(
+    headerCommunityDataRes,
+    headerCommunityData,
+    "layout-header-community",
+  );
+  headerCommunityData = Array.isArray(parsedHeaderCommunityData)
+    ? parsedHeaderCommunityData
+    : [parsedHeaderCommunityData];
 
-  try {
-    const parsedFooterData = await footerDataRes.json();
-    footerData = Array.isArray(parsedFooterData)
-      ? parsedFooterData
-      : [parsedFooterData];
-  } catch (error) {
-    console.error("Failed to parse footer data JSON:", error);
-  }
+  const parsedFooterData = await parseJsonResponse<any[]>(
+    footerDataRes,
+    footerData,
+    "layout-footer",
+  );
+  footerData = Array.isArray(parsedFooterData)
+    ? parsedFooterData
+    : [parsedFooterData];
 
   return {
     header: headerData[0],

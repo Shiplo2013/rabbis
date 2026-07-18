@@ -1,4 +1,5 @@
 import KnessetScriptProvider from "../components/knesset/KnessetScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function Page() {
   const pageRes = fetch(
@@ -38,22 +39,22 @@ export default async function Page() {
   ];
   let categoryData: any[] = [];
 
-  try {
-    const parsed = await pageDataRes.json();
-    pageData = Array.isArray(parsed) ? parsed : [parsed];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsedPageData = await parseJsonResponse<any[]>(
+    pageDataRes,
+    pageData,
+    "knesset-page",
+  );
+  pageData = Array.isArray(parsedPageData) ? parsedPageData : [parsedPageData];
 
-  try {
-    const parsed = await categoryDataRes.json();
-    categoryData = Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    console.error("Failed to parse category data JSON:", error);
-  }
+  const parsedCategoryData = await parseJsonResponse<any[]>(
+    categoryDataRes,
+    categoryData,
+    "knesset-categories",
+  );
+  categoryData = Array.isArray(parsedCategoryData) ? parsedCategoryData : [];
 
   const postsRes = await fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=20`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=100`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
       cache: "force-cache",
@@ -66,12 +67,12 @@ export default async function Page() {
 
   let postsData: any[] = [];
 
-  try {
-    const parsed = await postsRes.json();
-    postsData = Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    console.error("Failed to parse posts data JSON:", error);
-  }
+  const parsedPostsData = await parseJsonResponse<any[]>(
+    postsRes,
+    postsData,
+    "knesset-posts",
+  );
+  postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
 
   return (
     <KnessetScriptProvider

@@ -1,4 +1,5 @@
 import PastRabbisScriptProviderSlug from "@/app/components/past-rabbis/PastRabbisScriptProviderSlug";
+import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -34,23 +35,23 @@ export default async function Page({ params }: PageProps) {
   let allPostsData: any[] = [];
 
   if (postsDataRes?.ok) {
-    try {
-      const parsed = await postsDataRes.json();
-      postsData = Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error("Failed to parse past-rabbis slug JSON:", error);
-    }
+    const parsed = await parseJsonResponse<any[]>(
+      postsDataRes,
+      postsData,
+      `past-rabbis-slug-${slug}`,
+    );
+    postsData = Array.isArray(parsed) ? parsed : [];
   } else if (postsDataRes) {
     console.error("Failed to load past-rabbis slug post:", postsDataRes.status);
   }
 
   if (allPostsDataRes?.ok) {
-    try {
-      const parsed = await allPostsDataRes.json();
-      allPostsData = Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error("Failed to parse past-rabbis list JSON:", error);
-    }
+    const parsed = await parseJsonResponse<any[]>(
+      allPostsDataRes,
+      allPostsData,
+      "past-rabbis-all-posts",
+    );
+    allPostsData = Array.isArray(parsed) ? parsed : [];
   } else if (allPostsDataRes) {
     console.error(
       "Failed to load past-rabbis all posts:",

@@ -1,4 +1,5 @@
 import YeshivaGraduatesScriptProvider from "../components/yeshiva-graduates/YeshivaGraduatesScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function Page() {
   const pageRes = await fetch(
@@ -15,12 +16,12 @@ export default async function Page() {
 
   let pageData = [{ acf: {} }];
 
-  try {
-    const parsed = await pageRes.json();
-    pageData = Array.isArray(parsed) ? parsed : [parsed];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsed = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    "yeshiva-graduates-page",
+  );
+  pageData = Array.isArray(parsed) ? parsed : [parsed];
 
   return <YeshivaGraduatesScriptProvider data={pageData[0]} />;
 }

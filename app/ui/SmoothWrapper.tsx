@@ -1,5 +1,7 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useRef } from "react";
+import { useAppState } from "../components/AppContext";
 import { gsap, ScrollSmoother, ScrollTrigger, useGSAP } from "./plugins";
 
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
@@ -11,6 +13,8 @@ export default function SmoothWrapper({
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const { smoother } = useAppState();
 
   useGSAP(
     () => {
@@ -22,9 +26,9 @@ export default function SmoothWrapper({
       }
 
       // Keep a single smoother instance per mounted wrapper.
-      let smoother = ScrollSmoother.get();
-      if (!smoother) {
-        smoother = ScrollSmoother.create({
+      smoother.current = ScrollSmoother.get() || null;
+      if (!smoother.current) {
+        smoother.current = ScrollSmoother.create({
           wrapper,
           content,
           smooth: 0.1,
@@ -35,7 +39,7 @@ export default function SmoothWrapper({
       }
 
       return () => {
-        smoother?.kill();
+        smoother.current?.kill();
         ScrollTrigger.clearScrollMemory();
       };
     },

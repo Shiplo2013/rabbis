@@ -24,30 +24,18 @@ export default function ZatzelScriptProvider({
 }) {
   // Selectors
   const [zatzelPageData, setZatzelPageData] = useState<null | any>(null);
+  const [allPosts, setAllPosts] = useState<{ sections: any[] }>({
+    sections: [],
+  });
   const { zatzelPosts, setZatzelPosts } = useAppState();
   const { zatzelPopupIndex, setZatzelPopupIndex } = useAppState();
   const { zatzelActivePopup, setZatzelActivePopup } = useAppState();
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const updateSectionWidth = () => {
-    const postCount = data?.acf?.sections.reduce(
-      (acc: any, section: any) => acc + section.section_posts.length,
-      0,
-    );
-    const newSectionWidth =
-      postCount * 20.26 +
-      (postCount - 1) * 5 +
-      (30 + 280 / 19.2) +
-      (data?.acf?.sections.length - 1) * 10; // 20.26vw per post + 5vw gap + 24vw for padding + 10vw per section
-    const roundWidth = newSectionWidth.toFixed(2);
-    return roundWidth;
-  };
-  const [containerWidth, setContainerWidth] = useState<number>(
-    parseFloat(updateSectionWidth()) + 100,
-  );
-  const [sectionWidth, setSectionWidth] = useState<number>(
-    parseFloat(updateSectionWidth()),
-  );
+  const [containerWidth, setContainerWidth] = useState<number>(300);
+  const [sectionWidth, setSectionWidth] = useState<number>(200);
   const [error, setError] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [searchedData, setSearchedData] = useState<string | null>(null);
   // Router Path
   const pathname = usePathname();
 
@@ -99,7 +87,45 @@ export default function ZatzelScriptProvider({
     setZatzelPosts({
       sections: postData.length ? postData : defaultZatzelPageData.sections,
     });
+    setAllPosts({
+      sections: postData.length ? postData : defaultZatzelPageData.sections,
+    });
   }, [data, postData]);
+
+  useEffect(() => {
+    if (!zatzelPosts) {
+      return;
+    }
+    const updateSectionWidth = () => {
+      const postCount = zatzelPosts.sections.reduce(
+        (acc: any, section: any) => acc + section.sectionContent.length,
+        0,
+      );
+      const newSectionWidth =
+        postCount * 20.26 +
+        (postCount - 1) * 5 +
+        (30 + 280 / 19.2) +
+        (data?.acf?.sections.length - 1) * 10; // 20.26vw per post + 5vw gap + 24vw for padding + 10vw per section
+      const roundWidth = newSectionWidth.toFixed(2);
+
+      setSectionWidth(parseFloat(roundWidth));
+      setContainerWidth(parseFloat(roundWidth) + 100);
+    };
+
+    updateSectionWidth();
+    window.addEventListener("resize", updateSectionWidth);
+    return () => {
+      window.removeEventListener("resize", updateSectionWidth);
+    };
+  }, [zatzelPosts]);
+
+  // On data updated
+  // useEffect(() => {
+  //   if (zatzelVerticalSection) {
+  //     zatzelVerticalSection.invalidate();
+  //     zatzelVerticalSection.restart();
+  //   }
+  // }, [zatzelPosts]);
 
   useEffect(() => {
     if (animationPlayed) {
@@ -194,7 +220,7 @@ export default function ZatzelScriptProvider({
         zatzelVerticalSection.kill();
       }
     };
-  }, [!isLoading]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
@@ -405,7 +431,7 @@ export default function ZatzelScriptProvider({
               duration: 1.5,
               scrollTrigger: {
                 start: () => {
-                  return GetRightPosition(section) - window.innerWidth * 0.5;
+                  return GetRightPosition(section) - window.innerWidth * 0.7;
                 },
                 toggleActions: "restart none none reverse",
               },
@@ -436,7 +462,7 @@ export default function ZatzelScriptProvider({
                   duration: 1.5,
                   scrollTrigger: {
                     start: () => {
-                      return GetRightPosition(item) - window.innerWidth * 0.5;
+                      return GetRightPosition(item) - window.innerWidth * 0.7;
                     },
                     toggleActions: "restart none none reverse",
                   },
@@ -461,7 +487,7 @@ export default function ZatzelScriptProvider({
                   duration: 1.5,
                   scrollTrigger: {
                     start: () => {
-                      return GetRightPosition(item) - window.innerWidth * 0.5;
+                      return GetRightPosition(item) - window.innerWidth * 0.7;
                     },
                     toggleActions: "restart none none reverse",
                   },
@@ -623,6 +649,71 @@ export default function ZatzelScriptProvider({
     zatzelActivePopup ? cardPopupTimeline.play() : cardPopupTimeline.reverse();
   }, [zatzelActivePopup]);
 
+  // Filter Posts by Selected Date
+  useEffect(() => {
+    if (selectedDate !== null) {
+      let isMounted = true;
+      const filteredSections = allPosts.sections.map((section) => {
+        const filteredContent = section.sectionContent.filter(
+          (post: { yearOfDeath: string }) => {
+            const postDate = new Date(post.yearOfDeath);
+            return postDate.getTime() === new Date(selectedDate).getTime();
+          },
+        );
+        return {
+          ...section,
+          sectionContent: filteredContent,
+        };
+      });
+      if (isMounted) {
+        console.log("Filtered Sections:", filteredSections);
+        if (
+          filteredSections.length > 0 &&
+          filteredSections.some((section) => section.sectionContent.length > 0)
+        ) {
+          setZatzelPosts({ sections: filteredSections });
+        } else {
+          setZatzelPosts(allPosts);
+        }
+      }
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [selectedDate]);
+
+  // Filter Posts by Selected Date
+  useEffect(() => {
+    if (searchedData !== null) {
+      let isMounted = true;
+      const filteredSections = allPosts.sections.map((section) => {
+        const filteredContent = section.sectionContent.filter(
+          (post: { title: string }) => {
+            return post.title.includes(searchedData);
+          },
+        );
+        return {
+          ...section,
+          sectionContent: filteredContent,
+        };
+      });
+      if (isMounted) {
+        console.log("Filtered Sections:", filteredSections);
+        if (
+          filteredSections.length > 0 &&
+          filteredSections.some((section) => section.sectionContent.length > 0)
+        ) {
+          setZatzelPosts({ sections: filteredSections });
+        } else {
+          setZatzelPosts(allPosts);
+        }
+      }
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [searchedData]);
+
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center text-center">
@@ -691,6 +782,8 @@ export default function ZatzelScriptProvider({
               sectionData={
                 zatzelPosts.sections || defaultZatzelPageData.sections
               }
+              setSelectedDate={setSelectedDate}
+              setSearchedData={setSearchedData}
             />
           </div>
         </div>

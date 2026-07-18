@@ -1,4 +1,5 @@
 import CommunitiesSheetsScriptProvider from "@/app/components/communites/CommunitySheetsScriptProvider";
+import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = fetch(
@@ -33,32 +34,30 @@ export default async function page() {
     throw new Error("Failed to load data.");
   }
 
-  let pageData = [{}],
-    categoryData = [],
-    postsData = [];
+  let pageData: any[] = [{}],
+    categoryData: any[] = [],
+    postsData: any[] = [];
 
-  try {
-    const parsedPageData = await pageResData.json();
-    pageData = Array.isArray(parsedPageData)
-      ? parsedPageData
-      : [parsedPageData];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsedPageData = await parseJsonResponse<any[]>(
+    pageResData,
+    pageData,
+    "communities-sheets-page",
+  );
+  pageData = Array.isArray(parsedPageData) ? parsedPageData : [parsedPageData];
 
-  try {
-    categoryData = await categoryResData.json();
-    if (!Array.isArray(categoryData)) categoryData = [];
-  } catch (error) {
-    console.error("Failed to parse category data JSON:", error);
-  }
+  categoryData = await parseJsonResponse<any[]>(
+    categoryResData,
+    categoryData,
+    "communities-sheets-categories",
+  );
+  if (!Array.isArray(categoryData)) categoryData = [];
 
-  try {
-    postsData = await postsResData.json();
-    if (!Array.isArray(postsData)) postsData = [];
-  } catch (error) {
-    console.error("Failed to parse posts data JSON:", error);
-  }
+  postsData = await parseJsonResponse<any[]>(
+    postsResData,
+    postsData,
+    "communities-sheets-posts",
+  );
+  if (!Array.isArray(postsData)) postsData = [];
 
   // Get all top level categories (parent = 0) with their child categories
   const topLevelCategories = categoryData.filter(

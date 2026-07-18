@@ -1,4 +1,5 @@
 import KnessetScriptProviderSlug from "@/app/components/knesset/KnessetScriptProviderSlug";
+import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -34,8 +35,16 @@ export default async function Page({ params }: PageProps) {
     throw new Error("Failed to load data.");
   }
 
-  const postsData = await postsDataRes.json();
-  const allPostsData = await allPostsDataRes.json();
+  const postsData = await parseJsonResponse<any[]>(
+    postsDataRes,
+    [],
+    `knesset-slug-post-${slug}`,
+  );
+  const allPostsData = await parseJsonResponse<any[]>(
+    allPostsDataRes,
+    [],
+    "knesset-slug-all-posts",
+  );
 
   return (
     <KnessetScriptProviderSlug

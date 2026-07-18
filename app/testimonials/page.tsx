@@ -1,4 +1,5 @@
 import TestimonialsScriptProvider from "../components/testimonials/TestimonialsScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = await fetch(
@@ -13,6 +14,10 @@ export default async function page() {
     throw new Error("Failed to load data.");
   }
 
-  const pageData = await pageRes.json();
+  const pageData = await parseJsonResponse<any[]>(
+    pageRes,
+    [{ acf: {} }],
+    "testimonials-page",
+  );
   return <TestimonialsScriptProvider data={pageData[0]} />;
 }

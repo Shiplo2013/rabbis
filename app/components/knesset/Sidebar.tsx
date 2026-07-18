@@ -1,8 +1,8 @@
 "use client";
-import ArrowLeftBottom from "@/app/assets/icons/ArrowLeftBottom";
 import CaretIcon from "@/app/assets/icons/CaretIcon";
 import SearchIcon from "@/app/assets/icons/SearchIcon";
 import { useState } from "react";
+import SidebarForm from "./SidebarForm";
 
 interface SidebarProps {
   activeCategory: string | null;
@@ -90,6 +90,9 @@ export default function Sidebar({
                 <button
                   data-category={item.id}
                   onClick={() => {
+                    if (activeCategory === String(item.id)) {
+                      return;
+                    }
                     onCategorySelect(String(item.id));
                     if (setPostLoading) {
                       setPostLoading(true);
@@ -116,19 +119,7 @@ export default function Sidebar({
           לקבלת עדכונים
           <br /> חדשים למייל:
         </h4>
-        <div className="subscription bg-[#FDF9F5] rounded-full overflow-hidden relative h-10.75">
-          <input
-            type="email"
-            name="email"
-            className="w-full h-full focus:outline-0 rounded-full p-2.5 pl-15"
-          />
-          <button
-            type="submit"
-            className="bg-[#C3A13F] w-14.5 h-full flex items-center justify-center rounded-full absolute top-0 left-0 cursor-pointer hover:bg-[#ce9d09]"
-          >
-            <ArrowLeftBottom extraClass={""} />
-          </button>
-        </div>
+        <SidebarForm />
       </div>
     </div>
   );

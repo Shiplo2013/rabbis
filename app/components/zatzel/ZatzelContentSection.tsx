@@ -17,6 +17,8 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   sectionData: ZatzelContentSectionData[];
+  setSelectedDate?: (date: Date | null) => void;
+  setSearchedData?: (data: string | null) => void;
 }
 
 export default function ZatzelContentSection(props: ChildProps) {
@@ -29,7 +31,10 @@ export default function ZatzelContentSection(props: ChildProps) {
       <div className="sheet-wrapper w-full min-w-full h-auto flex items-center gap-x-[10vw]">
         <div className="sheet-sidebar w-70 min-w-70 h-full will-change-transform">
           <div className="sheet-sidebar-wrapper">
-            <Sidebar />
+            <Sidebar
+              setSelectedDate={props.setSelectedDate}
+              setSearchedData={props.setSearchedData}
+            />
           </div>
         </div>
         <div className="sheet-content flex items-center gap-x-[10vw] will-change-transform">
@@ -42,11 +47,11 @@ export default function ZatzelContentSection(props: ChildProps) {
             />
           ))}
         </div>
-        <div className="sheet-readmore min-w-[10vw] w-[10vw]">
+        {/* <div className="sheet-readmore min-w-[10vw] w-[10vw]">
           <button className="text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500">
             טען עוד
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

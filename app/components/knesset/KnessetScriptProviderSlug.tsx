@@ -29,16 +29,13 @@ type KnessetPosts = {
 };
 
 type AllPosts = {
-  pagination: any;
-  posts: [
-    {
-      id: number;
-      title: string;
-      slug: string;
-      acf: any;
-    },
-  ];
-};
+  id: number;
+  slug: string;
+  title: {
+    rendered: string;
+  };
+  acf?: any;
+}[];
 
 export default function KnessetScriptProviderSlug({
   data,
@@ -140,13 +137,6 @@ export default function KnessetScriptProviderSlug({
       });
     }
   }, [pageDataFetched, animationPlayed]);
-
-  // Change logo
-  useEffect(() => {
-    const logo = document.getElementById("logo-light");
-    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
-    logoImage?.classList.add("white-image");
-  }, [pathname]);
 
   // Change logo
   useEffect(() => {

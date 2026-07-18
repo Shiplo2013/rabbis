@@ -1,4 +1,5 @@
 import SingleNewsScriptProvider from "@/app/components/news/SingleNewsScriptProvider";
+import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -27,8 +28,16 @@ export default async function page({ params }: PageProps) {
     throw new Error("Failed to load data.");
   }
 
-  const pageData = await pageDataRes.json();
-  const postsData = await postsDataRes.json();
+  const pageData = await parseJsonResponse<any[]>(
+    pageDataRes,
+    [],
+    `news-slug-page-${slug}`,
+  );
+  const postsData = await parseJsonResponse<any[]>(
+    postsDataRes,
+    [],
+    "news-slug-posts",
+  );
 
   // Find the index of the current post in the list of all posts
   const currentPostIndex = postsData.findIndex(

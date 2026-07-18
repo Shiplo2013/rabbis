@@ -1,4 +1,5 @@
 import CommunitiesScriptProvider from "../components/communites/CommunitesScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = await fetch(
@@ -12,7 +13,11 @@ export default async function page() {
   if (!pageRes.ok) {
     throw new Error("Failed to load data.");
   }
-  const pageData = await pageRes.json();
+  const pageData = await parseJsonResponse<any[]>(
+    pageRes,
+    [{ acf: { select_categories: [] } }],
+    "communities-page",
+  );
   // Get selected categories from ACF field
   const categories = Array.isArray(pageData[0]?.acf?.select_categories)
     ? pageData[0].acf.select_categories
@@ -33,20 +38,16 @@ export default async function page() {
       );
       return null;
     }
-    try {
-      const categoryPosts = await categoryRes.json();
-      return {
-        categoryId,
-        categoryTitle,
-        posts: categoryPosts,
-      };
-    } catch (error) {
-      console.error(
-        `Failed to parse JSON for category ID: ${categoryId}`,
-        error,
-      );
-      return null;
-    }
+    const categoryPosts = await parseJsonResponse<any[]>(
+      categoryRes,
+      [],
+      `communities-category-${categoryId}`,
+    );
+    return {
+      categoryId,
+      categoryTitle,
+      posts: categoryPosts,
+    };
   });
 
   const validCategoryQueryResults = await Promise.all(validCategoryQuery);

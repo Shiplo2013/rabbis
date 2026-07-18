@@ -33,6 +33,7 @@ export default function CommunitiesSheetsScriptProvider({
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [activeCategory, setActiveCategory] = useState(0);
+  const [submittedSearch, setSubmittedSearch] = useState("");
   const [isPostLoaded, setIsPostLoaded] = useState(false);
   const [catPostsData, setCatPostsData] = useState<any>(null);
   const [noPostsFound, setNoPostsFound] = useState(false);
@@ -40,7 +41,9 @@ export default function CommunitiesSheetsScriptProvider({
     null,
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const [hasMorePosts, setHasMorePosts] = useState(false);
+  const [hasMorePosts, setHasMorePosts] = useState(
+    data?.postsData?.length === 10 ? true : false,
+  );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // Get Page Data From backend
@@ -60,19 +63,82 @@ export default function CommunitiesSheetsScriptProvider({
   // }, [activeCategory, selectedCategoryId]);
 
   // Get posts by active category index
+  // useEffect(() => {
+  //   if (!sheetPageData) {
+  //     return;
+  //   }
+
+  //   let isMounted = true;
+  //   if (currentPage === 1) {
+  //     setIsPostLoaded(false);
+  //   } else {
+  //     setIsLoadingMore(true);
+  //   }
+
+  //   const loadPostsByCategory = async () => {
+  //     try {
+  //       const selectedCategory =
+  //         sheetPageData?.categoriesTree?.[activeCategory];
+  //       const childIds = (selectedCategory?.children || [])
+  //         .map((child: { id: number }) => child?.id)
+  //         .filter(Boolean);
+  //       const categoryIds = selectedCategoryId
+  //         ? [selectedCategoryId]
+  //         : selectedCategory?.id
+  //           ? [selectedCategory.id, ...childIds]
+  //           : [];
+
+  //       const postsUrl = categoryIds.length
+  //         ? `/api/communities/sheets/posts?magazines_cat=${categoryIds.join(",")}&per_page=5&page=${currentPage}`
+  //         : `/api/communities/sheets/posts?per_page=5&page=${currentPage}`;
+
+  //       const response2 = await fetch(postsUrl, {
+  //         cache: "no-store",
+  //       });
+
+  //       if (!response2.ok) {
+  //         throw new Error("Failed to load community page data.");
+  //       }
+
+  //       const data2 = await response2.json();
+
+  //       // Fallback: if selected category has no posts, show latest 5 posts.
+  //       if (categoryIds.length && !(data2?.posts?.length > 0)) {
+  //         setNoPostsFound(true);
+  //       } else {
+  //         setNoPostsFound(false);
+  //       }
+
+  //       if (isMounted) {
+  //         setCatPostsData(data2?.posts || []);
+  //         const page = data2?.pagination?.page ?? 1;
+  //         const totalPages = data2?.pagination?.total_pages ?? 1;
+  //         setHasMorePosts(page < totalPages);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     } finally {
+  //       if (isMounted) {
+  //         setIsPostLoaded(true);
+  //         setIsLoadingMore(false);
+  //       }
+  //     }
+  //   };
+
+  //   loadPostsByCategory();
+
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [activeCategory, selectedCategoryId]);
+
+  // Load more posts when currentPage changes
   useEffect(() => {
-    if (!sheetPageData) {
-      return;
-    }
-
+    if (selectedCategoryId === null) return; // Skip initial load
     let isMounted = true;
-    if (currentPage === 1) {
-      setIsPostLoaded(false);
-    } else {
-      setIsLoadingMore(true);
-    }
+    setIsLoadingMore(true);
 
-    const loadPostsByCategory = async () => {
+    const loadMorePosts = async () => {
       try {
         const selectedCategory =
           sheetPageData?.categoriesTree?.[activeCategory];
@@ -86,48 +152,42 @@ export default function CommunitiesSheetsScriptProvider({
             : [];
 
         const postsUrl = categoryIds.length
-          ? `/api/communities/sheets/posts?magazines_cat=${categoryIds.join(",")}&per_page=5&page=${currentPage}`
-          : `/api/communities/sheets/posts?per_page=5&page=${currentPage}`;
+          ? `/api/communities/sheets/posts?magazines_cat=${categoryIds.join(
+              ",",
+            )}&per_page=10&page=${currentPage}`
+          : `/api/communities/sheets/posts?per_page=10&page=${currentPage}`;
 
-        const response2 = await fetch(postsUrl, {
+        const response = await fetch(postsUrl, {
           cache: "no-store",
         });
 
-        if (!response2.ok) {
+        if (!response.ok) {
           throw new Error("Failed to load community page data.");
         }
+        const data = await response.json();
 
-        const data2 = await response2.json();
-
-        // Fallback: if selected category has no posts, show latest 5 posts.
-        if (categoryIds.length && !(data2?.posts?.length > 0)) {
-          setNoPostsFound(true);
-        } else {
-          setNoPostsFound(false);
-        }
+        console.log("Fetched posts for page:", currentPage, data);
 
         if (isMounted) {
-          setCatPostsData(data2?.posts || []);
-          const page = data2?.pagination?.page ?? 1;
-          const totalPages = data2?.pagination?.total_pages ?? 1;
-          setHasMorePosts(page < totalPages);
+          if (data?.posts?.length < 10) {
+            setHasMorePosts(false);
+          }
+          sheetPageData.postsData = data?.posts || [];
         }
       } catch (error) {
         console.error(error);
       } finally {
         if (isMounted) {
-          setIsPostLoaded(true);
           setIsLoadingMore(false);
         }
       }
     };
 
-    loadPostsByCategory();
+    loadMorePosts();
 
-    return () => {
-      isMounted = false;
-    };
-  }, [activeCategory, selectedCategoryId]);
+    console.log("Loading more posts for page:", currentPage);
+    console.log("Selected Category:", selectedCategoryId);
+  }, [selectedCategoryId]);
 
   useEffect(() => {
     if (!sheetPageData) {

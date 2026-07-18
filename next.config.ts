@@ -5,7 +5,14 @@ const nextConfig: NextConfig = {
   //cacheComponents: true,
   reactStrictMode: true,
   images: {
-    remotePatterns: [new URL("https://dovp7.sg-host.com/**")],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "dovp7.sg-host.com",
+        port: "",
+        pathname: "/wp-content/uploads/**",
+      },
+    ],
   },
   experimental: {
     serverActions: {

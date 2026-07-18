@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import CloseIcon from "../assets/icons/CloseIcon";
 import Search from "../assets/icons/Search";
 import bagImage from "../assets/images/main-menu-bg.jpg";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 import SubMenuItem from "../ui/SubMenuItem";
 import { useAppState } from "./AppContext";
 
@@ -71,7 +72,11 @@ export default function MainMenu() {
         isMounted = false;
       }
 
-      const data = await response.json();
+      const data = await parseJsonResponse<any[]>(
+        response,
+        [],
+        "main-menu-search",
+      );
 
       if (isMounted) {
         if (data.length > 0) {

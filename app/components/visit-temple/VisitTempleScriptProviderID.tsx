@@ -1,6 +1,5 @@
 "use client";
 import { useAppState } from "@/app/components/AppContext";
-import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Introduction from "../../components/visit-temple/Introduction";
@@ -153,6 +152,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
     setTempleActiveTab,
     templeTabData,
     setTempleTabData,
+    smoother,
   } = useAppState();
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
   // Vertical Section
@@ -235,9 +235,6 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
       const waveLine = document.getElementById(
         "wave-line",
       ) as HTMLElement | null;
-      const arrowButton = document.getElementById(
-        "arrow-button",
-      ) as HTMLElement | null;
       waveLine?.classList.remove("hidden");
       const scurbScale = 2;
 
@@ -282,6 +279,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
           scrub: scurbScale,
         },
       });
+
       animations.push(timeline);
     }
     // Return
@@ -293,8 +291,8 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
 
   // Load Page
   useGSAP(() => {
-    const animations: gsap.core.Animation[] = [];
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
+      setIsAllAnimationComplete(true);
       document.fonts.ready.then(() => {
         // Selectors
         const page = document.querySelector(
@@ -306,134 +304,53 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
         const headerRight = document.querySelector(
           ".header-right",
         ) as HTMLElement | null;
-        const introTitle = document.querySelector(
-          ".first-intro h1.intro-title",
-        ) as HTMLElement | null;
-        const introImage = main.current?.querySelector(
-          ".first-intro .intro-image",
-        );
         const bannerBackgroundOverlay = main.current?.querySelector(
           ".first-intro .intro-background .intro-bg-mask",
         );
-        let splitIntroTitle;
-        if (introTitle) {
-          splitIntroTitle = BigTitleSplitLines(introTitle);
-          gsap.set(introTitle, {
-            perspective: 400,
-          });
-          gsap.set(splitIntroTitle, {
-            yPercent: 150,
-            opacity: 0,
-          });
-        }
-        if (introImage) {
-          gsap.set(introImage, {
-            x: "10vw",
-            opacity: 0,
-          });
-        }
         // Set localStorage variable
         const userVisit = localStorage.getItem("hasVisited");
         if (userVisit === "true" && animationPlayed && pageDataFetched) {
-          // Timeline
-          const tl = gsap.timeline({
-            onComplete: () => {
-              // Set Animation Played to true
-              setIsAllAnimationComplete(true);
-            },
-          });
           if (page) {
-            tl.to(page, {
+            gsap.set(page, {
               opacity: 1,
-              ease: "none",
-              duration: 0.5,
-              delay: 0,
             });
           }
           if (headerLeft) {
-            tl.to(headerLeft, {
+            gsap.set(headerLeft, {
               autoAlpha: 1,
-              ease: "none",
-              duration: 1,
             });
           }
           if (headerRight) {
-            tl.to(
-              headerRight,
-              {
-                autoAlpha: 1,
-                ease: "none",
-                duration: 1,
-              },
-              "-=1",
-            );
-          }
-          // Intro Title Animation
-          if (introTitle && splitIntroTitle) {
-            tl.to(
-              splitIntroTitle,
-              {
-                yPercent: 0,
-                opacity: 1,
-                duration: 3,
-                delay: 0,
-                stagger: 0.05,
-                ease: "expo.inOut",
-              },
-              "-=1.5",
-            );
-          }
-          // Intro Image Animation
-          if (introImage) {
-            tl.to(
-              introImage,
-              {
-                x: "0vw",
-                opacity: 1,
-                duration: 3,
-                delay: 0,
-                ease: "expo.inOut",
-              },
-              "-=1.5",
-            );
+            gsap.set(headerRight, {
+              autoAlpha: 1,
+            });
           }
           // Wave Line Animation
           const waveLine = document.getElementById(
-            "wave-line",
+            "wave-mask",
           ) as HTMLElement | null;
           if (waveLine) {
-            tl.to(
-              waveLine,
-              {
-                translateY: 0,
-                opacity: 1,
-                ease: "expo.inOut",
-                duration: 3,
-                delay: 0,
-              },
-              "-=2.5",
-            );
+            gsap.set(waveLine, {
+              translateY: 0,
+              opacity: 1,
+            });
           }
           if (bannerBackgroundOverlay) {
-            tl.to(
-              bannerBackgroundOverlay,
-              {
-                translateY: "-100%",
-                delay: 0,
-                duration: 3,
-                ease: "expo.inOut",
-              },
-              "-=2.5",
-            );
+            gsap.set(bannerBackgroundOverlay, {
+              translateY: "-100%",
+              delay: 0,
+            });
           }
-          animations.push(tl);
         }
       });
+      // Scroll to the Sidebar
+      const sidebarPos = setTimeout(() => {
+        smoother?.current?.scrollTo(window.innerWidth * 1.2, false);
+      }, 1000);
+      return () => {
+        clearTimeout(sidebarPos);
+      };
     }
-
-    return () => {
-      animations.forEach((animation) => animation.kill());
-    };
   }, [pageDataFetched, animationPlayed]);
 
   // Change logo

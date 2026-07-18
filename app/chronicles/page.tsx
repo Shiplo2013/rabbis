@@ -1,4 +1,5 @@
 import { ChroniclesPageWithCache } from "../components/history/ChroniclesPageWithCache";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = await fetch(
@@ -45,12 +46,12 @@ export default async function page() {
       },
     },
   ];
-  try {
-    const parsedData = await pageRes.json();
-    pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsedData = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    "chronicles-page",
+  );
+  pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
   const params1 = new URLSearchParams({
     include: (
@@ -164,20 +165,7 @@ export default async function page() {
     ]);
 
   const parseRabbisData = async (response: Response, index: number) => {
-    if (!response.ok) {
-      console.error(
-        `Failed to load rabbis data ${index}:`,
-        response.status,
-        response.statusText,
-      );
-      return [];
-    }
-    try {
-      return await response.json();
-    } catch (error) {
-      console.error(`Failed to parse JSON for rabbis data ${index}:`, error);
-      return [];
-    }
+    return parseJsonResponse<any[]>(response, [], `chronicles-rabbis-${index}`);
   };
 
   const [rabbisData1, rabbisData2, rabbisData3, rabbisData4, rabbisData5] =

@@ -1,4 +1,5 @@
 import ConferenceScriptProvider from "../components/alumni-conference/ConferenceScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = await fetch(
@@ -9,20 +10,15 @@ export default async function page() {
     },
   );
 
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
-  let pageData = [
+  const pageData = [
     { id: 0, title: { rendered: "" }, content: { rendered: "" }, acf: {} },
   ];
 
-  try {
-    const parsed = await pageRes.json();
-    pageData = Array.isArray(parsed) ? parsed : [parsed];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsed = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    "alumni-conference-page",
+  );
 
-  return <ConferenceScriptProvider data={pageData[0]} />;
+  return <ConferenceScriptProvider data={parsed[0]} />;
 }

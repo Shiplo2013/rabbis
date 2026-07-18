@@ -1,4 +1,5 @@
 import PrivacyPolicyScriptProvider from "../components/privacy-policy/PrivacyPolicyScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = await fetch(
@@ -16,12 +17,12 @@ export default async function page() {
   let pageData = [
     { id: 0, title: { rendered: "" }, content: { rendered: "" } },
   ];
-  try {
-    const parsedData = await pageRes.json();
-    pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsedData = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    "privacy-policy-page",
+  );
+  pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
   return <PrivacyPolicyScriptProvider data={pageData[0]} />;
 }

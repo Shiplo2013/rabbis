@@ -8,7 +8,15 @@ import YearCaret from "@/app/assets/icons/YearCaret";
 import { HDate, gematriya } from "@hebcal/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export default function Sidebar() {
+interface SidebarProps {
+  setSelectedDate?: (date: Date | null) => void;
+  setSearchedData?: (data: string | null) => void;
+}
+
+export default function Sidebar({
+  setSelectedDate,
+  setSearchedData,
+}: SidebarProps) {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
@@ -40,7 +48,7 @@ export default function Sidebar() {
 
   const todayHebrewYear = new HDate(new Date()).getFullYear();
   const yearOptions = useMemo(
-    () => Array.from({ length: 60 }, (_, i) => todayHebrewYear - 40 + i),
+    () => Array.from({ length: 120 }, (_, i) => todayHebrewYear - 100 + i),
     [todayHebrewYear],
   );
   const minYear = yearOptions[0];
@@ -94,8 +102,16 @@ export default function Sidebar() {
       const maxDays = HDate.daysInMonth(selectedMonth, selectedYear);
       if (selectedDay > maxDays) {
         setSelectedDay(maxDays);
+        return;
       }
+
+      setSelectedDate?.(
+        new HDate(selectedDay, selectedMonth, selectedYear).greg(),
+      );
+      return;
     }
+
+    setSelectedDate?.(null);
   }, [selectedYear, selectedMonth, selectedDay]);
 
   useEffect(() => {
@@ -135,6 +151,7 @@ export default function Sidebar() {
     selectedYear && selectedMonth && selectedDay
       ? `${gematriya(selectedDay)} ${hebrewMonths[selectedMonth - 1]} ${gematriya(selectedYear)}`
       : "";
+
   return (
     <>
       <div
@@ -268,18 +285,26 @@ export default function Sidebar() {
           </div>
         )}
       </div>
-      <div className="search-group relative">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          const searchValue = formData.get("search-by-user") as string;
+          setSearchedData?.(searchValue || null);
+        }}
+        className="search-group relative"
+      >
         <input
           className="text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full pl-8"
           type="text"
           id="search-by-user"
-          name="Search-By-User"
+          name="search-by-user"
           placeholder={`חיפוש לפי שם`}
         />
         <button className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2">
           <UserIcon />
         </button>
-      </div>
+      </form>
     </>
   );
 }
