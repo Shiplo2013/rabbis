@@ -1,4 +1,5 @@
 import HomeScriptProvider from "./components/home/HomeScriptProvider";
+import { parseJsonResponse } from "./lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = await fetch(
@@ -55,12 +56,12 @@ export default async function page() {
       },
     },
   ];
-  try {
-    const parsedData = await pageRes.json();
-    pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsedData = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    "home-page",
+  );
+  pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
   const postsIds = pageData[0]?.acf?.home_section_1?.community_posts;
   const params = new URLSearchParams({
@@ -98,14 +99,12 @@ export default async function page() {
     },
   ];
 
-  try {
-    const parsedPostData = await postsRes.json();
-    postsData = Array.isArray(parsedPostData)
-      ? parsedPostData
-      : [parsedPostData];
-  } catch (error) {
-    console.error("Failed to parse posts data JSON:", error);
-  }
+  const parsedPostData = await parseJsonResponse<any[]>(
+    postsRes,
+    postsData,
+    "home-communities-posts",
+  );
+  postsData = Array.isArray(parsedPostData) ? parsedPostData : [parsedPostData];
 
   return <HomeScriptProvider data={pageData[0]} postsData={postsData} />;
 }

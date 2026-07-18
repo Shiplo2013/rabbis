@@ -374,7 +374,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
           }
           // Wave Line Animation
           const waveLine = document.getElementById(
-            "wave-line",
+            "wave-mask",
           ) as HTMLElement | null;
           if (waveLine) {
             tl.to(

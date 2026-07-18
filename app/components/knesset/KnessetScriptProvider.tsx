@@ -57,7 +57,7 @@ export default function KnessetScriptProvider({
 
   // Search and Category Filter
   useEffect(() => {
-    if (selectedCategory !== null) {
+    if (selectedCategory !== null || submittedSearch !== "") {
       let isMounted = true;
 
       const loadKnessetPostsData = async () => {
@@ -206,10 +206,8 @@ export default function KnessetScriptProvider({
   useEffect(() => {
     if (verticalSection && currentScrollPos > 0) {
       let currentProgress = verticalSection.progress();
-      console.log("Current Scroll Position:", currentScrollPos);
-      console.log("Current Progress:", currentProgress);
       verticalSection.invalidate().restart();
-      verticalSection.progress(currentProgress);
+      verticalSection.progress(currentProgress).play();
     }
   }, [containerWidth, verticalSection]);
 

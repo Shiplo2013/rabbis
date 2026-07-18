@@ -149,23 +149,27 @@ export default function CommunitiesSlugScriptProvider({
               visibility: "hidden",
               ease: "none",
               duration: 0,
-              delay: 0,
-            });
-          }
-          if (pageWrapper) {
-            tl.to(pageWrapper, {
-              opacity: 1,
-              ease: "none",
-              duration: 0.5,
-              delay: 0,
+              delay: 0.25,
             });
           }
           if (header) {
             tl.to(header, {
               opacity: 1,
               ease: "none",
-              duration: 1,
+              duration: 0.5,
             });
+          }
+          if (pageWrapper) {
+            tl.to(
+              pageWrapper,
+              {
+                opacity: 1,
+                ease: "none",
+                duration: 0.5,
+                delay: 0,
+              },
+              ">",
+            );
           }
           animations.push(tl);
         }
@@ -388,10 +392,6 @@ export default function CommunitiesSlugScriptProvider({
     }
   }, [pathname]);
 
-  useEffect(() => {
-    console.log("CommunitiesSlugScriptProvider post:", post);
-  }, [post]);
-
   return (
     post && (
       <main
@@ -607,7 +607,7 @@ export default function CommunitiesSlugScriptProvider({
                               return (
                                 <div
                                   key={index}
-                                  className="image1 mt-9 w-xl max-w-full"
+                                  className="image1 mt-9 w-xl max-w-full max-h-[66vh] relative"
                                 >
                                   <CommunityImage item={item} />
                                   {item?.content?.caption && (
@@ -658,9 +658,9 @@ export default function CommunitiesSlugScriptProvider({
                                     {parse(item?.news_content?.text || "")}
                                   </div>
                                   {item?.content?.image && (
-                                    <div className="image1 mt-9 w-xl max-w-full h-auto">
+                                    <div className="image1 mt-9 w-xl max-w-full max-h-[66vh]">
                                       <Image
-                                        className="w-full h-full object-cover object-center"
+                                        className="w-full h-full object-contain object-center"
                                         src={
                                           item?.content?.image?.sizes?.medium ||
                                           item?.content?.image?.sizes
@@ -699,7 +699,7 @@ export default function CommunitiesSlugScriptProvider({
                                   {item?.news_content?.image && (
                                     <div className="highlight-image mt-10 w-xl max-w-full h-[66vh]">
                                       <Image
-                                        className="w-full h-full object-cover object-center"
+                                        className="w-full h-full object-contain object-center"
                                         src={
                                           item?.news_content?.image?.sizes
                                             ?.medium ||
@@ -745,7 +745,7 @@ export default function CommunitiesSlugScriptProvider({
                                         ) => (
                                           <SwiperSlide
                                             key={galleryIndex}
-                                            className="gallery-item mt-8.5 w-xl max-w-full h-auto"
+                                            className="gallery-item mt-8.5 w-xl max-w-full h-[66vh] relative"
                                           >
                                             <CommunityGalleryImage
                                               item={galleryItem}

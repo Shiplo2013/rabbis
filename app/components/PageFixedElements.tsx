@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import AudioPlayer from "../ui/AudioPlayer";
 
 import parse from "html-react-parser";
@@ -38,6 +38,7 @@ export default function PageFixedElements() {
   const wishButton = useRef<HTMLDivElement>(null);
   const moveButton = useRef<HTMLDivElement>(null);
   const audioButton = useRef<HTMLDivElement>(null);
+  const [loadingImage, setLoadingImage] = useState(true);
 
   // Animation State
   const { animationPlayed, setAnimationPlayed, currentCommunitiesPost } =
@@ -344,7 +345,7 @@ export default function PageFixedElements() {
         pathname === "/cycle-pictures" ||
         pathname.startsWith("/past-rabbis/") ||
         pathname === "/visit-temple" ||
-        pathname === "/visit-temple/*" ||
+        pathname.startsWith("/visit-temple/") ||
         pathname === "/yeshiva-rabbis" ||
         pathname === "/yeshiva-graduates" ||
         pathname === "/the-knesset-of-customs") && (
@@ -416,6 +417,9 @@ export default function PageFixedElements() {
                       )}
                     </h3>
                     <div className="thumbnail min-w-49 w-49 h-41">
+                      {loadingImage && (
+                        <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
+                      )}
                       <Image
                         src={
                           zatzelPosts?.sections[zatzelPopupIndex?.catIndex]
@@ -425,7 +429,12 @@ export default function PageFixedElements() {
                         alt="Popup Thumbnail"
                         width={196}
                         height={205}
-                        className="w-full h-full object-cover object-center"
+                        className={`w-full h-full object-cover object-center transition-all duration-300 ${loadingImage ? "opacity-0" : "opacity-100"}`}
+                        onLoad={() => setLoadingImage(false)}
+                        onChange={() => setLoadingImage(true)}
+                        blurDataURL={CreateShimmerDataUrl(196, 205)}
+                        placeholder="blur"
+                        loading="lazy"
                       />
                     </div>
                   </div>

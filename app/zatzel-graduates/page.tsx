@@ -1,4 +1,5 @@
 import ZatzelScriptProvider from "../components/zatzel/ZatzelScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function Page() {
   const pageRes = await fetch(
@@ -15,12 +16,12 @@ export default async function Page() {
 
   let pageData = [{ acf: { sections: [] } }];
 
-  try {
-    const parsed = await pageRes.json();
-    pageData = Array.isArray(parsed) ? parsed : [parsed];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsed = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    "zatzel-graduates-page",
+  );
+  pageData = Array.isArray(parsed) ? parsed : [parsed];
 
   // Get All posts from the Zatzel Graduates page
   const sections = Array.isArray(pageData[0]?.acf?.sections)
@@ -40,7 +41,7 @@ export default async function Page() {
       }
 
       const sectionPostsResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/zatzel-graduates?acf_format=standard&include=${sectionPostIds.join(",")}&orderby=include&per_page=100&_fields=id,slug,title,acf`,
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/zatzel-graduates?acf_format=standard&include=${sectionPostIds.join(",")}&orderby=menu_order&order=asc&per_page=100&_fields=id,slug,title,acf`,
         {
           next: { revalidate: 86400 }, // Cache data for 24 hours
           cache: "force-cache",
@@ -54,14 +55,14 @@ export default async function Page() {
         };
       }
 
-      let sectionPostsData: any[] = [];
-
-      try {
-        const parsed = await sectionPostsResponse.json();
-        sectionPostsData = Array.isArray(parsed) ? parsed : [];
-      } catch (error) {
-        console.error("Failed to parse section posts data JSON:", error);
-      }
+      const parsedSectionPosts = await parseJsonResponse<any[]>(
+        sectionPostsResponse,
+        [],
+        `zatzel-graduates-section-${section?.section_title || "unknown"}`,
+      );
+      const sectionPostsData = Array.isArray(parsedSectionPosts)
+        ? parsedSectionPosts
+        : [];
 
       const sectionContent = (sectionPostsData || []).map((post: any) => ({
         title: post?.title?.rendered || post?.acf?.popup?.title || "",

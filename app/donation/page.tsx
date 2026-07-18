@@ -1,4 +1,5 @@
 import DonationScriptProvider from "../components/donation/DonationScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = await fetch(
@@ -14,12 +15,12 @@ export default async function page() {
   }
 
   let pageData = [{ acf: {} }];
-  try {
-    const parsedData = await pageRes.json();
-    pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsedData = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    "donation-page",
+  );
+  pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
   return <DonationScriptProvider data={pageData[0]} />;
 }

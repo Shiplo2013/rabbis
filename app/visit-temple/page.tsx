@@ -1,4 +1,5 @@
 import VisitTempleScriptProvider from "../components/visit-temple/VisitTempleScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function Page() {
   const pageRes = await fetch(
@@ -15,12 +16,12 @@ export default async function Page() {
 
   let pageData = [{ acf: {} }];
 
-  try {
-    const parsed = await pageRes.json();
-    pageData = Array.isArray(parsed) ? parsed : [parsed];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsed = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    "visit-temple-page",
+  );
+  pageData = Array.isArray(parsed) ? parsed : [parsed];
 
   return <VisitTempleScriptProvider data={pageData[0]} />;
 }

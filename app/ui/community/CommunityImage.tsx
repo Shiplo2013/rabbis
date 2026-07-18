@@ -54,7 +54,7 @@ export default function CommunityImage({ item }: { item: any }) {
         <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
       )}
       <Image
-        className={`w-full h-full object-cover object-center transition-all duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
+        className={`w-full h-full object-contain object-center transition-all duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
         onLoad={() => setLoading(false)}
         onError={handleError}
         src={imageSrc}

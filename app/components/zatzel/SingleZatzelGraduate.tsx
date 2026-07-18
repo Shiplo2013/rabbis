@@ -35,6 +35,7 @@ export default function SingleZatzelGraduate(props: ChildProps) {
     <div
       dir="ltr"
       data-index={props.dataIndex}
+      data-date={props.data?.yearOfDeath}
       className="single-zatzel-post group min-w-97.25 w-97.25 backface-hidden will-change-transform cursor-pointer"
     >
       <div className="post-image w-full h-101.5 mb-8.5 relative overflow-hidden backface-hidden">

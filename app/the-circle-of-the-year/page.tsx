@@ -1,4 +1,5 @@
 import MusicScriptProvider from "../components/music/MusicScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function Page() {
   const pageRes = fetch(
@@ -30,19 +31,19 @@ export default async function Page() {
   let pageData = [{ acf: {} }];
   let postsData: any[] = [];
 
-  try {
-    const parsed = await pageDataRes.json();
-    pageData = Array.isArray(parsed) ? parsed : [parsed];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsedPageData = await parseJsonResponse<any[]>(
+    pageDataRes,
+    pageData,
+    "circle-of-year-page",
+  );
+  pageData = Array.isArray(parsedPageData) ? parsedPageData : [parsedPageData];
 
-  try {
-    const parsed = await postsDataRes.json();
-    postsData = Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    console.error("Failed to parse posts data JSON:", error);
-  }
+  const parsedPostsData = await parseJsonResponse<any[]>(
+    postsDataRes,
+    postsData,
+    "circle-of-year-posts",
+  );
+  postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
 
   return (
     <MusicScriptProvider

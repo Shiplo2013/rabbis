@@ -6,6 +6,7 @@ interface GetOptions {
   activeCategory: number;
   setActiveCategory: (index: number) => void;
   onSelectCategoryId?: (categoryId: number | null) => void;
+  setIsPostLoaded?: (value: boolean) => void;
 }
 
 export default function GetHebrewYear(props: GetOptions) {
@@ -13,10 +14,10 @@ export default function GetHebrewYear(props: GetOptions) {
   const [activeMonth, setActiveMonth] = useState(0);
   const yearData = props.year || {};
 
-  const handleYearClick = (index: number) => {
-    props.setActiveCategory(index);
+  const handleYearClick = () => {
+    props.setActiveCategory(props.index);
     if (props.onSelectCategoryId) {
-      props.onSelectCategoryId(null);
+      props.onSelectCategoryId(yearData.id);
     }
     setActiveMonth(0);
   };
@@ -24,7 +25,11 @@ export default function GetHebrewYear(props: GetOptions) {
   return (
     <div className="year-month text-[24px] leading-[1.2em]">
       <div
-        onClick={() => handleYearClick(yearData.id)}
+        onClick={() => {
+          if (props.activeCategory !== props.index) {
+            handleYearClick();
+          }
+        }}
         className="year text-[#CD5E41] cursor-pointer font-medium border-b border-[#CD5E41] py-2.5"
       >
         {yearData?.name || ""}
@@ -40,9 +45,11 @@ export default function GetHebrewYear(props: GetOptions) {
                 data-cat-id={item.id}
                 onClick={() => {
                   setActiveMonth(monthIndex);
-                  props.setActiveCategory(props.index);
-                  if (props.onSelectCategoryId) {
+                  if (activeMonth !== monthIndex && props.onSelectCategoryId) {
                     props.onSelectCategoryId(item.id);
+                    if (props.setIsPostLoaded) {
+                      props.setIsPostLoaded(true);
+                    }
                   }
                 }}
                 className={`month month-${monthIndex} w-full text-right cursor-pointer relative group`}

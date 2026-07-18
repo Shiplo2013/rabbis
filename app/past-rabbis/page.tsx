@@ -1,4 +1,5 @@
 import PastRabbisScriptProvider from "../components/past-rabbis/PastRabbisScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   let pageDataRes: Response | null = null;
@@ -29,23 +30,23 @@ export default async function page() {
   let postsData: any[] = [];
 
   if (pageDataRes?.ok) {
-    try {
-      const parsed = await pageDataRes.json();
-      pageData = Array.isArray(parsed) ? parsed : [parsed];
-    } catch (error) {
-      console.error("Failed to parse page data JSON:", error);
-    }
+    const parsed = await parseJsonResponse<any[]>(
+      pageDataRes,
+      pageData,
+      "past-rabbis-page",
+    );
+    pageData = Array.isArray(parsed) ? parsed : [parsed];
   } else if (pageDataRes) {
     console.error("Failed to load past-rabbis page data:", pageDataRes.status);
   }
 
   if (postsDataRes?.ok) {
-    try {
-      const parsed = await postsDataRes.json();
-      postsData = Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error("Failed to parse posts data JSON:", error);
-    }
+    const parsed = await parseJsonResponse<any[]>(
+      postsDataRes,
+      postsData,
+      "past-rabbis-posts",
+    );
+    postsData = Array.isArray(parsed) ? parsed : [];
   } else if (postsDataRes) {
     console.error("Failed to load past-rabbis posts:", postsDataRes.status);
   }

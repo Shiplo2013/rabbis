@@ -1,4 +1,5 @@
 import CyclePicturesScriptProvider from "../components/cycle-pictures/CyclePicturesScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   let pageDataRes: Response | null = null;
@@ -38,12 +39,12 @@ export default async function page() {
   let categoryData: any[] = [];
 
   if (pageDataRes?.ok) {
-    try {
-      const parsed = await pageDataRes.json();
-      pageData = Array.isArray(parsed) ? parsed : [parsed];
-    } catch (error) {
-      console.error("Failed to parse page data JSON:", error);
-    }
+    const parsed = await parseJsonResponse<any[]>(
+      pageDataRes,
+      pageData,
+      "cycle-pictures-page",
+    );
+    pageData = Array.isArray(parsed) ? parsed : [parsed];
   } else if (pageDataRes) {
     console.error(
       "Failed to load cycle-pictures page data:",
@@ -52,23 +53,23 @@ export default async function page() {
   }
 
   if (postsDataRes?.ok) {
-    try {
-      const parsed = await postsDataRes.json();
-      postsData = Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error("Failed to parse posts data JSON:", error);
-    }
+    const parsed = await parseJsonResponse<any[]>(
+      postsDataRes,
+      postsData,
+      "cycle-pictures-posts",
+    );
+    postsData = Array.isArray(parsed) ? parsed : [];
   } else if (postsDataRes) {
     console.error("Failed to load cycle-pictures posts:", postsDataRes.status);
   }
 
   if (categoryDataRes?.ok) {
-    try {
-      const parsed = await categoryDataRes.json();
-      categoryData = Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error("Failed to parse category data JSON:", error);
-    }
+    const parsed = await parseJsonResponse<any[]>(
+      categoryDataRes,
+      categoryData,
+      "cycle-pictures-categories",
+    );
+    categoryData = Array.isArray(parsed) ? parsed : [];
   } else if (categoryDataRes) {
     console.error(
       "Failed to load cycle-pictures categories:",

@@ -1,4 +1,5 @@
 import MusicScriptProvider from "../../components/music/MusicScriptProvider";
+import { parseJsonResponse } from "../../lib/parseJsonResponse";
 
 export default async function Page() {
   const pageRes = fetch(
@@ -27,8 +28,16 @@ export default async function Page() {
     throw new Error("Failed to load data.");
   }
 
-  const pageData = await pageDataRes.json();
-  const postsData = await postsDataRes.json();
+  const pageData = await parseJsonResponse<any[]>(
+    pageDataRes,
+    [{}],
+    "circle-of-year-slug-page",
+  );
+  const postsData = await parseJsonResponse<any[]>(
+    postsDataRes,
+    [],
+    "circle-of-year-slug-posts",
+  );
 
   return (
     <MusicScriptProvider

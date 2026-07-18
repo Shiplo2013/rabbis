@@ -1,4 +1,5 @@
 import VisitTempleScriptProviderID from "@/app/components/visit-temple/VisitTempleScriptProviderID";
+import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 
 export default async function Page() {
   const pageRes = await fetch(
@@ -13,6 +14,10 @@ export default async function Page() {
     throw new Error("Failed to load data.");
   }
 
-  const pageData = await pageRes.json();
+  const pageData = await parseJsonResponse<any[]>(
+    pageRes,
+    [{}],
+    "visit-temple-id-page",
+  );
   return <VisitTempleScriptProviderID data={pageData[0]} />;
 }

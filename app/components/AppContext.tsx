@@ -1,10 +1,11 @@
 // app/context/AppContext.tsx
 "use client"; // Required for useState and createContext
 
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useRef, useState } from "react";
 
 type ContextType = {
   // Default States
+  smoother: React.MutableRefObject<ScrollSmoother | null>;
   animationPlayed: boolean;
   setAnimationPlayed: (value: boolean) => void;
   isPlaying: boolean;
@@ -112,6 +113,7 @@ export function AppProvider({
   children: ReactNode;
 }) {
   // Default States
+  const smoother = useRef(null);
   const [animationPlayed, setAnimationPlayed] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -228,6 +230,7 @@ export function AppProvider({
         setOpenNotificationPopup,
         notificationData,
         setNotificationData,
+        smoother,
         appData,
       }}
     >

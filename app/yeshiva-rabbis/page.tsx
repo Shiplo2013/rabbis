@@ -1,4 +1,5 @@
 import YeshivaRabbisScriptProvider from "../components/yeshiva-rabbis/YeshivaRabbisScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function Page() {
   const pageRes = await fetch(
@@ -15,12 +16,12 @@ export default async function Page() {
 
   let pageData = [{ acf: { section: [] } }];
 
-  try {
-    const parsed = await pageRes.json();
-    pageData = Array.isArray(parsed) ? parsed : [parsed];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsed = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    "yeshiva-rabbis-page",
+  );
+  pageData = Array.isArray(parsed) ? parsed : [parsed];
 
   // Get All posts from the Zatzel Graduates page
   const sections = Array.isArray(pageData[0]?.acf?.section)
@@ -55,14 +56,14 @@ export default async function Page() {
         };
       }
 
-      let sectionPostsData: any[] = [];
-
-      try {
-        const parsed = await sectionPostsResponse.json();
-        sectionPostsData = Array.isArray(parsed) ? parsed : [];
-      } catch (error) {
-        console.error("Failed to parse section posts data JSON:", error);
-      }
+      const parsedSectionPosts = await parseJsonResponse<any[]>(
+        sectionPostsResponse,
+        [],
+        `yeshiva-rabbis-section-${section?.section_title || "unknown"}`,
+      );
+      const sectionPostsData = Array.isArray(parsedSectionPosts)
+        ? parsedSectionPosts
+        : [];
 
       const sectionContent = (sectionPostsData || []).map((post: any) => ({
         id: post?.id || "",

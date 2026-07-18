@@ -1,4 +1,5 @@
 import NewsScriptProvider from "../components/news/NewsScriptProvider";
+import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = fetch(
@@ -35,21 +36,19 @@ export default async function page() {
   ];
   let postsData: any[] = [];
 
-  try {
-    const parsedPageData = await pageDataRes.json();
-    pageData = Array.isArray(parsedPageData)
-      ? parsedPageData
-      : [parsedPageData];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsedPageData = await parseJsonResponse<any[]>(
+    pageDataRes,
+    pageData,
+    "news-page",
+  );
+  pageData = Array.isArray(parsedPageData) ? parsedPageData : [parsedPageData];
 
-  try {
-    const parsedPostsData = await postsDataRes.json();
-    postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
-  } catch (error) {
-    console.error("Failed to parse posts data JSON:", error);
-  }
+  const parsedPostsData = await parseJsonResponse<any[]>(
+    postsDataRes,
+    postsData,
+    "news-posts",
+  );
+  postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
 
   return <NewsScriptProvider data={pageData[0]} postsData={postsData} />;
 }

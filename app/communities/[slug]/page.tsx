@@ -1,4 +1,5 @@
 import CommunitiesSlugScriptProvider from "@/app/components/communites/CommunitesSlugScriptProvider";
+import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -42,12 +43,12 @@ export default async function page({ params }: PageProps) {
     },
   ];
 
-  try {
-    const parsedData = await pageRes.json();
-    pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
-  } catch (error) {
-    console.error("Failed to parse page data JSON:", error);
-  }
+  const parsedData = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    `communities-slug-${slug}`,
+  );
+  pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
   return <CommunitiesSlugScriptProvider data={pageData[0]} />;
 }
