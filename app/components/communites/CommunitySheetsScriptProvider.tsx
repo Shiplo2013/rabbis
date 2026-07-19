@@ -483,9 +483,9 @@ export default function CommunitiesSheetsScriptProvider({
         const imageOverlay = section.querySelector(
           ".sheet-image-overlay",
         ) as HTMLDivElement | null;
-        const sheetButtons = section.querySelectorAll(
+        const sheetButtons = section.querySelector(
           ".sheet-icons",
-        ) as NodeListOf<HTMLDivElement> | null;
+        ) as HTMLDivElement | null;
         // Image Overlay
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -505,11 +505,15 @@ export default function CommunitiesSheetsScriptProvider({
         }
         // Sheets Buttons
         if (sheetButtons) {
-          tl.from(
+          gsap.set(sheetButtons, {
+            yPercent: 100,
+            opacity: 0,
+          });
+          tl.to(
             sheetButtons,
             {
-              yPercent: 100,
-              opacity: 0,
+              yPercent: 0,
+              opacity: 1,
               ease: "expo.inOut",
               duration: 1.5,
               delay: 0,
@@ -560,9 +564,7 @@ export default function CommunitiesSheetsScriptProvider({
       });
     }
   };
-  useEffect(() => {
-    console.log(sheetPageData?.pageData);
-  }, [sheetPageData?.pageData]);
+
   // Set Body Overflow Hidden
   useEffect(() => {
     if (isAllAnimationComplete) {
