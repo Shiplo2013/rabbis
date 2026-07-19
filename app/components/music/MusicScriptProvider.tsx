@@ -219,11 +219,17 @@ export default function MusicScriptProvider({ data }: { data: any }) {
       const waveLine = document.getElementById(
         "wave-line",
       ) as HTMLElement | null;
-      const arrowButton = document.getElementById(
-        "arrow-button",
-      ) as HTMLElement | null;
+      const musicCatList = main.current?.querySelector(".music-cat-wrapper");
       waveLine?.classList.remove("hidden");
       const scurbScale = 2;
+
+      // default Animations
+      if (musicCatList) {
+        gsap.set(musicCatList, {
+          xPercent: -100,
+          opacity: 0,
+        });
+      }
 
       // Vertical Section
       const timeline = gsap.timeline({
@@ -304,10 +310,6 @@ export default function MusicScriptProvider({ data }: { data: any }) {
     }
     // Animations
     if (musicCatList) {
-      gsap.set(musicCatList, {
-        xPercent: -100,
-        opacity: 0,
-      });
       gsap.to(musicCatList, {
         xPercent: 0,
         opacity: 1,

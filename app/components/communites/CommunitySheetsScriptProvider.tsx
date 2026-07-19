@@ -560,9 +560,9 @@ export default function CommunitiesSheetsScriptProvider({
       });
     }
   };
-  // useEffect(() => {
-  //   console.log(animationPlayed);
-  // }, [animationPlayed]);
+  useEffect(() => {
+    console.log(sheetPageData?.pageData);
+  }, [sheetPageData?.pageData]);
   // Set Body Overflow Hidden
   useEffect(() => {
     if (isAllAnimationComplete) {
