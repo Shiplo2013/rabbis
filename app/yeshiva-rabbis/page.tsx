@@ -1,12 +1,12 @@
+import { wpFetch } from "@/app/lib/wpFetch";
 import YeshivaRabbisScriptProvider from "../components/yeshiva-rabbis/YeshivaRabbisScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function Page() {
-  const pageRes = await fetch(
+  const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=yeshiva-rabbis&_fields=id,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 }, // Cache data for 7 days
     },
   );
 
@@ -41,11 +41,10 @@ export default async function Page() {
         };
       }
 
-      const sectionPostsResponse = await fetch(
+      const sectionPostsResponse = await wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/yeshiva-rabbis?acf_format=standard&include=${sectionPostIds.join(",")}&orderby=include&per_page=100&_fields=id,slug,title,acf`,
         {
-          next: { revalidate: 86400 }, // Cache data for 24 hours
-          cache: "force-cache",
+          next: { revalidate: 604800 }, // Cache data for 7 days
         },
       );
 

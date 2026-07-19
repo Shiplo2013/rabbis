@@ -101,6 +101,27 @@ type ContextType = {
   setOpenNotificationPopup: (value: boolean) => void;
   notificationData: any;
   setNotificationData: (value: any) => void;
+  // Cycle Pictures States
+  cyclePostNavigation: {
+    nextPage: number | null;
+    prevPage: number | null;
+    currentPage: number | null;
+    currentCategory: string | null;
+    maxPages: number | null;
+    postsPerPage: number | null;
+    postsData: any[] | null;
+    categoryData: any[] | null;
+  };
+  setCyclePostNavigation: (value: {
+    nextPage: number | null;
+    prevPage: number | null;
+    currentPage: number | null;
+    currentCategory: string | null;
+    maxPages: number | null;
+    postsPerPage: number | null;
+    postsData: any[] | null;
+    categoryData: any[] | null;
+  }) => void;
 };
 
 const AppContext = createContext<ContextType | undefined>(undefined);
@@ -177,6 +198,27 @@ export function AppProvider({
   const [openNotificationPopup, setOpenNotificationPopup] = useState(false);
   const [notificationData, setNotificationData] = useState<any>(null);
 
+  // Cycle Pictures States
+  const [cyclePostNavigation, setCyclePostNavigation] = useState<{
+    nextPage: number | null;
+    prevPage: number | null;
+    currentPage: number | null;
+    currentCategory: string | null;
+    maxPages: number | null;
+    postsPerPage: number | null;
+    postsData: any[] | null;
+    categoryData: any[] | null;
+  }>({
+    nextPage: 0,
+    prevPage: 0,
+    currentPage: 0,
+    currentCategory: null,
+    maxPages: 0,
+    postsPerPage: null,
+    postsData: null,
+    categoryData: null,
+  });
+
   return (
     <AppContext.Provider
       value={{
@@ -232,6 +274,9 @@ export function AppProvider({
         setNotificationData,
         smoother,
         appData,
+        // Cycle Pictures States
+        cyclePostNavigation,
+        setCyclePostNavigation,
       }}
     >
       {children}

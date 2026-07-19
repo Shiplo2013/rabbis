@@ -49,12 +49,14 @@ export default function CommunityGalleryImage({ item }: { item: any }) {
     }
   };
   return (
-    <div className="image w-xl max-w-full h-auto relative">
+    <div
+      className={`image w-xl max-w-full ${item?.content?.image?.width > item?.content?.image?.height ? "h-auto" : "h-[50vh]"} relative`}
+    >
       {loading && (
         <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
       )}
       <Image
-        className={`w-full h-full object-contain object-center transition-all duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
+        className={`w-full h-full object-cover object-center transition-all duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
         onLoad={() => setLoading(false)}
         onError={handleError}
         src={imageSrc}

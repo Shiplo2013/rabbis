@@ -186,7 +186,7 @@ export default function MainMenu() {
       >
         <CloseIcon className="group-hover:rotate-180 transition-all duration-300" />
       </button>
-      <div className="menu-wrapper w-[80%] h-auto text-[#E2D7C3] text-[24px]">
+      <div className="menu-wrapper w-[80%] h-auto max-h-screen overflow-auto text-[#E2D7C3] text-[24px] py-[10vh]">
         <div className="main-menu-top pr-4 flex overflow-hidden gap-[2vw]">
           <div className="menu-right w-1/4">
             {data?.right_menu?.menu_title && (
@@ -213,7 +213,8 @@ export default function MainMenu() {
             <div className="menu-list">
               <ul className="main-menu-list">
                 {data?.right_menu?.menu_1?.map((item: any, index: number) => {
-                  const haveSubmenu = item.sub_menu && item.sub_menu.length > 0;
+                  const haveSubmenu =
+                    item.have_sub_menu && item.sub_menu.length > 0;
                   return (
                     <li className="group relative" key={index}>
                       {haveSubmenu ? (
@@ -276,7 +277,8 @@ export default function MainMenu() {
             <div className="menu-list">
               <ul className="menu-list-items">
                 {data?.left_menu?.menu_1?.map((item: any, index: number) => {
-                  const haveSubmenu = item.sub_menu && item.sub_menu.length > 0;
+                  const haveSubmenu =
+                    item.have_sub_menu && item.sub_menu.length > 0;
                   return (
                     <li className="group relative" key={index}>
                       {haveSubmenu ? (

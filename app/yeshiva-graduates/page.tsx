@@ -1,12 +1,12 @@
+import { wpFetch } from "@/app/lib/wpFetch";
 import YeshivaGraduatesScriptProvider from "../components/yeshiva-graduates/YeshivaGraduatesScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function Page() {
-  const pageRes = await fetch(
+  const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=yeshiva-graduates&_fields=id,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 }, // Cache data for 7 days
     },
   );
 

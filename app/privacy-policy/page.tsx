@@ -1,12 +1,12 @@
+import { wpFetch } from "@/app/lib/wpFetch";
 import PrivacyPolicyScriptProvider from "../components/privacy-policy/PrivacyPolicyScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
-  const pageRes = await fetch(
+  const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=privacy-policy&acf_format=standard&_fields=id,title,content`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
     },
   );
 

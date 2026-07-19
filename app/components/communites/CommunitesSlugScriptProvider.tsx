@@ -729,7 +729,7 @@ export default function CommunitiesSlugScriptProvider({
                               return (
                                 <div
                                   key={index}
-                                  className="gallery mt-12 mb-12 w-full max-w-xl h-auto group relative"
+                                  className="gallery mt-12 w-full max-w-xl h-auto group relative"
                                 >
                                   <Swiper
                                     className="w-full max-h-144 relative z-10"
@@ -745,7 +745,7 @@ export default function CommunitiesSlugScriptProvider({
                                         ) => (
                                           <SwiperSlide
                                             key={galleryIndex}
-                                            className="gallery-item mt-8.5 w-xl max-w-full h-[66vh] relative"
+                                            className={`gallery-item w-xl max-w-full h-auto relative`}
                                           >
                                             <CommunityGalleryImage
                                               item={galleryItem}

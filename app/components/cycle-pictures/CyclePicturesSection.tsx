@@ -1,7 +1,7 @@
 import SingleCyclePicture from "@/app/ui/SingleCyclePicture";
-import parse from "html-react-parser";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
-import SimpleBar from "simplebar-react";
+import { useAppState } from "../AppContext";
 
 interface ChildProps {
   extraClass: string;
@@ -21,16 +21,11 @@ export default function CyclePicturesSection(props: ChildProps) {
   // Section Data
   const SectionData = props.sectionData || [];
   const years = props.parentCategories || [];
-
-  const handleLoadMorePosts = () => {
-    // Implement Load More Functionality Here
-    console.log("Load More Posts Clicked");
-  };
-
-  // Check data availability
-  useEffect(() => {
-    console.log("Section Data:", SectionData);
-  }, [SectionData]);
+  const { isLoading, setIsLoading } = useAppState();
+  const pathname = usePathname();
+  const router = useRouter();
+  const params = useParams();
+  const currentID = params.slug; // Extracts the ID from the URL
 
   // Section Animation
   useEffect(() => {
@@ -45,21 +40,9 @@ export default function CyclePicturesSection(props: ChildProps) {
       dir="rtl"
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
-      <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[10vw]">
-        <div className="sheet-sidebar min-w-50 w-50 h-full will-change-transform overflow-hidden">
+      <div className="sheet-wrapper w-full min-w-[80vw] h-auto flex items-center gap-x-[10vw]">
+        {/* <div className="sheet-sidebar min-w-50 w-50 h-full will-change-transform overflow-hidden">
           <div className="sheet-sidebar-wrapper">
-            {/* <div className="search-group relative mb-[3.6vh]">
-              <input
-                className="text-[24px] text-[#D1A941] placeholder:text-[#D1A941] leading-[1em] bg-white p-2.25 focus:outline-0 max-w-full pl-8"
-                type="text"
-                id="search-sheet"
-                name="Search-Sheet"
-                placeholder="חפש פרשיה"
-              />
-              <button className="cursor-pointer absolute top-1.5 left-1.75">
-                <SearchIcon />
-              </button>
-            </div> */}
             <div ref={scrollbarRef} className="sheet-scrollbar-wrapper">
               <SimpleBar
                 style={{ maxHeight: "60vh" }}
@@ -67,32 +50,54 @@ export default function CyclePicturesSection(props: ChildProps) {
                 data-simplebar-direction="rtl"
               >
                 <div className="year-month-categories pl-10 pr-2.5">
-                  <div
-                    onClick={() => props.setActiveCategory(-1)}
-                    className={`all-post cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] border-t hover:bg-[#00000058] hover:text-[#ffffff] ${props.activeCategory === -1 ? "bg-[#00000058] text-[#ffffff] " : "bg-transparent text-[#CD5E41]"}`}
+                  <button
+                    disabled={currentID === undefined || isLoading}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      props.setActiveCategory(-1);
+                      setIsLoading(true);
+                      window.scrollTo(0, 0);
+                      router.push(`/cycle-pictures/`);
+                    }}
+                    className={`all-post block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] border-t hover:bg-[#00000058] hover:text-[#ffffff] ${currentID === undefined ? "bg-[#00000058] text-[#ffffff] " : "bg-transparent text-[#CD5E41]"}`}
                   >
                     הכל
-                  </div>
+                  </button>
                   {years.map((item: any, index: number) => {
                     return (
-                      <div
+                      <button
                         key={index}
-                        onClick={() => props.setActiveCategory(item.id)}
-                        className={`category cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-all duration-300 ${props.activeCategory === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
+                        disabled={Number(currentID) === item.id || isLoading}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          props.setActiveCategory(item.id);
+                          setIsLoading(true);
+                          window.scrollTo(0, 0);
+                          router.push(`/cycle-pictures/cat/${item.id}`);
+                        }}
+                        className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-all duration-300 ${Number(currentID) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
                       >
                         {parse(item.name || "")}
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
               </SimpleBar>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="sheet-content flex items-center gap-x-[10vw] will-change-transform">
-          {SectionData?.map((item: any, index: number) => (
-            <SingleCyclePicture key={index} data={item} />
-          ))}
+          {SectionData?.length > 0 ? (
+            SectionData?.map((item: any, index: number) => (
+              <SingleCyclePicture key={index} data={item} />
+            ))
+          ) : (
+            <div className="error">
+              <p className="text-[3vw] leading-[1.2em] text-[#656158]">
+                לא נמצאו תמונות מחזור עבור קטגוריה זו.
+              </p>
+            </div>
+          )}
         </div>
         {props.postPagination < props.totalPostPages && (
           <div

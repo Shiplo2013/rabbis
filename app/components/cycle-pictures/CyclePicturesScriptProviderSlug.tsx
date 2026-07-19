@@ -1,24 +1,16 @@
 "use client";
-import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import IntroBG from "../../assets/images/intro-bg-10.jpg";
 
-import CyclePicturesSection from "../../components/cycle-pictures/CyclePicturesSection";
-import Introduction from "../../components/cycle-pictures/Introduction";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
-import TextSplitLines from "../../ui/TextSplitLines";
 import { useAppState } from "../AppContext";
+import CyclePicturesSection from "./CyclePicturesSection";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-export default function CyclePicturesScriptProvider({
-  data,
-}: {
-  data: { pageData: any; postsData: any; categoryData: any };
-}) {
+export default function CyclePicturesScriptProviderSlug() {
   // Selectors
   const [picturesPageData, setPicturesPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -27,6 +19,8 @@ export default function CyclePicturesScriptProvider({
   const [error, setError] = useState<string | null>(null);
   // Router Path
   const pathname = usePathname();
+  const params = useParams();
+  const slug = params.slug;
   const [activeCategory, setActiveCategory] = useState(-1);
   const [postPagination, setPostPagination] = useState(1);
   const [totalPostPages, setTotalPostPages] = useState(1);
@@ -45,7 +39,6 @@ export default function CyclePicturesScriptProvider({
   // Vertical Section
   const [verticalSection, setVerticalSection] =
     useState<gsap.core.Timeline | null>(null);
-  const verticalSectionRef = useRef<gsap.core.Timeline | null>(null);
 
   // Page Refs
   const main = useRef<HTMLDivElement>(null);
@@ -54,17 +47,23 @@ export default function CyclePicturesScriptProvider({
 
   // Get Page Data From backend
   useEffect(() => {
-    if (!data) {
+    console.log("Cycle Post Navigation:", cyclePostNavigation);
+    if (
+      !cyclePostNavigation ||
+      !cyclePostNavigation.postsData ||
+      !cyclePostNavigation.categoryData
+    ) {
       setError("No data provided.");
+      window.location.href = "/cycle-pictures";
       return;
     }
-    console.log("Cycle Pictures Page Data:", data);
+    window.scrollTo(0, 0);
     setPicturesPageData({
-      introduction: data.pageData?.acf?.introduction,
-      posts: data.postsData,
-      parentCategories: data.categoryData,
+      posts: cyclePostNavigation.postsData[Number(slug) - 1] || null,
+      parentCategories: cyclePostNavigation.categoryData,
     });
-  }, [data]);
+    setTotalPostPages(cyclePostNavigation.postsData?.length || 1);
+  }, [cyclePostNavigation]);
 
   useEffect(() => {
     if (!picturesPageData) {
@@ -160,13 +159,13 @@ export default function CyclePicturesScriptProvider({
     const updateSectionWidth = () => {
       const newSectionWidth =
         10 +
-        postPagination * 10 * 44.27 +
-        postPagination * 10 +
+        picturesPageData?.posts?.length * 44.27 +
+        picturesPageData?.posts?.length +
         1 * 10 +
         (200 / 19.2) * 2;
 
       setSectionWidth(newSectionWidth < 100 ? 100 : newSectionWidth);
-      setContainerWidth((newSectionWidth < 100 ? 100 : newSectionWidth) + 100);
+      setContainerWidth(newSectionWidth < 100 ? 100 : newSectionWidth);
     };
 
     updateSectionWidth();
@@ -187,21 +186,17 @@ export default function CyclePicturesScriptProvider({
       const waveLine = document.getElementById(
         "wave-line",
       ) as HTMLElement | null;
-      const pagination = document.getElementById(
-        "posts-pagination",
-      ) as HTMLElement | null;
       waveLine?.classList.remove("hidden");
       const scurbScale = 2;
 
       // Vertical Section
-      verticalSectionRef.current = gsap.timeline({
+      const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
           end: "+=" + window.innerWidth * (containerWidth / 100),
           scrub: scurbScale,
           pin: true,
-          invalidateOnRefresh: true,
           onUpdate: (self) => {
             if (progress) {
               gsap.to(progress, { width: `${100 * self.progress}%` });
@@ -221,30 +216,13 @@ export default function CyclePicturesScriptProvider({
                 });
               }
             }
-            if (pagination) {
-              if (self.progress > 0.3 && self.progress < 0.97) {
-                gsap.to(pagination, {
-                  autoAlpha: 1,
-                  duration: 0.1,
-                  delay: 0,
-                });
-              }
-              if (self.progress > 0.97) {
-                gsap.to(pagination, {
-                  autoAlpha: 0,
-                  duration: 0.1,
-                  delay: 0,
-                });
-              }
-            }
           },
         },
       });
-      verticalSectionRef.current.to(wrapper.current, {
+      timeline.to(wrapper.current, {
         x: () =>
           wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
         ease: "none",
-        invalidateOnRefresh: true,
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
@@ -252,7 +230,7 @@ export default function CyclePicturesScriptProvider({
           scrub: scurbScale,
         },
       });
-      setVerticalSection(verticalSectionRef.current);
+      setVerticalSection(timeline);
     }
     // Return
     return () => {
@@ -260,7 +238,7 @@ export default function CyclePicturesScriptProvider({
         verticalSection.kill();
       }
     };
-  }, [pathname, pageDataFetched, containerWidth]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
@@ -277,41 +255,6 @@ export default function CyclePicturesScriptProvider({
         const headerRight = document.querySelector(
           ".header-right",
         ) as HTMLDivElement | null;
-        // Banner Button
-        const introTitle = main.current?.querySelector(
-          ".first-intro .intro-title",
-        );
-        // Banner Button
-        const introContent = main.current?.querySelector(
-          ".first-intro .intro-content",
-        );
-        const bannerBackgroundOverlay = main.current?.querySelector(
-          ".first-intro .intro-background .intro-bg-mask",
-        );
-        // Split Title 1
-        let splitTitle;
-        if (introTitle) {
-          splitTitle = BigTitleSplitLines(introTitle);
-          gsap.set(introTitle, {
-            perspective: 400,
-          });
-          gsap.set(splitTitle, {
-            yPercent: 150,
-            opacity: 0,
-          });
-        }
-        // Split Title 2
-        let splitContent;
-        if (introContent) {
-          splitContent = TextSplitLines(introContent);
-          gsap.set(introContent, {
-            perspective: 400,
-          });
-          gsap.set(splitContent, {
-            yPercent: 150,
-            opacity: 0,
-          });
-        }
         // Set localStorage variable
         const userVisit = localStorage.getItem("hasVisited");
         if (userVisit === "true" && animationPlayed) {
@@ -348,34 +291,6 @@ export default function CyclePicturesScriptProvider({
               "-=1",
             );
           }
-          if (introTitle && splitTitle) {
-            tl.to(
-              splitTitle,
-              {
-                yPercent: 0,
-                opacity: 1,
-                duration: 3,
-                delay: 0,
-                stagger: 0.05,
-                ease: "expo.inOut",
-              },
-              "-=1.5",
-            );
-          }
-          if (introContent && splitContent) {
-            tl.to(
-              splitContent,
-              {
-                yPercent: 0,
-                opacity: 1,
-                duration: 3,
-                delay: 0,
-                stagger: 0.05,
-                ease: "expo.inOut",
-              },
-              "-=2.5",
-            );
-          }
           // Wave Line Animation
           const waveMask = document.getElementById(
             "wave-mask",
@@ -389,18 +304,6 @@ export default function CyclePicturesScriptProvider({
                 ease: "expo.inOut",
                 duration: 3,
                 delay: 0,
-              },
-              "-=2.5",
-            );
-          }
-          if (bannerBackgroundOverlay) {
-            tl.to(
-              bannerBackgroundOverlay,
-              {
-                translateY: "-100%",
-                delay: 0,
-                duration: 3,
-                ease: "expo.inOut",
               },
               "-=2.5",
             );
@@ -424,16 +327,12 @@ export default function CyclePicturesScriptProvider({
 
   // Set Page Content Animation
   const setPageContentAnimation = () => {
-    // const animations: gsap.core.Animation[] = [];
-    // // Page Content Animation
-    // const sheetContent = main.current?.querySelectorAll(
-    //   ".sheet-content .single-cycle-picture",
-    // );
-    // const sheetReadmore = main.current?.querySelector(".sheet-readmore");
+    //const animations: gsap.core.Animation[] = [];
+    // Page Content Animation
     // const sidebar = main.current?.querySelector(
     //   ".sheet-sidebar .sheet-sidebar-wrapper",
     // );
-    // // Animations
+    // Animations
     // if (sidebar) {
     //   const sideAnimation = gsap.from(sidebar, {
     //     xPercent: 100,
@@ -441,15 +340,10 @@ export default function CyclePicturesScriptProvider({
     //     ease: "expo.inOut",
     //     duration: 3,
     //     delay: 0,
-    //     scrollTrigger: {
-    //       start: () => {
-    //         return window.innerWidth * 0.8;
-    //       },
-    //     },
     //   });
     //   animations.push(sideAnimation);
     // }
-    // // Contents
+    // Contents
     // if (sheetContent) {
     //   sheetContent.forEach((section, index) => {
     //     console.log("Animating Section:", GetRightPosition(section));
@@ -470,7 +364,7 @@ export default function CyclePicturesScriptProvider({
     //           start: () => {
     //             return GetRightPosition(section) - window.innerWidth * 0.5;
     //           },
-    //           toggleActions: "restart none none reverse",
+    //           toggleActions: "restart pause resume reverse",
     //         },
     //       });
     //       animations.push(contentAnimation);
@@ -520,6 +414,8 @@ export default function CyclePicturesScriptProvider({
     };
   }, [isAllAnimationComplete]);
 
+  // On
+
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center text-center">
@@ -562,25 +458,8 @@ export default function CyclePicturesScriptProvider({
             id="section-wrapper"
             className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
           >
-            <Introduction
-              animated={isAllAnimationComplete}
-              animationStatus={isAllAnimationComplete}
-              bgImage={IntroBG}
-              bgOverlay={""}
-              data={picturesPageData.introduction}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
-              panel={panel}
-              bgPosition=""
-              overlayClass="bg-[#000000] opacity-0"
-              bgClass=""
-              audioControl={function (): void {
-                throw new Error("Function not implemented.");
-              }}
-            />
             <CyclePicturesSection
-              extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
+              extraClass={`min-w-screen w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
               animWidthText={1}
               sectionData={picturesPageData.posts}
               parentCategories={picturesPageData.parentCategories}

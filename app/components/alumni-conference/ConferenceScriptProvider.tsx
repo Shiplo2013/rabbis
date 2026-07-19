@@ -406,7 +406,7 @@ export default function ConferenceScriptProvider({
             start: () => {
               return GetRightPosition(imageGallery) - window.innerWidth * 0.8;
             },
-            toggleActions: "restart pause resume reverse",
+            toggleActions: "restart none none reverse",
           },
         });
         animations.push(galleryAnim);
@@ -416,7 +416,7 @@ export default function ConferenceScriptProvider({
         // Section Content
         let splitContent;
         if (conferenceContent) {
-          splitContent = BigTitleSplitLines(conferenceContent);
+          splitContent = TextSplitLines(conferenceContent);
           gsap.set(conferenceContent, {
             perspective: 400,
           });
@@ -435,7 +435,7 @@ export default function ConferenceScriptProvider({
               start: () => {
                 return window.innerWidth * 0.3;
               },
-              toggleActions: "restart pause resume reverse",
+              toggleActions: "restart none none reverse",
             },
           });
           animations.push(splitContentAnim);

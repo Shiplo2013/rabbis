@@ -1,3 +1,4 @@
+import { wpFetch } from "@/app/lib/wpFetch";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import AccessibilityWidget from "./components/AccessibilityWidget";
@@ -48,25 +49,22 @@ const customFont = localFont({
 
 async function getGlobalData() {
   // Next.js automatically caches and memoizes this native fetch request
-  const headerRes = fetch(
+  const headerRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=header&acf_format=standard&_fields=id,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 },
     },
   );
-  const headerCommunityRes = fetch(
+  const headerCommunityRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=header-community&acf_format=standard&_fields=id,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 },
     },
   );
-  const footerRes = fetch(
+  const footerRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=footer&acf_format=standard&_fields=id,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 },
     },
   );
 

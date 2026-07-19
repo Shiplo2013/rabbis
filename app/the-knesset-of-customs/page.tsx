@@ -1,19 +1,18 @@
+import { wpFetch } from "@/app/lib/wpFetch";
 import KnessetScriptProvider from "../components/knesset/KnessetScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function Page() {
-  const pageRes = fetch(
+  const pageRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=the-knesset-of-customs&_fields=id,title,content,acf`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
     },
   );
-  const categoryRes = fetch(
+  const categoryRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset_cat?_fields=id,count,name,slug,parent`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
     },
   );
 
@@ -53,11 +52,10 @@ export default async function Page() {
   );
   categoryData = Array.isArray(parsedCategoryData) ? parsedCategoryData : [];
 
-  const postsRes = await fetch(
+  const postsRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=100`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
     },
   );
 

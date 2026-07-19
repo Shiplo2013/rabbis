@@ -19,6 +19,8 @@ interface ChildProps {
   sectionData: ZatzelContentSectionData[];
   setSelectedDate?: (date: Date | null) => void;
   setSearchedData?: (data: string | null) => void;
+  setZatzelPosts?: (posts: any) => void;
+  allPosts?: any;
 }
 
 export default function ZatzelContentSection(props: ChildProps) {
@@ -34,6 +36,8 @@ export default function ZatzelContentSection(props: ChildProps) {
             <Sidebar
               setSelectedDate={props.setSelectedDate}
               setSearchedData={props.setSearchedData}
+              setZatzelPosts={props.setZatzelPosts}
+              allPosts={props.allPosts}
             />
           </div>
         </div>

@@ -5,7 +5,6 @@ export const GET = createWordPressPageHandler({
   uri: "header",
   restSlug: "header",
   pageName: "Header",
-  fetchCache: "force-cache",
   fetchRevalidate: 300,
   responseCacheControl: "public, s-maxage=300, stale-while-revalidate=600",
 });

@@ -339,11 +339,12 @@ export default function PageFixedElements() {
         pathname.startsWith("/the-circle-of-the-year/") ||
         pathname === "/testimonials" ||
         pathname === "/past-rabbis" ||
+        pathname.startsWith("/past-rabbis/") ||
         pathname === "/news" ||
         pathname === "/donation" ||
         pathname === "/communities/sheets" ||
         pathname === "/cycle-pictures" ||
-        pathname.startsWith("/past-rabbis/") ||
+        pathname.startsWith("/cycle-pictures/") ||
         pathname === "/visit-temple" ||
         pathname.startsWith("/visit-temple/") ||
         pathname === "/yeshiva-rabbis" ||
@@ -368,6 +369,12 @@ export default function PageFixedElements() {
         </div>
       )}
       {/* End of Wave Line */}
+
+      {/* Next Previous Pagination */}
+      {/* {(pathname === "/cycle-pictures" ||
+        pathname.startsWith("/cycle-pictures/")) && <CyclePicturesPagination />} */}
+      {/* Next Previous Pagination */}
+
       {/* Arrow Button */}
       {pathname === "/zatzel-graduates" && (
         <div
