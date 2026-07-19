@@ -1,4 +1,3 @@
-import SearchIcon from "@/app/assets/icons/SearchIcon";
 import GetHebrewYear from "@/app/ui/GetHebrewYear";
 import SheetContentItem from "@/app/ui/SheetContentItem";
 import { Fragment, useRef } from "react";
@@ -32,7 +31,7 @@ export default function SheetContentSection(props: ChildProps) {
       <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[5.8vw]">
         <div className="sheet-sidebar w-54.5 h-full will-change-transform overflow-hidden">
           <div className="sheet-sidebar-wrapper">
-            <div className="search-group relative mb-[3.6vh]">
+            {/* <div className="search-group relative mb-[3.6vh]">
               <input
                 className="text-[24px] text-[#D1A941] placeholder:text-[#D1A941] leading-[1em] bg-white p-2.25 focus:outline-0 max-w-full pl-8"
                 type="text"
@@ -43,7 +42,7 @@ export default function SheetContentSection(props: ChildProps) {
               <button className="cursor-pointer absolute top-1.5 left-1.75">
                 <SearchIcon />
               </button>
-            </div>
+            </div> */}
             <div ref={scrollbarRef} className="sheet-scrollbar-wrapper">
               <SimpleBar
                 style={{ maxHeight: "60vh" }}

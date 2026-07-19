@@ -70,6 +70,7 @@ export default function IntroductionBackground(props: ChildProps) {
       animations.forEach((animation) => animation.kill());
     };
   }, [pathname]);
+
   return (
     <div
       ref={background}

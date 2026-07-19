@@ -11,7 +11,7 @@ export default async function Page() {
   );
 
   const postsRes = wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/holidays?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,slug,acf&per_page=10`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/holidays?acf_format=standard&_fields=id,title,slug,acf&per_page=10`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
     },
@@ -43,6 +43,8 @@ export default async function Page() {
     "circle-of-year-posts",
   );
   postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
+
+  console.log("Posts Data:", postsData);
 
   return (
     <MusicScriptProvider
