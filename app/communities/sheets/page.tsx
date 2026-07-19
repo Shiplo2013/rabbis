@@ -1,26 +1,24 @@
 import CommunitiesSheetsScriptProvider from "@/app/components/communites/CommunitySheetsScriptProvider";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { wpFetch } from "@/app/lib/wpFetch";
 
 export default async function page() {
-  const pageRes = fetch(
+  const pageRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=issues-magazine&acf_format=standard&_fields=id,title,content,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 }, // Cache data for 7 days
     },
   );
-  const categoryRes = fetch(
+  const categoryRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines_cat?&_fields=id,count,parent,name&per_page=100`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 }, // Cache data for 7 days
     },
   );
-  const postsRes = fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf&per_page=10`,
+  const postsRes = wpFetch(
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf&per_page=50`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 }, // Cache data for 7 days
     },
   );
 

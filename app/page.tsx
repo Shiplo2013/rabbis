@@ -1,12 +1,12 @@
+import { wpFetch } from "@/app/lib/wpFetch";
 import HomeScriptProvider from "./components/home/HomeScriptProvider";
 import { parseJsonResponse } from "./lib/parseJsonResponse";
 
 export default async function page() {
-  const pageRes = await fetch(
+  const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=home&_fields=id,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 }, // Cache data for 7 days
     },
   );
 
@@ -71,11 +71,10 @@ export default async function page() {
     order: "asc",
   });
 
-  const postsRes = await fetch(
+  const postsRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/communities?${params.toString()}&_fields=id,title,slug,acf.subtitle,acf.informations.established`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 }, // Cache data for 7 days
     },
   );
 

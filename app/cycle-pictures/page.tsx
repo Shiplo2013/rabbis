@@ -1,3 +1,4 @@
+import { wpFetch } from "@/app/lib/wpFetch";
 import CyclePicturesScriptProvider from "../components/cycle-pictures/CyclePicturesScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -8,25 +9,22 @@ export default async function page() {
 
   try {
     [pageDataRes, postsDataRes, categoryDataRes] = await Promise.all([
-      fetch(
+      wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=cycle-pictures&_fields=id,acf`,
         {
           next: { revalidate: 86400 }, // Cache data for 24 hours
-          cache: "force-cache",
         },
       ),
-      fetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee-posts?acf_format=standard&_fields=id,title,acf&per_page=20`,
+      wpFetch(
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee-posts?acf_format=standard&_fields=id,title,acf&per_page=100`,
         {
           next: { revalidate: 86400 }, // Cache data for 24 hours
-          cache: "force-cache",
         },
       ),
-      fetch(
+      wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee_cat?_fields=id,count,name,slug,parent`,
         {
           next: { revalidate: 86400 }, // Cache data for 24 hours
-          cache: "force-cache",
         },
       ),
     ]);
@@ -34,9 +32,10 @@ export default async function page() {
     console.error("Failed to fetch cycle-pictures data:", error);
   }
 
-  let pageData = [{ acf: {} }];
+  let pageData = [{ id: 0, acf: {} }];
   let postsData: any[] = [];
   let categoryData: any[] = [];
+  let paginatedPosts: any[][] = [];
 
   if (pageDataRes?.ok) {
     const parsed = await parseJsonResponse<any[]>(
@@ -59,6 +58,10 @@ export default async function page() {
       "cycle-pictures-posts",
     );
     postsData = Array.isArray(parsed) ? parsed : [];
+    // Seperate posts in a array by 10 posts per page
+    // for (let i = 0; i < postsData.length; i += 10) {
+    //   paginatedPosts.push(postsData.slice(i, i + 10));
+    // }
   } else if (postsDataRes) {
     console.error("Failed to load cycle-pictures posts:", postsDataRes.status);
   }

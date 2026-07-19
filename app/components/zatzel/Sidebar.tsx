@@ -11,16 +11,22 @@ import { useEffect, useMemo, useRef, useState } from "react";
 interface SidebarProps {
   setSelectedDate?: (date: Date | null) => void;
   setSearchedData?: (data: string | null) => void;
+  setZatzelPosts?: (posts: any) => void;
+  allPosts?: any;
 }
 
 export default function Sidebar({
   setSelectedDate,
   setSearchedData,
+  setZatzelPosts,
+  allPosts,
 }: SidebarProps) {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const dateRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
   const [viewYear, setViewYear] = useState<number>(
     new HDate(new Date()).getFullYear(),
   );
@@ -159,6 +165,7 @@ export default function Sidebar({
         className="date-picker search-group relative mb-[3vh]"
       >
         <input
+          ref={dateRef}
           className="text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full pl-8"
           type="text"
           id="search-by-date"
@@ -295,6 +302,7 @@ export default function Sidebar({
         className="search-group relative"
       >
         <input
+          ref={nameRef}
           className="text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full pl-8"
           type="text"
           id="search-by-user"
@@ -305,6 +313,24 @@ export default function Sidebar({
           <UserIcon />
         </button>
       </form>
+      <div className="reset-filter mt-5 flex items-center justify-start gap-x-3">
+        <button
+          className="cursor-pointer text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-all duration-300"
+          onClick={() => {
+            setSelectedDate?.(null);
+            setSearchedData?.(null);
+            dateRef.current &&
+              ((dateRef.current.value = ""),
+              setSelectedYear(null),
+              setSelectedMonth(null),
+              setSelectedDay(null));
+            nameRef.current && (nameRef.current.value = "");
+            setZatzelPosts?.(allPosts);
+          }}
+        >
+          איפוס סינון
+        </button>
+      </div>
     </>
   );
 }

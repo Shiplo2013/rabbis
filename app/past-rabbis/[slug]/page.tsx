@@ -1,5 +1,6 @@
 import PastRabbisScriptProviderSlug from "@/app/components/past-rabbis/PastRabbisScriptProviderSlug";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { wpFetch } from "@/app/lib/wpFetch";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -12,18 +13,16 @@ export default async function Page({ params }: PageProps) {
 
   try {
     [postsDataRes, allPostsDataRes] = await Promise.all([
-      fetch(
+      wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&slug=${slug}&_fields=id,title,acf,content`,
         {
-          next: { revalidate: 86400 }, // Cache data for 24 hours
-          cache: "force-cache",
+          next: { revalidate: 86400 },
         },
       ),
-      fetch(
+      wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&_fields=id,title,slug,acf&per_page=20`,
         {
-          next: { revalidate: 86400 }, // Cache data for 24 hours
-          cache: "force-cache",
+          next: { revalidate: 86400 },
         },
       ),
     ]);

@@ -90,7 +90,7 @@ export default function TempleTabs(props: ChildProps) {
         ) as HTMLElement | null;
         if (image) {
           // Banner Background
-          gsap.set(image, { scale: 1.2, x: "10vw" });
+          //gsap.set(image, { scale: 1, x: "5vw" });
           gsap.to(image, {
             x: "-10vw",
             ease: "none",
@@ -241,7 +241,7 @@ export default function TempleTabs(props: ChildProps) {
                             className="single-gallery will-change-transform w-[32vw] h-[40vh] overflow-hidden"
                           >
                             <div
-                              className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%] cursor-none pointer-events-none`}
+                              className={`single-gallery-image w-[40vw] h-[60vh] absolute top-1/2 left-1/2 -translate-[50%] cursor-none pointer-events-none`}
                             >
                               <Image
                                 className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
@@ -267,7 +267,7 @@ export default function TempleTabs(props: ChildProps) {
                             className="single-gallery will-change-transform w-[22vw] h-[70vh] overflow-hidden"
                           >
                             <div
-                              className={`single-gallery-image w-[60vw] h-[85vh] absolute top-1/2 left-1/2 -translate-[50%]`}
+                              className={`single-gallery-image w-[30vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
                             >
                               <Image
                                 className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"

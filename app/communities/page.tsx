@@ -1,12 +1,12 @@
+import { wpFetch } from "@/app/lib/wpFetch";
 import CommunitiesScriptProvider from "../components/communites/CommunitesScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
-  const pageRes = await fetch(
+  const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=communities&acf_format=standard&_fields=id,title,content,acf`,
     {
       next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
     },
   );
 
@@ -25,11 +25,10 @@ export default async function page() {
   const validCategoryQuery = categories.map(async (item: any) => {
     const categoryId = item?.term_id;
     const categoryTitle = item?.name;
-    const categoryRes = await fetch(
+    const categoryRes = await wpFetch(
       `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/communities?communities_cat=${categoryId}&orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,slug,acf.subtitle,acf.post_thumbnail&per_page=10`,
       {
         next: { revalidate: 86400 }, // Cache data for 24 hours
-        cache: "force-cache",
       },
     );
     if (!categoryRes.ok) {

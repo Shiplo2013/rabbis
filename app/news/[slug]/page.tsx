@@ -1,5 +1,6 @@
 import SingleNewsScriptProvider from "@/app/components/news/SingleNewsScriptProvider";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { wpFetch } from "@/app/lib/wpFetch";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -7,18 +8,16 @@ interface PageProps {
 
 export default async function page({ params }: PageProps) {
   const { slug } = await params;
-  const pageRes = fetch(
+  const pageRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/posts?acf_format=standard&slug=${slug}&_fields=id,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 86400 },
     },
   );
-  const postsRes = fetch(
+  const postsRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/posts?acf_format=standard&_fields=id,title,slug,excerpt,acf&per_page=20`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 86400 },
     },
   );
 

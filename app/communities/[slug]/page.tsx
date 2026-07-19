@@ -1,5 +1,6 @@
 import CommunitiesSlugScriptProvider from "@/app/components/communites/CommunitesSlugScriptProvider";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { wpFetch } from "@/app/lib/wpFetch";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -7,11 +8,10 @@ interface PageProps {
 
 export default async function page({ params }: PageProps) {
   const { slug } = await params;
-  const pageRes = await fetch(
+  const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/communities?acf_format=standard&slug=${slug}&_fields=id,acf,title`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 86400 },
     },
   );
 

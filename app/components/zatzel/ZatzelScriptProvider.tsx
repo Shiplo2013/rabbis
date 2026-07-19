@@ -784,6 +784,8 @@ export default function ZatzelScriptProvider({
               }
               setSelectedDate={setSelectedDate}
               setSearchedData={setSearchedData}
+              setZatzelPosts={setZatzelPosts}
+              allPosts={allPosts}
             />
           </div>
         </div>

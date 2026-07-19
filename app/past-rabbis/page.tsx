@@ -1,3 +1,4 @@
+import { wpFetch } from "@/app/lib/wpFetch";
 import PastRabbisScriptProvider from "../components/past-rabbis/PastRabbisScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -7,18 +8,16 @@ export default async function page() {
 
   try {
     [pageDataRes, postsDataRes] = await Promise.all([
-      fetch(
+      wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=past-rabbis&_fields=id,acf`,
         {
           next: { revalidate: 86400 }, // Cache data for 24 hours
-          cache: "force-cache",
         },
       ),
-      fetch(
+      wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,slug,acf&per_page=20`,
         {
           next: { revalidate: 86400 }, // Cache data for 24 hours
-          cache: "force-cache",
         },
       ),
     ]);

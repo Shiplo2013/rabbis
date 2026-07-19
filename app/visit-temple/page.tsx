@@ -1,12 +1,12 @@
+import { wpFetch } from "@/app/lib/wpFetch";
 import VisitTempleScriptProvider from "../components/visit-temple/VisitTempleScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function Page() {
-  const pageRes = await fetch(
+  const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=visit-temple&_fields=id,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
-      cache: "force-cache",
+      next: { revalidate: 604800 }, // Cache data for 7 days
     },
   );
 
