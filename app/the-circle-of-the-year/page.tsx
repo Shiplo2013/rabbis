@@ -44,8 +44,6 @@ export default async function Page() {
   );
   postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
 
-  console.log("Posts Data:", postsData);
-
   return (
     <MusicScriptProvider
       data={{ pageData: pageData[0], postsData: postsData }}
