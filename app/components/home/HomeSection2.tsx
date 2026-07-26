@@ -44,7 +44,11 @@ export default function HomeSection2(props: ChildProps) {
       gsap.to(sectionImage, {
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthImage;
+            return window.innerWidth > 1024
+              ? window.innerWidth * props.animWidthImage
+              : (wrapper.current?.getBoundingClientRect().top || 0) +
+                  window.scrollY -
+                  window.innerHeight * 0.8;
           },
           toggleActions: "restart pause resume reverse",
         },
@@ -67,7 +71,11 @@ export default function HomeSection2(props: ChildProps) {
       gsap.to(textSplit, {
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * (props.animWidthText - 0.7);
+            return window.innerWidth > 1024
+              ? window.innerWidth * (props.animWidthText - 0.7)
+              : (wrapper.current?.getBoundingClientRect().top || 0) +
+                  window.scrollY -
+                  window.innerHeight * 0.8;
           },
           end: () => {
             return "+=" + window.innerWidth * 2;
@@ -89,7 +97,11 @@ export default function HomeSection2(props: ChildProps) {
         ease: "none",
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthImage;
+            return window.innerWidth > 1024
+              ? window.innerWidth * props.animWidthImage
+              : (wrapper.current?.getBoundingClientRect().top || 0) +
+                  window.scrollY -
+                  window.innerHeight * 0.8;
           },
           end: () => {
             return "+=" + window.innerWidth * 2;
@@ -105,7 +117,11 @@ export default function HomeSection2(props: ChildProps) {
         ease: "none",
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthImage;
+            return window.innerWidth > 1024
+              ? window.innerWidth * props.animWidthImage
+              : (wrapper.current?.getBoundingClientRect().top || 0) +
+                  window.scrollY -
+                  window.innerHeight * 0.8;
           },
           end: () => {
             return "+=" + window.innerWidth * 2;
@@ -142,10 +158,10 @@ export default function HomeSection2(props: ChildProps) {
       // onMouseMove={(e) => {
       //   moveImage(e);
       // }}
-      className={`${props.extraClass} home-section2 h-screen flex items-center`}
+      className={`${props.extraClass} home-section2 h-auto lg:h-screen flex lg:items-center flex-col-reverse lg:flex-row overflow-hidden relative`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="section-image h-screen w-[40vw]">
+      <div className="section-image h-auto lg:h-screen w-full lg:w-[40vw]">
         <Image
           className="relative z-10 object-cover object-center w-full h-full"
           src={props.sectionData?.image?.url}
@@ -158,12 +174,12 @@ export default function HomeSection2(props: ChildProps) {
         />
       </div>
       <div
-        className={`section-content w-[60vw] h-full flex items-center justify-center pr-[10%] pl-[5%] pt-[8%] relative z-40`}
+        className={`section-content w-full lg:w-[60vw] min-h-[60vh] lg:h-full flex items-center justify-center pr-[10%] pl-[5%] pt-[8%] relative z-40`}
       >
-        <h2 className="over-title absolute top-[52%] right-[7%] text-[#D1A941] text-[290px] font-bold leading-[0.75] -mt-[22%] opacity-20 z-0">
+        <h2 className="over-title absolute top-[35%] right-[7%] text-[#D1A941] text-[120px] sm:text-[150px] lg:text-[290px] font-bold leading-[0.75] -mt-[22%] opacity-20 z-0">
           {parse(props.sectionData?.title || "")}
         </h2>
-        <div className="mouse-follower absolute top-[20%] right-[20%]">
+        <div className="mouse-follower absolute top-[20%] right-[20%] w-40 h-auto sm:w-auto">
           <Image
             className="relative z-10"
             src={props.sectionData?.foating_image?.url}
@@ -178,7 +194,7 @@ export default function HomeSection2(props: ChildProps) {
         </div>
         <div
           dir="ltr"
-          className="text-[#EEECDD] text-[70px] leading-[0.8] w-4/5 relative z-40 text-right"
+          className="text-[#EEECDD] text-[30px] sm:text-[40px] lg:text-[70px] leading-[0.8] w-4/5 relative z-40 text-right"
         >
           <Link
             href={getRabbisURL(props.sectionData?.rabbis_link || "#") || "#"}

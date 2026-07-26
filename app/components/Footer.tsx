@@ -337,9 +337,9 @@ function Footer(props: ChildProps) {
                 />
               ))}
             </div>
-            <div className="footer-widgets mt-34 flex justify-between overflow-hidden">
-              <div className="footer-widget3 w-1/4">
-                <ul className="flex flex-col text-2xl leading-[2em]">
+            <div className="footer-widgets mt-20 sm:mt-34 flex justify-between flex-col lg:flex-row gap-y-12 overflow-hidden">
+              <div className="footer-widget3 w-full lg:w-1/4">
+                <ul className="flex flex-col text-[20px] sm:text-2xl leading-[2em]">
                   {footerData?.acf?.widget_3?.menu_items?.map((item, index) => (
                     <li key={index}>
                       <Link
@@ -353,38 +353,35 @@ function Footer(props: ChildProps) {
                   ))}
                 </ul>
               </div>
-              <div className="footer-widget2 w-1/3">
+              <div className="footer-widget2 w-full lg:w-1/3">
                 {footerData?.acf?.widget_2?.widget_title && (
-                  <h3 className="text-[52px] leading-[0.9] font-bold mb-4">
+                  <h3 className="text-[35px] sm:text-[52px] leading-[0.9] font-bold mb-4">
                     {footerData?.acf?.widget_2?.widget_title}
                   </h3>
                 )}
                 {footerData?.acf?.widget_2?.content && (
-                  <div className="footer-info text-[28px] leading-[1.5em] [&>p>a]:hover:text-(--theme-color) [&>p>a]:transition-colors [&>p>a]:duration-300">
+                  <div className="footer-info text-[20px] sm:text-[28px] leading-[1.5em] [&>p>a]:hover:text-(--theme-color) [&>p>a]:transition-colors [&>p>a]:duration-300">
                     {parse(footerData?.acf?.widget_2?.content || "")}
                   </div>
                 )}
               </div>
-              <div
-                className="footer-widget1 w-1/4
-              "
-              >
+              <div className="footer-widget1 w-full lg:w-1/4">
                 {footerData?.acf?.widget_1?.widget_title && (
-                  <h3 className="text-[52px] leading-[0.9] font-bold mb-4">
+                  <h3 className="text-[35px] sm:text-[52px] leading-[0.9] font-bold mb-4">
                     {footerData?.acf?.widget_1?.widget_title}
                   </h3>
                 )}
                 {footerData?.acf?.widget_1?.content && (
-                  <div className="text-[28px] leading-[0.9] [&>p>a]:hover:text-(--theme-color) [&>p>a]:transition-colors [&>p>a]:duration-300">
+                  <div className="text-[20px] sm:text-[28px] leading-[0.9] [&>p>a]:hover:text-(--theme-color) [&>p>a]:transition-colors [&>p>a]:duration-300">
                     {parse(footerData?.acf?.widget_1?.content || "")}
                   </div>
                 )}
-                <div className="footer-form mt-7.5">
+                <div className="footer-form mt-7.5 w-full max-w-100">
                   <FooterForm />
                 </div>
               </div>
             </div>
-            <div className="privacy-policy text-2xl leading-[1.2em] mt-5">
+            <div className="privacy-policy text-[20px] sm:text-2xl leading-[1.2em] mt-10 lg:mt-5">
               <p>
                 {footerData?.acf?.footer_menu?.map((item, index) => (
                   <span key={index}>

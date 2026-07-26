@@ -86,9 +86,13 @@ export default function HomeSection1(props: ChildProps) {
     gsap.to(CTAbutton.current, {
       scrollTrigger: {
         start: () => {
-          return window.innerWidth * props.animWidthPost;
+          return window.innerWidth > 1024
+            ? window.innerWidth * props.animWidthPost
+            : (cyclePreview.getBoundingClientRect().top ?? 0) +
+                window.scrollY -
+                window.innerHeight * 0.2;
         },
-        toggleActions: "restart pause play reverse",
+        toggleActions: "restart none none reverse",
       },
       duration: 1.5,
       yPercent: 0,
@@ -102,9 +106,13 @@ export default function HomeSection1(props: ChildProps) {
     gsap.to(cyclePreview, {
       scrollTrigger: {
         start: () => {
-          return window.innerWidth * props.animWidthSlider;
+          return window.innerWidth > 1024
+            ? window.innerWidth * props.animWidthSlider
+            : (cyclePreview.getBoundingClientRect().top ?? 0) +
+                window.scrollY -
+                window.innerHeight * 0.8;
         },
-        toggleActions: "restart pause play reverse",
+        toggleActions: "restart none none reverse",
       },
       duration: 1.5,
       yPercent: 0,
@@ -197,7 +205,7 @@ export default function HomeSection1(props: ChildProps) {
             >
               <ArrowLeft extraClass="fill-[#C3A13F]" />
             </Link>
-            <div className="grid-items w-67 h-full">
+            <div className="grid-items w-50 sm:w-67 h-full">
               <SimpleBar
                 style={{ maxHeight: 310, paddingRight: 30, marginRight: -30 }}
                 autoHide={false}

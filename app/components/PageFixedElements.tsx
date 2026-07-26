@@ -289,7 +289,7 @@ export default function PageFixedElements() {
         <div
           id="wish-button"
           ref={wishButton}
-          className="wish-button fixed p-5 bottom-0 right-40 z-50 opacity-0 invisible cursor-pointer"
+          className="wish-button fixed bottom-5 right-28 sm:right-45 z-50 opacity-0 invisible cursor-pointer"
         >
           <ThemeButton2
             extraClass="w-13 h-13 flex item-center justify-center"
@@ -310,7 +310,7 @@ export default function PageFixedElements() {
           onClick={() => {
             setIsPlaying(!isPlaying);
           }}
-          className="equalizer-button flex gap-2 items-center fixed py-1 px-3 bottom-5 right-20 z-40 cursor-pointer bg-[#c3a23fb0] text-[#000000] opacity-0 hover:opacity-100 invisible translate-y-5 rounded-full"
+          className="equalizer-button flex gap-2 items-center fixed py-1 px-3 bottom-5 right-5 sm:right-20 z-40 cursor-pointer bg-[#c3a23fb0] text-[#000000] opacity-0 hover:opacity-100 invisible translate-y-5 rounded-full"
         >
           <span>{isPlaying ? "ON" : "OFF"}</span>
           <div className="equalizer flex items-end justify-center gap-0.5 h-4">

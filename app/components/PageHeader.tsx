@@ -223,9 +223,9 @@ function PageHeader() {
     <>
       <header
         id="header"
-        className="fixed w-screen h-0 top-0 left-0 flex justify-between items-start z-99 pl-10"
+        className="fixed w-screen h-0 top-0 left-0 flex justify-between items-start z-99 pl-0 lg:pl-10"
       >
-        <div className="header-right flex items-start pr-17 opacity-0">
+        <div className="header-right items-start pr-17 opacity-0 hidden lg:flex">
           <div className="horizontal-menu bg-[#000000B2] border border-[#DBBD5C80] h-screen fixed top-0 right-0">
             <button
               onClick={() => {
@@ -567,10 +567,10 @@ function PageHeader() {
             )}
           </div> */}
         </div>
-        <div className="header-left flex items-center gap-6 pt-7 pb-7 opacity-0">
+        <div className="header-left w-full lg:w-auto flex items-center lg:gap-6 pl-5 pr-5 lg:pt-7 lg:pb-7 lg:pl-0 lg:pr-0 opacity-0 bg-[#000000b0] lg:bg-transparent pt-2 pb-2">
           {data?.acf?.header_top?.donation_button && (
             <ThemeButton
-              extraClass="py-2 px-5"
+              extraClass="py-2 px-5 hidden lg:block"
               bgColor="bg-[#BBA588]"
               textColor="text-[#000000]"
               hoverBgColor="bg-[#000000]"
@@ -586,7 +586,7 @@ function PageHeader() {
           )}
           {data?.acf?.header_top?.community_button && (
             <ThemeButton
-              extraClass="py-2 px-5"
+              extraClass="py-2 px-5 hidden lg:flex"
               bgColor="bg-[#5a7c4e]"
               textColor="text-[#000000]"
               hoverBgColor="bg-[#ac832e]"
@@ -603,7 +603,7 @@ function PageHeader() {
           <div className="circle-button">
             {data?.acf?.header_top?.music_button && (
               <Link
-                className="group relative block"
+                className="group relative hidden lg:block"
                 href={
                   data?.acf?.header_top?.music_button?.link ||
                   "/the-circle-of-the-year"
@@ -628,7 +628,18 @@ function PageHeader() {
               </Link>
             )}
           </div>
-          <div className="logo lg:w-25 sm:w-20 xl:w-30 2xl:w-36.5 w-36.5 h-28">
+          <div className="mobile-btn block lg:hidden ml-auto">
+            <button
+              onClick={() => {
+                setActiveHamburgerMenu(!activeHamburgerMenu);
+              }}
+              disabled={!animationPlayed}
+              className="hamburger-btn cursor-pointer w-12 lg:w-14.5 h-12 lg:h-14.5 border border-[#dbbd5c80] flex justify-center items-center"
+            >
+              <HambergerIcon />
+            </button>
+          </div>
+          <div className="logo w-14 h-auto lg:w-36.5 lg:h-28">
             {data?.acf?.header_logo && (
               <Link id="logo-light" onClick={handleLinkClick} href={"/"}>
                 <Image

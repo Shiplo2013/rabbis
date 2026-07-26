@@ -40,10 +40,19 @@ export default function IntroSection(props: ChildProps) {
       gsap.to(splitTitle, {
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * (props.animWidthText - 0.7);
+            return window.innerWidth > 1024
+              ? window.innerWidth * (props.animWidthText - 0.7)
+              : (wrapper.current?.getBoundingClientRect().top || 0) +
+                  window.scrollY -
+                  window.innerHeight * 0.8;
           },
           end: () => {
-            return "+=" + window.innerWidth * 2;
+            return (
+              "+=" +
+              (window.innerWidth > 1024
+                ? window.innerWidth * 2
+                : window.innerHeight * 0.5)
+            );
           },
           scrub: 2,
         },
@@ -58,11 +67,11 @@ export default function IntroSection(props: ChildProps) {
   return (
     <section
       ref={wrapper}
-      className={`${props.extraClass} bg-black flex items-center`}
+      className={`${props.extraClass} bg-black flex items-center min-h-[60vh]`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="w-full h-full p-[10%] pr-[20%] flex items-center justify-center">
-        <h2 className="intro-title text-[135px] text-[#CD5E41] leading-[0.7em] text-right max-w-108">
+      <div className="w-full h-full p-[10%] pr-[10%] lg:pr-[20%] flex items-center justify-center">
+        <h2 className="intro-title text-[70px] sm:text-[100px] lg:text-[135px] text-[#CD5E41] leading-[0.7em] text-right max-w-108">
           {props.introData?.title}
         </h2>
       </div>

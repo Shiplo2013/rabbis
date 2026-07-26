@@ -25,7 +25,10 @@ export default function SheetContentItem(props: { data?: any }) {
 
   return (
     itemData && (
-      <div className="sheet-item will-change-transform overflow-hidden min-w-[18vw]">
+      <div
+        data-id={itemData?.id}
+        className="sheet-item will-change-transform overflow-hidden min-w-[18vw]"
+      >
         {itemData?.acf?.thumbnail && (
           <FsLightbox
             toggler={lightboxController.toggler}

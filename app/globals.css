@@ -8,6 +8,18 @@
   --theme-color2: #191919;
 }
 
+@media (max-width: 767px) {
+  .mobile-hide-header-left {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-hide-header-left {
+    display: flex;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #000000;
