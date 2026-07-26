@@ -592,7 +592,12 @@ export default function HomeScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       // Overflow body
       const scurbScale = 2;
 
@@ -656,7 +661,9 @@ export default function HomeScriptProvider({
       gsap.to(wishButton, {
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * 2.1;
+            return window.innerWidth > 1024
+              ? window.innerWidth * 2.1
+              : window.innerHeight * 2.6;
           },
           toggleActions: "restart pause play reverse",
         },
@@ -667,9 +674,17 @@ export default function HomeScriptProvider({
         delay: 0,
       });
       // Click event
+      const cycleSlider = document.getElementById(
+        "cycle-preview",
+      ) as HTMLDivElement | null;
       wishButton?.addEventListener("click", () => {
         gsap.to(window, {
-          scrollTo: window.innerWidth * 2,
+          scrollTo:
+            window.innerWidth > 1024
+              ? window.innerWidth * 2
+              : (cycleSlider?.getBoundingClientRect().top ?? 0) +
+                window.scrollY -
+                100,
           duration: 1,
           ease: "none",
         });
@@ -721,12 +736,12 @@ export default function HomeScriptProvider({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[510vw] h-screen will-change-transform`}
+            className={`section-wrapp block lg:flex lg:flex-nowrap lg:flex-row-reverse lg:w-[510vw] lg:h-screen will-change-transform`}
           >
             <Suspense
               fallback={
@@ -736,7 +751,7 @@ export default function HomeScriptProvider({
               <HomeBanner
                 animated={isAllAnimationComplete}
                 extraClass={
-                  "panel-section will-change-transform min-w-screen w-screen cursor-pointer"
+                  "panel-section will-change-transform w-full lg:min-w-screen lg:w-screen min-h-screen lg:h-screen cursor-pointer"
                 }
                 panel={panel}
                 bannerData={homePageData?.acf?.banner_section}
@@ -744,27 +759,27 @@ export default function HomeScriptProvider({
             </Suspense>
             <Suspense
               fallback={
-                <div className="flex items-center justify-center min-w-[50vw] w-[50vw] h-screen bg-black animate-pulse"></div>
+                <div className="flex items-center justify-center w-full lg:min-w-[50vw] lg:w-[50vw] h-screen bg-black animate-pulse"></div>
               }
             >
               <IntroSection
                 animWidthText={0.4}
                 extraClass={
-                  "panel-section will-change-transform min-w-[50vw] w-[50vw]"
+                  "panel-section will-change-transform w-full lg:min-w-[50vw] lg:w-[50vw]"
                 }
                 introData={homePageData?.acf?.intro_section}
               />
             </Suspense>
             <Suspense
               fallback={
-                <div className="flex items-center justify-center min-w-[70vw] w-[70vw] h-screen bg-black animate-pulse"></div>
+                <div className="flex items-center justify-center w-full lg:min-w-[70vw] lg:w-[70vw] h-screen bg-black animate-pulse"></div>
               }
             >
               <HomeSection1
                 animWidthPost={1}
                 animWidthSlider={1.4}
                 extraClass={
-                  "panel-section will-change-transform min-w-[70vw] w-[70vw]"
+                  "panel-section will-change-transform w-full lg:min-w-[70vw] lg:w-[70vw]"
                 }
                 panel={panel}
                 sectionData={homePageData?.acf?.home_section_1}
@@ -787,14 +802,14 @@ export default function HomeScriptProvider({
             </Suspense>
             <Suspense
               fallback={
-                <div className="flex items-center justify-center min-w-[90vw] w-[90vw] h-screen bg-black animate-pulse"></div>
+                <div className="flex items-center justify-center w-full lg:min-w-[90vw] lg:w-[90vw] h-screen bg-black animate-pulse"></div>
               }
             >
               <HomeSection3
                 animWidthImage={3.6}
                 animWidthText={3.9}
                 extraClass={
-                  "panel-section will-change-transform min-w-[90vw] w-[90vw]"
+                  "panel-section will-change-transform w-full lg:min-w-[90vw] lg:w-[90vw]"
                 }
                 sectionData={homePageData?.acf?.home_section_3}
               />

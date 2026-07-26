@@ -2,6 +2,7 @@
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
+import CycleArrow from "../assets/icons/CycleArrow";
 import { gsap, useGSAP } from "../ui/plugins";
 
 interface ChildProps {
@@ -144,13 +145,13 @@ export default function CardSlider(props: ChildProps) {
     <div
       ref={cardSlider}
       onClick={handleNextSlide}
-      onMouseMove={moveCircle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="arrow-slider w-117 relative z-10 cursor-none"
+      onMouseMove={window.innerWidth > 1024 ? moveCircle : undefined}
+      onMouseEnter={window.innerWidth > 1024 ? handleMouseEnter : undefined}
+      onMouseLeave={window.innerWidth > 1024 ? handleMouseLeave : undefined}
+      className="arrow-slider w-full sm:w-117 relative z-10 cursor-none pr-[10%] sm:pr-0"
     >
       <div className="arrow-button fixed left-0 top-0 z-30 -ml-13 -mt-13 cursor-none opacity-0 pointer-events-none scale-0" />
-      <div className="card-slider text-[#000000] text-[20px] cursor-none">
+      <div className="card-slider text-[#000000] text-[16px] sm:text-[20px] cursor-none">
         <div className="card-slide active pt-12 pb-5 px-7 bg-[#F1EADA] min-h-54.25 relative z-20 transition-colors duration-300">
           <div className="slide-content">
             <span className="absolute left-5 top-3">1/2</span>
@@ -167,6 +168,12 @@ export default function CardSlider(props: ChildProps) {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="preview-button block sm:hidden w-20 h-20 absolute top-full left-0 z-50">
+        <button className="w-full h-full rounded-full bg-[#C3A13F] flex items-center justify-center hover:bg-[#c59811] transition-colors cursor-none">
+          <CycleArrow />
+        </button>
       </div>
     </div>
   );

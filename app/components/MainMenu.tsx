@@ -182,15 +182,15 @@ export default function MainMenu() {
         onClick={() => {
           setActiveHamburgerMenu(!activeHamburgerMenu);
         }}
-        className="menu-close group absolute top-8 right-12.5 w-18 h-18 flex justify-center items-center cursor-pointer border border-[#C3A13F] rounded-full bg-[#0000007f]"
+        className="menu-close group absolute top-5 right-5 sm:top-8 sm:right-7 lg:right-12.5 w-12 lg:w-18 h-12 lg:h-18 flex justify-center items-center cursor-pointer border border-[#C3A13F] rounded-full bg-[#0000007f] z-50"
       >
-        <CloseIcon className="group-hover:rotate-180 transition-all duration-300" />
+        <CloseIcon className="group-hover:rotate-180 transition-all duration-300 w-4 h-auto lg:w-auto" />
       </button>
-      <div className="menu-wrapper w-[80%] h-auto max-h-screen overflow-auto text-[#E2D7C3] text-[24px] py-[10vh]">
-        <div className="main-menu-top pr-4 flex overflow-hidden gap-[2vw]">
-          <div className="menu-right w-1/4">
+      <div className="menu-wrapper w-full lg:w-[80%] h-auto max-h-screen overflow-auto text-[#E2D7C3] text-[20px] sm:text-[24px] py-[10vh] px-[5vw] sm:px-0">
+        <div className="main-menu-top pr-4 flex overflow-hidden gap-10 sm:gap-[2vw] flex-col sm:flex-row">
+          <div className="menu-right w-full sm:w-1/2 lg:w-1/4">
             {data?.right_menu?.menu_title && (
-              <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
+              <h3 className="text-[30px] sm:text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
                 {data.right_menu?.menu_title_link ? (
                   <Link
                     href={data.right_menu?.menu_title_link}
@@ -204,7 +204,7 @@ export default function MainMenu() {
               </h3>
             )}
             {!data?.right_menu?.menu_title && (
-              <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
+              <h3 className="text-[30px] sm:text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
                 <Link href="/" onClick={handleLinkClick}>
                   כנסת ישראל
                 </Link>
@@ -252,9 +252,9 @@ export default function MainMenu() {
               </ul>
             </div>
           </div>
-          <div className="menu-left w-1/4">
+          <div className="menu-left w-full sm:w-1/2 lg:w-1/4">
             {data?.left_menu && (
-              <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
+              <h3 className="text-[30px] sm:text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
                 {data.left_menu?.menu_title_link ? (
                   <Link
                     href={data.left_menu?.menu_title_link}
@@ -268,7 +268,7 @@ export default function MainMenu() {
               </h3>
             )}
             {!data?.left_menu && (
-              <h3 className="text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
+              <h3 className="text-[30px] sm:text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
                 <Link href="/" onClick={handleLinkClick}>
                   כנסת הבוגרים
                 </Link>
@@ -321,8 +321,8 @@ export default function MainMenu() {
             </div>
           </div>
         </div>
-        <div className="main-menu-bottom pr-4 mt-17 flex items-end gap-[2vw]">
-          <div className="bottom-menu w-1/4">
+        <div className="main-menu-bottom pr-4 mt-17 flex items-end gap-10 sm:gap-[2vw] flex-col sm:flex-row">
+          <div className="bottom-menu w-full sm:w-1/2 lg:w-1/4">
             <ul className="menu-list">
               {data?.right_menu?.menu_3?.map((item: any, index: number) => (
                 <li className="group relative" key={index}>
@@ -338,7 +338,7 @@ export default function MainMenu() {
               ))}
             </ul>
           </div>
-          <div className="bottom-search w-1/4">
+          <div className="bottom-search w-full sm:w-1/2 lg:w-1/4">
             <p className="text-[26px] text-[#D1A941] mb-5 leading-[1em]">
               חפש באתר
             </p>

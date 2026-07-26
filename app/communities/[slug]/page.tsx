@@ -11,7 +11,7 @@ export default async function page({ params }: PageProps) {
   const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/communities?acf_format=standard&slug=${slug}&_fields=id,acf,title`,
     {
-      next: { revalidate: 3600 },
+      cache: "force-cache",
     },
   );
 

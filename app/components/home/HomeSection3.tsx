@@ -46,7 +46,11 @@ export default function HomeSection3(props: ChildProps) {
       gsap.to(sectionImage, {
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthImage;
+            return window.innerWidth > 1024
+              ? window.innerWidth * props.animWidthImage
+              : (sectionImage.getBoundingClientRect().top ?? 0) +
+                  window.scrollY -
+                  window.innerHeight * 0.8;
           },
           toggleActions: "restart pause play reverse",
         },
@@ -69,7 +73,11 @@ export default function HomeSection3(props: ChildProps) {
       gsap.to(textSplit, {
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * (props.animWidthText - 0.7);
+            return window.innerWidth > 1024
+              ? window.innerWidth * (props.animWidthText - 0.7)
+              : (wrapper.current?.getBoundingClientRect().top || 0) +
+                  window.scrollY -
+                  window.innerHeight * 0.8;
           },
           end: () => {
             return "+=" + window.innerWidth * 2;
@@ -93,7 +101,11 @@ export default function HomeSection3(props: ChildProps) {
         ease: "none",
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * props.animWidthImage;
+            return window.innerWidth > 1024
+              ? window.innerWidth * props.animWidthImage
+              : (bigTitle.getBoundingClientRect().top ?? 0) +
+                  window.scrollY -
+                  window.innerHeight * 0.8;
           },
           end: () => {
             return "+=" + window.innerWidth * 2;
@@ -125,7 +137,7 @@ export default function HomeSection3(props: ChildProps) {
       // onMouseMove={(e) => {
       //   moveImage(e);
       // }}
-      className={`${props.extraClass} home-section3 h-screen bg-no-repeat bg-center bg-cover flex items-center overflow-hidden`}
+      className={`${props.extraClass} home-section3 h-auto lg:h-screen bg-no-repeat bg-center bg-cover overflow-hidden relative`}
       data-scroll-section={props.animWidthText}
     >
       <BackgroundImage2
@@ -134,9 +146,9 @@ export default function HomeSection3(props: ChildProps) {
         start={props.animWidthImage}
       />
       <div
-        className={`section-content w-full h-auto flex items-center justify-start pl-[5%] relative z-40`}
+        className={`section-content w-full h-auto flex lg:items-center flex-col-reverse lg:flex-row justify-start lg:pl-[5%] relative z-40`}
       >
-        <div className="section-image w-[50%] h-screen">
+        <div className="section-image w-full lg:w-[50%] h-auto lg:h-screen">
           <Image
             className="relative z-10 w-full h-full object-center object-cover"
             src={props.sectionData?.image?.url}
@@ -148,13 +160,13 @@ export default function HomeSection3(props: ChildProps) {
             alt="Juniper"
           />
         </div>
-        <div className="section-content w-[50%] relative pt-12 pr-[10%]">
-          <h2 className="over-title absolute top-[7%] right-[20%] text-[#D1A941] text-[290px] font-bold leading-[0.75] opacity-20 z-0">
+        <div className="section-content w-full min-h-[70vh] lg:w-[50%] relative pt-12 pr-[10%] flex items-center">
+          <h2 className="over-title absolute top-[20%] lg:top-[7%] right-[20%] text-[#D1A941] text-[120px] sm:text-[150px] lg:text-[290px] font-bold leading-[0.75] opacity-20 z-0">
             {parse(props.sectionData?.title || "")}
           </h2>
           <div
             dir="ltr"
-            className="text-[55px] leading-[0.8] w-107.5 max-w-[70%] relative pb-2 flex flex-col z-40 text-right"
+            className="text-[35px] sm:text-[45px] lg:text-[55px] leading-[0.8] w-107.5 max-w-[70%] relative pb-2 flex flex-col z-40 text-right"
           >
             <Link
               href={getRabbisURL(props.sectionData?.rabbis_link || "#") || "#"}

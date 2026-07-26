@@ -6,19 +6,19 @@ export default async function page() {
   const pageRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=issues-magazine&acf_format=standard&_fields=id,title,content,acf`,
     {
-      next: { revalidate: 604800 }, // Cache data for 7 days
+      next: { revalidate: 300 }, // Cache data for 5 minutes
     },
   );
   const categoryRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines_cat?&_fields=id,count,parent,name&per_page=100`,
     {
-      next: { revalidate: 604800 }, // Cache data for 7 days
+      next: { revalidate: 300 }, // Cache data for 5 minutes
     },
   );
   const postsRes = wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf&per_page=50`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf&per_page=5`,
     {
-      next: { revalidate: 604800 }, // Cache data for 7 days
+      next: { revalidate: 300 }, // Cache data for 5 minutes
     },
   );
 
@@ -55,6 +55,7 @@ export default async function page() {
     postsData,
     "communities-sheets-posts",
   );
+  const totalPages = postsResData.headers.get("X-WP-TotalPages");
   if (!Array.isArray(postsData)) postsData = [];
 
   // Get all top level categories (parent = 0) with their child categories
@@ -72,7 +73,7 @@ export default async function page() {
     <CommunitiesSheetsScriptProvider
       data={{
         pageData: pageData[0],
-        postsData: postsData,
+        postsData: { posts: postsData, totalPage: totalPages },
         categoriesTree: categoriesWithChildren,
       }}
     />

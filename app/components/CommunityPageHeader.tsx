@@ -96,7 +96,7 @@ export default function CommunityPageHeader() {
               </Link>
             </div>
           </div>
-          <div className="header-left">
+          <div className="header-left hidden md:block">
             <div className="menu flex items-center gap-x-9">
               {appData?.headerCommunity &&
                 appData?.headerCommunity?.acf?.header_left.map(

@@ -27,7 +27,7 @@ export default function HomeBannerVideo({ bannerData }: HomeBannerVideoProps) {
   // GSAP Context for Animations
   useGSAP(() => {
     // Banner Background
-    if (background.current) {
+    if (background.current && window.innerWidth > 1024 && pathname === "/") {
       gsap.to(background.current, {
         x: "-40vw",
         ease: "none",

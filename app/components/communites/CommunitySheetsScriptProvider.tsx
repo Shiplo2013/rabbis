@@ -1,5 +1,6 @@
 "use client";
 import SheetContentSection from "@/app/components/sheets/SheetContentSection";
+import { wpFetch } from "@/app/lib/wpFetch";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -19,7 +20,10 @@ export default function CommunitiesSheetsScriptProvider({
 }: {
   data: {
     pageData: any;
-    postsData: any;
+    postsData: {
+      posts: any;
+      totalPage: string | null;
+    };
     categoriesTree: any;
   };
 }) {
@@ -35,14 +39,16 @@ export default function CommunitiesSheetsScriptProvider({
   const [activeCategory, setActiveCategory] = useState(0);
   const [submittedSearch, setSubmittedSearch] = useState("");
   const [isPostLoaded, setIsPostLoaded] = useState(false);
-  const [catPostsData, setCatPostsData] = useState<any>(null);
   const [noPostsFound, setNoPostsFound] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null,
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(
-    data?.postsData?.length === 10 ? true : false,
+    Number(data?.postsData?.totalPage ?? 1) > 1,
+  );
+  const [totalPages, setTotalPages] = useState(
+    Number(data?.postsData?.totalPage ?? 1),
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
@@ -152,12 +158,12 @@ export default function CommunitiesSheetsScriptProvider({
             : [];
 
         const postsUrl = categoryIds.length
-          ? `/api/communities/sheets/posts?magazines_cat=${categoryIds.join(
+          ? `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?magazines_cat=${categoryIds.join(
               ",",
             )}&per_page=10&page=${currentPage}`
-          : `/api/communities/sheets/posts?per_page=10&page=${currentPage}`;
+          : `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?per_page=10&page=${currentPage}`;
 
-        const response = await fetch(postsUrl, {
+        const response = await wpFetch(postsUrl, {
           cache: "no-store",
         });
 
@@ -166,13 +172,11 @@ export default function CommunitiesSheetsScriptProvider({
         }
         const data = await response.json();
 
-        console.log("Fetched posts for page:", currentPage, data);
-
         if (isMounted) {
           if (data?.posts?.length < 10) {
             setHasMorePosts(false);
           }
-          sheetPageData.postsData = data?.posts || [];
+          sheetPageData.postsData = data || [];
         }
       } catch (error) {
         console.error(error);
@@ -184,11 +188,80 @@ export default function CommunitiesSheetsScriptProvider({
     };
 
     loadMorePosts();
-
-    console.log("Loading more posts for page:", currentPage);
-    console.log("Selected Category:", selectedCategoryId);
   }, [selectedCategoryId]);
 
+  // Get more posts
+  const LoadMorePosts = () => {
+    if (isLoadingMore || !hasMorePosts || currentPage >= totalPages) return;
+    setIsLoadingMore(true);
+    let isMounted = true;
+
+    const getPostsData = async () => {
+      try {
+        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?per_page=5&page=${currentPage + 1}`;
+
+        const response = await wpFetch(postsUrl, {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load community page data.");
+        }
+        const data = await response.json();
+
+        console.log(
+          "LoadMorePosts data: (Page " + (currentPage + 1) + ")",
+          data,
+        );
+
+        if (isMounted) {
+          if (data?.posts?.length < 10) {
+            setHasMorePosts(false);
+          }
+          setSheetPageData((prevData: any) => {
+            const updatedPosts = [
+              ...(prevData?.postsData?.posts || []),
+              ...(data || []),
+            ];
+            return {
+              ...prevData,
+              postsData: {
+                ...prevData?.postsData,
+                posts: updatedPosts,
+              },
+            };
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) {
+          setIsLoadingMore(false);
+          setCurrentPage((prevPage) => prevPage + 1);
+          // Refresh vertical section animation after loading more posts
+          if (verticalSection) {
+            // verticalSection.scrollTrigger?.refresh();
+            // verticalSection.invalidate();
+            // verticalSection.restart();
+            // verticalSection.scrollTrigger?.update();
+            // verticalSection.play();
+            // verticalSection.clear();
+            // ScrollTrigger.refresh();
+            // verticalSection.restart();
+            // console.log(verticalSection);
+            // verticalSection.parent?.invalidate();
+            // verticalSection.invalidate();
+            // verticalSection.restart();
+            // verticalSection.progress(0.5);
+          }
+        }
+      }
+    };
+
+    getPostsData();
+  };
+
+  // Update section width on window resize
   useEffect(() => {
     if (!sheetPageData) {
       return;
@@ -198,8 +271,8 @@ export default function CommunitiesSheetsScriptProvider({
 
     const updateSectionWidth = () => {
       const newSectionWidth =
-        sheetPageData?.postsData.length * 24.3 +
-        (sheetPageData?.postsData.length - 1) * 15 +
+        sheetPageData?.postsData?.posts.length * 24.3 +
+        (sheetPageData?.postsData?.posts.length - 1) * 15 +
         30;
       setSectionWidth(newSectionWidth);
       setContainerWidth(newSectionWidth + 100);
@@ -568,6 +641,7 @@ export default function CommunitiesSheetsScriptProvider({
   // Set Body Overflow Hidden
   useEffect(() => {
     if (isAllAnimationComplete) {
+      console.log(verticalSection);
       // Body Overflow Hidden
       document.body.classList.remove("!overflow-hidden");
       document.body.classList.add("!overflow-auto");
@@ -649,15 +723,17 @@ export default function CommunitiesSheetsScriptProvider({
               setActiveCategory={setActiveCategory}
               onSelectCategoryId={setSelectedCategoryId}
               data={{
-                posts: catPostsData || data?.postsData || [],
+                posts: sheetPageData?.postsData?.posts || [],
                 categoriesTree: sheetPageData?.categoriesTree || [],
                 isPostLoaded: isPostLoaded,
                 noPostsFound: noPostsFound,
               }}
               hasMorePosts={hasMorePosts}
               isLoadingMore={isLoadingMore}
-              onLoadMore={() => setCurrentPage((p) => p + 1)}
+              onLoadMore={LoadMorePosts}
               setIsPostLoaded={setIsPostLoaded}
+              currentPage={currentPage}
+              totalPages={totalPages}
             />
           </div>
         </div>

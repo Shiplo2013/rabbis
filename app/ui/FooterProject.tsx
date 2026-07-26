@@ -33,11 +33,16 @@ export default function FooterProject(props: ChilProps) {
         onClick={handleLinkClick}
         className="block py-10.5"
       >
-        <h2 className="text-[94px] leading-[0.9em] font-bold">{props.title}</h2>
+        <h2 className="text-[50px] lg:text-[94px] leading-[0.9em] font-bold">
+          {props.title}
+        </h2>
         <div className="absolute left-0 top-1/2 -translate-y-1/2 overflow-hidden flex gap-2.5">
           {props.images &&
             props.images.map((image: any, index: number) => (
-              <div key={index} className="hover-image w-51 h-29.5">
+              <div
+                key={index}
+                className="hover-image w-25 h-18 lg:w-51 lg:h-29.5"
+              >
                 <Image
                   className="w-full h-full object-cover object-center"
                   src={image?.sizes?.thumbnail || image?.src || hoverImage1.src}

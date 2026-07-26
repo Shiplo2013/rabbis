@@ -40,7 +40,11 @@ export default function HomeSection4(props: ChildProps) {
       gsap.to(textSplit, {
         scrollTrigger: {
           start: () => {
-            return window.innerWidth * (props.animWidth - 0.7);
+            return window.innerWidth > 1024
+              ? window.innerWidth * (props.animWidth - 0.7)
+              : (wrapper.current?.getBoundingClientRect().top || 0) +
+                  window.scrollY -
+                  window.innerHeight * 0.8;
           },
           end: () => {
             return "+=" + window.innerWidth * 2;
@@ -59,7 +63,7 @@ export default function HomeSection4(props: ChildProps) {
     <section
       ref={wrapper}
       dir="rtl"
-      className={`${props.extraClass} home-section4 h-screen bg-no-repeat bg-center bg-cover flex items-center relative overflow-hidden`}
+      className={`${props.extraClass} home-section4 h-auto min-h-[60vh] lg:h-screen bg-no-repeat bg-center bg-cover flex items-center relative overflow-hidden`}
       data-scroll-section={props.animWidth}
     >
       <AnimatedBackground
@@ -71,7 +75,7 @@ export default function HomeSection4(props: ChildProps) {
       >
         <div
           dir="ltr"
-          className="text text-[35px] leading-[0.9] text-[#EEECDD] font-medium w-[60%]"
+          className="text text-[25px] sm:text-[35px] leading-[0.9] text-[#EEECDD] font-medium w-[80%] lg:w-[60%]"
         >
           {parse(props.sectionData?.content || "")}
         </div>
