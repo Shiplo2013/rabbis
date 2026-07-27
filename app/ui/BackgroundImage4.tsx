@@ -22,21 +22,23 @@ export default function BackgroundImage4(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
-      // Banner Background
-      gsap.set(background.current, { scale: 1.4, x: "20vw" });
-      gsap.to(background.current, {
-        x: "-10vw",
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * props.start;
+      if (background.current && window.innerWidth > 1024) {
+        // Banner Background
+        gsap.set(background.current, { scale: 1.4, x: "20vw" });
+        gsap.to(background.current, {
+          x: "-10vw",
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * props.start;
+            },
+            end: () => {
+              return "+=" + background.current?.offsetWidth;
+            },
+            scrub: 2,
           },
-          end: () => {
-            return "+=" + background.current?.offsetWidth;
-          },
-          scrub: 2,
-        },
-      });
+        });
+      }
     },
     { scope: background, dependencies: [pathname] },
   );

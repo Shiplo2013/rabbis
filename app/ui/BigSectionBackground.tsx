@@ -36,7 +36,11 @@ export default function BigSectionBackground(props: ChildProps) {
   // Seciton Animation
   useGSAP(
     () => {
-      if (props.animatePosition !== 0 && props.offsetTopAdded) {
+      if (
+        props.animatePosition !== 0 &&
+        props.offsetTopAdded &&
+        window.innerWidth > 1024
+      ) {
         // Banner Background
         gsap.set(background.current, { scale: 1.2, x: "20vw" });
         gsap.to(background.current, {

@@ -72,7 +72,7 @@ export default function TabMenu(props: ChildProps) {
     <div
       ref={tabMenuRef}
       style={{ clipPath: "inset(0% 0% 0% 100%)" }}
-      className="tabs-head min-w-52 w-52 h-full flex flex-col items-center justify-center gap-y-6 py-10 fixed top-0 right-15 z-20 border-r-5 border-l-5 border-[#C3A13F] overflow-hidden"
+      className="tabs-head min-w-52 w-52 h-full flex-col items-center justify-center gap-y-6 py-10 fixed top-0 right-15 z-20 border-r-5 border-l-5 border-[#C3A13F] overflow-hidden hidden lg:flex"
     >
       <div className="tab-head-bg absolute top-0 left-1/2 z-10 w-screen h-screen -translate-x-1/2">
         <Image

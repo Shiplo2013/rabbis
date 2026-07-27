@@ -399,7 +399,7 @@ export default function PageFixedElements() {
           id={"zatzel-popup"}
           className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
         >
-          <div className="popup-wrapper bg-[#FBF4E6] w-150 h-full relative z-50 py-[9.3vh] px-[3.8vw]">
+          <div className="popup-wrapper bg-[#FBF4E6] w-[90vw] sm:w-150 h-full relative z-50 py-[5vh] sm:py-[9.3vh] px-[3.8vw]">
             <div
               //ref={popupContent}
               className="popup-content w-full h-full relative z-30"
@@ -415,15 +415,15 @@ export default function PageFixedElements() {
                 {zatzelPosts?.sections[zatzelPopupIndex?.catIndex]
                   ?.sectionContent[zatzelPopupIndex?.postIndex]?.popup
                   ?.title && (
-                  <div className="title mb-[5vh] flex items-center gap-x-5">
-                    <h3 className="text-[55px] leading-[70%] text-[#D1A941] font-bold max-w-[60%]">
+                  <div className="title mb-[5vh] flex items-center gap-x-5 justify-between">
+                    <h3 className="text-[32px] sm:text-[40px] lg:text-[55px] leading-[70%] text-[#D1A941] font-bold max-w-[60%]">
                       {parse(
                         zatzelPosts?.sections[zatzelPopupIndex?.catIndex]
                           ?.sectionContent[zatzelPopupIndex?.postIndex]?.popup
                           ?.title || "",
                       )}
                     </h3>
-                    <div className="thumbnail min-w-49 w-49 h-41">
+                    <div className="thumbnail w-32 h-25 sm:min-w-49 sm:w-49 sm:h-41">
                       {loadingImage && (
                         <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
                       )}
@@ -449,7 +449,7 @@ export default function PageFixedElements() {
                 {zatzelPosts?.sections[zatzelPopupIndex?.catIndex]
                   ?.sectionContent[zatzelPopupIndex?.postIndex]?.popup
                   ?.content && (
-                  <div className="content text-[21px] leading-[1.4em] text-black [&>p:not(:last-child)]:mb-6">
+                  <div className="content text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-black [&>p:not(:last-child)]:mb-6">
                     {parse(
                       zatzelPosts?.sections[zatzelPopupIndex?.catIndex]
                         ?.sectionContent[zatzelPopupIndex?.postIndex]?.popup

@@ -73,9 +73,11 @@ export default function TempleTabs(props: ChildProps) {
         delay: 0,
         scrollTrigger: {
           start: () => {
-            return (
-              GetRightPosition(galleryRef.current) - window.innerWidth * 0.5
-            );
+            return window.innerWidth > 1024
+              ? GetRightPosition(galleryRef.current) - window.innerWidth * 0.5
+              : (galleryRef.current?.getBoundingClientRect().top ?? 0) +
+                  window.scrollY -
+                  window.innerHeight * 0.5;
           },
           toggleActions: "restart none none reverse",
         },
@@ -88,7 +90,7 @@ export default function TempleTabs(props: ChildProps) {
         const image = item.querySelector(
           ".single-gallery-image",
         ) as HTMLElement | null;
-        if (image) {
+        if (image && window.innerWidth > 1024) {
           // Banner Background
           //gsap.set(image, { scale: 1, x: "5vw" });
           gsap.to(image, {
@@ -98,6 +100,24 @@ export default function TempleTabs(props: ChildProps) {
               trigger: image,
               start: () => {
                 return GetRightPosition(image) - window.innerWidth * 0.5;
+              },
+              end: () => {
+                return "+=" + window.innerWidth * 2.5;
+              },
+              scrub: 2,
+            },
+          });
+        } else {
+          gsap.to(image, {
+            y: "10vh",
+            ease: "none",
+            scrollTrigger: {
+              trigger: image,
+              start: () => {
+                return (
+                  (image?.getBoundingClientRect().top ?? 0) -
+                  window.innerWidth * 0.8
+                );
               },
               end: () => {
                 return "+=" + window.innerWidth * 2.5;
@@ -129,8 +149,8 @@ export default function TempleTabs(props: ChildProps) {
       id="temple-tabs"
       className={`${props.extraClass} h-full bg-black flex items-center relative z-20`}
     >
-      <div className="tabs-wrapper flex items-center w-full h-full">
-        <div className="tabs-head min-w-52 w-52 h-full flex flex-col items-center justify-center gap-y-6 py-10 relative z-20 border-r-5 border-l-5 border-[#C3A13F] overflow-hidden">
+      <div className="tabs-wrapper flex items-center w-full h-full flex-col lg:flex-row">
+        <div className="tabs-head w-full lg:min-w-52 lg:w-52 h-full flex flex-col items-center justify-center gap-y-6 py-10 relative z-20 border-r-5 border-l-5 border-[#C3A13F] overflow-hidden">
           <div className="tab-head-bg absolute top-0 left-1/2 z-10 w-screen h-screen -translate-x-1/2">
             <BackgroundImage3 bgImage={tabBG} start={0} panel={""} />
           </div>
@@ -158,15 +178,17 @@ export default function TempleTabs(props: ChildProps) {
           </div>
           <div className="tabs-content-wrapper relative z-30 w-full h-full flex items-center justify-start">
             {tabsData[templeActiveTab] && (
-              <div className="tab-content w-full flex items-center justify-between gap-x-[5vw]">
-                <div className={`tab-content-item w-[32vw] min-w-[32vw]`}>
+              <div className="tab-content w-full flex items-center justify-between gap-x-[5vw] gap-y-[5vh] flex-col lg:flex-row">
+                <div
+                  className={`tab-content-item w-full lg:w-[32vw] lg:min-w-[32vw]`}
+                >
                   <div className="title mb-[6vh]">
-                    <h2 className="text-[#C3A13F66] text-[114px] leading-[70%] font-bold max-w-76">
+                    <h2 className="text-[#C3A13F66] text-[60px] sm:text-[80px] lg:text-[114px] leading-[70%] font-bold max-w-76">
                       {parse(tabsData[templeActiveTab]?.title || "")}
                     </h2>
                   </div>
                   <div className="subtitle mb-[4vh]">
-                    <h3 className="text-[45px] leading-[1em] text-[#EEECDD]">
+                    <h3 className="text-[20px] sm:text-[30px] lg:text-[45px] leading-[1em] text-[#EEECDD]">
                       {parse(tabsData[templeActiveTab]?.subtitle || "")}
                     </h3>
                   </div>
@@ -179,7 +201,7 @@ export default function TempleTabs(props: ChildProps) {
                     }}
                     autoHide={false}
                   >
-                    <div className="content text-[#EEECDD] text-[21px] leading-[1.3em] [&>p]:not(:last-child):mb-5">
+                    <div className="content text-[#EEECDD] text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.3em] [&>p]:not(:last-child):mb-5">
                       {parse(tabsData[templeActiveTab]?.text || "")}
                     </div>
                   </SimpleBar>
@@ -223,10 +245,10 @@ export default function TempleTabs(props: ChildProps) {
                     </button>
                   </div>
                 )}
-                <div className="tab-gallery flex items-center w-full h-screen ml-auto mr-auto relative will-change-transform">
+                <div className="tab-gallery flex items-center w-full lg:h-screen ml-auto mr-auto relative will-change-transform">
                   <div
                     ref={galleryRef}
-                    className="gallery-wrapper w-full h-full flex items-center will-change-transform"
+                    className="gallery-wrapper w-full h-full flex items-center flex-col lg:flex-row will-change-transform"
                   >
                     {Object.values(
                       tabsData[templeActiveTab]?.gallery || [],
@@ -238,16 +260,22 @@ export default function TempleTabs(props: ChildProps) {
                         return (
                           <div
                             key={index}
-                            className="single-gallery will-change-transform w-[32vw] h-[40vh] overflow-hidden"
+                            className="single-gallery will-change-transform w-75 h-45 sm:w-140 sm:h-85 lg:w-[32vw] lg:h-[40vh] overflow-hidden"
                           >
                             <div
-                              className={`single-gallery-image w-[40vw] h-[60vh] absolute top-1/2 left-1/2 -translate-[50%] cursor-none pointer-events-none`}
+                              className={`single-gallery-image w-[120%] h-[120%] lg:w-[40vw] lg:h-[60vh] absolute top-1/2 left-1/2 -translate-[50%] cursor-none pointer-events-none`}
                             >
                               <Image
                                 className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
-                                src={item?.sizes?.large || item?.image?.src}
-                                width={1200}
-                                height={1200}
+                                src={
+                                  window.innerWidth < 1024
+                                    ? item?.sizes?.medium ||
+                                      item?.sizes?.large ||
+                                      item?.image?.src
+                                    : item?.sizes?.large || item?.image?.src
+                                }
+                                width={window.innerWidth < 1024 ? 600 : 1200}
+                                height={window.innerWidth < 1024 ? 600 : 1200}
                                 blurDataURL={
                                   item?.sizes?.thumbnail ||
                                   item?.image?.medium ||
@@ -264,14 +292,20 @@ export default function TempleTabs(props: ChildProps) {
                         return (
                           <div
                             key={index}
-                            className="single-gallery will-change-transform w-[22vw] h-[70vh] overflow-hidden"
+                            className="single-gallery will-change-transform w-50 h-70 sm:w-100 sm:h-140 lg:w-[22vw] lg:h-[70vh] overflow-hidden"
                           >
                             <div
-                              className={`single-gallery-image w-[30vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
+                              className={`single-gallery-image w-[120%] h-[120%] lg:w-[30vw] lg:h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
                             >
                               <Image
                                 className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
-                                src={item?.sizes?.large || item?.image?.src}
+                                src={
+                                  window.innerWidth < 1024
+                                    ? item?.sizes?.medium ||
+                                      item?.sizes?.large ||
+                                      item?.image?.src
+                                    : item?.sizes?.large || item?.image?.src
+                                }
                                 width={1200}
                                 height={1200}
                                 blurDataURL={CreateShimmerDataUrl(1000, 1000)}

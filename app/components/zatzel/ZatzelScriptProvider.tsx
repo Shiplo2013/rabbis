@@ -136,7 +136,12 @@ export default function ZatzelScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && main.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      main.current &&
+      window.innerWidth > 1024
+    ) {
       setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
@@ -749,12 +754,12 @@ export default function ZatzelScriptProvider({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse lg:w-[${containerWidth}vw] lg:h-screen items-center will-change-transform flex-col`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -777,7 +782,7 @@ export default function ZatzelScriptProvider({
               }}
             />
             <ZatzelContentSection
-              extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
+              extraClass={`w-full lg:min-w-[${sectionWidth}vw] lg:w-[${sectionWidth}vw] lg:h-screen panel-section will-change-transform py-[10vw] lg:py-[5vw] px-[6.25vw]`}
               animWidthText={1}
               sectionData={
                 zatzelPosts.sections || defaultZatzelPageData.sections

@@ -75,7 +75,12 @@ export default function YeshivaRabbisScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -403,15 +408,25 @@ export default function YeshivaRabbisScriptProvider({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen h-auto lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className="section-wrapp flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform"
           >
             <section
-              className={`rabbis-sections w-[${sectionWidth}vw] min-w-[${sectionWidth}vw] will-change-transform flex justify-baseline flex-row-reverse items-center gap-x-[10vw] px-[12vw] h-full`}
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              className="rabbis-sections w-full lg:w-(--section-width) lg:min-w-(--section-width) will-change-transform flex lg:justify-baseline flex-col lg:flex-row-reverse items-center gap-15 sm:gap-[10vw] px-[10vw] pt-30 pb-15 sm:pb-25 lg:py-0 lg:px-[12vw] lg:h-full"
             >
               {rabbisPageData?.map((section: any, index: number) => (
                 <RabbisSection

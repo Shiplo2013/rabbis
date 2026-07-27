@@ -23,21 +23,23 @@ export default function AnimatedBackground(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
-      // Banner Background
-      gsap.set(background.current, { scale: 1.4, x: "20vw" });
-      gsap.to(background.current, {
-        x: "-20vw",
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * (props.animWidth - 0.2);
+      if (background.current && window.innerWidth > 1024) {
+        // Banner Background
+        gsap.set(background.current, { scale: 1.4, x: "20vw" });
+        gsap.to(background.current, {
+          x: "-20vw",
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * (props.animWidth - 0.2);
+            },
+            end: () => {
+              return "+=" + window.innerWidth * 1.2;
+            },
+            scrub: 2,
           },
-          end: () => {
-            return "+=" + window.innerWidth * 1.2;
-          },
-          scrub: 2,
-        },
-      });
+        });
+      }
     },
     { scope: background, dependencies: [pathname] },
   );

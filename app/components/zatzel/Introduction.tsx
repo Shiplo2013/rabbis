@@ -56,10 +56,10 @@ export default function Introduction(props: ChildProps) {
         className="flex items-center w-full h-full relative z-30 py-[5vh] px-[5vw]"
       >
         <div className="intro-wrapper text-right flex flex-col items-end gap-x-[3.75vw] w-full px-[5vw]">
-          <h1 className="intro-title text-[208px] text-[#AC832E] leading-[0.6em] overflow-hidden relative z-20 pt-11 font-bold">
+          <h1 className="intro-title text-[64px] leading-[0.4em] sm:text-[128px] lg:text-[208px] text-[#AC832E] sm:leading-[0.7em] lg:leading-[0.6em] overflow-hidden relative z-20 pt-11 font-bold">
             {parse(props.data.title)}
           </h1>
-          <h4 className="intro-content overflow-hidden text-[28px] leading-[1em] text-[#FBF4E6] mt-10 relative z-30 max-w-239">
+          <h4 className="intro-content overflow-hidden text-[16px] sm:text-[20px] lg:text-[28px] leading-[1em] text-[#FBF4E6] mt-10 relative z-30 max-w-239">
             {parse(props.data.content)}
           </h4>
         </div>

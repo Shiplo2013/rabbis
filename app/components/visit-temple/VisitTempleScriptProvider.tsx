@@ -201,7 +201,12 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
   // Page Section Animation
   useGSAP(() => {
     const animations: gsap.core.Animation[] = [];
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
@@ -481,12 +486,12 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            className={`section-wrapp w-screen flex flex-wrap flex-col lg:flex-nowrap lg:flex-row-reverse lg:w-[${containerWidth}vw] lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -513,7 +518,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
               }
             >
               <VisitTempleSection
-                extraClass={`w-[${sectionWidth}vw] panel-section will-change-transform`}
+                extraClass={`w-full lg:w-[${sectionWidth}vw] lg:min-w-[${sectionWidth}vw] panel-section will-change-transform`}
                 animWidthText={0.8}
                 sectionData={{
                   videoSection: visitTempleData?.acf?.video_section,

@@ -12,6 +12,7 @@ interface ChildProps {
   sectionData?: SectionData | {};
   sectionWidth?: number;
   tabGalleryData?: any;
+  style?: React.CSSProperties;
 }
 
 export default function VisitTempleSection(props: ChildProps) {
@@ -24,11 +25,12 @@ export default function VisitTempleSection(props: ChildProps) {
   return (
     <section
       dir="rtl"
-      className={`${props.extraClass} h-screen bg-black flex items-center relative z-20`}
+      style={props.style}
+      className={`${props.extraClass} lg:h-screen bg-black flex flex-col lg:flex-row items-center relative z-20`}
     >
-      <div className="visit-temple-wrapper flex w-full h-full">
+      <div className="visit-temple-wrapper flex flex-col lg:flex-row w-full lg:h-full">
         <VideoSection
-          extraClass="video-item w-[25.6vw] min-w-50 will-change-transform"
+          extraClass="video-item w-full lg:w-[25.6vw] min-w-50 will-change-transform"
           animWidthText={0.1}
           data={videoSectionData}
         />
