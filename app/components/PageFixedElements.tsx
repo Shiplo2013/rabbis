@@ -328,7 +328,8 @@ export default function PageFixedElements() {
       {/* End of Audio Button */}
 
       {/* Visit Temple Navigation */}
-      {pathname === "/visit-temple" && (
+      {(pathname === "/visit-temple" ||
+        pathname.startsWith("/visit-temple/")) && (
         <TabMenu data={templeTabData} activeTab={templeActiveTab} />
       )}
       {/* Visit Temple Navigation */}

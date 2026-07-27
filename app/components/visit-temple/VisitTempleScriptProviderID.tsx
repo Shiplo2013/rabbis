@@ -440,7 +440,12 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp w-full flex lg:flex-nowrap flex-col lg:flex-row-reverse lg:w-[${containerWidth}vw] lg:h-screen items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp w-screen flex flex-wrap flex-col lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -460,7 +465,12 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
               }}
             />
             <VisitTempleSection
-              extraClass={`w-full lg:w-[${sectionWidth}vw] panel-section will-change-transform`}
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              extraClass={`w-full lg:w-(--section-width) lg:min-w-(--section-width) panel-section will-change-transform`}
               animWidthText={0.8}
               sectionData={{
                 videoSection: visitTempleData?.acf?.video_section,
