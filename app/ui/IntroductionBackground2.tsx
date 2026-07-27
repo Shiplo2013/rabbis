@@ -47,7 +47,8 @@ export default function IntroductionBackground2(props: ChildProps) {
         typeof window !== "undefined" &&
         background.current &&
         props.animatePosition > 0 &&
-        props.offsetTopAdded
+        props.offsetTopAdded &&
+        window.innerWidth > 1024
       ) {
         // Banner Background
         gsap.set(background.current, { scale: 1.4, x: "20vw" });

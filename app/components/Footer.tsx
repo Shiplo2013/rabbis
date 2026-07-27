@@ -325,7 +325,7 @@ function Footer(props: ChildProps) {
         ref={footerRef}
         className={`w-full h-auto flex items-center justify-end ${props.className} opacity-0 bg-[#F5F0EB] will-change-transform`}
       >
-        <div className="footer-wrapper w-full bg-amber-50 flex items-center justify-center text-black pt-30 pb-25">
+        <div className="footer-wrapper w-full bg-amber-50 flex items-center justify-center text-black pt-15 sm:pt-30 pb-25">
           <div className="w-[80%] max-w-282.5">
             <div className="footer-projects border-b-2 border-[#000000]">
               {footerData?.acf?.big_menu?.map((project, index) => (
@@ -337,7 +337,7 @@ function Footer(props: ChildProps) {
                 />
               ))}
             </div>
-            <div className="footer-widgets mt-20 sm:mt-34 flex justify-between flex-col lg:flex-row gap-y-12 overflow-hidden">
+            <div className="footer-widgets mt-15 sm:mt-34 flex justify-between flex-col lg:flex-row gap-y-12 overflow-hidden">
               <div className="footer-widget3 w-full lg:w-1/4">
                 <ul className="flex flex-col text-[20px] sm:text-2xl leading-[2em]">
                   {footerData?.acf?.widget_3?.menu_items?.map((item, index) => (

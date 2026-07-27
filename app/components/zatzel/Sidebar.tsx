@@ -162,11 +162,11 @@ export default function Sidebar({
     <>
       <div
         ref={datePickerRef}
-        className="date-picker search-group relative mb-[3vh]"
+        className="date-picker search-group relative mb-[3vh] w-full"
       >
         <input
           ref={dateRef}
-          className="text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full pl-8"
+          className="text-[16px] sm:text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full w-full pl-8"
           type="text"
           id="search-by-date"
           name="Search-By-Date"
@@ -303,7 +303,7 @@ export default function Sidebar({
       >
         <input
           ref={nameRef}
-          className="text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full pl-8"
+          className="text-[16px] sm:text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full w-full pl-8"
           type="text"
           id="search-by-user"
           name="search-by-user"
@@ -315,7 +315,7 @@ export default function Sidebar({
       </form>
       <div className="reset-filter mt-5 flex items-center justify-start gap-x-3">
         <button
-          className="cursor-pointer text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-all duration-300"
+          className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-all duration-300"
           onClick={() => {
             setSelectedDate?.(null);
             setSearchedData?.(null);

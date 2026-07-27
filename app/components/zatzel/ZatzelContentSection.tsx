@@ -30,8 +30,8 @@ export default function ZatzelContentSection(props: ChildProps) {
       dir="rtl"
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
-      <div className="sheet-wrapper w-full min-w-full h-auto flex items-center gap-x-[10vw]">
-        <div className="sheet-sidebar w-70 min-w-70 h-full will-change-transform">
+      <div className="sheet-wrapper w-full min-w-full h-auto flex items-center gap-[10vw] flex-col lg:flex-row will-change-transform">
+        <div className="sheet-sidebar w-full lg:w-70 lg:min-w-70 h-full will-change-transform relative z-20">
           <div className="sheet-sidebar-wrapper">
             <Sidebar
               setSelectedDate={props.setSelectedDate}
@@ -41,7 +41,7 @@ export default function ZatzelContentSection(props: ChildProps) {
             />
           </div>
         </div>
-        <div className="sheet-content flex items-center gap-x-[10vw] will-change-transform">
+        <div className="sheet-content w-full flex items-center gap-x-[10vw] will-change-transform flex-col lg:flex-row">
           {SectionData?.map((item: ZatzelContentSectionData, index: number) => (
             <ZatzelPostCat
               key={index}

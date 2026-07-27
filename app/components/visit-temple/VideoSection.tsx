@@ -32,9 +32,9 @@ export default function VideoSection(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
-      const video = wrapper.current?.querySelector(".section-overlay");
-      if (video) {
-        gsap.to(video, {
+      const videoOverlay = wrapper.current?.querySelector(".section-overlay");
+      if (videoOverlay) {
+        gsap.to(videoOverlay, {
           duration: 2,
           translateY: "-100%",
           ease: "expo.inOut",
@@ -61,13 +61,15 @@ export default function VideoSection(props: ChildProps) {
       if (videoElement.paused) {
         wrapper.current?.classList.add("z-50");
         wrapper.current?.classList.remove("z-20");
-        if (videoOverlay) {
+        if (videoWrap.current && window.innerWidth > 1024) {
           gsap.to(videoWrap.current, {
             duration: 0.5,
             width: "120%",
             right: "-10%",
             ease: "expo.inOut",
           });
+        }
+        if (videoOverlay) {
           gsap.to(videoOverlay, {
             duration: 0.4,
             opacity: 0,
@@ -76,6 +78,8 @@ export default function VideoSection(props: ChildProps) {
               videoElement.play();
             },
           });
+        }
+        if (videoButton.current) {
           gsap.to(videoButton.current, {
             duration: 0.5,
             y: "45vh",
@@ -83,23 +87,25 @@ export default function VideoSection(props: ChildProps) {
             delay: 0,
             ease: "easeInOut",
           });
-          if (buttonIcon) {
-            gsap.to(buttonIcon, {
-              duration: 0.5,
-              delay: 0.5,
-              rotate: -45,
-              ease: "easeInOut",
-            });
-          }
+        }
+        if (buttonIcon) {
+          gsap.to(buttonIcon, {
+            duration: 0.5,
+            delay: 0.5,
+            rotate: -45,
+            ease: "easeInOut",
+          });
         }
       } else {
-        if (videoOverlay) {
+        if (videoWrap.current && window.innerWidth > 1024) {
           gsap.to(videoWrap.current, {
             duration: 0.5,
             width: "100%",
             right: "0%",
             ease: "expo.inOut",
           });
+        }
+        if (videoOverlay) {
           gsap.to(videoOverlay, {
             duration: 0.5,
             opacity: 0.4,
@@ -108,6 +114,8 @@ export default function VideoSection(props: ChildProps) {
               videoElement.pause();
             },
           });
+        }
+        if (videoButton.current) {
           gsap.to(videoButton.current, {
             duration: 1,
             y: "0vh",
@@ -115,14 +123,14 @@ export default function VideoSection(props: ChildProps) {
             delay: 0,
             ease: "expo.inOut",
           });
-          if (buttonIcon) {
-            gsap.to(buttonIcon, {
-              duration: 1,
-              rotate: 0,
-              delay: 0.5,
-              ease: "easeInOut",
-            });
-          }
+        }
+        if (buttonIcon) {
+          gsap.to(buttonIcon, {
+            duration: 1,
+            rotate: 0,
+            delay: 0.5,
+            ease: "easeInOut",
+          });
         }
         wrapper.current?.classList.remove("z-50");
         wrapper.current?.classList.add("z-20");
@@ -150,7 +158,7 @@ export default function VideoSection(props: ChildProps) {
           className="absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
         >
           <ThemeButton2
-            extraClass="w-29.25 h-29.25 flex items-center justify-center border-2 border-[#C3A13F] group"
+            extraClass="w-20 h-20 p-5 sm:p-0 sm:w-29.25 sm:h-29.25 flex items-center justify-center border-2 border-[#C3A13F] group"
             bgColor="bg-[#0F0F0F85]"
             hoverBgColor="bg-[#000000]"
             svgIcon={<PlusIcon />}

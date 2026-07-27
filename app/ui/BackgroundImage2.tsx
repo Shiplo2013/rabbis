@@ -46,7 +46,11 @@ export default function BackgroundImage2(props: ChildProps) {
         return;
       }
       // Banner Background
-      if (background.current) {
+      if (
+        background.current &&
+        props.offsetTopAdded &&
+        window.innerWidth > 1024
+      ) {
         gsap.set(background.current, { scale: 1.4, x: "20vw" });
         const animation = gsap.to(background.current, {
           x: "-30vw",

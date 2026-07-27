@@ -25,20 +25,22 @@ export default function BackgroundImage3(props: ChildProps) {
   useGSAP(
     () => {
       // Banner Background
-      gsap.set(background.current, { scale: 1.4, x: "20vw" });
-      gsap.to(background.current, {
-        x: "-10vw",
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * props.start;
+      if (background.current && window.innerWidth > 1024) {
+        gsap.set(background.current, { scale: 1.4, x: "20vw" });
+        gsap.to(background.current, {
+          x: "-10vw",
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * props.start;
+            },
+            end: () => {
+              return "+=" + window.innerWidth * 1.5;
+            },
+            scrub: 2,
           },
-          end: () => {
-            return "+=" + window.innerWidth * 1.5;
-          },
-          scrub: 2,
-        },
-      });
+        });
+      }
     },
     { scope: background, dependencies: [pathname] },
   );

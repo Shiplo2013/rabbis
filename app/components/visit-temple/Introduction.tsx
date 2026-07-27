@@ -63,11 +63,11 @@ export default function Introduction(props: ChildProps) {
         <div className="section-wrapper text-right flex justify-center flex-row-reverse items-center gap-x-[3.75vw]">
           <h1
             dir="rtl"
-            className="intro-title text-[320px] text-[#AC832E] font-bold leading-[0.7em] overflow-hidden relative z-20 py-13"
+            className="intro-title text-[85px] leading-[0.9em] sm:text-[150px] lg:text-[320px] text-[#AC832E] font-bold sm:leading-[0.9em] lg:leading-[0.7em] overflow-hidden relative z-20 py-13 [&>.direction-rtl3-mask]:leading-[0.5em] sm:[&>.direction-rtl3-mask]:leading-[0.6em]"
           >
             {parse(introData?.title || "")}
           </h1>
-          <div className="intro-image absolute right-[14.5vw] top-[16vh] w-[17.70vw] h-[63.5vh] z-10 will-change-transform">
+          <div className="intro-image absolute right-[1vw] lg:right-[14.5vw] top-[35vh] sm:top-[30vh] lg:top-[16vh] w-40 sm:w-60 h-auto lg:w-[17.70vw] lg:h-[63.5vh] z-10 will-change-transform">
             <Image
               className="w-full h-full object-cover"
               src={introData?.image?.src || introData?.image?.url}

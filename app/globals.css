@@ -615,6 +615,15 @@ body {
   }
 }
 
+/* // Resonsive Design */
+@media (max-width: 1024px) {
+  .direction-rtl3 {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: -20px;
+  }
+}
+
 /* equilizer Animation */
 @keyframes Bounce {
   0% {
@@ -629,7 +638,8 @@ body {
 }
 
 body::-webkit-scrollbar,
-html::-webkit-scrollbar {
+html::-webkit-scrollbar,
+.menu-wrapper::-webkit-scrollbar {
   display: none;
 }
 .sito-mark {

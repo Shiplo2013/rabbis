@@ -3,7 +3,7 @@ import SingleGraduates from "@/app/ui/SingleGraduates";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import image1 from "../../assets/images/graduates-banner-image1.png";
 import image2 from "../../assets/images/graduates-banner-image2.png";
 import { gsap, useGSAP } from "../../ui/plugins";
@@ -14,13 +14,14 @@ if (typeof window !== "undefined") {
 }
 
 interface ChildProps {
+  style?: React.CSSProperties;
   extraClass: string;
   animWidthText: number;
   GraduateData: { title: string; content: string }[];
   pageLinks: { page_title: string; page_link: string; page_image: any }[];
 }
 
-export default function GraduateListSection(props: ChildProps) {
+export default function GraduatesListSection(props: ChildProps) {
   // state
   const pathname = usePathname();
   const router = useRouter();
@@ -90,27 +91,20 @@ export default function GraduateListSection(props: ChildProps) {
     }
   };
 
-  useEffect(() => {
-    console.log(
-      "GraduateListSection Props:",
-      props.GraduateData,
-      props.pageLinks,
-    );
-  }, [props.GraduateData, props.pageLinks]);
-
   return (
     <section
       ref={wrapper}
       dir="rtl"
+      style={props.style}
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
-      <div className="graduates-wrapper w-full h-auto flex items-center gap-x-[9.16vw]">
-        <div className="sheet-content flex items-stretch gap-x-[3.3vw] will-change-transform">
+      <div className="graduates-wrapper w-full h-auto flex items-center gap-x-[9.16vw] gap-y-20 flex-col lg:flex-row relative z-20">
+        <div className="sheet-content w-full lg:w-auto flex items-stretch gap-x-[3.3vw] gap-y-5 will-change-transform flex-col sm:flex-row flex-wrap lg:flex-nowrap">
           {props.GraduateData?.map((item, index) => (
             <SingleGraduates key={index} data={item} />
           ))}
         </div>
-        <div className="graduate-readmore w-[38vw] flex flex-col gap-y-[9.36vh] relative">
+        <div className="graduate-readmore w-full lg:w-[38vw] flex flex-col gap-y-10 sm:gap-y-[9.36vh] relative">
           {PageLinks.map((item, index) => (
             <div
               key={index}
@@ -122,7 +116,7 @@ export default function GraduateListSection(props: ChildProps) {
                 onMouseEnter={handleMouseOver}
                 onMouseLeave={handleMouseOut}
                 data-index={index}
-                className="text-[55px] leading-[70%] text-[#D1A941] py-[5.38vh] block relative z-30"
+                className="text-[40px] sm:text-[55px] leading-[70%] text-[#D1A941] py-10 sm:py-[5.38vh] block relative z-30"
               >
                 {item.page_title}
               </Link>

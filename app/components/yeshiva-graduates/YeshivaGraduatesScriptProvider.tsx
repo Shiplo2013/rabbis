@@ -128,7 +128,12 @@ export default function YeshivaGraduatesScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -572,12 +577,17 @@ export default function YeshivaGraduatesScriptProvider({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen h-auto lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`sections-wrapper flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className="sections-wrapper flex flex-wrap lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) h-auto lg:h-screen items-center will-change-transform"
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -598,7 +608,12 @@ export default function YeshivaGraduatesScriptProvider({
             />
 
             <GraduateListSection
-              extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] pr-[6.25vw]`}
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              extraClass="w-full lg:min-w-(--section-width) lg:w-(--section-width) h-auto lg:h-screen panel-section will-change-transform py-[5vh] lg:py-[5vw] px-10 sm:px-[5vw] lg:pl-0 lg:pr-[6.25vw]"
               GraduateData={GraduateData}
               animWidthText={1}
               pageLinks={pageData?.acf?.page_links || []}
