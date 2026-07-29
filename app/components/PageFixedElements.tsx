@@ -470,7 +470,7 @@ export default function PageFixedElements() {
       {/* Zatzel Graduates Popup */}
       {/* Music Page Player and fixed image */}
       {(pathname === "/the-circle-of-the-year" ||
-        pathname === "/the-circle-of-the-year/*") && (
+        pathname.startsWith("/the-circle-of-the-year/")) && (
         <>
           <div
             id="hover-image"

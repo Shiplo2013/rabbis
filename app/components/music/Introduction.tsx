@@ -21,8 +21,8 @@ export default function Introduction(props: ChildProps) {
     >
       <div className="section-bg bg-linear-to-r from-[#525A45] to-[#21281A] absolute top-0 right-0 w-[170vw] h-full z-10"></div>
       <div dir="ltr" className="flex items-center w-full h-full relative z-30">
-        <div className="turntable absolute w-213 h-[60vh] top-[30%] right-[16%] opacity-10">
-          <div className="disk absolute left-[10%] top-0 w-127">
+        <div className="turntable absolute w-140 h-100 lg:w-213 lg:h-[60vh] top-[30%] right-[20%] lg:right-[16%] opacity-10">
+          <div className="disk absolute left-[10%] top-0 w-100 h-auto lg:w-127">
             <Image
               className="bg-image w-full object-cover object-center h-full"
               src={TurntableDisk?.src}
@@ -34,7 +34,7 @@ export default function Introduction(props: ChildProps) {
               alt="Turntable"
             />
           </div>
-          <div className="head absolute right-[5vw] top-[1vw] w-86 origin-top-right -rotate-20">
+          <div className="head absolute right-0 lg:right-[5vw] top-[1vw] w-60 lg:w-86 origin-top-right -rotate-20">
             <Image
               className="bg-image w-full object-cover object-center h-full"
               src={TurntableHead?.src}
@@ -48,7 +48,7 @@ export default function Introduction(props: ChildProps) {
           </div>
         </div>
         <div className="section-wrapper text-right flex flex-col items-end gap-x-[3.75vw]">
-          <h1 className="intro-title text-[135px] text-white leading-[0.6em] overflow-hidden relative z-20 py-7.5">
+          <h1 className="intro-title text-[60px] sm:text-[80px] lg:text-[135px] text-white leading-[0.6em] overflow-hidden relative z-20 py-7.5">
             {parse(props.data?.title)}
           </h1>
         </div>

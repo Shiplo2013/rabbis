@@ -63,11 +63,13 @@ export default function TerribleDaysSection(props: ChildProps) {
               ease: "none",
               scrollTrigger: {
                 start: () => {
-                  return (
-                    getTimelineOffset() +
-                    GetRightPosition(floatImage1.current) -
-                    window.innerWidth * 0.5
-                  );
+                  return window.innerHeight > 1024
+                    ? getTimelineOffset() +
+                        GetRightPosition(floatImage1.current) -
+                        window.innerWidth * 0.5
+                    : (wrapper.current?.getBoundingClientRect().top || 0) +
+                        window.scrollY -
+                        window.innerWidth * 0.5;
                 },
                 end: () => {
                   return "+=" + window.innerWidth * 1.5;
@@ -82,11 +84,13 @@ export default function TerribleDaysSection(props: ChildProps) {
               ease: "none",
               scrollTrigger: {
                 start: () => {
-                  return (
-                    getTimelineOffset() +
-                    GetRightPosition(floatImage2.current) -
-                    window.innerWidth * 0.5
-                  );
+                  return window.innerHeight > 1024
+                    ? getTimelineOffset() +
+                        GetRightPosition(floatImage2.current) -
+                        window.innerWidth * 0.5
+                    : (wrapper.current?.getBoundingClientRect().top || 0) +
+                        window.scrollY -
+                        window.innerWidth * 0.5;
                 },
                 end: () => {
                   return "+=" + window.innerWidth * 1.5;
@@ -129,7 +133,7 @@ export default function TerribleDaysSection(props: ChildProps) {
   useGSAP(
     () => {
       // Banner Background
-      if (background.current) {
+      if (background.current && window.innerWidth > 1024) {
         gsap.set(background.current, { scale: 1.2, x: "20vw" });
         gsap.to(background.current, {
           x: "-50vw",
@@ -153,20 +157,20 @@ export default function TerribleDaysSection(props: ChildProps) {
     <section
       ref={wrapper}
       dir="rtl"
-      className={`${props.extraClass} h-screen bg-[#FAE7C8] flex items-center relative z-20 overflow-hidden`}
+      className={`${props.extraClass} lg:h-screen bg-[#FAE7C8] flex items-center relative z-20 overflow-hidden`}
     >
       <div
         ref={background}
         style={{
           backgroundImage: `url(${TerribleBG.src})`,
         }}
-        className={`terrible-section-bg absolute top-0 right-0 w-full h-full z-10 bg-contain bg-repeat-x`}
+        className={`terrible-section-bg absolute top-0 right-0 w-full h-full z-10 lg:bg-contain bg-repeat-y lg:bg-repeat-x`}
       ></div>
-      <div className="terrible-wrapper w-full h-full relative z-40 text-[#344128] flex">
-        <div className="terrible-intro w-[75vw] h-full flex items-center justify-center relative p-[8vh_5vw]">
+      <div className="terrible-wrapper w-full h-full relative z-40 text-[#344128] flex flex-col lg:flex-row">
+        <div className="terrible-intro w-full lg:w-[75vw] lg:h-full flex items-center justify-center relative p-[15vh_10vw_5vh_10vw] lg:p-[8vh_5vw]">
           <div
             ref={floatImage1}
-            className="float-image1 absolute top-[24.5%] left-[22.2%] w-36.75 h-55.25 -rotate-[7.97deg]"
+            className="float-image1 absolute top-[24.5%] left-0 sm:left-[5%] lg:left-[22.2%] w-22 h-auto lg:w-36.75 lg:h-55.25 -rotate-[7.97deg]"
           >
             <Image
               className="float-image w-full object-contain object-center h-full"
@@ -183,23 +187,23 @@ export default function TerribleDaysSection(props: ChildProps) {
               alt="Turntable"
             />
           </div>
-          <div className="intro-wrapper max-w-150 text-center flex flex-col gap-y-[3.6vh] relative z-30">
+          <div className="intro-wrapper max-w-150 text-center flex flex-col gap-y-8 lg:gap-y-[3.6vh] relative z-30">
             <h2
               ref={introTitle}
-              className="title text-[128px] leading-[80%] overflow-hidden"
+              className="title text-[60px] sm:text-[80px] lg:text-[128px] leading-[80%] overflow-hidden"
             >
               {parse(pageData?.acf?.introduction?.album_title || "")}
             </h2>
             <h5
               ref={introSubtitle}
-              className="subtitle text-[35px] leading-[90%] overflow-hidden"
+              className="subtitle text-[22px] lg:text-[35px] leading-[90%] overflow-hidden"
             >
               {parse(pageData?.acf?.introduction?.album_subtitle || "")}
             </h5>
           </div>
           <div
             ref={floatImage2}
-            className="float-image2 absolute top-[19%] right-[27%] w-39.5 h-59.5 rotate-[7.97deg]"
+            className="float-image2 absolute top-[25%] lg:top-[19%] right-0 sm:ight-[10%] lg:right-[27%] w-25 h-auto lg:w-39.5 lg:h-59.5 rotate-[7.97deg]"
           >
             <Image
               className="float-image w-full object-contain object-center h-full"
@@ -217,38 +221,55 @@ export default function TerribleDaysSection(props: ChildProps) {
             />
           </div>
         </div>
-        <div className="terrible-content w-[77vw] h-full flex items-center justify-center relative p-[8vh_5vw]">
-          <div className="content-wrapper scroll-bar-content relative flex gap-x-[4.6vw] w-full items-start">
+        <div className="terrible-content w-full lg:w-[77vw] h-full flex items-center justify-center relative p-[5vh_8vw] lg:p-[8vh_5vw]">
+          <div className="content-wrapper scroll-bar-content relative flex gap-x-[4.6vw] w-full items-start flex-col lg:flex-row gap-y-8">
             <div className="content-right w-full">
-              <SimpleBar
-                style={{
-                  maxHeight: "70vh",
-                  paddingRight: 20,
-                  marginRight: -20,
-                }}
-                autoHide={true}
-              >
-                <h3 className="title text-[35px] leading-[85%] text-right">
-                  {parse(pageData?.acf?.content_section?.title || "")}
-                </h3>
-                <div className="text text-[21px] leading-[150%]">
-                  {parse(pageData?.acf?.content_section?.text_1 || "")}
-                </div>
-              </SimpleBar>
+              {typeof window !== "undefined" && window.innerWidth > 1024 ? (
+                <SimpleBar
+                  style={{
+                    maxHeight: "70vh",
+                    paddingRight: 20,
+                    marginRight: -20,
+                  }}
+                  autoHide={true}
+                >
+                  <h3 className="title text-[22px] sm:text-[28px] lg:text-[35px] mb-5 leading-[85%] text-right">
+                    {parse(pageData?.acf?.content_section?.title || "")}
+                  </h3>
+                  <div className="text text-[16px] sm:text-[18px] lg:text-[21px] leading-[150%]">
+                    {parse(pageData?.acf?.content_section?.text_1 || "")}
+                  </div>
+                </SimpleBar>
+              ) : (
+                <>
+                  <h3 className="title text-[22px] sm:text-[28px] lg:text-[35px] mb-5 leading-[85%] text-right">
+                    {parse(pageData?.acf?.content_section?.title || "")}
+                  </h3>
+                  <div className="text text-[16px] sm:text-[18px] lg:text-[21px] leading-[150%]">
+                    {parse(pageData?.acf?.content_section?.text_1 || "")}
+                  </div>
+                </>
+              )}
             </div>
-            <div className="content-left w-full text-[21px] leading-[150%] text-right relative max-h-[60vh]">
-              <SimpleBar
-                style={{
-                  maxHeight: "60vh",
-                  paddingRight: 20,
-                  marginRight: -20,
-                }}
-                autoHide={false}
-              >
-                <div className="text">
+            <div className="content-left w-full text-[16px] sm:text-[18px] lg:text-[21px] leading-[150%] text-right relative max-h-[60vh]">
+              {typeof window !== "undefined" && window.innerHeight > 1024 ? (
+                <SimpleBar
+                  style={{
+                    maxHeight: "60vh",
+                    paddingRight: 20,
+                    marginRight: -20,
+                  }}
+                  autoHide={false}
+                >
+                  <div className="text w-full">
+                    {parse(pageData?.acf?.content_section?.text_2 || "")}
+                  </div>
+                </SimpleBar>
+              ) : (
+                <div className="text w-full">
                   {parse(pageData?.acf?.content_section?.text_2 || "")}
                 </div>
-              </SimpleBar>
+              )}
               <div className="float-image absolute left-0 bottom-0 w-62.25 h-39.75 -ml-22.5 -mb-10">
                 <Image
                   className="float-image w-full object-contain object-center h-full"
@@ -264,9 +285,9 @@ export default function TerribleDaysSection(props: ChildProps) {
             </div>
           </div>
         </div>
-        <div className="terrible-musics w-[60vw] mr-[10vw] h-full flex flex-col items-center justify-start gap-y-[17.65vh] relative p-[15vh_5vw]">
+        <div className="terrible-musics w-full lg:w-[60vw] lg:mr-[10vw] h-full flex flex-col items-center justify-start gap-y-[10vh] lg:gap-y-[17.65vh] relative p-[7vh_8vw] sm:p-[10vh_8vw] lg:p-[15vh_5vw]">
           <div className="music-title w-full">
-            <h2 className="text-[#344128] text-[101px] leading-[76%]">
+            <h2 className="text-[#344128] text-[60px] sm:text-[80px] lg:text-[101px] leading-[76%]">
               {parse(pageData?.acf?.music_albums?.section_title || "")}
             </h2>
           </div>
@@ -276,9 +297,9 @@ export default function TerribleDaysSection(props: ChildProps) {
                 <div
                   key={index}
                   onClick={() => handleAlbumClick(index)}
-                  className="music-album group flex flex-col gap-y-3 cursor-pointer max-w-[12.5vw] w-full items-center justify-top"
+                  className="music-album group flex flex-col gap-y-5 lg:gap-y-3 cursor-pointer max-w-1/3 lg:max-w-[12.5vw] w-full items-center justify-top"
                 >
-                  <div className="icon w-[12.5vw] h-auto relative">
+                  <div className="icon w-20 sm:w-30 lg:w-[12.5vw] h-auto relative">
                     <div className="icon-default w-full h-full relative group-hover:opacity-0 group-hover:scale-90 transition-all duration-200 ease-in-out">
                       <Image
                         className="bg-image w-full object-cover object-center h-full"
@@ -311,7 +332,7 @@ export default function TerribleDaysSection(props: ChildProps) {
                     </div>
                   </div>
                   <div className="title">
-                    <h4 className="text-[45px] leading-[70%] text-[#C3A13F] text-center">
+                    <h4 className="text-[22px] sm:text-[30px] lg:text-[45px] leading-[70%] text-[#C3A13F] text-center">
                       {item.album_title}
                     </h4>
                   </div>

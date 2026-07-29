@@ -33,7 +33,7 @@ export default function CustomContentItem({
 
   return (
     <div
-      className={`custom-content-item bg-[#FBF4E6] border border-[#D1CECE] relative will-change-transform w-[25.4vw] py-[8.8vh] pr-7 pl-[4.5vw] text-[#000000]`}
+      className={`custom-content-item bg-[#FBF4E6] border border-[#D1CECE] relative will-change-transform w-full lg:w-[25.4vw] py-[8.8vh] pr-7 pl-[4.5vw] text-[#000000]`}
     >
       <div className="custom-content-wrapper">
         <Link
@@ -44,18 +44,18 @@ export default function CustomContentItem({
           }
           onClick={handleLinkClick}
         >
-          <h2 className="text-[#231F20] text-[38px] leading-[1em] font-bold mb-2">
+          <h2 className="text-[#231F20] text-[25px] sm:text-[38px] leading-[1em] font-bold mb-2">
             {parse(parsedData?.title?.rendered || "")}
           </h2>
         </Link>
-        <h4 className="text-[38px] leading-[1em] mb-[5.5vh]">
+        <h4 className="text-[25px] sm:text-[38px] leading-[1em] mb-[5.5vh]">
           {parse(parsedData?.acf?.subtitle || "")}
         </h4>
-        <div className="excerpt text-[22px] leading-[0.9em]">
+        <div className="excerpt text-[18px] sm:text-[22px] leading-[0.9em]">
           {parse(parsedData?.excerpt?.rendered || "")}
         </div>
       </div>
-      <div className="post-button absolute left-7 bottom-7.5">
+      <div className="post-button absolute left-7 bottom-5 lg:bottom-7.5">
         <ThemeButton
           buttonLink={
             parsedData?.slug

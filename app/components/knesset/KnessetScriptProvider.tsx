@@ -140,7 +140,12 @@ export default function KnessetScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -550,12 +555,17 @@ export default function KnessetScriptProvider({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            style={
+              {
+                "--section-width": `${sectionWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp w-full flex lg:flex-nowrap flex-col lg:flex-row-reverse lg:w-(--section-width) lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -575,7 +585,12 @@ export default function KnessetScriptProvider({
               }}
             />
             <CustomsContentSection
-              extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-12 px-[10vw] sm:py-[5vw] sm:px-[10vw] sm:px-[6.25vw]`}
               animWidthText={1}
               data={knessetPageData?.postsData}
               categories={knessetPageData?.categoriesData || []}

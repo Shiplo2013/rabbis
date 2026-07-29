@@ -43,7 +43,7 @@ export default function Sidebar({
     <div className="sheet-sidebar-wrapper text-[#1A1A1A]">
       <div className="search-group relative mb-[3.6vh]">
         <input
-          className="text-[24px] text-[#D1A941] placeholder:text-[#D1A941] leading-[1em] bg-white p-2.25 focus:outline-0 max-w-full pl-8"
+          className="text-[24px] text-[#D1A941] placeholder:text-[#D1A941] leading-[1em] bg-white p-2.25 focus:outline-0 max-w-full w-full pl-8"
           type="text"
           id="search-sheet"
           name="Search-Sheet"

@@ -501,7 +501,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
         />
       </div>
 
-      <div className="player-wrapper w-full h-full relative z-40 py-[10vh] px-[5vw]">
+      <div className="player-wrapper w-full h-full relative z-40 px-[7vw] pb-20 py-[7vw] lg:py-[10vh] lg:px-[5vw]">
         {/* ── Close button ── */}
         <button
           onClick={() => {
@@ -513,8 +513,8 @@ export default function MirrorAudioPlayer(props: ChildProps) {
           <CloseIcon2 className="w-5 h-auto" />
         </button>
 
-        <div className="player-content flex items-start w-full h-full gap-x-[4.4vw]">
-          <div className="player-widgets w-[20%]">
+        <div className="player-content flex items-start w-full h-full gap-x-[4.4vw] flex-col lg:flex-row gap-y-10 overflow-auto overflow-x-hidden pb-15 lg:pb-0">
+          <div className="player-widgets w-full lg:w-[20%]">
             <div className="album-widget w-full h-full px-3.5 py-4.5 pb-8 bg-linear-to-b from-[#ffffff15] to-[#ffffff08] backdrop-blur-lg rounded-3xl drop-shadow-[0_21px_70px_0_rgba(0,0,0,0.55)]">
               {/* Album thumb */}
               <div className="album-thumb w-full h-83.5 rounded-[20] overflow-hidden relative">
@@ -584,12 +584,12 @@ export default function MirrorAudioPlayer(props: ChildProps) {
               </div>
             </div>
           </div>
-          <div className="player-left w-[calc(80%-4.4vw)] flex flex-col gap-y-[7vh]">
+          <div className="player-left w-full lg:w-[calc(80%-4.4vw)] flex flex-col gap-y-[7vh]">
             <div className="player-content flex flex-col gap-y-[2vh]">
-              <h2 className="text-[#C3A13F] text-[55px] leading-[75%]">
+              <h2 className="text-[#C3A13F] text-[35px] sm:text-[55px] leading-[75%]">
                 {parse(musicPageData?.introduction?.album_title || "")}
               </h2>
-              <div className="text max-w-177 text-[23px] leading-[120%]">
+              <div className="text max-w-177 text-[18px] lg:text-[23px] leading-[120%]">
                 {parse(musicPageData?.introduction?.album_subtitle || "")}
               </div>
             </div>
@@ -610,7 +610,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                         <div
                           data-key={index}
                           onClick={() => props.setActiveTab(index)}
-                          className={`single-tab-head min-w-60 w-auto text-[#ffffff] text-[24px] leading-[100%] ${props.activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300 ${props.activeTab === index && "active-tab"}`}
+                          className={`single-tab-head min-w-40 sm:min-w-60 w-auto text-[#ffffff] text-[18px] sm:text-[24px] leading-[100%] ${props.activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300 ${props.activeTab === index && "active-tab"}`}
                         >
                           <p>{parse(item.album_title || "")}</p>
                           <span className="icon w-3">
@@ -645,7 +645,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                     <div className="tab-music-list mt-7.5">
                       <SimpleBar
                         style={{
-                          maxHeight: "34vh",
+                          maxHeight: window.innerWidth > 1024 ? "34vh" : "auto",
                           paddingLeft: 20,
                           paddingRight: 0,
                           marginLeft: -20,
@@ -679,20 +679,20 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                                   <div className="icon min-w-8">
                                     <PlayIcon2 />
                                   </div>
-                                  <h5 className="text-[24px] leading-[1.2em]">
+                                  <h5 className="text-[18px] sm:text-[24px] leading-[1em] sm:leading-[1.2em]">
                                     {parse(item?.title || "")}
                                   </h5>
                                 </div>
 
                                 {/* Playing animation icon */}
                                 <div
-                                  className={`music-play absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${isActive ? "opacity-100" : "opacity-0"}`}
+                                  className={`music-play max-w-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${isActive ? "opacity-100" : "opacity-0"}`}
                                 >
                                   <PlayingIcon />
                                 </div>
 
                                 {/* Duration — shows real time once loaded, otherwise cached */}
-                                <div className="duration text-[21px] leading-[100%] text-[#FBF4E6]">
+                                <div className="duration text-[16px] sm:text-[21px] leading-[100%] text-[#FBF4E6]">
                                   <p>
                                     {isActive
                                       ? formatTime(duration) ||
@@ -745,7 +745,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                 <div
                   ref={timelineRef}
                   onMouseDown={handleTimelineMouseDown}
-                  className="player-timeline w-[38.4vw] h-2 border border-[#FFFFFF14] rounded-full relative cursor-pointer group select-none"
+                  className="player-timeline w-[25vw] lg:w-[38.4vw] h-2 border border-[#FFFFFF14] rounded-full relative cursor-pointer group select-none"
                 >
                   {/* Filled progress */}
                   <div

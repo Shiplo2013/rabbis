@@ -142,7 +142,9 @@ export default function KnessetScriptProviderSlug({
   useEffect(() => {
     const logo = document.getElementById("logo-light");
     const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
-    logoImage?.classList.remove("white-image");
+    if (window.innerWidth > 1024) {
+      logoImage?.classList.remove("white-image");
+    }
   }, [pathname]);
 
   // Set Body Overflow Hidden
@@ -256,13 +258,13 @@ export default function KnessetScriptProviderSlug({
         dir="rtl"
         className="main relative overflow-hidden z-10 bg-[#F5F0EB]"
       >
-        <section className="knesset-page min-h-screen w-full flex justify-center items-start relative z-20 pt-[20vh] pb-[10vh] px-5">
-          <div className="knesset-wrapper max-w-375 w-[80%] flex items-start gap-x-[2.5vw]">
-            <div className="knesset-left-content w-[74%]">
-              <h1 className="text-[55px] leading-[70%] font-bold text-[#D1A941] italic">
+        <section className="knesset-page min-h-screen w-full flex justify-center items-start relative z-20 pt-35 lg:pt-[20vh] pb-10 sm:pb-15 lg:pb-[10vh] px-[10vw] lg:px-5">
+          <div className="knesset-wrapper w-full lg:max-w-375 lg:w-[80%] flex items-start flex-col lg:flex-row gap-x-[2.5vw] gap-y-10">
+            <div className="knesset-left-content w-full lg:w-[74%]">
+              <h1 className="text-[40px] sm:text-[55px] leading-[70%] font-bold text-[#D1A941] italic">
                 {parse(post?.title?.rendered)}
               </h1>
-              <div className="breadcumb text-[22px] leading-[1.1em] text-[#000000] mt-[5vh] mb-[6vh] flex items-center gap-x-3">
+              <div className="breadcumb text-[18px] leading-[1em] sm:text-[22px] sm:leading-[1.1em] text-[#000000] my-10 sm:mt-[5vh] sm:mb-[6vh] flex items-center gap-x-3">
                 <Link
                   href="/"
                   className="home hover:text-[#D1A941] transition-colors duration-300"
@@ -283,12 +285,12 @@ export default function KnessetScriptProviderSlug({
                 </span>
                 <span className="post">{parse(post?.title?.rendered)}</span>
               </div>
-              <div className="knesset-content text-[#000000] text-[21px] leading-[1.4em] [&>h2]:text-[55px] [&>h2]:leading-[1em] [&>h2]:mb-[5vh] [&>h3]:text-[38px] [&>h3]:leading-[1em] [&>h3]:mb-[3vh] [&>p]:mb-[5vh]">
+              <div className="knesset-content text-[#000000] text-[16px] sm:text-[21px] leading-[1.4em] [&>h2]:text-[35px] sm:[&>h2]:text-[55px] [&>h2]:leading-[1em] [&>h2]:mb-[5vh] [&>h3]:text-[24px] sm:[&>h3]:text-[38px] [&>h3]:leading-[1em] [&>h3]:mb-[3vh] [&>p:not(:last-child)]:mb-6 sm:[&>p:not(:last-child)]:mb-[5vh] [&>hr]:mb-6">
                 {parse(post?.content?.rendered)}
               </div>
             </div>
-            <div className="knesset-left-sidebar w-[26%]">
-              <div className="related-posts flex flex-col gap-y-[5vh] pr-7.5 border-r border-[#000000]">
+            <div className="knesset-left-sidebar w-full lg:w-[26%]">
+              <div className="related-posts flex flex-col gap-y-[5vh] lg:pr-7.5 lg:border-r border-[#000000]">
                 {allPosts?.map((item: any, index: number) => {
                   if (
                     decodeURIComponent(item.slug) === decodeURIComponent(slug)
@@ -302,7 +304,7 @@ export default function KnessetScriptProviderSlug({
                     >
                       <Link
                         href={`/the-knesset-of-customs/${item.slug}`}
-                        className="text-[30px] leading-[70%] text-[#D1A941] hover:text-[#000000] transition-colors duration-300"
+                        className="text-[24px] sm:text-[30px] leading-[90%] sm:leading-[70%] text-[#D1A941] hover:text-[#000000] transition-colors duration-300"
                       >
                         {parse(item?.title?.rendered)}
                       </Link>
@@ -312,7 +314,7 @@ export default function KnessetScriptProviderSlug({
                             ? `/the-knesset-of-customs/${item.slug}`
                             : "#"
                         }
-                        extraClass="w-15 h-12.5 flex items-center justify-center rounded-full"
+                        extraClass="w-12 h-9 sm:w-15 sm:h-12.5 flex items-center justify-center rounded-full"
                         bgColor={"bg-[#C3A13F]"}
                         svgIconClass={""}
                         svgIcon={

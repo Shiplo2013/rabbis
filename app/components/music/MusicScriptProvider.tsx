@@ -211,7 +211,12 @@ export default function MusicScriptProvider({ data }: { data: any }) {
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -289,11 +294,15 @@ export default function MusicScriptProvider({ data }: { data: any }) {
   // Set Page Content Animation
   useGSAP(() => {
     // Page Content Animation
-    const turnTable = main.current?.querySelector(".first-intro .turntable");
-    const musicCatList = main.current?.querySelector(".music-cat-wrapper");
+    const turnTable = main.current?.querySelector(
+      ".first-intro .turntable",
+    ) as HTMLDivElement | null;
+    const musicCatList = main.current?.querySelector(
+      ".music-cat-wrapper",
+    ) as HTMLDivElement | null;
 
     // Animations
-    if (turnTable) {
+    if (turnTable && window.innerWidth > 1024) {
       gsap.to(turnTable, {
         xPercent: -100,
         ease: "none",
@@ -307,9 +316,23 @@ export default function MusicScriptProvider({ data }: { data: any }) {
           scrub: 2,
         },
       });
+    } else {
+      gsap.to(turnTable, {
+        yPercent: 100,
+        ease: "none",
+        scrollTrigger: {
+          start: () => {
+            return 0;
+          },
+          end: () => {
+            return "+=" + window.innerWidth * 1.5;
+          },
+          scrub: 2,
+        },
+      });
     }
     // Animations
-    if (musicCatList) {
+    if (musicCatList && window.innerWidth > 1024) {
       gsap.to(musicCatList, {
         xPercent: 0,
         opacity: 1,
@@ -409,30 +432,30 @@ export default function MusicScriptProvider({ data }: { data: any }) {
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[452vw] h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[452vw] lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
               animationStatus={isAllAnimationComplete}
               data={musicPageData?.musicPage?.acf?.introduction}
               extraClass={
-                "first-intro panel-section will-change-transform min-w-[75vw] w-[75vw]"
+                "first-intro panel-section will-change-transform w-full lg:min-w-[75vw] lg:w-[75vw]"
               }
             />
             <MusicCategoryList
-              extraClass="music-categories panel-section will-change-transform min-w-[70vw] w-[70vw]"
+              extraClass="music-categories panel-section will-change-transform w-full lg:min-w-[70vw] lg:w-[70vw]"
               animWidthText={0}
               data={musicPageData?.holidayPosts}
               activeMusicItem={activeMusicItem}
               setActiveMusicItem={setActiveMusicItem}
             />
             <TerribleDaysSection
-              extraClass="terrieble-content panel-section will-change-transform min-w-[222vw] w-[222vw]"
+              extraClass="terrieble-content panel-section will-change-transform w-full lg:min-w-[222vw] lg:w-[222vw]"
               animWidthText={0.5}
               data={musicPageData?.holidayPosts[activeMusicItem]}
               setAudioPopup={setAudioPopup}
@@ -444,7 +467,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
               setActiveTab={setActiveMusicTab}
             />
             <MirrorsSection
-              extraClass="mirrors-content panel-section will-change-transform min-w-[85vw] w-[85vw]"
+              extraClass="mirrors-content panel-section will-change-transform w-full lg:min-w-[85vw] lg:w-[85vw]"
               animWidthText={3.8}
               data={
                 musicPageData?.holidayPosts[activeMusicItem]?.acf
