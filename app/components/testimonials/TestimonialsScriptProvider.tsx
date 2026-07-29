@@ -1,4 +1,5 @@
 "use client";
+import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -67,10 +68,11 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
         itemWidths += testimonial?.offsetWidth || 0;
       });
       const newSectionWidth =
-        testimonialsPageData?.acf?.testimonials?.length * (itemWidths / 19.2) +
-        testimonialsPageData?.acf?.testimonials?.length * 10;
+        testimonialsPageData?.acf?.testimonials?.length * 65 +
+        testimonialsPageData?.acf?.testimonials?.length * 10 +
+        10;
       setSectionWidth(newSectionWidth);
-      setContainerWidth(newSectionWidth + 39.7);
+      setContainerWidth(newSectionWidth + 40);
     };
 
     updateSectionWidth();
@@ -82,7 +84,12 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -283,7 +290,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
     // Page Content Animation
     const Testimonials = main.current?.querySelectorAll(
       ".testimonials .testimonial-item",
-    );
+    ) as NodeListOf<HTMLElement> | null;
     if (Testimonials) {
       Testimonials.forEach((testimonial, index) => {
         if (index !== 0) {
@@ -298,9 +305,9 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
             duration: 2,
             scrollTrigger: {
               start: () => {
-                return window.innerWidth * (index * 0.4);
+                return GetRightPosition(testimonial) - window.innerWidth * 1.5;
               },
-              toggleActions: "restart pause resume reverse",
+              toggleActions: "restart none none reverse",
             },
           });
         }
@@ -358,36 +365,46 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
           >
             <div
               dir="rtl"
-              className={`testimonials-content w-[${containerWidth}vw] h-full py-[10vh] px-[10vw] flex items-center gap-x-[6.3vw]`}
+              className={`testimonials-content w-full h-full py-[10vh] px-[8vw] lg:px-[10vw] flex items-center gap-x-[6.3vw] flex-col lg:flex-row`}
             >
-              <div className="introduction w-[33.4vw] min-w-[33.4vw] will-change-transform">
+              <div className="introduction w-full min-h-[60vh] lg:w-[33.4vw] min-w-[33.4vw] will-change-transform flex items-center">
                 <h1
                   dir="ltr"
-                  className="intro-title text-[8vw] leading-[70%] text-[#C3A13F] text-right"
+                  className="intro-title text-[15vw] lg:text-[8vw] leading-[40%] sm:leading-[50%] lg:leading-[70%] text-[#C3A13F] text-right"
                 >
                   {parse(testimonialsPageData?.acf?.title || "")}
                 </h1>
               </div>
               <div
-                className={`testimonials flex h-screen items-center justify-center gap-x-[10vw] w-[${sectionWidth}vw] will-change-transform pl-[10vw]`}
+                style={
+                  {
+                    "--section-width": `${sectionWidth}vw`,
+                  } as React.CSSProperties
+                }
+                className={`testimonials flex w-full lg:h-screen items-center justify-center gap-x-[10vw] lg:w-(--section-width) will-change-transform lg:pl-[10vw] flex-col lg:flex-row gap-y-15 sm:gap-y-[10vh]`}
               >
                 {testimonialsPageData?.acf?.testimonials &&
                   testimonialsPageData?.acf?.testimonials?.map(
                     (testimonial: any, index: number) => (
                       <div
                         key={index}
-                        className="testimonial-item w-[65vw] h-screen flex items-center justify-start gap-x-[2.8vw] will-change-transform"
+                        className="testimonial-item w-full lg:w-[65vw] lg:h-screen flex items-center justify-start gap-x-[2.8vw] will-change-transform flex-col lg:flex-row gap-y-10"
                       >
-                        <div className="testimonial-image w-[40vw] min-w-[40vw] h-[50vh] relative">
+                        <div className="testimonial-image w-full lg:w-[40vw] min-w-[40vw] lg:h-[50vh] relative">
                           {testimonial?.media_type === "video" && (
                             <DonationVideo
                               extraClass={
@@ -397,7 +414,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                             />
                           )}
                           {testimonial?.media_type === "image" && (
-                            <div className="image">
+                            <div className="image w-full">
                               <Image
                                 src={
                                   testimonial?.image?.sizes?.medium_large ||
@@ -413,7 +430,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                         </div>
                         <h2
                           dir="ltr"
-                          className="testimonial-title text-[55px] leading-[70%] text-[#C3A13F] text-right"
+                          className="testimonial-title text-[30px] sm:text-[45px] lg:text-[55px] leading-[70%] text-[#C3A13F] text-right"
                         >
                           {parse(testimonial.title || "")}
                         </h2>

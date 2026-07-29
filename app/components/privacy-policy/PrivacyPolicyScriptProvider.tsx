@@ -309,13 +309,13 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
         dir="ltr"
         className="main relative overflow-hidden z-10 will-change-transform"
       >
-        <div className="privacy-policy-page flex w-screen h-auto min-h-screen items-center justify-center relative overflow-hidden pt-[20vh] pb-[10vh]">
-          <div className="privacy-policy-container w-[80%] max-w-287.5">
-            <div className="privacy-policy-wrapper px-5">
-              <h1 className="privacy-policy-title text-6xl leading-[1em] font-bold mb-8">
+        <div className="privacy-policy-page flex w-screen h-auto min-h-screen items-center justify-center relative overflow-hidden pt-[12vh] sm:pt-[15vh] lg:pt-[20vh] pb-[6vh] lg:pb-[10vh]">
+          <div className="privacy-policy-container w-full lg:w-[80%] max-w-287.5">
+            <div className="privacy-policy-wrapper px-10">
+              <h1 className="privacy-policy-title text-[26px] sm:text-4xl lg:text-6xl leading-[1em] font-bold mb-8">
                 {parse(pageData.title.rendered)}
               </h1>
-              <div className="privacy-policy-content text-[18px] leading-[1.8em] text-[#c9c9c9] [&>h2]:text-3xl [&>h2]:font-bold [&>h2]:mb-3 [&>h3]:text-2xl [&>h3]:font-semibold [&>h3]:mb-2 [&>p:not(:last-child)]:mb-4 [&>ul]:list-disc [&>ul]:ml-5 [&>ul]:mb-4">
+              <div className="privacy-policy-content text-[16px] sm:text-[18px] leading-[1.8em] text-[#c9c9c9] [&>h2]:text-[20px] sm:[&>h2]:text-[24px] lg:[&>h2]:text-3xl [&>h2]:font-bold [&>h2]:mb-3 [&>h3]:text-[20px] lg:[&>h3]:text-2xl [&>h3]:font-semibold [&>h3]:mb-2 [&>p:not(:last-child)]:mb-4 [&>ul]:list-disc [&>ul]:ml-5 [&>ul]:mb-4">
                 {parse(pageData.content.rendered)}
               </div>
             </div>
