@@ -6,6 +6,7 @@ export default function PlayingIcon() {
       viewBox="0 0 300 49"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-auto"
     >
       <path
         opacity="0.95"

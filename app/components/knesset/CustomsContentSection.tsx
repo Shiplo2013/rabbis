@@ -15,6 +15,7 @@ interface ChildProps {
   setPostLoading?: (value: boolean) => void;
   postLoading?: boolean;
   setCurrentScrollPos?: (value: number) => void;
+  style?: React.CSSProperties;
 }
 
 export default function CustomsContentSection(props: ChildProps) {
@@ -28,10 +29,11 @@ export default function CustomsContentSection(props: ChildProps) {
   return (
     <section
       dir="rtl"
+      style={props.style}
       className={`${props.extraClass} bg-[#F5F0EB] flex items-center justify-start relative z-20`}
     >
-      <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[5.8vw]">
-        <div className="sheet-sidebar w-54.5 min-w-[11.35vw] h-full will-change-transform overflow-hidden">
+      <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[5.8vw] flex-col lg:flex-row gap-y-[5vh]">
+        <div className="sheet-sidebar w-full lg:w-54.5 min-w-[11.35vw] h-full will-change-transform overflow-hidden">
           <Sidebar
             activeCategory={props.activeCategory || null}
             categories={categoriesData}
@@ -47,7 +49,7 @@ export default function CustomsContentSection(props: ChildProps) {
             setCurrentScrollPos={props.setCurrentScrollPos}
           />
         </div>
-        <div className="sheet-content flex items-stretch gap-x-[3.2vw] will-change-transform">
+        <div className="sheet-content flex items-stretch gap-x-[3.2vw] gap-y-10 will-change-transform flex-col lg:flex-row w-full h-full overflow-hidden">
           {sectionData?.map((item: any, index: number) => (
             <CustomContentItem
               key={index}

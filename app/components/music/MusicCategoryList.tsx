@@ -98,13 +98,40 @@ export default function MusicCategoryList(props: ChildProps) {
       <section
         ref={wrapper}
         dir="rtl"
-        className={`${props.extraClass} h-screen flex items-center relative z-20`}
+        className={`${props.extraClass} lg:h-screen flex items-center relative z-20`}
       >
-        <div className="music-cat-wrapper w-full h-full px-[4.16vw] pt-[15vh] pb-[8vh]">
-          <SimpleBar
-            style={{ maxHeight: "75vh", paddingLeft: 30, marginLeft: -30 }}
-            autoHide={false}
-          >
+        <div className="music-cat-wrapper w-full h-full px-[8vw] lg:px-[4.16vw] py-[8vh] sm:py-[10vh] lg:pt-[15vh] lg:pb-[8vh]">
+          {window.innerWidth > 1024 ? (
+            <SimpleBar
+              style={{
+                maxHeight: "75vh",
+                paddingLeft: 30,
+                marginLeft: -30,
+              }}
+              autoHide={false}
+            >
+              <div className="music-cat-list border-b border-[#F4EDDD]">
+                {catList?.map((item: any, index: number) => (
+                  <div
+                    key={index}
+                    data-index={index}
+                    onClick={() => handleClick(index)}
+                    className={`music-cat border-t border-[#F4EDDD] py-[3vh] cursor-pointer text-center ${
+                      props.activeMusicItem === index ? "active" : ""
+                    }`}
+                    data-image={
+                      item?.acf?.introduction?.album_image_1?.url ||
+                      item?.acf?.introduction?.album_image_1?.src
+                    }
+                  >
+                    <h3 className="text-[40px] sm:text-[77px] font-light leading-[100%]">
+                      {parse(item?.acf?.introduction?.album_title || "")}
+                    </h3>
+                  </div>
+                ))}
+              </div>
+            </SimpleBar>
+          ) : (
             <div className="music-cat-list border-b border-[#F4EDDD]">
               {catList?.map((item: any, index: number) => (
                 <div
@@ -119,13 +146,13 @@ export default function MusicCategoryList(props: ChildProps) {
                     item?.acf?.introduction?.album_image_1?.src
                   }
                 >
-                  <h3 className="text-[77px] font-light leading-[100%]">
+                  <h3 className="text-[40px] sm:text-[77px] font-light leading-[100%]">
                     {parse(item?.acf?.introduction?.album_title || "")}
                   </h3>
                 </div>
               ))}
             </div>
-          </SimpleBar>
+          )}
         </div>
       </section>
     )

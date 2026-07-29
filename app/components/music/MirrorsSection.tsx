@@ -8,6 +8,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import type { SwiperRef } from "swiper/react";
+import { Swiper, SwiperSlide } from "swiper/react";
 import Album1 from "../../assets/images/album-icon1.png";
 import Album2 from "../../assets/images/album-icon2.png";
 import BgImage from "../../assets/images/mirros-bg.jpg";
@@ -31,6 +36,7 @@ export default function MirrorsSection(props: ChildProps) {
   const imageTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const pathname = usePathname();
   const router = useRouter();
+  const swiperRef = useRef<SwiperRef>(null);
   // Use State
   const pageData = props.data || {};
   const nextPost = props.nextPost || {};
@@ -178,7 +184,7 @@ export default function MirrorsSection(props: ChildProps) {
     <section
       ref={wrapper}
       dir="rtl"
-      className={`${props.extraClass} h-screen bg-black flex items-center relative z-20`}
+      className={`${props.extraClass} lg:h-screen bg-black flex items-center relative z-20`}
     >
       <div className="mirror-bg absolute top-0 left-0 w-full h-full z-10 overflow-hidden">
         <Image
@@ -192,14 +198,73 @@ export default function MirrorsSection(props: ChildProps) {
           alt="Section Background"
         />
       </div>
-      <div className="mirror-section-wrapper w-full h-full relative z-30 pt-[15vh] pb-[10vh] px-[10vw]">
+      <div className="mirror-section-wrapper w-full h-full relative z-30 pt-[8vh] pb-[8vh] lg:pt-[15vh] lg:pb-[10vh] px-[10vw] flex flex-col gap-y-6 sm:gap-y-[5vh] lg:gap-y-0">
         <div className="section-title">
-          <h2 className="text-[#F4EDDD] text-[101px] leading-[76%]">
+          <h2 className="text-[#F4EDDD] text-[60px] sm:text-[80px] lg:text-[101px] leading-[76%]">
             {pageData?.section_title}
           </h2>
         </div>
         <div className="mirror-slider flex items-end justify-center relative">
-          <div className="image-slider w-[28vw] h-[70vh] relative">
+          <div className="mirror-slider-mobile block lg:hidden w-full">
+            <Swiper
+              className="w-full h-auto"
+              ref={swiperRef}
+              slidesPerView={1}
+              loop={true}
+            >
+              {pageData.images.length !== 0 &&
+                pageData.images?.map((item: any, index: number) => {
+                  return (
+                    <SwiperSlide key={index}>
+                      <div className="w-full h-120 lg:h-[50vh]">
+                        <Image
+                          className="w-full h-full object-cover object-center"
+                          src={
+                            item?.sizes?.medium_large ||
+                            item.image?.sizes?.large ||
+                            item.image?.sizes?.medium ||
+                            item.image?.url ||
+                            item.image?.src
+                          }
+                          width={360}
+                          height={500}
+                          alt="Community Image"
+                          blurDataURL={CreateShimmerDataUrl(360, 500)}
+                          placeholder="blur"
+                          loading="lazy"
+                        />
+                      </div>
+                    </SwiperSlide>
+                  );
+                })}
+            </Swiper>
+            <div className="pagination mt-5 flex gap-2 sm:gap-3">
+              {pageData.images?.length !== 0 &&
+                pageData.images?.map((item: any, index: number) => {
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        swiperRef.current?.swiper.slideTo(index);
+                      }}
+                      className={`slide-thumb thumb-image-${index} w-12.5 h-12.5 sm:w-15 sm:h-15 transition-none cursor-pointer`}
+                    >
+                      <Image
+                        className="thumb-image w-full object-cover object-center h-full"
+                        src={item?.sizes?.thumbnail || item?.src}
+                        width="40"
+                        height="40"
+                        blurDataURL={CreateShimmerDataUrl(40, 40)}
+                        placeholder={"blur"}
+                        loading="lazy"
+                        alt="Mirrors Thumb"
+                      />
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+          <div className="image-slider w-100 h-120 max-w-full lg:w-[28vw] lg:h-[70vh] relative hidden lg:block">
             {pageData.images?.map((item: any, index: number) => {
               return (
                 <div
@@ -225,7 +290,7 @@ export default function MirrorsSection(props: ChildProps) {
             })}
           </div>
           {pageData?.videos?.length > 0 && (
-            <div className="video-gallery absolute bottom-[0%] right-20 z-20">
+            <div className="video-gallery absolute bottom-[0%] right-0 lg:right-20 z-20 -mb-25  sm:-mb-35 lg:mb-0">
               {videoSources.length > 0 && (
                 <FsLightbox
                   key={`videos-${videoSources.length}`}
@@ -236,9 +301,9 @@ export default function MirrorsSection(props: ChildProps) {
               )}
               <button
                 onClick={() => setToggler(!toggler)}
-                className="video-popup cursor-pointer w-25 h-auto flex items-center justify-center flex-col group text-[18px]"
+                className="video-popup cursor-pointer w-25 h-auto flex items-center justify-center flex-col group text-[16px] sm:text-[18px]"
               >
-                <div className="icon w-full h-auto flex items-center justify-center relative">
+                <div className="icon w-15 lg:w-full h-auto flex items-center justify-center relative">
                   <div className="static duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-90">
                     <Image
                       className="w-full h-full object-contain object-center"
@@ -262,7 +327,7 @@ export default function MirrorsSection(props: ChildProps) {
               </button>
             </div>
           )}
-          <div className="image-thumb absolute bottom-0 right-0 flex flex-col gap-y-3">
+          <div className="image-thumb absolute bottom-0 right-0 lg:flex flex-col gap-y-3 hidden">
             {pageData.images?.map((item: any, index: number) => {
               return (
                 <div
@@ -286,17 +351,17 @@ export default function MirrorsSection(props: ChildProps) {
           </div>
         </div>
         {nextPost && (
-          <div className="mirror-next absolute left-[4vw] top-1/2">
+          <div className="mirror-next relative lg:absolute lg:left-[4vw] lg:top-1/2 mt-10">
             <Link
               data-id={activeMusicItem}
-              className="group flex flex-col items-start justify-start"
+              className="group flex flex-row-reverse gap-4 lg:gap-0 lg:flex-col items-center lg:items-start justify-start"
               href={"/the-circle-of-the-year/" + nextPost?.slug}
               onClick={handleLinkClick}
             >
               <span className="icon w-5.25 transition-all duration-300 ease-in-out group-hover:-translate-x-6">
                 <ArrowLeftIcon />
               </span>
-              <span className="title text-[36px] text-[#F4EDDD] font-thin">
+              <span className="title text-[24px] sm:text-[36px] text-[#F4EDDD] font-thin">
                 {parse(nextPost?.title.rendered || "")}
               </span>
             </Link>
