@@ -81,7 +81,12 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -270,7 +275,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
             );
           }
           // First Rabbis
-          if (firstRabbis) {
+          if (firstRabbis && window.innerWidth > 1024) {
             tl.to(
               firstRabbis,
               {
@@ -282,6 +287,20 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
               },
               "-=2.5",
             );
+          } else {
+            if (firstRabbis) {
+              tl.to(
+                firstRabbis,
+                {
+                  marginTop: "-10vh",
+                  opacity: 1,
+                  delay: 0,
+                  duration: 3,
+                  ease: "expo.inOut",
+                },
+                "-=2.5",
+              );
+            }
           }
           // Wave Mask Animation
           const waveMask = document.getElementById(
@@ -323,7 +342,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
     );
 
     // First Rabbis
-    if (firstRabbis) {
+    if (firstRabbis && window.innerWidth > 1024) {
       gsap.to(firstRabbis, {
         x: "0vw",
         ease: "none",
@@ -337,6 +356,12 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
           scrub: 2,
         },
       });
+    } else {
+      if (firstRabbis) {
+        gsap.set(firstRabbis, {
+          y: "0vw",
+        });
+      }
     }
 
     // Contents
@@ -412,12 +437,17 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -430,7 +460,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
                   : []
               }
               extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
+                "first-intro panel-section will-change-transform min-w-screen lg:w-screen"
               }
               panel={panel}
               bgPosition=""
@@ -441,7 +471,12 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
               }}
             />
             <CustomsContentSection
-              extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[5vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]`}
               animWidthText={1}
               data={rabbisPageData?.posts}
             />

@@ -163,7 +163,12 @@ export default function NewsScriptProvider({
   // Page Section Animation
   useGSAP(() => {
     const animations: gsap.core.Animation[] = [];
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
@@ -718,12 +723,17 @@ export default function NewsScriptProvider({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${sectionWidth}vw] h-screen items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-(--container-width) lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -747,7 +757,12 @@ export default function NewsScriptProvider({
               }}
             />
             <NewsContentSection
-              extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[10vh] px-[10vw]`}
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[10vh] px-[8vw] lg:px-[10vw]`}
               animWidthText={1}
               data={pagePosts}
             />

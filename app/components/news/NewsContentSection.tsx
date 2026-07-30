@@ -4,12 +4,14 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   data: any;
+  style?: React.CSSProperties;
 }
 
 export default function NewsContentSection(props: ChildProps) {
   return (
     <section
       dir="rtl"
+      style={props.style}
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
       <div className="sheet-wrapper w-full h-full flex items-center gap-x-[10vw]">
@@ -18,7 +20,7 @@ export default function NewsContentSection(props: ChildProps) {
             <SidebarSearch />
           </div>
         </div> */}
-        <div className="news-content flex items-center gap-x-[10vw] md:gap-x-[30vw] lg:gap-x-[25vw] xl:gap-x-[20vw] 2xl:gap-x-[15vw] will-change-transform">
+        <div className="news-content flex items-center gap-y-[10vh] gap-x-[10vw] md:gap-x-[30vw] lg:gap-x-[25vw] xl:gap-x-[20vw] 2xl:gap-x-[15vw] will-change-transform flex-col lg:flex-row">
           {props.data?.map((item: any, index: number) => (
             <SingleNews key={index} data={item} />
           ))}

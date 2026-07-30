@@ -30,13 +30,13 @@ export default function SingleNews(props: ChildProps) {
   };
 
   return (
-    <div className="single-news w-[53vw] h-full flex items-center gap-x-[5.9vw] will-change-transform">
-      <div className="single-news-image w-[32vw] min-w-[32vw] h-[80vh] relative z-40">
+    <div className="single-news w-full lg:w-[53vw] h-full flex items-center gap-x-[5.9vw] will-change-transform flex-col lg:flex-row gap-y-10 sm:gap-y-15">
+      <div className="single-news-image w-full lg:w-[32vw] min-w-[32vw] h-100 sm:h-150 lg:h-[80vh] relative z-40">
         {props.data?.gallery?.map((item: any, index: number) => {
           return (
             <div
               key={index}
-              className={`news-image news-image-${index} ${index === 0 ? "w-[22vw] h-[63vh] z-50" : "w-[30vw] h-[40vh]"} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-none`}
+              className={`news-image news-image-${index} ${index === 0 ? "w-70 h-100 sm:w-100 sm:h-140 lg:w-[22vw] lg:h-[63vh] z-50" : "w-80 h-60 sm:w-130 sm:h-90 lg:w-[30vw] lg:h-[40vh]"} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-none ${index === 1 ? "ml-[10vw]" : ""} ${index === 2 ? "ml-[-10vw]" : ""} lg:ml-0`}
             >
               <Link
                 className="cursor-none"
@@ -49,8 +49,8 @@ export default function SingleNews(props: ChildProps) {
           );
         })}
       </div>
-      <div className="single-news-content flex flex-col gap-y-8.5 text-[#D1A941] w-[15vw] relative z-20">
-        <h2 className="text-[55px] leading-[70%]">
+      <div className="single-news-content flex flex-col gap-y-5 sm:gap-y-8.5 text-[#D1A941] w-full lg:w-[15vw] relative z-20">
+        <h2 className="text-[28px] sm:text-[40px] lg:text-[55px] leading-[70%]">
           <Link
             href={`/news/${props.data?.slug || "#"}`}
             onClick={handleLinkClick}
@@ -58,13 +58,15 @@ export default function SingleNews(props: ChildProps) {
             {parse(props.data?.title?.rendered || "")}
           </Link>
         </h2>
-        <div className="text-[28px] leading-[90%] font-light">
-          {parse(props.data?.excerpt?.rendered || "")}
-        </div>
+        {props.data?.excerpt && (
+          <div className="text-[18px] sm:text-[24px] lg:text-[28px] leading-[90%] font-light">
+            {parse(props.data?.excerpt?.rendered || "")}
+          </div>
+        )}
         <Link
           href={`/news/${props.data?.slug || "#"}`}
           onClick={handleLinkClick}
-          className="read-more group text-[#D1A941] text-[24px] leading-[90%] font-light mt-2.5 flex items-center gap-x-2"
+          className="read-more group text-[#D1A941] text-[16px] sm:text-[20px] lg:text-[24px] leading-[90%] font-light mt-2.5 flex items-center gap-x-2"
         >
           <span className="text">קרא עוד</span>
           <span className="icon block w-5 h-auto transition-transform duration-300 group-hover:-translate-x-1">

@@ -41,7 +41,7 @@ export default function PostNavigation(props: ChildProps) {
 
   return (
     <div
-      className={`post-navigation bg-black py-10 px-12 flex items-center justify-between ${props.extraClass}`}
+      className={`post-navigation bg-black py-6 px-6 lg:py-10 lg:px-12 flex items-center justify-between ${props.extraClass}`}
     >
       {navigationData?.nextPost && (
         <Link
@@ -49,14 +49,14 @@ export default function PostNavigation(props: ChildProps) {
           onClick={handleLinkClick}
           className="next-post nav-link relative group"
         >
-          <div className="image w-[12vw] h-[12vw] overflow-hidden">
+          <div className="image w-30 h-30 lg:w-[12vw] lg:h-[12vw] overflow-hidden">
             <NavigationImage image={navigationData?.nextPost?.image} />
           </div>
-          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-3 text-center text-[15px] leading-[70%] min-w-32 max-w-full">
+          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-3 text-center text-[14px] lg:text-[15px] leading-[70%] min-w-32 max-w-full">
             {navigationData?.nextPost.title}
           </h4>
-          <div className="absolute top-1/2 -translate-y-1/2 right-full -mr-8 w-25 h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:translate-x-3">
-            <div className="w-12 h-auto transition-all duration-300 group-hover:translate-x-1">
+          <div className="absolute top-1/2 -translate-y-1/2 right-full -mr-5 lg:-mr-8 w-15 h-15 lg:w-25 lg:h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:translate-x-3">
+            <div className="w-7 lg:w-12 h-auto transition-all duration-300 group-hover:translate-x-1">
               <ArrowRight />
             </div>
           </div>
@@ -68,14 +68,14 @@ export default function PostNavigation(props: ChildProps) {
           className="prev-post nav-link relative group mr-auto"
           onClick={handleLinkClick}
         >
-          <div className="image w-[12vw] h-[12vw] overflow-hidden">
+          <div className="image w-30 h-30 lg:w-[12vw] lg:h-[12vw] overflow-hidden">
             <NavigationImage image={navigationData?.prevPost?.image} />
           </div>
-          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-3 text-center text-[15px] leading-[70%] min-w-32 max-w-full">
+          <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-3 text-center text-[14px] lg:text-[15px] leading-[70%] min-w-32 max-w-full">
             {navigationData?.prevPost.title}
           </h4>
-          <div className="absolute top-1/2 -translate-y-1/2 left-full -ml-8 w-25 h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:-translate-x-3">
-            <div className="w-12 h-auto transition-all duration-300 group-hover:-translate-x-1">
+          <div className="absolute top-1/2 -translate-y-1/2 left-full -ml-5 lg:-ml-8 w-15 h-15 lg:w-25 lg:h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:-translate-x-3">
+            <div className="w-7 lg:w-12 h-auto transition-all duration-300 group-hover:-translate-x-1">
               <ArrowLeft2 />
             </div>
           </div>

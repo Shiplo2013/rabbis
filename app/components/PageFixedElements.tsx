@@ -543,7 +543,7 @@ export default function PageFixedElements() {
               id="popup-card"
               className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
             >
-              <div className="card-popup-wrapper bg-[#FBF4E6] w-150 h-full relative z-50 py-[9.3vh] px-[3.8vw]">
+              <div className="card-popup-wrapper bg-[#FBF4E6] w-[90%] sm:w-130 lg:w-150 h-full relative z-50 py-15 sm:py-[9.3vh] px-6 sm:px-[3.8vw]">
                 <div
                   id="popup-card-content"
                   className="popup-content w-full h-full relative z-30"
@@ -557,14 +557,14 @@ export default function PageFixedElements() {
                     autoHide={false}
                   >
                     {currentRabbisPost?.acf?.popup_1?.title && (
-                      <div className="title mb-[5vh]">
-                        <h3 className="text-[55px] leading-[70%] text-[#D1A941] font-bold">
+                      <div className="title mb-10 lg:mb-[5vh]">
+                        <h3 className="text-[32px] sm:text-[40px] lg:text-[55px] leading-[0.8em] lg:leading-[70%] text-[#D1A941] font-bold">
                           {parse(currentRabbisPost?.acf?.popup_1?.title || "")}
                         </h3>
                       </div>
                     )}
                     {currentRabbisPost?.acf?.popup_1?.text && (
-                      <div className="content text-[21px] leading-[1.4em] text-black">
+                      <div className="content text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-black">
                         {parse(currentRabbisPost?.acf?.popup_1?.text || "")}
                       </div>
                     )}
@@ -583,7 +583,7 @@ export default function PageFixedElements() {
               id="popup-book"
               className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
             >
-              <div className="popup-wrapper bg-[#FBF4E6] w-150 h-full relative z-50 py-[9.3vh] px-[3.8vw]">
+              <div className="popup-wrapper bg-[#FBF4E6] w-[90%] sm:w-130 lg:w-150 h-full relative z-50 py-15 sm:py-[9.3vh] px-6 sm:px-[3.8vw]">
                 <div
                   id="popup-book-content"
                   className="popup-content w-full h-full relative z-30"
@@ -596,8 +596,8 @@ export default function PageFixedElements() {
                     }}
                     autoHide={false}
                   >
-                    <div className="title mb-[5vh]">
-                      <h3 className="text-[55px] leading-[70%] text-[#D1A941] font-bold">
+                    <div className="title mb-8 sm:mb-[5vh]">
+                      <h3 className="text-[32px] sm:text-[40px] lg:text-[55px] leading-[0.8em] lg:leading-[70%] text-[#D1A941] font-bold">
                         {parse(currentRabbisPost?.acf?.popup_2?.title || "")}
                       </h3>
                     </div>
@@ -612,7 +612,7 @@ export default function PageFixedElements() {
 
                       return (
                         <div className="book-image mb-9.5">
-                          <div className="w-77 h-auto">
+                          <div className="w-[80%] sm:w-77 h-auto">
                             <Image
                               className="w-full h-full object-cover object-center"
                               src={popupImage1Src}
@@ -628,9 +628,9 @@ export default function PageFixedElements() {
                       );
                     })()}
                     {currentRabbisPost?.acf?.popup_2?.text_group_1 && (
-                      <div className="content text-[21px] leading-[1.4em] text-black mb-10">
+                      <div className="content text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-black mb-10">
                         <div className="title mb-7">
-                          <h4 className="text-[34px] leading-[70%] font-medium">
+                          <h4 className="text-[24px] sm:text-[28px] lg:text-[34px] leading-[70%] font-medium">
                             {parse(
                               currentRabbisPost?.acf?.popup_2?.text_group_1
                                 ?.title || "",
@@ -656,7 +656,7 @@ export default function PageFixedElements() {
 
                       return (
                         <div className="book-image mb-9.5">
-                          <div className="w-77 h-auto">
+                          <div className="w-[80%] sm:w-77 h-auto">
                             <Image
                               className="w-full h-full object-cover object-center"
                               src={popupImage2Src}
@@ -672,7 +672,7 @@ export default function PageFixedElements() {
                       );
                     })()}
                     {currentRabbisPost?.acf?.popup_2?.text_group_2 && (
-                      <div className="content text-[21px] leading-[1.4em] text-black">
+                      <div className="content text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-black">
                         <div className="title mb-7">
                           <h4 className="text-[34px] leading-[70%] font-medium">
                             {parse(

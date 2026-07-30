@@ -60,21 +60,23 @@ export default function IntroductionBackground(props: ChildProps) {
     };
 
     // Banner Background
-    gsap.set(background.current, { scale: 1.2, x: "10vw" });
-    const animation = gsap.to(background.current, {
-      x: "-20vw",
-      ease: "none",
-      scrollTrigger: {
-        start: () => {
-          return getTimelineOffset();
+    if (window.innerWidth > 1024) {
+      gsap.set(background.current, { scale: 1.2, x: "10vw" });
+      const animation = gsap.to(background.current, {
+        x: "-20vw",
+        ease: "none",
+        scrollTrigger: {
+          start: () => {
+            return getTimelineOffset();
+          },
+          end: () => {
+            return "+=" + window.innerWidth * 2;
+          },
+          scrub: 2,
         },
-        end: () => {
-          return "+=" + window.innerWidth * 2;
-        },
-        scrub: 2,
-      },
-    });
-    animations.push(animation);
+      });
+      animations.push(animation);
+    }
 
     // Return Cleanup Function
     return () => {

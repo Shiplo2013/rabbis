@@ -209,7 +209,12 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
@@ -696,12 +701,12 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[330vw] h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[330vw] lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -725,7 +730,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
               }}
             />
             <ContentSection
-              extraClass="rabbis-content min-w-[230vw] w-[230vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
+              extraClass="rabbis-content w-full lg:min-w-[230vw] lg:w-[230vw] lg:h-screen panel-section will-change-transform py-[5vw] px-[8vw] lg:px-[6.25vw]"
               animWidthText={1}
               data={{
                 title: post?.acf?.title,
@@ -739,10 +744,10 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
         </div>
         <div
           dir="rtl"
-          className="content-bottom bg-[#F5F0EB] w-full flex justify-center flex-col items-center pt-[7vh] pb-[7vh] pr-25"
+          className="content-bottom bg-[#F5F0EB] w-full flex justify-center flex-col items-center pb-[7vh] px-[8vw] lg:pt-[7vh] lg:pb-[8vh] lg:pr-25"
         >
-          <div className="wrapper w-[80%] max-w-282.5">
-            <ContentBorder extraClass="" />
+          <div className="wrapper w-full lg:w-[80%] max-w-282.5">
+            <ContentBorder extraClass="w-[30vw]" />
             {post?.acf?.content_2 && (
               <ContentParts extraClass="mt-11.5" data={post?.acf?.content_2} />
             )}
@@ -765,21 +770,21 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
             {post?.acf?.content_6 && (
               <ContentParts extraClass="mt-11.5" data={post?.acf?.content_6} />
             )}
-            <div className="rabbis-options mt-25">
-              <RabbisOptions extraClass="flex gap-x-[4vw]" />
+            <div className="rabbis-options mt-10 sm:mt-15 lg:mt-25">
+              <RabbisOptions extraClass="flex flex-col sm:flex-row lg:flex-col gap-x-[4vw] gap-y-5 lg:gap-y-[4vh]" />
             </div>
-
-            {allPosts?.posts && (
-              <div className="rabbis-navigation w-[calc(100vw-100px)] relative right-1/2 translate-x-1/2">
-                <PostNavigation
-                  extraClass="mt-[8.6vh]"
-                  currentPostId={post?.id}
-                  posts={allPosts?.posts}
-                />
-              </div>
-            )}
           </div>
         </div>
+
+        {allPosts && (
+          <div className="rabbis-navigation w-full pr-0 lg:pr-25 relative pb-5">
+            <PostNavigation
+              extraClass="flex-row-reverse"
+              currentPostId={post?.id}
+              posts={allPosts}
+            />
+          </div>
+        )}
       </main>
     )
   );
