@@ -34,14 +34,14 @@ export default function ContactSection(props: ChildProps) {
           <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform"></div>
         </div>
       )}
-      <div className="contact-wrapper w-full h-full relative z-30 py-[15vh] px-[10vw]">
-        <div className="contact-content flex justify-between">
+      <div className="contact-wrapper w-full h-full relative z-30 pt-[14vh] sm:pt-[12vh] pb-[8vh] lg:py-[15vh] px-[8vw] lg:px-[10vw]">
+        <div className="contact-content flex justify-between flex-col lg:flex-row gap-y-[10vh]">
           <div className="contact-right flex flex-col gap-y-[10vh]">
             <div
               dir="ltr"
               className="contact-heading text-right flex justify-end"
             >
-              <h2 className="text-[40px] leading-[1em] text-[#FBF4E6] font-bold max-w-96.75">
+              <h2 className="text-[30px] sm:text-[40px] leading-[1em] text-[#FBF4E6] font-bold max-w-96.75">
                 {parse(
                   props.data?.contact_info?.title ||
                     "לכל פניה או שאלה מלאו את הטופס ונחזור אליכם בהקדם.",
@@ -54,7 +54,7 @@ export default function ContactSection(props: ChildProps) {
                   <div className="icon">
                     <MarkerIcon />
                   </div>
-                  <div className="text text-[30px] leading-[1.2em]">
+                  <div className="text text-[20px] sm:text-[30px] leading-[1.2em]">
                     <address>
                       {parse(
                         props.data?.contact_info?.address ||
@@ -69,7 +69,7 @@ export default function ContactSection(props: ChildProps) {
                   <div className="icon">
                     <EmailIcon />
                   </div>
-                  <div className="text text-[30px] leading-[1.2em]">
+                  <div className="text text-[20px] sm:text-[30px] leading-[1.2em]">
                     <Link
                       href={`mailto:${props.data?.contact_info?.email}`}
                       className="hover:text-(--theme-color) transition-all duration-500"
@@ -87,7 +87,7 @@ export default function ContactSection(props: ChildProps) {
                   <div className="icon">
                     <PhoneIcon />
                   </div>
-                  <div className="text text-[30px] leading-[1.2em]">
+                  <div className="text text-[20px] sm:text-[30px] leading-[1.2em]">
                     <Link
                       href={`tel:${props.data?.contact_info?.phone}`}
                       className="hover:text-(--theme-color) transition-all duration-500"
@@ -102,7 +102,7 @@ export default function ContactSection(props: ChildProps) {
                   <div className="icon">
                     <WazeIcon />
                   </div>
-                  <div className="text text-[30px] leading-[1.2em]">
+                  <div className="text text-[20px] sm:text-[30px] leading-[1.2em]">
                     <Link
                       href={props.data?.contact_info?.waze_link || "/"}
                       target="_blank"
@@ -115,7 +115,7 @@ export default function ContactSection(props: ChildProps) {
               </div>
             </div>
           </div>
-          <div className="contact-left w-[35vw] mt-[15vh]">
+          <div className="contact-left lg:w-[35vw] lg:mt-[15vh]">
             <div className="contact-form w-full overflow-hidden">
               <ContactForm />
             </div>
