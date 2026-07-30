@@ -56,8 +56,12 @@ export default function DonationScriptProvider({ data }: { data: any }) {
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
-      setPageContentAnimation();
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -262,19 +266,33 @@ export default function DonationScriptProvider({ data }: { data: any }) {
             );
           }
           if (donationVideoWrapper) {
-            tl.to(
-              donationVideoWrapper,
-              {
-                x: "12vw",
-                delay: 0,
-                duration: 3,
-                ease: "expo.inOut",
-              },
-              "-=2.5",
-            );
+            if (window.innerWidth > 1024) {
+              tl.to(
+                donationVideoWrapper,
+                {
+                  x: "12vw",
+                  delay: 0,
+                  duration: 3,
+                  ease: "expo.inOut",
+                },
+                "-=2.5",
+              );
+            } else {
+              tl.to(
+                donationVideoWrapper,
+                {
+                  y: "-15vh",
+                  delay: 0,
+                  duration: 3,
+                  ease: "expo.inOut",
+                },
+                "-=2.5",
+              );
+            }
           }
         }
       });
+      setPageContentAnimation();
     }
   }, [pageDataFetched, animationPlayed]);
 
@@ -288,46 +306,51 @@ export default function DonationScriptProvider({ data }: { data: any }) {
   // Set Page Content Animation
   const setPageContentAnimation = () => {
     // Page Content Animation
-    const donationReadmore = main.current?.querySelector(".donation-readmore");
+    const donationReadmore = main.current?.querySelector(
+      ".donation-readmore",
+    ) as HTMLDivElement | null;
     // Banner Button
     const introButtonWrap = main.current?.querySelector(
       ".first-intro .donation-button",
-    );
+    ) as HTMLDivElement | null;
     // Donation Video
     const donationVideo1 = main.current?.querySelector(
       ".donation-content .donation-video1 .donation-video",
-    );
+    ) as HTMLDivElement | null;
     // Donation Video
     const donationVideo2 = main.current?.querySelector(
       ".donation-content .donation-video2",
-    );
+    ) as HTMLDivElement | null;
     // Donation Video
     const donationButton = main.current?.querySelector(
       ".donation-content .content-button",
-    );
+    ) as HTMLDivElement | null;
     // Donation Text 1
     const donationText1 = main.current?.querySelector(
       ".donation-content .content-text1",
-    );
+    ) as HTMLDivElement | null;
     // Donation Text 2
     const donationText2 = main.current?.querySelector(
       ".donation-content .content-text2",
-    );
+    ) as HTMLDivElement | null;
     // Donation Text 3
     const donationText3 = main.current?.querySelector(
       ".donation-content .content-text3",
-    );
+    ) as HTMLDivElement | null;
     const donationText3Title = main.current?.querySelector(
       ".donation-content .content-text3 h3.title",
-    );
+    ) as HTMLDivElement | null;
     const donationText3Text = main.current?.querySelector(
       ".donation-content .content-text3 .text",
-    );
+    ) as HTMLDivElement | null;
 
     // Button Animation
-    if (introButtonWrap) {
-      gsap.from(introButtonWrap, {
+    if (introButtonWrap && window.innerWidth > 1024) {
+      gsap.set(introButtonWrap, {
         x: "20vw",
+      });
+      gsap.to(introButtonWrap, {
+        x: "0vw",
         delay: 0,
         ease: "none",
         scrollTrigger: {
@@ -335,7 +358,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
             return 0;
           },
           end: () => {
-            return "+=" + window.innerWidth * 1.5;
+            return "+=" + window.innerWidth * 1;
           },
           scrub: 2,
         },
@@ -344,26 +367,46 @@ export default function DonationScriptProvider({ data }: { data: any }) {
 
     // Donation Video Animation
     if (donationVideo1) {
-      gsap.to(donationVideo1, {
-        x: "-15vw",
-        delay: 0,
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return 0;
+      if (window.innerWidth > 1024) {
+        gsap.to(donationVideo1, {
+          x: "-15vw",
+          delay: 0,
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return 0;
+            },
+            end: () => {
+              return "+=" + window.innerWidth * 1.5;
+            },
+            scrub: 2,
           },
-          end: () => {
-            return "+=" + window.innerWidth * 1.5;
+        });
+      } else {
+        gsap.to(donationVideo1, {
+          y: "15vh",
+          delay: 0,
+          ease: "none",
+          scrollTrigger: {
+            start: 0,
+            end: () => {
+              return "+=" + window.innerHeight * 1;
+            },
+            scrub: 2,
+            toggleClass: "restart none none reverse",
           },
-          scrub: 2,
-        },
-      });
+        });
+      }
     }
     // Content Button
-    if (donationButton) {
-      gsap.from(donationButton, {
+    if (donationButton && window.innerWidth > 1024) {
+      gsap.set(donationButton, {
         xPercent: -50,
         opacity: 0,
+      });
+      gsap.to(donationButton, {
+        xPercent: 0,
+        opacity: 1,
         ease: "expo.inOut",
         duration: 1,
         delay: 0,
@@ -376,7 +419,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
       });
     }
     // Donation Text 1
-    if (donationText1) {
+    if (donationText1 && window.innerWidth > 1024) {
       const splitTitle = TextSplitLines(donationText1);
       gsap.set(donationText1, {
         perspective: 400,
@@ -401,7 +444,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
       });
     }
     // Donation Text 2
-    if (donationText2) {
+    if (donationText2 && window.innerWidth > 1024) {
       const splitTitle = TextSplitLines(donationText2);
       gsap.set(donationText2, {
         perspective: 400,
@@ -426,10 +469,14 @@ export default function DonationScriptProvider({ data }: { data: any }) {
       });
     }
     // Donation Video 2
-    if (donationVideo2) {
-      gsap.from(donationVideo2, {
+    if (donationVideo2 && window.innerWidth > 1024) {
+      gsap.set(donationVideo2, {
         xPercent: -50,
         opacity: 0,
+      });
+      gsap.to(donationVideo2, {
+        xPercent: 0,
+        opacity: 1,
         ease: "expo.inOut",
         duration: 1,
         delay: 0,
@@ -442,7 +489,12 @@ export default function DonationScriptProvider({ data }: { data: any }) {
       });
     }
     // Donation Text 3
-    if (donationText3 && donationText3Title && donationText3Text) {
+    if (
+      donationText3 &&
+      donationText3Title &&
+      donationText3Text &&
+      window.innerWidth > 1024
+    ) {
       const splitTitle = TextSplitLines(donationText3Title);
       gsap.set(donationText3Title, {
         perspective: 400,
@@ -490,10 +542,14 @@ export default function DonationScriptProvider({ data }: { data: any }) {
       });
     }
     // ReadMore Button
-    if (donationReadmore) {
-      gsap.from(donationReadmore, {
+    if (donationReadmore && window.innerWidth > 1024) {
+      gsap.set(donationReadmore, {
         xPercent: -50,
         opacity: 0,
+      });
+      gsap.to(donationReadmore, {
+        xPercent: 0,
+        opacity: 1,
         ease: "expo.inOut",
         duration: 1,
         delay: 0,
@@ -557,12 +613,12 @@ export default function DonationScriptProvider({ data }: { data: any }) {
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[380vw] h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[380vw] lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -588,7 +644,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
               }}
             />
             <DonationContentSection
-              extraClass="min-w-[280vw] w-[280vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]"
+              extraClass="lg:min-w-[280vw] w-full lg:w-[280vw] lg:h-screen panel-section will-change-transform py-[10vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]"
               animWidthText={1}
               sectionData={{
                 video1: {

@@ -36,7 +36,7 @@ export default function QuoteSection(props: QuoteSectionProps) {
         />
       </div>
       <blockquote className="relative z-40">
-        <h5 className="text-[#57717A] text-[71px] leading-[80%]">
+        <h5 className="text-[#57717A] text-[32px] sm:text-[50px] lg:text-[71px] leading-[80%]">
           {props.data}
         </h5>
       </blockquote>

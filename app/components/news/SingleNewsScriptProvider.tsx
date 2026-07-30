@@ -147,7 +147,8 @@ export default function SingleNewsScriptProvider({
     if (
       typeof window !== "undefined" &&
       main.current &&
-      newsContentRef.current
+      newsContentRef.current &&
+      window.innerWidth > 1024
     ) {
       //setPageContentAnimation();
       // Overflow body
@@ -370,8 +371,8 @@ export default function SingleNewsScriptProvider({
         dir="rtl"
         className="main relative overflow-hidden z-10"
       >
-        <section className="single-news-section flex gap-y-[4.4vw] pr-25 h-screen bg-[#F5F0EB] text-black text-[21px] leading-[1.4em] font-medium">
-          <div className="news-right-image w-[40%] h-screen relative">
+        <section className="single-news-section flex lg:gap-y-[4.4vw] lg:pr-25 lg:h-screen bg-[#F5F0EB] text-black text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] font-medium flex-col lg:flex-row">
+          <div className="news-right-image w-full lg:w-[40%] h-screen relative">
             <div
               className="image-video-slider w-full h-full relative"
               onMouseEnter={() => setSliderHovered(true)}
@@ -448,7 +449,7 @@ export default function SingleNewsScriptProvider({
                       <div className="post-image w-full h-full relative">
                         <SinglePostImage image={item.image} />
                         {item?.caption && (
-                          <div className="caption bg-black text-white absolute bottom-0 left-0 w-full py-3.5 px-5 text-center text-[22px] leading-[1.4em] z-50">
+                          <div className="caption bg-black text-white absolute bottom-0 left-0 w-full py-3.5 px-5 text-center text-[16px] sm:text-[18px] lg:text-[22px] leading-[1.2em] sm:leading-[1.4em] z-50">
                             {parse(item.caption || "")}
                           </div>
                         )}
@@ -458,7 +459,7 @@ export default function SingleNewsScriptProvider({
                         <NewsSingleVideo data={item?.video} />
 
                         {item?.caption && (
-                          <div className="caption bg-black text-white absolute bottom-0 left-0 w-full py-3.5 px-5 text-center text-[22px] leading-[1.4em] z-50">
+                          <div className="caption bg-black text-white absolute bottom-0 left-0 w-full py-3.5 px-5 text-center text-[16px] sm:text-[18px] lg:text-[22px] leading-[1.2em] sm:leading-[1.4em] z-50">
                             {parse(item.caption || "")}
                           </div>
                         )}
@@ -469,18 +470,18 @@ export default function SingleNewsScriptProvider({
               </Swiper>
             </div>
           </div>
-          <div className="news-left-content w-[60%] pr-[4.16vw] pl-[7.5vw] py-[9vh] overflow-hidden">
-            <div className="border-line origin-top w-2 h-[30vh] bg-[#C3A13F] absolute top-0 left-13"></div>
+          <div className="news-left-content w-full lg:w-[60%] px-[8vw] lg:pr-[4.16vw] lg:pl-[7.5vw] py-[6vh] lg:py-[9vh] overflow-hidden relative">
+            <div className="border-line origin-top w-1 lg:w-2 h-[20vh] bg-[#C3A13F] absolute top-0 left-[4vw] lg:left-13"></div>
             <div ref={newsContentRef} className="content-wrapper">
               <h2
                 dir="rtl"
-                className="post-title text-[55px] leading-[70%] text-[#C3A13F] text-right pt-2"
+                className="post-title text-[32px] sm:text-[40px] lg:text-[55px] leading-[70%] text-[#C3A13F] text-right pt-2"
               >
                 {parse(post?.title || NewsPostsData?.title)}
               </h2>
               <div
                 dir="rtl"
-                className="content mt-14 [&>p:not(:last-child)]:mb-7.5 [&>blockquote]:border-r-3 [&>blockquote]:border-[#C3A13F] [&>blockquote]:pr-7 [&>blockquote]:mr-5 [&>blockquote]:mb-7.5 [&>blockquote]:text-[28px] [&>blockquote]:leading-[1.1em] [&>blockquote]:font-bold text-right"
+                className="content mt-10 lg:mt-14 [&>p:not(:last-child)]:mb-7.5 [&>blockquote]:border-r-3 [&>blockquote]:border-[#C3A13F] [&>blockquote]:pr-5 lg:[&>blockquote]:pr-7 [&>blockquote]:mr-5 [&>blockquote]:mb-7.5 [&>blockquote]:text-[18px] sm:[&>blockquote]:text-[22px] lg:[&>blockquote]:text-[28px] [&>blockquote]:leading-[1.1em] [&>blockquote]:font-bold text-right"
               >
                 {parse(post?.content || NewsPostsData?.summary)}
               </div>
@@ -488,7 +489,7 @@ export default function SingleNewsScriptProvider({
           </div>
         </section>
 
-        <section className="post-bottom pr-25">
+        <section className="post-bottom lg:pr-25">
           <PostNavigation
             extraClass=""
             data={JSON.stringify(NewsPostsData.navigation)}

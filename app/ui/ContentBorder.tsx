@@ -8,9 +8,9 @@ interface ChildProps {
 export default function ContentBorder(props: ChildProps) {
   return (
     <div
-      className={`border-separator w-full h-auto flex items-center justify-center ${props.extraClass}`}
+      className={`border-separator w-full h-auto flex items-center justify-center`}
     >
-      <div className="border-image w-72 h-16">
+      <div className={`border-image lg:w-72 lg:h-16 ${props.extraClass}`}>
         <Image
           className="w-full h-full object-cover object-center"
           src={Border.src}

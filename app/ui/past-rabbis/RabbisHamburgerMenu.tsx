@@ -214,27 +214,27 @@ export default function RabbisHamburgerMenu() {
         style={{
           clipPath: `inset(0 0 100% 100%)`,
         }}
-        className="rabbis-hamburger-menu fixed top-0 right-0 z-99 flex items-start justify-start bg-black w-1/3 h-screen py-[9.6vh] pr-[8.9vw] pl-[4.5vw] opacity-0 invisible"
+        className="rabbis-hamburger-menu fixed top-0 right-0 z-111 flex items-start justify-start bg-black w-80 sm:w-90 lg:w-1/3 h-screen pt-[10vh] pb-[5vh] sm:py-[9.6vh] pr-[8.9vw] pl-[4.5vw] opacity-0 invisible"
       >
-        <div className="menu-wrapper overflow-hidden">
+        <div className="menu-wrapper overflow-hidden h-full">
           <button
             onClick={() => {
               setActiveRabbisMenu(false);
             }}
-            className="menu-close w-18 h-18 flex items-center justify-center rounded-full border border-[#C3A13F] absolute top-6 right-12.5 z-30 cursor-pointer"
+            className="menu-close lg:w-18 lg:h-18 sm:w-12 sm:h-12 w-10 h-10 p-3 sm:p-3.5 flex items-center justify-center rounded-full border border-[#C3A13F] absolute top-6 right-6 lg:right-12.5 z-30 cursor-pointer"
           >
             <CloseIcon />
           </button>
-          <div className="menu-title mb-[6.5vh]">
+          <div className="menu-title mb-10 sm:mb-[6.5vh]">
             <h3
               ref={title}
               dir="ltr"
-              className="text-[55px] text-[#D1A941] leading-[70%] text-right"
+              className="text-[32px] sm:text-[40px] lg:text-[55px] text-[#D1A941] leading-[70%] text-right"
             >
               רשימת הרבנים
             </h3>
           </div>
-          <div className="rabbis-burger-menu flex flex-col gap-y-[4.7vh] h-[65vh] overflow-y-auto pr-2">
+          <div className="rabbis-burger-menu flex flex-col gap-y-[4.7vh] h-[80vh] sm:h-[75vh] lg:h-[65vh] overflow-y-auto pr-2">
             {allRabbisPosts &&
               allRabbisPosts.map((item: MenuPost, index: number) => (
                 <Link
@@ -243,12 +243,12 @@ export default function RabbisHamburgerMenu() {
                   onClick={handleLinkClick}
                   className="burger-menu-item group flex gap-x-2.5"
                 >
-                  <div className="image w-29.5 h-29.5 overflow-hidden border-dashed border-transparent group-hover:border-[#D1A941]">
+                  <div className="image w-20 h-20 lg:w-29.5 lg:h-29.5 overflow-hidden border-dashed border-transparent group-hover:border-[#D1A941]">
                     <PastRabbisThumbnail item={item} />
                   </div>
                   <div
                     dir="ltr"
-                    className="title text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
+                    className="title text-[18px] lg:text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
                   >
                     <p className="text">
                       {parse(item?.title?.rendered || item?.acf?.title || "")}
@@ -264,7 +264,7 @@ export default function RabbisHamburgerMenu() {
         onClick={() => {
           setActiveRabbisMenu(false);
         }}
-        className="overlay fixed top-0 right-0 w-screen h-screen z-50 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"
+        className="overlay fixed top-0 right-0 w-screen h-screen z-100 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"
       ></div>
     </>
   );

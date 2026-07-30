@@ -25,7 +25,7 @@ export default function Introduction(props: ChildProps) {
   return (
     <section
       ref={wrapper}
-      className={`${props.extraClass} overflow-hidden relative h-screen bg-black`}
+      className={`${props.extraClass} overflow-hidden relative min-h-screen lg:h-screen bg-black`}
     >
       {props.bgImage !== "" && (
         <div className="intro-background absolute top-0 left-0 w-full h-full z-10">
@@ -55,10 +55,10 @@ export default function Introduction(props: ChildProps) {
       )}
       <div
         dir="ltr"
-        className="flex items-center w-full h-full relative z-30 py-[5vh] px-[5vw] justify-center"
+        className="flex items-center w-full h-full min-h-screen relative z-30 py-[15vh] lg:py-[5vh] px-[5vw] justify-center"
       >
         <div className="rabbis-intro-wrapper text-center flex flex-col items-center gap-x-[3.75vw] text-[#AC832E]">
-          <div className="rabbis-image w-[27.1vw] h-[57.2vh] relative opacity-0">
+          <div className="rabbis-image w-[50vw] h-[60vw] lg:w-[27.1vw] lg:h-[57.2vh] relative opacity-0">
             <Image
               className="w-full h-full object-cover object-center"
               src={
@@ -74,10 +74,10 @@ export default function Introduction(props: ChildProps) {
               loading="lazy"
             />
           </div>
-          <h1 className="intro-title text-[55px] leading-[0.7em] overflow-hidden relative z-20 pt-3 mt-[5vh]">
+          <h1 className="intro-title text-[32px] sm:text-[40px] lg:text-[55px] leading-[0.1em] sm:leading-[0.2em] lg:leading-[0.7em] overflow-hidden relative z-20 pt-3 mt-[5vh]">
             {parse(rabbisPosts?.title)}
           </h1>
-          <div className="intro-content overflow-hidden text-[33px] leading-[70%] py-1 mt-3 relative z-30 max-w-208 [&>p:not(:last-child)]:mb-5">
+          <div className="intro-content overflow-hidden text-[18px] sm:text-[24px] lg:text-[33px] leading-[70%] py-1 mt-3 relative z-30 max-w-208 [&>p:not(:last-child)]:mb-5">
             {parse(rabbisPosts.time)}
           </div>
         </div>
