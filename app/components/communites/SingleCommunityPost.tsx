@@ -33,14 +33,14 @@ export default function SingleCommunityPost(props: ChildProps) {
   return (
     <div
       dir="ltr"
-      className="single-community-post group min-w-116 w-116.75 backface-hidden"
+      className="single-community-post group lg:min-w-116 w-full lg:w-116.75 backface-hidden"
     >
       <Link
         href={postData?.slug ? `/communities/${postData.slug}` : "#"}
         className="block w-full h-full"
         onClick={handleLinkClick}
       >
-        <div className="post-image w-full h-66.75 mb-8.5 relative overflow-hidden backface-hidden">
+        <div className="post-image w-full lg:h-66.75 mb-8.5 relative overflow-hidden backface-hidden">
           {loading && (
             <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
           )}
@@ -60,7 +60,7 @@ export default function SingleCommunityPost(props: ChildProps) {
             alt="Rabbis"
           />
         </div>
-        <div className="post-text text-[28px] text-(--theme-color) leading-[0.9em] text-right">
+        <div className="post-text text-[18px] sm:text-[22px] lg:text-[28px] text-(--theme-color) leading-[0.9em] text-right">
           <h2 className="post-title font-extralight mb-4">
             {parse(postData?.title?.rendered || "")}
           </h2>

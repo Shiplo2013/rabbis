@@ -82,7 +82,12 @@ export default function CommunitiesScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -338,12 +343,17 @@ export default function CommunitiesScriptProvider({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-(--container-width) lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -365,16 +375,22 @@ export default function CommunitiesScriptProvider({
             <Suspense
               fallback={
                 <div
-                  className={`flex h-screen items-center justify-center w-screen min-w-screen w-[${sectionWidth}vw] bg-black`}
+                  className={`flex h-screen items-center justify-center w-screen min-w-screen lg:w-[${sectionWidth}vw] bg-black`}
                 >
                   Loading...
                 </div>
               }
             >
               <section
-                className={`panel-section will-change-transform min-w-screen w-[${sectionWidth}vw] px-[15vw] box-border`}
+                style={
+                  {
+                    "--section-width": `${sectionWidth}vw`,
+                  } as React.CSSProperties
+                }
+                id="communities-section"
+                className={`panel-section will-change-transform min-w-screen w-full lg:w-(--section-width) py-[10vh] px-[8vw] lg:px-[15vw] box-border`}
               >
-                <div className="w-full flex justify-end gap-x-[15vw]">
+                <div className="w-full flex justify-end gap-x-[15vw] gap-y-[10vh] flex-col lg:flex-row">
                   {communityPageData?.postsData &&
                     communityPageData?.postsData?.map(
                       (categoryData: any, index: number) => (

@@ -58,7 +58,6 @@ export default function CyclePicturesScriptProvider({
       setError("No data provided.");
       return;
     }
-    console.log("Cycle Pictures Page Data:", data);
     setPicturesPageData({
       introduction: data.pageData?.acf?.introduction,
       posts: data.postsData,
@@ -160,10 +159,8 @@ export default function CyclePicturesScriptProvider({
     const updateSectionWidth = () => {
       const newSectionWidth =
         10 +
-        postPagination * 10 * 44.27 +
-        postPagination * 10 +
-        1 * 10 +
-        (200 / 19.2) * 2;
+        picturesPageData.posts.length * 44.27 +
+        picturesPageData.posts.length * 10;
 
       setSectionWidth(newSectionWidth < 100 ? 100 : newSectionWidth);
       setContainerWidth((newSectionWidth < 100 ? 100 : newSectionWidth) + 100);
@@ -178,7 +175,12 @@ export default function CyclePicturesScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
@@ -194,14 +196,14 @@ export default function CyclePicturesScriptProvider({
       const scurbScale = 2;
 
       // Vertical Section
-      verticalSectionRef.current = gsap.timeline({
+      const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: panel.current,
           start: "top top",
           end: "+=" + window.innerWidth * (containerWidth / 100),
           scrub: scurbScale,
           pin: true,
-          invalidateOnRefresh: true,
+          //invalidateOnRefresh: true,
           onUpdate: (self) => {
             if (progress) {
               gsap.to(progress, { width: `${100 * self.progress}%` });
@@ -240,11 +242,11 @@ export default function CyclePicturesScriptProvider({
           },
         },
       });
-      verticalSectionRef.current.to(wrapper.current, {
+      timeline.to(wrapper.current, {
         x: () =>
           wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
         ease: "none",
-        invalidateOnRefresh: true,
+        //invalidateOnRefresh: true,
         scrollTrigger: {
           trigger: panel.current,
           start: panel.current?.offsetTop,
@@ -252,7 +254,7 @@ export default function CyclePicturesScriptProvider({
           scrub: scurbScale,
         },
       });
-      setVerticalSection(verticalSectionRef.current);
+      setVerticalSection(timeline);
     }
     // Return
     return () => {
@@ -337,7 +339,7 @@ export default function CyclePicturesScriptProvider({
               duration: 1,
             });
           }
-          if (headerRight) {
+          if (headerRight && window.innerWidth > 1024) {
             tl.to(
               headerRight,
               {
@@ -359,7 +361,7 @@ export default function CyclePicturesScriptProvider({
                 stagger: 0.05,
                 ease: "expo.inOut",
               },
-              "-=1.5",
+              "<",
             );
           }
           if (introContent && splitContent) {
@@ -369,11 +371,11 @@ export default function CyclePicturesScriptProvider({
                 yPercent: 0,
                 opacity: 1,
                 duration: 3,
-                delay: 0,
+                delay: 0.2,
                 stagger: 0.05,
                 ease: "expo.inOut",
               },
-              "-=2.5",
+              "<",
             );
           }
           // Wave Line Animation
@@ -555,12 +557,17 @@ export default function CyclePicturesScriptProvider({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -580,7 +587,12 @@ export default function CyclePicturesScriptProvider({
               }}
             />
             <CyclePicturesSection
-              extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[10vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]`}
               animWidthText={1}
               sectionData={picturesPageData.posts}
               parentCategories={picturesPageData.parentCategories}

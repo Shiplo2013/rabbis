@@ -125,6 +125,9 @@ export default function CommunitiesSlugScriptProvider({
         const header = document.querySelector(
           ".community-page-header",
         ) as HTMLDivElement | null;
+        const headerLeft = document.querySelector(
+          "#header .header-left",
+        ) as HTMLElement | null;
         const communityLoader = document.getElementById(
           "community-loader",
         ) as HTMLDivElement | null;
@@ -140,23 +143,24 @@ export default function CommunitiesSlugScriptProvider({
           });
           if (communityLoader) {
             tl.to(communityLoader, {
-              opacity: 0,
+              autoAlpha: 0,
               ease: "none",
-              duration: 1,
-              delay: 1,
-            });
-            tl.to(communityLoader, {
-              visibility: "hidden",
-              ease: "none",
-              duration: 0,
-              delay: 0.25,
+              duration: 0.5,
+              delay: 2,
             });
           }
-          if (header) {
+          if (header && window.innerWidth > 1024) {
             tl.to(header, {
               opacity: 1,
               ease: "none",
               duration: 0.5,
+            });
+          }
+          if (headerLeft && window.innerWidth < 1024) {
+            tl.to(headerLeft, {
+              autoAlpha: 1,
+              ease: "none",
+              duration: 1,
             });
           }
           if (pageWrapper) {
@@ -378,12 +382,12 @@ export default function CommunitiesSlugScriptProvider({
     const headerRight = document.querySelector(
       "#header .header-right",
     ) as HTMLDivElement | null;
-    if (headerLeft) {
-      gsap.set(headerLeft, {
-        autoAlpha: 0,
-        duration: 0,
-      });
-    }
+    // if (headerLeft) {
+    //   gsap.set(headerLeft, {
+    //     autoAlpha: 0,
+    //     duration: 0,
+    //   });
+    // }
     if (headerRight) {
       gsap.set(headerRight, {
         autoAlpha: 0,
@@ -400,36 +404,36 @@ export default function CommunitiesSlugScriptProvider({
         dir="rtl"
         className="main relative overflow-hidden z-10"
       >
-        <section className="single-communities bg-[#091B24] min-h-screen flex mt-25 relative">
-          <div className="community-content w-[calc(100%-450px)] h-auto bg-[#F5F0EB] text-[#091B24] relative z-40">
-            <div className="community-info flex border-b border-[#000000] border-opacity-50">
-              <div className="location flex py-3 px-3 gap-x-3 w-[32%]">
+        <section className="single-communities bg-[#091B24] min-h-screen flex mt-18 lg:mt-25 relative flex-row lg:flex-row">
+          <div className="community-content w-full lg:w-[calc(100%-450px)] h-auto bg-[#F5F0EB] text-[#091B24] relative z-40">
+            <div className="community-info flex border-b sm:border-b border-[#000000] border-opacity-50 flex-col sm:flex-row">
+              <div className="location flex py-3 px-3 gap-x-3 w-full sm:w-[32%] items-center sm:items-start">
                 <div className="icon w-6 h-6 flex items-center justify-center mt-1">
                   <MapMarker />
                 </div>
-                <div className="text text-[#091B24] text-[28px] leading-[1em] w-[calc(100%-32px)]">
+                <div className="text text-[#091B24] text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] w-[calc(100%-32px)]">
                   <p>
                     <strong>כתובת:</strong>{" "}
                     {parse(post?.acf?.informations?.location || "")}
                   </p>
                 </div>
               </div>
-              <div className="date flex py-3 px-3 gap-x-3 border-r border-[#000000] border-opacity-50 w-[32%]">
+              <div className="date flex py-3 px-3 gap-x-3 border-t sm:border-r border-[#000000] border-opacity-50 w-full sm:w-[32%] items-center sm:items-start">
                 <div className="icon w-6 h-6 flex items-center justify-center mt-1">
                   <CalenderIcon2 />
                 </div>
-                <div className="text text-[#091B24] text-[28px] leading-[1em] w-[calc(100%-32px)]">
+                <div className="text text-[#091B24] text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] w-[calc(100%-32px)]">
                   <p>
                     <strong>נוסד:</strong>{" "}
                     {parse(post?.acf?.informations?.established || "")}
                   </p>
                 </div>
               </div>
-              <div className="people flex py-3 px-3 gap-x-3 border-r border-[#000000] border-opacity-50 w-[36%]">
+              <div className="people flex py-3 px-3 gap-x-3 border-t sm:border-r border-[#000000] border-opacity-50 w-full sm:w-[36%] items-center sm:items-start">
                 <div className="icon w-6 h-6 flex items-center justify-center mt-1">
                   <UserIcon2 />
                 </div>
-                <div className="text text-[#091B24] text-[28px] leading-[1em] w-[calc(100%-32px)]">
+                <div className="text text-[#091B24] text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] w-[calc(100%-32px)]">
                   <p>
                     <strong>מס' משפחות:</strong>{" "}
                     {parse(post?.acf?.informations?.number_of_families || "")}
@@ -437,8 +441,8 @@ export default function CommunitiesSlugScriptProvider({
                 </div>
               </div>
             </div>
-            <div className="community-description flex gap-x-[4.4vw]">
-              <div className="description-image w-[50%]">
+            <div className="community-description flex gap-x-[4.4vw] flex-col-reverse lg:flex-row">
+              <div className="description-image w-full lg:w-[50%]">
                 <Swiper
                   className="w-full border-b-4 border-[#C3A13F]"
                   ref={swiperRef}
@@ -450,7 +454,7 @@ export default function CommunitiesSlugScriptProvider({
                         if (item?.type === "image") {
                           return (
                             <SwiperSlide key={index}>
-                              <div className="w-full h-[50vh]">
+                              <div className="w-full h-[70vh]">
                                 <Image
                                   className="w-full h-full object-cover object-center"
                                   src={
@@ -548,17 +552,17 @@ export default function CommunitiesSlugScriptProvider({
                     )}
                 </div>
               </div>
-              <div className="description-text w-[50%] pt-[7vh] pl-[2.9vw] pb-[5vh]">
-                <h1 className="text-[103px] leading-[77%] font-bold">
+              <div className="description-text w-full lg:w-[50%] px-[8vw] lg:px-0 py-[6vh] lg:pt-[7vh] lg:pl-[2.9vw] lg:pb-[5vh]">
+                <h1 className="text-[56px] sm:text-[80px] lg:text-[103px] leading-[77%] font-bold">
                   {parse(post?.title?.rendered || "")}
                 </h1>
                 {post?.acf?.subtitle && (
-                  <h4 className="text-[44px] leading-[1em] mt-3">
+                  <h4 className="text-[22px] sm:text-[32px] lg:text-[44px] leading-[1em] mt-3">
                     {parse(post?.acf?.subtitle || "")}
                   </h4>
                 )}
                 {post?.acf?.content && (
-                  <div className="text mt-10 text-[28px] leading-[1em] font-bold">
+                  <div className="text mt-10 text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] font-bold">
                     {parse(post?.acf?.content || "")}
                   </div>
                 )}
@@ -569,17 +573,17 @@ export default function CommunitiesSlugScriptProvider({
                 {communityTabs.map((tab, index) => (
                   <button
                     key={index}
-                    className={`tab-head-item w-full text-[28px] leading-[1em] p-6 cursor-pointer ${activeTab === index ? "bg-[#091B24] text-white" : "text-[#091B24]"} transition-colors duration-300 ${index !== 0 && "border-r border-black"}`}
+                    className={`tab-head-item w-full text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] p-4 sm:p-6 cursor-pointer ${activeTab === index ? "bg-[#091B24] text-white" : "text-[#091B24]"} transition-colors duration-300 ${index !== 0 && "border-r border-black"}`}
                     onClick={() => setActiveTab(index)}
                   >
                     {tab.title}
                   </button>
                 ))}
               </div>
-              <div className="tab-content px-[4.16vw] py-[8.6vh]">
+              <div className="tab-content px-[8vw] lg:px-[4.16vw] py-[7vh] lg:py-[8.6vh] w-full">
                 <div className="tab-content-wrapper">
                   {communityTabs[activeTab] && (
-                    <div className="tab-content-item flex flex-col items-start justify-start text-[21px] leading-[1.4em]">
+                    <div className="tab-content-item flex flex-col items-start justify-start text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em]">
                       {Array.isArray(communityTabs[activeTab]?.content) &&
                         communityTabs[activeTab]?.content?.map(
                           (item: any, index: number) => {
@@ -588,7 +592,7 @@ export default function CommunitiesSlugScriptProvider({
                               return (
                                 <h2
                                   key={index}
-                                  className="title text-[33px] leading-[90%] font-bold [:not(:first-child)]:mt-8.5"
+                                  className="title text-[22px] sm:text-[26px] lg:text-[33px] leading-[90%] font-bold [:not(:first-child)]:mt-8.5"
                                 >
                                   {parse(item?.content?.title || "")}
                                 </h2>
@@ -611,7 +615,7 @@ export default function CommunitiesSlugScriptProvider({
                                 >
                                   <CommunityImage item={item} />
                                   {item?.content?.caption && (
-                                    <div className="caption w-full bg-black bg-opacity-50 text-white p-3 text-[18px] text-center font-bold">
+                                    <div className="caption w-full bg-black bg-opacity-50 text-white p-3 text-[16px] sm:text-[18px] leading-[1.2em] text-center font-bold">
                                       <p>{item?.content?.caption}</p>
                                     </div>
                                   )}
@@ -650,8 +654,11 @@ export default function CommunitiesSlugScriptProvider({
                             // Section Content 1
                             if (item.field_type === "content1") {
                               return (
-                                <div key={index} className="content1 mt-8.5">
-                                  <h2 className="text-[33px] leading-[90%] font-bold">
+                                <div
+                                  key={index}
+                                  className="content1 w-full not-first:mt-8.5"
+                                >
+                                  <h2 className="text-[22px] sm:text-[26px] lg:text-[33px] leading-[90%] font-bold">
                                     {parse(item?.news_content?.title || "")}
                                   </h2>
                                   <div className="text1 mt-8.5">
@@ -689,10 +696,10 @@ export default function CommunitiesSlugScriptProvider({
                               return (
                                 <div
                                   key={index}
-                                  className="highlight mt-12 mb-12 p-10 bg-[#BBA588]"
+                                  className="highlight not-first:mt-12 not-last:mb-12 p-10 bg-[#BBA588]"
                                 >
                                   {item?.news_content?.text && (
-                                    <div className="text-[21px] leading-[1.4em]">
+                                    <div className="text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em]">
                                       {parse(item?.news_content?.text)}
                                     </div>
                                   )}
@@ -729,7 +736,7 @@ export default function CommunitiesSlugScriptProvider({
                               return (
                                 <div
                                   key={index}
-                                  className="gallery mt-12 w-full max-w-xl h-auto group relative"
+                                  className="gallery not-first:mt-12 w-full max-w-xl h-auto group relative"
                                 >
                                   <Swiper
                                     className="w-full max-h-144 relative z-10"
@@ -783,11 +790,11 @@ export default function CommunitiesSlugScriptProvider({
                       {!Array.isArray(communityTabs[activeTab]?.content) && (
                         <div className="event-news-wrapper flex flex-col items-start justify-start gap-y-[8.5vh] w-full">
                           {communityTabs[activeTab]?.content?.updates_1 && (
-                            <div className="news flex flex-col items-start justify-start gap-y-[6.8vh]">
+                            <div className="news flex items-start justify-start gap-y-[6.8vh] flex-col w-full">
                               <div className="news-icon w-10 h-auto">
                                 <WishIcon2 />
                               </div>
-                              <div className="news-list flex flex-wrap items-start justify-start gap-y-[5vh] gap-x-[3vw] w-full text-[22px] leading-[1em] text-[#C3A13F]">
+                              <div className="news-list flex flex-wrap items-start justify-start gap-y-[5vh] gap-x-[3vw] w-full text-[22px] leading-[1em] text-[#C3A13F] flex-col sm:flex-row">
                                 {communityTabs[
                                   activeTab
                                 ]?.content?.updates_1?.map(
@@ -797,7 +804,7 @@ export default function CommunitiesSlugScriptProvider({
                                       style={{
                                         backgroundImage: `url(${NewsBG.src})`,
                                       }}
-                                      className="news-item flex flex-col gap-y-2 py-8 px-13 w-[calc((100%-3vw)/2)] max-w-110 bg-no-repeat bg-contain bg-right"
+                                      className="news-item flex flex-col gap-y-2 py-8 px-13 w-full sm:w-[calc((100%-3vw)/2)] max-w-110 bg-no-repeat bg-contain bg-right min-h-32 sm:min-h-28 lg:min-h-37.5"
                                     >
                                       {item.title && (
                                         <p className="font-bold">
@@ -817,16 +824,16 @@ export default function CommunitiesSlugScriptProvider({
                             </div>
                           )}
                           {communityTabs[activeTab]?.content?.updates_2 && (
-                            <div className="news flex flex-col items-start justify-start gap-y-[6.8vh]">
+                            <div className="news flex flex-col items-start justify-start gap-y-[4vh] sm:gap-y-[6.8vh] w-full">
                               <div className="news-icon w-10 h-auto">
                                 <CandelIcon />
                               </div>
-                              <div className="news-list flex flex-wrap items-start justify-start gap-y-[5vh] gap-x-[3vw] w-full text-[22px] leading-[1em] text-[#C3A13F]">
+                              <div className="news-list flex flex-wrap items-start justify-start gap-y-[5vh] gap-x-[3vw] w-full text-[18px] sm:text-[20px] lg:text-[22px] leading-[1em] text-[#C3A13F] flex-col sm:flex-row">
                                 {communityTabs[activeTab].content.updates_2.map(
                                   (item: any, index: number) => (
                                     <div
                                       key={index}
-                                      className="news-item bg-white flex flex-col gap-y-2 py-8 px-13 w-[calc((100%-3vw)/2)] max-w-110"
+                                      className="news-item bg-white flex flex-col gap-y-2 py-8 px-13 w-full sm:w-[calc((100%-3vw)/2)] max-w-110"
                                     >
                                       {item.title && (
                                         <p className="font-bold">
@@ -853,15 +860,15 @@ export default function CommunitiesSlugScriptProvider({
               </div>
             </div>
           </div>
-          <div className="community-sidebar bg-[#091B24] text-[#FBF4E6] w-112.5 h-full py-19 px-10 absolute top-0 left-0 z-50">
+          <div className="community-sidebar bg-[#091B24] text-[#FBF4E6] w-full lg:w-112.5 h-full py-19 px-10 lg:absolute lg:top-0 lg:left-0 z-50">
             <button
               onClick={() => setIsSidebarOpen(false)}
-              className="sidebar-close w-6 h-6 p-1 absolute top-4 right-4 cursor-pointer z-20"
+              className="sidebar-close w-6 h-6 p-1 absolute top-4 right-4 cursor-pointer z-20 hidden lg:block"
             >
               <CloseIcon2 className="w-full h-auto" />
             </button>
             <button
-              className={`sidebar-open absolute top-25 right-0 bg-[#091B24] text-white p-2 ${isSidebarOpen ? "cursor-default" : "cursor-pointer"} z-20 w-8 h-10 flex items-center justify-center opacity-0 visibility-hidden`}
+              className={`sidebar-open absolute top-25 right-0 bg-[#091B24] text-white p-2 ${isSidebarOpen ? "cursor-default" : "cursor-pointer"} z-20 w-8 h-10 hidden lg:flex lg:items-center lg:justify-center opacity-0 visibility-hidden`}
               onClick={() => setIsSidebarOpen(true)}
             >
               <span className="block w-3 h-3 border-t border-r border-white rotate-45"></span>

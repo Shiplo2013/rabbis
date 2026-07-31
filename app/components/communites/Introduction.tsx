@@ -66,16 +66,16 @@ export default function Introduction(props: ChildProps) {
         </div>
       )}
       <div dir="ltr" className="flex items-center w-full h-full relative z-30">
-        <div className="section-wrapper text-right flex justify-center flex-row-reverse items-center gap-x-[3.75vw]">
+        <div className="section-wrapper text-right flex lg:justify-center flex-col lg:flex-row-reverse items-center gap-x-[3.75vw]">
           <h1
             dir="rtl"
-            className="intro-title text-[12vw] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 flex justify-center"
+            className="intro-title text-[12vw] w-full text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5 flex lg:justify-center"
           >
             <span className="block text">
               {parse(sectionData?.title?.rendered || "")}
             </span>
           </h1>
-          <h4 className="intro-content overflow-hidden text-[28px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30 w-[28vw]">
+          <h4 className="intro-content overflow-hidden w-full text-[16px] sm:text-[22px] lg:text-[28px] leading-[1em] text-[#FBF4E6] mt-0 sm:mt-5 lg:mt-[5vh] relative z-30 lg:w-[28vw]">
             {parse(sectionData?.content?.rendered || "")}
           </h4>
         </div>

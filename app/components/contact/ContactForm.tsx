@@ -7,10 +7,10 @@ export default function ContactForm() {
   return (
     <form
       action={action}
-      className="contact-form-wrapper bg-white text-[#231F20] text-[22px] leading-[100%] py-11.25 px-10 flex flex-col gap-y-[4vh]"
+      className="contact-form-wrapper bg-white text-[#231F20] text-[18px] sm:text-[22px] leading-[100%] py-11.25 px-10 flex flex-col gap-y-[4vh]"
     >
-      <div className="contact-row flex gap-x-[2vw]">
-        <div className="contact-col w-1/2 flex flex-col gap-y-1.25">
+      <div className="contact-row flex gap-x-[2vw] flex-col sm:flex-row gap-y-[4vh]">
+        <div className="contact-col sm:w-1/2 flex flex-col gap-y-1.25">
           <div className="flex items-center gap-x-3.25">
             <label htmlFor="form-name">שם</label>
             <input
@@ -28,7 +28,7 @@ export default function ContactForm() {
             </p>
           )}
         </div>
-        <div className="contact-col w-1/2 flex flex-col gap-y-1.25">
+        <div className="contact-col w-full sm:w-1/2 flex flex-col gap-y-1.25">
           <div className="flex items-center gap-x-3.25">
             <label htmlFor="form-family">משפחה</label>
             <input
@@ -47,8 +47,8 @@ export default function ContactForm() {
           )}
         </div>
       </div>
-      <div className="contact-row flex gap-x-[2vw]">
-        <div className="contact-col w-1/2 flex flex-col gap-y-1.25">
+      <div className="contact-row flex gap-x-[2vw] flex-col lg:flex-row gap-y-[4vh]">
+        <div className="contact-col w-full sm:w-1/2 flex flex-col gap-y-1.25">
           <div className="flex items-center gap-x-3.25">
             <label htmlFor="form-phone">נייד</label>
             <input
@@ -66,7 +66,7 @@ export default function ContactForm() {
             </p>
           )}
         </div>
-        <div className="contact-col w-1/2 flex flex-col gap-y-1.25">
+        <div className="contact-col w-full sm:w-1/2 flex flex-col gap-y-1.25">
           <div className="flex items-center gap-x-3.25">
             <label htmlFor="form-email">דוא״ל</label>
             <input
