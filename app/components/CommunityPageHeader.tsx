@@ -57,7 +57,7 @@ export default function CommunityPageHeader() {
 
   return (
     <>
-      <header className="community-page-header bg-[#091B24] text-white py-6 px-10 z-30 w-full opacity-0 relative">
+      <header className="community-page-header bg-[#091B24] text-white py-6 px-10 z-30 w-full opacity-0 relative hidden lg:block">
         <div className="header-wrapper flex items-center justify-between">
           <div className="header-right flex items-center gap-x-9">
             <button

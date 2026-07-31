@@ -34,6 +34,7 @@ export default function CommunitiesSheetsScriptProvider({
   const [error, setError] = useState<string | null>(null);
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
+  const [postPerPage, setPostPerPage] = useState(6);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [activeCategory, setActiveCategory] = useState(0);
@@ -160,8 +161,8 @@ export default function CommunitiesSheetsScriptProvider({
         const postsUrl = categoryIds.length
           ? `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?magazines_cat=${categoryIds.join(
               ",",
-            )}&per_page=10&page=${currentPage}`
-          : `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?per_page=10&page=${currentPage}`;
+            )}&per_page=${postPerPage}&page=${currentPage}`
+          : `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?per_page=${postPerPage}&page=${currentPage}`;
 
         const response = await wpFetch(postsUrl, {
           cache: "no-store",
@@ -198,7 +199,7 @@ export default function CommunitiesSheetsScriptProvider({
 
     const getPostsData = async () => {
       try {
-        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?per_page=5&page=${currentPage + 1}`;
+        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?per_page=${postPerPage}&page=${currentPage + 1}`;
 
         const response = await wpFetch(postsUrl, {
           cache: "no-store",
@@ -215,7 +216,7 @@ export default function CommunitiesSheetsScriptProvider({
         );
 
         if (isMounted) {
-          if (data?.posts?.length < 10) {
+          if (data?.posts?.length < postPerPage) {
             setHasMorePosts(false);
           }
           setSheetPageData((prevData: any) => {
@@ -298,7 +299,12 @@ export default function CommunitiesSheetsScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
@@ -689,12 +695,17 @@ export default function CommunitiesSheetsScriptProvider({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -717,7 +728,12 @@ export default function CommunitiesSheetsScriptProvider({
               }}
             />
             <SheetContentSection
-              extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[6.25vw]`}
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[6vh] sm:py-[10vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]`}
               animWidthText={1}
               activeCategory={activeCategory}
               setActiveCategory={setActiveCategory}

@@ -105,7 +105,7 @@ export default function SingleCyclePicture(props: ChildProps) {
   }, [imageSrc, lightboxImageSrc]);
 
   return (
-    <div className="single-cycle-picture w-[44.27vw] will-change-transform">
+    <div className="single-cycle-picture w-full lg:w-[44.27vw] min-w-[44.27vw] will-change-transform">
       {imageSrc && isLightboxMounted && (
         <FsLightbox
           toggler={lightboxController.toggler}
@@ -129,7 +129,7 @@ export default function SingleCyclePicture(props: ChildProps) {
           />
           <div className="cycle-content-wrapper absolute top-0 left-0 z-10 w-full h-full overflow-hidden flex items-center justify-center">
             {imageSrc ? (
-              <div className="picture-image absolute top-5 left-5 right-5 bottom-5 z-10 w-auto h-auto">
+              <div className="picture-image absolute top-2.5 left-2.5 right-2.5 bottom-2.5 sm:top-5 sm:left-5 sm:right-5 sm:bottom-5 z-10 w-auto h-auto">
                 <Image
                   className="w-full object-cover object-center h-full relative z-10 will-change-transform"
                   src={
@@ -149,7 +149,7 @@ export default function SingleCyclePicture(props: ChildProps) {
               </div>
             ) : (
               <div
-                className={`picture-content relative bg-[#1A1A1A] w-[28vw] h-auto z-30 2xl:text-[45px] xl:text-[35px] sm:text-[25px] leading-[1.2em] text-[#656158] m-auto`}
+                className={`picture-content relative bg-[#1A1A1A] w-full lg:w-[28vw] h-auto z-30 lg:text-[45px] sm:text-[35px] text-[25px] leading-[1.2em] text-[#656158] m-auto`}
               >
                 <p>
                   יש לך את תמונת המחזור של ועד ק״ל?
@@ -168,7 +168,7 @@ export default function SingleCyclePicture(props: ChildProps) {
 
           {imageSrc && (
             <div
-              className={`picture-view absolute top-0 left-0 w-full h-full flex items-center justify-center z-40 bg-[#00000080] transition-all duration-500 opacity-0 invisible group-hover:opacity-100 group-hover:visible`}
+              className={`picture-view absolute top-0 left-0 w-full h-full flex items-center justify-center z-40 bg-[#00000080] transition-all duration-500 lg:opacity-0 lg:invisible group-hover:opacity-100 group-hover:visible`}
               onMouseEnter={warmupLightbox}
               onClick={() => {
                 if (imageSrc) {
@@ -178,7 +178,7 @@ export default function SingleCyclePicture(props: ChildProps) {
             >
               <button
                 type="button"
-                className="w-30 h-30 p-4 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
+                className="w-15 h-15 sm:w-20 sm:h-20 lg:w-30 lg:h-30 p-3 sm:p-4 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
               >
                 <ViewIcon2 />
               </button>
@@ -187,8 +187,8 @@ export default function SingleCyclePicture(props: ChildProps) {
         </div>
       </div>
 
-      <div className="cycle-title mt-[5.8vh]">
-        <h2 className="text-[55px] text-[#D1A941] leading-[70%] text-center">
+      <div className="cycle-title mt-8 sm:mt-10 lg:mt-[5.8vh]">
+        <h2 className="text-[25px] sm:text-[35px] lg:text-[55px] text-[#D1A941] leading-[70%] text-center">
           {parse(SingleData?.title?.rendered || "")}
         </h2>
       </div>

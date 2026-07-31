@@ -51,7 +51,7 @@ export default function CommunityImage({ item }: { item: any }) {
 
   return (
     <div
-      className={`image w-xl max-w-full ${item?.content?.image?.width > item?.content?.image?.height ? "h-auto" : "h-[60vh]"} relative`}
+      className={`image w-xl max-w-full ${item?.content?.image?.width > item?.content?.image?.height ? "h-auto" : "h-auto sm:h-[60vh]"} relative`}
     >
       {loading && (
         <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>

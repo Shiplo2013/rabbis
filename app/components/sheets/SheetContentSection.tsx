@@ -17,6 +17,7 @@ interface ChildProps {
   setIsPostLoaded?: (value: boolean) => void;
   currentPage?: number;
   totalPages?: number;
+  style?: React.CSSProperties;
 }
 
 export default function SheetContentSection(props: ChildProps) {
@@ -28,10 +29,11 @@ export default function SheetContentSection(props: ChildProps) {
   return (
     <section
       dir="rtl"
+      style={props.style}
       className={`${props.extraClass} bg-black flex items-center justify-start relative z-20`}
     >
-      <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[5.8vw]">
-        <div className="sheet-sidebar w-54.5 h-full will-change-transform overflow-hidden">
+      <div className="sheet-wrapper w-full h-auto flex items-center gap-y-[8vh] gap-x-[5.8vw] flex-col lg:flex-row">
+        <div className="sheet-sidebar w-full lg:w-54.5 h-full will-change-transform overflow-hidden">
           <div className="sheet-sidebar-wrapper">
             {/* <div className="search-group relative mb-[3.6vh]">
               <input
@@ -75,7 +77,7 @@ export default function SheetContentSection(props: ChildProps) {
             </div>
           </div>
         </div>
-        <div className="sheet-content flex items-center gap-x-[3.2vw] will-change-transform relative">
+        <div className="sheet-content flex items-center gap-y-[5vh] gap-x-[3.2vw] will-change-transform relative flex-col sm:flex-row sm:flex-wrap">
           {sectionData?.noPostsFound ? (
             <div className="no-post-found w-full flex items-center justify-center py-20 gap-x-[3.2vw]">
               <div className="text-white text-[35px] leading-[1em] w-[26.35vw] text-center">
@@ -96,10 +98,10 @@ export default function SheetContentSection(props: ChildProps) {
         </div>
         {props.hasMorePosts && props.currentPage! < props.totalPages! && (
           <div
-            className={`sheet-readmore min-w-50 ${props.isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
+            className={`sheet-readmore w-full lg:w-50 lg:min-w-50 flex items-center justify-center ${props.isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
           >
             <button
-              className="text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
+              className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
               onClick={() => {
                 if (props.onLoadMore) {
                   props.onLoadMore();
