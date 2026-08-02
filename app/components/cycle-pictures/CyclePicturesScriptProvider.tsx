@@ -181,7 +181,6 @@ export default function CyclePicturesScriptProvider({
       wrapper.current &&
       window.innerWidth > 1024
     ) {
-      setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -423,89 +422,6 @@ export default function CyclePicturesScriptProvider({
     const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
     logoImage?.classList.add("white-image");
   }, [pathname]);
-
-  // Set Page Content Animation
-  const setPageContentAnimation = () => {
-    // const animations: gsap.core.Animation[] = [];
-    // // Page Content Animation
-    // const sheetContent = main.current?.querySelectorAll(
-    //   ".sheet-content .single-cycle-picture",
-    // );
-    // const sheetReadmore = main.current?.querySelector(".sheet-readmore");
-    // const sidebar = main.current?.querySelector(
-    //   ".sheet-sidebar .sheet-sidebar-wrapper",
-    // );
-    // // Animations
-    // if (sidebar) {
-    //   const sideAnimation = gsap.from(sidebar, {
-    //     xPercent: 100,
-    //     opacity: 0,
-    //     ease: "expo.inOut",
-    //     duration: 3,
-    //     delay: 0,
-    //     scrollTrigger: {
-    //       start: () => {
-    //         return window.innerWidth * 0.8;
-    //       },
-    //     },
-    //   });
-    //   animations.push(sideAnimation);
-    // }
-    // // Contents
-    // if (sheetContent) {
-    //   sheetContent.forEach((section, index) => {
-    //     console.log("Animating Section:", GetRightPosition(section));
-    //     // Custom Content Item
-    //     if (section) {
-    //       gsap.set(section, {
-    //         xPercent: -50,
-    //         opacity: 0,
-    //       });
-    //       const contentAnimation = gsap.to(section, {
-    //         xPercent: 0,
-    //         opacity: 1,
-    //         ease: "slow(0.1,1,false)",
-    //         duration: 1.5,
-    //         delay: 0,
-    //         scrollTrigger: {
-    //           trigger: section,
-    //           start: () => {
-    //             return GetRightPosition(section) - window.innerWidth * 0.5;
-    //           },
-    //           toggleActions: "restart none none reverse",
-    //         },
-    //       });
-    //       animations.push(contentAnimation);
-    //     }
-    //   });
-    // }
-    // // ReadMore Button
-    // if (sheetReadmore) {
-    //   gsap.set(sheetReadmore, {
-    //     xPercent: -50,
-    //     opacity: 0,
-    //   });
-    //   const readmoreAnimation = gsap.to(sheetReadmore, {
-    //     xPercent: 0,
-    //     opacity: 1,
-    //     ease: "expo.inOut",
-    //     duration: 1,
-    //     delay: 0,
-    //     scrollTrigger: {
-    //       trigger: sheetReadmore,
-    //       start: () => {
-    //         return GetRightPosition(sheetReadmore) - window.innerWidth * 0.5;
-    //       },
-    //       toggleActions: "restart pause resume reverse",
-    //     },
-    //   });
-    //   animations.push(readmoreAnimation);
-    // }
-    // Return Animation Complete Promise
-    // return () => {
-    //   animations.forEach((animation) => animation.kill());
-    // };
-  };
 
   // Set Body Overflow Hidden
   useEffect(() => {

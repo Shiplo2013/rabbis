@@ -118,11 +118,13 @@ export default function RabbisPeriodSection(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return (
-                    getTimelineOffset() +
-                    GetRightPosition(title.current) -
-                    window.innerWidth * 0.5
-                  );
+                  return window.innerWidth > 1024
+                    ? getTimelineOffset() +
+                        GetRightPosition(title.current) -
+                        window.innerWidth * 0.5
+                    : (title.current?.getBoundingClientRect().top || 0) +
+                        window.scrollY -
+                        window.innerHeight * 0.7;
                 },
                 toggleActions: "restart none none reverse",
               },
@@ -142,11 +144,13 @@ export default function RabbisPeriodSection(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(slider.current) -
-                window.innerWidth * 0.5
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(slider.current) -
+                    window.innerWidth * 0.5
+                : (slider.current?.getBoundingClientRect().top || 0) +
+                    window.scrollY -
+                    window.innerHeight * 0.7;
             },
             toggleActions: "restart none none reverse",
           },
@@ -164,11 +168,13 @@ export default function RabbisPeriodSection(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(button.current) -
-                window.innerWidth * 0.5
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(button.current) -
+                    window.innerWidth * 0.5
+                : (button.current?.getBoundingClientRect().top || 0) +
+                    window.scrollY -
+                    window.innerHeight * 0.7;
             },
             toggleActions: "restart none none reverse",
           },
@@ -204,18 +210,19 @@ export default function RabbisPeriodSection(props: ChildProps) {
         offsetTopTimeline={props.offsetTopTimeline}
         offsetTopAdded={props.offsetTopAdded}
       />
-      <div className="period-content-wrapper flex items-center justify-center w-full h-full relative z-20 pr-[10vw] pl-[10vw] pt-[6vh]">
+      <div className="period-content-wrapper flex items-center justify-center w-full h-full relative z-20 px-[8vw] pt-[8vh] pb-[6vh] lg:pb-0 lg:pr-[10vw] lg:pl-[10vw] lg:pt-[6vh] flex-col lg:flex-row gap-y-[7vh]">
         <div
           ref={button}
           onClick={() => {
             props.activeMenuFunction?.(!props.activeMenu);
             props.rabbisData?.(slideData as any);
           }}
-          className="period-button absolute top-[7.8vh] left-[12.7vw] cursor-pointer"
+          className="period-button absolute left-6 top-6 lg:top-[7.8vh] lg:left-[12.7vw] cursor-pointer"
         >
           <ThemeButton2
-            extraClass="w-32 h-32 flex item-center justify-center border-[4px] border-[#D1A941] text-[28px] leading-[0.8em] p-6 text-center font-bold"
+            extraClass="w-18 h-18 sm:w-24 sm:h-24 lg:w-32 lg:h-32 flex items-center justify-center border-2 lg:border-4 border-[#D1A941] leading-[0.8em] p-4 lg:p-6 text-center font-bold"
             bgColor="bg-[#ffffff]"
+            fontSize="text-[16px] sm:text-[22px] lg:text-[28px]"
             textColor="text-[#000000]"
             hoverBgColor="bg-[#C3A13F]"
             text={`כל הרבנים`}
@@ -224,18 +231,18 @@ export default function RabbisPeriodSection(props: ChildProps) {
         </div>
         <div
           dir="ltr"
-          className="period-title absolute top-[9.5vh] right-[9vw]"
+          className="period-title w-full lg:w-auto relative lg:absolute lg:top-[9.5vh] lg:right-[9vw] pl-[15vw]"
         >
           {props?.data?.title && (
             <h2
               ref={title}
-              className="text-[45px] leading-[0.7em] text-[#FBF4E6]"
+              className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[0.9em] sm:leading-[0.7em] text-[#FBF4E6] text-right"
             >
               {parse(props?.data?.title || "")}
             </h2>
           )}
         </div>
-        <div ref={slider} className="period-slider max-w-155">
+        <div ref={slider} className="period-slider w-full max-w-155">
           {props.rabbisPosts && <RabbisSlider data={slideData as any} />}
         </div>
       </div>

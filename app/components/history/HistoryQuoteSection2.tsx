@@ -44,7 +44,8 @@ export default function HistoryQuoteSection2(props: ChildProps) {
         typeof window === "undefined" ||
         !wrapper.current ||
         !quote.current ||
-        !props.offsetTopAdded
+        !props.offsetTopAdded ||
+        window.innerWidth < 1024
       ) {
         return;
       }
@@ -125,12 +126,12 @@ export default function HistoryQuoteSection2(props: ChildProps) {
         />
       </div>
       <div
-        className={`section-row w-full h-full flex px-[2vw] py-[5vh] items-center justify-center relative z-30`}
+        className={`section-row w-full h-full flex px-[8vw] py-[7vh] lg:px-[2vw] lg:py-[5vh] items-center justify-center relative z-30`}
       >
         <div
           ref={quote}
           dir="ltr"
-          className={`bg-[#E2D7C3] w-[29.3vw] text-[#000000] text-[45px] leading-[0.8em] px-[5vw] py-[5vh] flex flex-col min-h-53.5 justify-center ml-[40vw] text-right ${props.boxClass}`}
+          className={`bg-[#E2D7C3] w-full lg:w-[29.3vw] text-[#000000] text-[25px] sm:text-[35px] lg:text-[45px] leading-[0.8em] px-[8vw] lg:px-[5vw] py-[7vh] lg:py-[5vh] flex flex-col min-h-53.5 justify-center lg:ml-[40vw] text-right ${props.boxClass}`}
         >
           {parse(props?.data?.content)}
         </div>

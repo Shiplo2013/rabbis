@@ -48,7 +48,8 @@ export default function OnlyTextSection(props: ChildProps) {
       if (
         typeof window === "undefined" ||
         !wrapper.current ||
-        !props.offsetTopAdded
+        !props.offsetTopAdded ||
+        window.innerWidth < 1024
       ) {
         return;
       }
@@ -76,11 +77,12 @@ export default function OnlyTextSection(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(wrapper.current) -
-                      window.innerWidth * 0.7
-                    );
+                    return window.innerWidth > 1024
+                      ? getTimelineOffset() +
+                          GetRightPosition(wrapper.current) -
+                          window.innerWidth * 0.7
+                      : (wrapper.current?.getBoundingClientRect().top || 0) +
+                          window.scrollY;
                   },
                   toggleActions: "restart none none reverse",
                 },
@@ -108,11 +110,12 @@ export default function OnlyTextSection(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(wrapper.current) -
-                      window.innerWidth * 0.7
-                    );
+                    return window.innerWidth > 1024
+                      ? getTimelineOffset() +
+                          GetRightPosition(wrapper.current) -
+                          window.innerWidth * 0.7
+                      : (wrapper.current?.getBoundingClientRect().top || 0) +
+                          window.scrollY;
                   },
                   toggleActions: "restart none none reverse",
                 },
@@ -139,16 +142,16 @@ export default function OnlyTextSection(props: ChildProps) {
       className={`${props.extraClass} bg-[#5A7C4E] flex items-center relative z-20`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="section-wrapper w-full h-full pr-[7vw] pl-[5.7vw] pt-[6.5vh] pb-[13vh] justify-end flex flex-col">
+      <div className="section-wrapper w-full h-full px-[8vw] py-[7vh] lg:pr-[7vw] lg:pl-[5.7vw] lg:pt-[6.5vh] lg:pb-[13vh] justify-end flex flex-col">
         <div
           dir="ltr"
-          className="small-text text-[#FBF4E6] 2xl:text-[21px] xl:text-[18px] sm:text-[16px] leading-[1.4em] text-right w-full"
+          className="small-text text-[#FBF4E6] lg:text-[21px] sm:text-[18px] text-[16px] leading-[1.4em] text-right w-full"
         >
           {parse(textData.text)}
         </div>
         <div
           dir="ltr"
-          className="big-text text-[#FBF4E6] 2xl:text-[28px] xl:text-[24px] sm:text-[20px] leading-[1em] mt-6 text-right w-full"
+          className="big-text text-[#FBF4E6] lg:text-[28px] sm:text-[24px] text-[20px] leading-[1em] mt-8 sm:mt-10 lg:mt-6 text-right w-full"
         >
           {parse(textData.quote)}
         </div>

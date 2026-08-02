@@ -19,6 +19,7 @@ interface ChildProps {
   animWidthText: number;
   sectionData: SingleCyclePictureData;
   galleryImageSizes?: any;
+  style?: React.CSSProperties;
 }
 
 export default function ConferenceContentSection(props: ChildProps) {
@@ -40,11 +41,12 @@ export default function ConferenceContentSection(props: ChildProps) {
   return (
     <section
       dir="rtl"
+      style={props.style}
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
-      <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[9.89vw]">
-        <div className="conference-content min-w-[42.5vw] w-[42.5vw] h-full will-change-transform overflow-hidden relative">
-          <div className="content-bg relative z-10">
+      <div className="sheet-wrapper w-full h-auto flex items-center gap-y-[7vh] gap-x-[9.89vw] flex-col lg:flex-row">
+        <div className="conference-content lg:min-w-[42.5vw] w-full lg:w-[42.5vw] h-full will-change-transform overflow-hidden relative">
+          <div className="content-bg absolute top-0 left-0 w-full h-full sm:h-auto sm:relative z-10 scale-150 sm:scale-0">
             <Image
               className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
               src={contentBg?.src}
@@ -58,7 +60,7 @@ export default function ConferenceContentSection(props: ChildProps) {
           </div>
           <div
             dir="ltr"
-            className="conference-content-wrapper absolute top-0 left-0 w-full h-full z-30 2xl:text-[21px] xl:text-[18px] sm:text-[16px] text-black leading-[1.3em] px-[6.25vw] py-[12.9vh] flex flex-col gap-y-[3vh] text-right"
+            className="conference-content-wrapper relative sm:absolute top-0 left-0 w-full h-full z-30 lg:text-[21px] text-[14px] sm:text-[16px] text-black leading-[1.3em] px-[10vw] lg:px-[6.25vw] py-10 sm:py-[10vh] lg:py-[12.9vh] flex flex-col gap-y-[3vh] text-right"
           >
             {parse(SectionData?.sectionText || "")}
           </div>
@@ -102,7 +104,7 @@ export default function ConferenceContentSection(props: ChildProps) {
             </button>
           </div>
         )}
-        <div className="conference-gallery flex items-center will-change-transform">
+        <div className="conference-gallery w-full flex items-center will-change-transform flex-col lg:flex-row">
           {SectionData?.gallery &&
             SectionData?.gallery?.map((item: any, index: number) => {
               const dimensions = props.galleryImageSizes?.[index];

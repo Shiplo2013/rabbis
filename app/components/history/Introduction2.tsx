@@ -41,7 +41,8 @@ export default function Introduction2(props: ChildProps) {
     if (
       typeof window === "undefined" ||
       !wrapper.current ||
-      !props.offsetTopAdded
+      !props.offsetTopAdded ||
+      window.innerWidth < 1024
     ) {
       return;
     }
@@ -73,9 +74,13 @@ export default function Introduction2(props: ChildProps) {
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return getTimelineOffset() - 10;
+                  return window.innerWidth > 1024
+                    ? getTimelineOffset() - 10
+                    : (wrapper.current?.getBoundingClientRect().top || 0) +
+                        window.scrollY -
+                        window.innerHeight / 2;
                 },
-                toggleActions: "play pause resume reset",
+                toggleActions: "play none none reset",
               },
             });
             animations.push(splititle);
@@ -100,9 +105,12 @@ export default function Introduction2(props: ChildProps) {
               ease: "expo.out",
               scrollTrigger: {
                 start: () => {
-                  return getTimelineOffset() - 10;
+                  return window.innerWidth > 1024
+                    ? getTimelineOffset() - 10
+                    : (wrapper.current?.getBoundingClientRect().top || 0) +
+                        window.scrollY;
                 },
-                toggleActions: "play pause resume reset",
+                toggleActions: "play none none reset",
               },
             });
             animations.push(splitSubtitle);
@@ -170,7 +178,7 @@ export default function Introduction2(props: ChildProps) {
           {props.data && props.data?.title && (
             <h1
               ref={title}
-              className="text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5"
+              className="text-[80px] sm:text-[124px] lg:text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5"
             >
               {parse(props?.data?.title)}
             </h1>
@@ -178,7 +186,7 @@ export default function Introduction2(props: ChildProps) {
           {props.data && props.data?.subtitle && (
             <h4
               ref={subtitle}
-              className="overflow-hidden text-[55px] leading-[1em] text-[#FBF4E6] mt-[5vh] relative z-30"
+              className="overflow-hidden text-[25px] sm:text-[35px] lg:text-[55px] leading-[1em] text-[#FBF4E6] sm:mt-2 lg:mt-[5vh] relative z-30"
             >
               {parse(props?.data?.subtitle)}
             </h4>

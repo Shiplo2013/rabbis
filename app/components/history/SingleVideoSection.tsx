@@ -70,11 +70,11 @@ export default function SingleVideoSection(props: ChildProps) {
             delay: -0.5,
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(video) -
-                  window.innerWidth * 0.3
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(video) -
+                      window.innerWidth * 0.3
+                  : video.getBoundingClientRect().top + window.scrollY;
               },
               toggleActions: "restart pause play reverse",
             },
@@ -100,12 +100,14 @@ export default function SingleVideoSection(props: ChildProps) {
     if (videoElement) {
       if (videoElement.paused) {
         if (videoOverlay) {
-          gsap.to(videoWrap.current, {
-            duration: 0.5,
-            width: "120%",
-            right: "-10%",
-            ease: "expo.inOut",
-          });
+          if (window.innerWidth > 1024) {
+            gsap.to(videoWrap.current, {
+              duration: 0.5,
+              width: "120%",
+              right: "-10%",
+              ease: "expo.inOut",
+            });
+          }
           gsap.to(videoOverlay, {
             duration: 0.4,
             opacity: 0,
@@ -195,7 +197,7 @@ export default function SingleVideoSection(props: ChildProps) {
             }
           />
         </div>
-        <div className="section-overlay absolute top-0 left-0 w-full h-full bg-black z-40 will-change-transform"></div>
+        <div className="section-overlay absolute top-0 left-0 w-full h-full bg-black z-40 will-change-transform hidden lg:block"></div>
       </div>
     </section>
   );

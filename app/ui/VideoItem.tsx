@@ -171,7 +171,7 @@ export default function VideoItem(props: ChildProps) {
     <div
       ref={wrapper}
       dir="rtl"
-      className={`${props.extraClass} bg-black flex items-center h-screen relative z-20`}
+      className={`${props.extraClass} bg-black flex items-center h-auto sm:h-screen relative z-20`}
       data-scroll-section={props.animWidthText}
     >
       <div className="video-wrapper w-full h-full relative">
@@ -188,7 +188,7 @@ export default function VideoItem(props: ChildProps) {
           className="absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
         >
           <ThemeButton2
-            extraClass="w-29.25 h-29.25 flex items-center justify-center border-2 border-[#C3A13F] group"
+            extraClass="w-20 h-20 p-5 sm:p-0 sm:w-29.25 sm:h-29.25 flex items-center justify-center border-2 border-[#C3A13F] group"
             bgColor="bg-[#0F0F0F85]"
             hoverBgColor="bg-[#000000]"
             svgIcon={<PlusIcon />}
@@ -197,7 +197,7 @@ export default function VideoItem(props: ChildProps) {
             }
           />
         </div>
-        <div className="section-overlay absolute top-0 left-0 w-full h-full bg-black z-40 will-change-transform"></div>
+        <div className="section-overlay absolute top-0 left-0 w-full h-full bg-black z-40 will-change-transform hidden lg:block"></div>
       </div>
     </div>
   );

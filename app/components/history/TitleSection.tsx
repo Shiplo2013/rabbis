@@ -58,11 +58,13 @@ export default function TitleSection(props: ChildProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(wrapper.current) -
-                window.innerWidth
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(wrapper.current) -
+                    window.innerWidth * 0.7
+                : (wrapper.current?.getBoundingClientRect().top || 0) +
+                    window.scrollY -
+                    window.innerHeight * 0.7;
             },
             end: () => "+=" + window.innerWidth * 2,
             scrub: 2,
@@ -91,11 +93,13 @@ export default function TitleSection(props: ChildProps) {
               opacity: 0,
               scrollTrigger: {
                 start: () => {
-                  return (
-                    getTimelineOffset() +
-                    GetRightPosition(wrapper.current) -
-                    window.innerWidth * 0.7
-                  );
+                  return window.innerWidth > 1024
+                    ? getTimelineOffset() +
+                        GetRightPosition(wrapper.current) -
+                        window.innerWidth * 0.7
+                    : (wrapper.current?.getBoundingClientRect().top || 0) +
+                        window.scrollY -
+                        window.innerHeight * 0.7;
                 },
                 toggleActions: "restart none none reverse",
               },
@@ -117,7 +121,7 @@ export default function TitleSection(props: ChildProps) {
     <section
       ref={wrapper}
       dir="rtl"
-      className={`${props.extraClass} bg-black flex items-center relative z-20`}
+      className={`${props.extraClass} bg-black flex items-center relative z-20 min-h-[50vh]`}
       data-scroll-section={props.animWidthText}
     >
       {props.leftShape && (
@@ -137,7 +141,7 @@ export default function TitleSection(props: ChildProps) {
       <div className="w-full pr-[15%] pt-[10%] pb-[10%] pl-[15%]">
         <div
           ref={introImage}
-          className="title-image absolute w-61.75 h-61.75 top-[21%] right-[9%] z-30 mix-blend-lighten pointer-events-none"
+          className="title-image absolute w-40 h-auto lg:w-61.75 lg:h-61.75 top-[21%] right-[9%] z-30 mix-blend-lighten pointer-events-none"
         >
           <Image
             className="avatar-image w-full object-cover object-center h-full"
@@ -159,7 +163,7 @@ export default function TitleSection(props: ChildProps) {
         <h2
           dir="ltr"
           ref={introTitle}
-          className="intro-title text-[135px] text-(--theme-color) leading-24 relative z-10 text-right"
+          className="intro-title text-[64px] sm:text-[90px] lg:text-[135px] text-(--theme-color) leading-[0.8em] sm:leading-[0.8em] lg:leading-24 relative z-10 text-right"
         >
           {parse(Title)}
         </h2>

@@ -63,7 +63,8 @@ export default function EvidenceOfPeriod(props: ChildProps) {
       if (
         typeof window === "undefined" ||
         !wrapper.current ||
-        !props.offsetTopAdded
+        !props.offsetTopAdded ||
+        window.innerWidth < 1024
       ) {
         return;
       }
@@ -82,11 +83,11 @@ export default function EvidenceOfPeriod(props: ChildProps) {
           ease: "expo.inOut",
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(video) -
-                window.innerWidth * 0.7
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(video) -
+                    window.innerWidth * 0.7
+                : (video.getBoundingClientRect().top || 0) + window.scrollY;
             },
             toggleActions: "restart none none reverse",
           },
@@ -116,11 +117,12 @@ export default function EvidenceOfPeriod(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(item) -
-                      window.innerWidth * 0.7
-                    );
+                    return window.innerWidth > 1024
+                      ? getTimelineOffset() +
+                          GetRightPosition(item) -
+                          window.innerWidth * 0.7
+                      : (item.getBoundingClientRect().top || 0) +
+                          window.scrollY;
                   },
                   toggleActions: "restart none none reverse",
                 },
@@ -147,14 +149,14 @@ export default function EvidenceOfPeriod(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="evidence-wrapper w-full h-full pr-[6vw] py-[7vh] flex">
-        <div className="section-content flex gap-x-[2.4vw]">
-          <div className="video relative flex flex-col gap-y-[3vh] w-66.5 h-66.5">
+      <div className="evidence-wrapper w-full h-full px-[8vw] lg:pl-0 lg:pr-[6vw] py-[7vh] flex">
+        <div className="section-content flex gap-y-[7vh] gap-x-[2.4vw] flex-col lg:flex-row w-full justify-center items-center">
+          <div className="video relative flex flex-col gap-y-6 sm:gap-y-[3vh] w-40 lg:w-66.5 lg:h-66.5 mb-0 lg:mb-auto">
             <div
-              className="video-popup-button thumb p-5 bg-[#d9d9d9d5] rounded-full cursor-pointer relative"
+              className="video-popup-button thumb p-2 lg:p-5 bg-[#d9d9d9d5] rounded-full cursor-pointer relative"
               onClick={() => props.videoControl(true)}
             >
-              <div className="image rounded-full overflow-hidden select-none pointer-events-none border-12 border-[#c3a13f69]">
+              <div className="image rounded-full overflow-hidden select-none pointer-events-none border-6 lg:border-12 border-[#c3a13f69]">
                 <Image
                   className={`w-full object-cover h-full relative z-10`}
                   src={
@@ -172,21 +174,21 @@ export default function EvidenceOfPeriod(props: ChildProps) {
                   alt="Video Thumbnail"
                 />
               </div>
-              <div className="minus-icon absolute top-0 right-0 w-11.75 h-11.75 bg-[#D1C39C] flex items-center justify-center rounded-full ">
+              <div className="minus-icon absolute top-0 right-0 w-8 h-8 p-2 sm:p-0 sm:w-11.75 sm:h-11.75 bg-[#D1C39C] flex items-center justify-center rounded-full ">
                 <MinusIcon />
               </div>
-              <div className="play-icon absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 ml-3">
+              <div className="play-icon p-3 sm:p-0 absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 ml-3">
                 <PlayIcon />
               </div>
             </div>
-            <h3 className="text-[36px] text-(--theme-color) leading-[0.7em] flex justify-center font-bold">
+            <h3 className="text-[25px] sm:text-[36px] text-(--theme-color) leading-[0.7em] flex justify-center font-bold">
               <span className="max-w-30">
                 {parse(sectionData?.video?.title)}
               </span>
             </h3>
           </div>
-          <div className="content w-[66vw] flex items-center relative px-[4.35vw]">
-            <div className="content-bg absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full select-none pointer-events-none">
+          <div className="content w-full lg:w-[66vw] flex items-center relative py-[5vh] px-[5vw] lg:py-0 lg:px-[4.35vw] overflow-hidden lg:overflow-visible">
+            <div className="content-bg absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full lg:h-screen select-none pointer-events-none scale-360 sm:scale-220 lg:scale-100">
               {/* <ImageRevealWithoutParallaxBG2
                 bgImage={evidanceBG}
                 overlayLeft={false}
@@ -198,13 +200,13 @@ export default function EvidenceOfPeriod(props: ChildProps) {
             </div>
             <div
               dir="ltr"
-              className="flex gap-x-[6.66vw] relative z-30 text-[21px] leading-[1.4] text-[#000000] text-right"
+              className="flex w-full gap-y-8 gap-x-[6.66vw] relative z-30 text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4] text-[#000000] text-right flex-col lg:flex-row"
             >
-              <div className="content-text content-left w-[40%]">
+              <div className="content-text content-left lg:w-[40%]">
                 {parse(sectionData?.content?.text2)}
               </div>
 
-              <div className="content-text content-right w-[60%]">
+              <div className="content-text content-right lg:w-[60%]">
                 {parse(sectionData?.content?.text1)}
               </div>
             </div>

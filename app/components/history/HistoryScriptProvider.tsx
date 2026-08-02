@@ -509,7 +509,7 @@ export default function HistoryScriptProvider({
             "-=2.5",
           );
         }
-        if (timeline) {
+        if (timeline && window.innerWidth > 1024) {
           tl.to(
             timeline,
             {
@@ -594,7 +594,11 @@ export default function HistoryScriptProvider({
     let timeline4 = null;
     let timeline5 = null;
     let timeline6 = null;
-    if (typeof window !== "undefined" && main.current) {
+    if (
+      typeof window !== "undefined" &&
+      main.current &&
+      window.innerWidth > 1024
+    ) {
       const history = document.getElementById(
         "history-timeline-progress",
       ) as HTMLElement | null;
@@ -911,7 +915,7 @@ export default function HistoryScriptProvider({
 
   // Header Left Toggle on Scroll
   useEffect(() => {
-    if (!isAllAnimationComplete) return;
+    if (!isAllAnimationComplete && window.innerWidth > 1024) return;
 
     toggleHeaderLeftOnScroll();
     window.addEventListener("scroll", toggleHeaderLeftOnScroll, {
@@ -997,11 +1001,11 @@ export default function HistoryScriptProvider({
         <div ref={timeline1Ref} className="timeline1" id="timeline1">
           <div
             ref={panel1}
-            className="w-screen h-screen flex items-end justify-end"
+            className="w-screen lg:h-screen flex items-end justify-end"
           >
             <div
               ref={wrapper1}
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[707vw] min-w-[707vw] h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[707vw] lg:min-w-[707vw] lg:h-screen will-change-transform`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
@@ -1025,13 +1029,13 @@ export default function HistoryScriptProvider({
               />
               <Suspense
                 fallback={
-                  <div className="min-w-[80vw] w-[80vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[80vw] w-full lg:w-[80vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <ContentSection2
                   animWidthText={0.5}
                   extraClass={
-                    "min-w-[80vw] w-[80vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[80vw] w-full lg:w-[80vw] lg:h-screen panel-section will-change-transform"
                   }
                   data={
                     chroniclesPageData?.acf?.timeline_1?.content_section || ""
@@ -1044,13 +1048,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <TitleSection
                   animWidthText={0.9}
                   extraClass={
-                    "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
                   }
                   leftShape={true}
                   rightShape={true}
@@ -1064,13 +1068,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <RabbisPeriodSection
                   animWidthText={2}
                   extraClass={
-                    "min-w-screen w-screen h-screen panel-section will-change-transform"
+                    "lg:min-w-screen w-screen lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline1Ref}
                   activeMenu={activeRabbisMenu}
@@ -1087,13 +1091,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[32vw] w-full lg:w-[32vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <SingleImageSection
                   animWidthText={2.9}
                   extraClass={
-                    "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[32vw] w-full lg:w-[32vw] lg:h-screen panel-section will-change-transform"
                   }
                   image={
                     chroniclesPageData?.acf?.timeline_1?.single_image ||
@@ -1106,14 +1110,14 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[150vw] w-full lg:w-[150vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <MarkOfTheRoad
                   animWidthText={3.4}
                   panel={timeline1Ref}
                   extraClass={
-                    "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[150vw] w-full lg:w-[150vw] lg:h-screen panel-section will-change-transform"
                   }
                   data={
                     chroniclesPageData?.acf?.timeline_1?.mark_of_the_road || []
@@ -1124,13 +1128,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[150vw] w-full lg:w-[150vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <RabbisTimeline
                   animWidthText={5.4}
                   extraClass={
-                    "min-w-[150vw] w-[150vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[150vw] w-full lg:w-[150vw] lg:h-screen panel-section will-change-transform"
                   }
                   bgImage={timelineBG}
                   panel={timeline1Ref}
@@ -1143,17 +1147,17 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[45vw] w-[45vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[45vw] w-full lg:w-[45vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <HistoryQuoteSection
                   animWidthText={6.9}
                   bgImage={""}
                   extraClass={
-                    "min-w-[45vw] w-[45vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[45vw] w-full lg:w-[45vw] lg:h-screen panel-section will-change-transform"
                   }
                   data={QuoteData}
-                  boxClass="translate-x-[6vw]"
+                  boxClass="lg:translate-x-[6vw]"
                   panel={timeline1Ref}
                   offsetTopTimeline={pageDataFetched ? offsetTopTimeline1 : 0}
                   offsetTopAdded={offsetTopAdded}
@@ -1167,15 +1171,15 @@ export default function HistoryScriptProvider({
         <div ref={timeline2Ref} className="timeline2" id="timeline2">
           <div
             ref={panel2}
-            className="w-screen h-screen flex items-end justify-end"
+            className="w-screen lg:h-screen flex items-end justify-end"
           >
             <div
               ref={wrapper2}
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[588vw] min-w-[588vw] h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[588vw] lg:min-w-[588vw] lg:h-screen will-change-transform`}
             >
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <Introduction2
@@ -1185,7 +1189,7 @@ export default function HistoryScriptProvider({
                   bgOverlay={""}
                   data={IntroData2}
                   extraClass={
-                    "second-intro panel-section will-change-transform min-w-screen w-screen"
+                    "second-intro panel-section will-change-transform lg:min-w-screen w-full lg:w-screen lg:h-screen"
                   }
                   panel={timeline2Ref}
                   timeline={"timeline2"}
@@ -1201,14 +1205,14 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[128vw] w-[128vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[128vw] w-full lg:w-[128vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <NewsPapperSection
                   animWidthText={8.2}
                   panel={timeline2Ref}
                   extraClass={
-                    "min-w-[128vw] w-[128vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[128vw] w-full lg:w-[128vw] lg:h-screen panel-section will-change-transform"
                   }
                   bgImage={NewsSectionBG}
                   data={
@@ -1220,13 +1224,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <TitleSection
                   animWidthText={9.1}
                   extraClass={
-                    "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
                   }
                   leftShape={true}
                   rightShape={true}
@@ -1239,13 +1243,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <RabbisPeriodSection
                   animWidthText={10.2}
                   extraClass={
-                    "min-w-screen w-screen h-screen panel-section will-change-transform"
+                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline2Ref}
                   activeMenu={activeRabbisMenu}
@@ -1261,14 +1265,14 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[210vw] w-full lg:w-[210vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <MarkOfTheRoad2
                   animWidthText={11.4}
                   panel={timeline2Ref}
                   extraClass={
-                    "min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[210vw] w-full lg:w-[210vw] lg:h-screen panel-section will-change-transform"
                   }
                   data={
                     chroniclesPageData?.acf?.timeline_2?.mark_of_the_road || []
@@ -1284,15 +1288,15 @@ export default function HistoryScriptProvider({
         <div ref={timeline3Ref} className="timeline3" id="timeline3">
           <div
             ref={panel3}
-            className="w-screen h-screen flex items-end justify-end"
+            className="w-screen lg:h-screen flex items-end justify-end"
           >
             <div
               ref={wrapper3}
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[939.8vw] min-w-[939.8vw] h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[939.8vw] lg:min-w-[939.8vw] lg:h-screen will-change-transform`}
             >
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <Introduction2
@@ -1300,7 +1304,7 @@ export default function HistoryScriptProvider({
                   bgImage={IntroBG2}
                   data={IntroData3}
                   extraClass={
-                    "third-intro panel-section will-change-transform min-w-screen w-screen"
+                    "third-intro panel-section will-change-transform lg:min-w-screen w-full lg:w-screen lg:h-screen"
                   }
                   panel={timeline3Ref}
                   bgPosition=""
@@ -1318,13 +1322,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[65.8vw] w-[65.8vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[65.8vw] w-full lg:w-[65.8vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <ArrowSliderSection
                   animWidthText={14}
                   extraClass={
-                    "min-w-[65.8vw] w-[65.8vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[65.8vw] w-full lg:w-[65.8vw] min-h-screen lg:h-screen panel-section will-change-transform"
                   }
                   bgImage={arrowSectionBG}
                   bgClass=""
@@ -1339,13 +1343,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[93vw] w-[93vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[93vw] w-full lg:w-[93vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <EvidenceOfPeriod
                   animWidthText={14.65}
                   extraClass={
-                    "min-w-[93vw] w-[93vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[93vw] w-full lg:w-[93vw] lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline3Ref}
                   videoControl={setIsVideoPopupOpen}
@@ -1359,13 +1363,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <TitleSection
                   animWidthText={15}
                   extraClass={
-                    "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
                   }
                   leftShape={true}
                   rightShape={true}
@@ -1379,13 +1383,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <RabbisPeriodSection
                   animWidthText={15.9}
                   extraClass={
-                    "min-w-screen w-screen h-screen panel-section will-change-transform"
+                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline3Ref}
                   activeMenu={activeRabbisMenu}
@@ -1402,13 +1406,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[285vw] w-[285vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[285vw] w-full lg:w-[285vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <MarkOfTheRoad3
                   animWidthText={17}
                   extraClass={
-                    "min-w-[285vw] w-[285vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[285vw] w-full lg:w-[285vw] lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline3Ref}
                   data={
@@ -1420,7 +1424,7 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <IntroductionContent
@@ -1433,7 +1437,7 @@ export default function HistoryScriptProvider({
                   offsetTopAdded={offsetTopAdded}
                   data={IntroContentData}
                   extraClass={
-                    "panel-section will-change-transform min-w-screen w-screen"
+                    "panel-section will-change-transform lg:min-w-screen w-full lg:w-screen lg:h-screen"
                   }
                   panel={timeline3Ref}
                   timeline="timeline3"
@@ -1449,13 +1453,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[146vw] w-[146vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[146vw] w-full lg:w-[146vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <LambOfferingSection
                   animWidthText={20.65}
                   extraClass={
-                    "min-w-[146vw] w-[146vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[146vw] w-full lg:w-[146vw] lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline3Ref}
                   data={
@@ -1474,15 +1478,15 @@ export default function HistoryScriptProvider({
         <div ref={timeline4Ref} className="timeline4" id="timeline4">
           <div
             ref={panel4}
-            className="w-screen h-screen flex items-end justify-end"
+            className="w-screen lg:h-screen flex items-end justify-end"
           >
             <div
               ref={wrapper4}
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[875vw] min-w-[875vw] h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[875vw] lg:min-w-[875vw] lg:h-screen will-change-transform`}
             >
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <Introduction2
@@ -1490,7 +1494,7 @@ export default function HistoryScriptProvider({
                   bgImage={introBG5}
                   data={IntroData4}
                   extraClass={
-                    "fourth-intro panel-section will-change-transform min-w-screen w-screen"
+                    "fourth-intro panel-section will-change-transform lg:min-w-screen w-full lg:w-screen lg:h-screen"
                   }
                   panel={timeline4Ref}
                   timeline="timeline4"
@@ -1508,13 +1512,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[170vw] w-[170vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[170vw] w-full lg:w-[170vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <MoveToJerusalem
                   animWidthText={23.3}
                   extraClass={
-                    "min-w-[170vw] w-[170vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[170vw] w-full lg:w-[170vw] lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline4Ref}
                   data={
@@ -1526,13 +1530,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <TitleSection
                   animWidthText={24.3}
                   extraClass={
-                    "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
                   }
                   leftShape={true}
                   rightShape={true}
@@ -1546,13 +1550,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <RabbisPeriodSection
                   animWidthText={25.3}
                   extraClass={
-                    "min-w-screen w-screen h-screen panel-section will-change-transform"
+                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline4Ref}
                   activeMenu={activeRabbisMenu}
@@ -1569,13 +1573,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[405vw] w-[405vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[405vw] w-full lg:w-[405vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <RabbisTimeline2
                   animWidthText={26.1}
                   extraClass={
-                    "min-w-[405vw] w-[405vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[405vw] w-full lg:w-[405vw] lg:h-screen panel-section will-change-transform"
                   }
                   bgImage={timelineBG}
                   panel={timeline4Ref}
@@ -1588,17 +1592,17 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <HistoryQuoteSection
                   animWidthText={30.3}
                   bgImage={""}
                   extraClass={
-                    "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
                   }
                   data={QuoteData2}
-                  boxClass="max-w-[40vw]"
+                  boxClass="lg:max-w-[40vw]"
                   panel={timeline4Ref}
                   offsetTopTimeline={pageDataFetched ? offsetTopTimeline4 : 0}
                   offsetTopAdded={offsetTopAdded}
@@ -1612,15 +1616,15 @@ export default function HistoryScriptProvider({
         <div ref={timeline5Ref} className="timeline5" id="timeline5">
           <div
             ref={panel5}
-            className="w-screen h-screen flex items-end justify-end"
+            className="w-screen lg:h-screen flex items-end justify-end"
           >
             <div
               ref={wrapper5}
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[553vw] min-w-[553vw] h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[553vw] lg:min-w-[553vw] lg:h-screen will-change-transform`}
             >
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <Introduction2
@@ -1628,7 +1632,7 @@ export default function HistoryScriptProvider({
                   bgImage={introBG6}
                   data={IntroData5}
                   extraClass={
-                    "fifth-intro panel-section will-change-transform min-w-screen w-screen"
+                    "fifth-intro panel-section will-change-transform lg:min-w-screen w-full lg:w-screen lg:h-screen"
                   }
                   panel={timeline5Ref}
                   timeline="timeline5"
@@ -1646,13 +1650,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[32vw] w-full lg:w-[32vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <OnlyTextSection
                   animWidthText={31.6}
                   extraClass={
-                    "min-w-[32vw] w-[32vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[32vw] w-full lg:w-[32vw] lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline5Ref}
                   data={chroniclesPageData?.acf?.timeline_5?.text_section || ""}
@@ -1662,13 +1666,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[70vw] w-[70vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[70vw] w-full lg:w-[70vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <ArrowSliderSection
                   animWidthText={32.3}
                   extraClass={
-                    "min-w-[70vw] w-[70vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[70vw] w-full lg:w-[70vw] min-h-screen lg:h-screen panel-section will-change-transform"
                   }
                   bgImage={arrowSectionBG2}
                   bgClass=""
@@ -1683,13 +1687,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <ImageOnlySection
                   animWidthText={32.6}
                   extraClass={
-                    "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline5Ref}
                   data={
@@ -1702,13 +1706,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[26vw] w-[26vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[26vw] w-full lg:w-[26vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <SingleVideoSection
                   animWidthText={33.2}
                   extraClass={
-                    "min-w-[26vw] w-[26vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[26vw] w-full lg:w-[26vw] h-screen panel-section will-change-transform"
                   }
                   panel={timeline5Ref}
                   data={chroniclesPageData?.acf?.timeline_5?.single_video || []}
@@ -1718,13 +1722,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <TitleSection
                   animWidthText={33.4}
                   extraClass={
-                    "min-w-[50vw] w-[50vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
                   }
                   leftShape={true}
                   rightShape={true}
@@ -1738,13 +1742,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <RabbisPeriodSection
                   animWidthText={34.2}
                   extraClass={
-                    "min-w-screen w-screen h-screen panel-section will-change-transform"
+                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline5Ref}
                   activeMenu={activeRabbisMenu}
@@ -1761,13 +1765,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[125vw] w-[125vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[125vw] w-full lg:w-[125vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <RabbisTimeline3
                   animWidthText={35.1}
                   extraClass={
-                    "min-w-[125vw] w-[125vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[125vw] w-full lg:w-[125vw] lg:h-screen panel-section will-change-transform"
                   }
                   bgImage={timelineBG}
                   panel={timeline5Ref}
@@ -1786,15 +1790,15 @@ export default function HistoryScriptProvider({
         <div ref={timeline6Ref} className="timeline6" id="timeline6">
           <div
             ref={panel6}
-            className="w-screen h-screen flex items-end justify-end"
+            className="w-screen lg:h-screen flex items-end justify-end"
           >
             <div
               ref={wrapper6}
-              className={`section-wrapp flex flex-nowrap flex-row-reverse w-[837.6vw] min-w-[837.6vw] h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[837.6vw] lg:min-w-[837.6vw] lg:h-screen will-change-transform`}
             >
               <Suspense
                 fallback={
-                  <div className="min-w-screen w-screen h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <Introduction2
@@ -1802,7 +1806,7 @@ export default function HistoryScriptProvider({
                   bgImage={introBG7}
                   data={IntroData6}
                   extraClass={
-                    "sixth-intro panel-section will-change-transform min-w-screen w-screen"
+                    "sixth-intro panel-section will-change-transform lg:min-w-screen w-full lg:w-screen lg:h-screen"
                   }
                   panel={timeline6Ref}
                   timeline="timeline6"
@@ -1820,13 +1824,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[32.5vw] w-[32.5vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[32.5vw] w-full lg:w-[32.5vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <OnlyTextSection2
                   animWidthText={37.2}
                   extraClass={
-                    "min-w-[32.5vw] w-[32.5vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[32.5vw] w-full lg:w-[32.5vw] lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline6Ref}
                   data={chroniclesPageData?.acf?.timeline_6?.text_section || ""}
@@ -1836,13 +1840,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[55.5vw] w-[55.5vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[55.5vw] w-full lg:w-[55.5vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <ImageOnlySection2
                   animWidthText={38}
                   extraClass={
-                    "min-w-[55.5vw] w-[55.5vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[55.5vw] w-full lg:w-[55.5vw] lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline6Ref}
                   data={chroniclesPageData?.acf?.timeline_6?.single_image || ""}
@@ -1852,12 +1856,12 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[210vw] w-[210vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[210vw] w-full lg:w-[210vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <RabbisTimeline4
                   extraClass={
-                    "panel-section will-change-transform min-w-[210vw] w-[210vw]"
+                    "panel-section will-change-transform lg:min-w-[210vw] w-full lg:w-[210vw] lg:h-screen"
                   }
                   animWidthText={38.4}
                   panel={timeline6Ref}
@@ -1868,12 +1872,12 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[61.8vw] w-[61.8vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[61.8vw] w-full lg:w-[61.8vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <OnlyParallaxImageSection
                   extraClass={
-                    "panel-section will-change-transform min-w-[61.8vw] w-[61.8vw]"
+                    "panel-section will-change-transform lg:min-w-[61.8vw] w-full lg:w-[61.8vw] lg:h-screen"
                   }
                   image={
                     chroniclesPageData?.acf?.timeline_6?.parallax_image ||
@@ -1887,13 +1891,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[130vw] w-[130vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[130vw] w-full lg:w-[130vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <MarkOfTheRoad4
                   animWidthText={41.2}
                   extraClass={
-                    "min-w-[130vw] w-[130vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[130vw] w-full lg:w-[130vw] lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline6Ref}
                   data={
@@ -1905,12 +1909,12 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[137vw] w-[137vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[137vw] w-full lg:w-[137vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <ImageWithTextSection
                   extraClass={
-                    "min-w-[137vw] w-[137vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[137vw] w-full lg:w-[137vw] lg:h-screen panel-section will-change-transform"
                   }
                   animWidthText={42.7}
                   panel={timeline6Ref}
@@ -1924,12 +1928,12 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[35.8vw] w-[35.8vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[35.8vw] w-full lg:w-[35.8vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <OnlyImageSection
                   extraClass={
-                    "panel-section will-change-transform min-w-[35.8vw] w-[35.8vw]"
+                    "panel-section will-change-transform lg:min-w-[35.8vw] w-full lg:w-[35.8vw] lg:h-screen"
                   }
                   image={
                     chroniclesPageData?.acf?.timeline_6?.only_image ||
@@ -1942,12 +1946,12 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="min-w-[75vw] w-[75vw] h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[75vw] w-full lg:w-[75vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <HistoryQuoteSection2
                   extraClass={
-                    "panel-section will-change-transform min-w-[75vw] w-[75vw]"
+                    "panel-section will-change-transform lg:min-w-[75vw] w-full lg:w-[75vw] lg:h-screen"
                   }
                   animWidthText={44.2}
                   bgImage={

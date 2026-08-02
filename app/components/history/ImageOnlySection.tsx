@@ -38,7 +38,8 @@ export default function ImageOnlySection(props: ChildProps) {
       if (
         typeof window !== "undefined" &&
         wrapper.current &&
-        props.offsetTopAdded
+        props.offsetTopAdded &&
+        window.innerWidth > 1024
       ) {
         // Selector
         const image = wrapper.current?.querySelector(".image1");
@@ -80,8 +81,8 @@ export default function ImageOnlySection(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center relative z-20`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="section-wrapper w-full h-full py-[15vh] px-[6.8vw] flex items-end justify-end">
-        <div className="image1 w-121 h-80.5 relative z-30">
+      <div className="section-wrapper w-full h-full py-[7vh] lg:py-[15vh] px-[6.8vw] flex items-end justify-end">
+        <div className="image1 w-full h-auto lg:w-121 lg:h-80.5 relative z-30">
           <Image
             className="w-full object-cover object-center h-full"
             src={props.data?.sizes?.medium || Image1?.src}

@@ -55,7 +55,8 @@ export default function ImageWithTextSection(props: ChildProps) {
       if (
         typeof window === "undefined" ||
         !wrapper.current ||
-        !props.offsetTopAdded
+        !props.offsetTopAdded ||
+        window.innerWidth < 1024
       ) {
         return;
       }
@@ -248,12 +249,12 @@ export default function ImageWithTextSection(props: ChildProps) {
     <section
       dir="rtl"
       ref={wrapper}
-      className={`${props.extraClass} bg-black flex items-center relative z-20 px-[11.25vw] py-[7vh]`}
+      className={`${props.extraClass} bg-black flex items-center relative z-20 px-[8vw] lg:px-[11.25vw] py-[7vh]`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="content-wrapper w-full h-full flex items-center">
-        <div className="content-image1 relative ml-[10vw]">
-          <div className="image1 w-[25.67vw] h-[35.4vh] absolute bottom-10 right-0 -mr-[15vw]">
+      <div className="content-wrapper w-full h-full flex items-center flex-col lg:flex-row gap-y-[7vh]">
+        <div className="content-image1 relative w-full lg:ml-[10vw] flex flex-col gap-y-10">
+          <div className="image1 w-full lg:w-[25.67vw] lg:h-[35.4vh] lg:absolute lg:bottom-10 lg:right-0 lg:-mr-[15vw]">
             <Image
               className="w-full object-cover object-center h-full"
               src={
@@ -271,7 +272,7 @@ export default function ImageWithTextSection(props: ChildProps) {
               alt={"Section Image"}
             />
           </div>
-          <div className="image2 w-[39.68vw] h-[54.68vh]">
+          <div className="image2 w-full h-auto lg:w-[39.68vw] lg:h-[54.68vh]">
             <Image
               className="w-full object-cover object-center h-full"
               src={
@@ -291,12 +292,12 @@ export default function ImageWithTextSection(props: ChildProps) {
         </div>
         <div
           dir="ltr"
-          className="content-text text-[30px] leading-[90%] text-[#FBF4E6] min-w-[14vw] ml-[2vw] self-baseline mt-[15vh] text-right"
+          className="content-text text-[20px] sm:text-[26px] lg:text-[30px] leading-[90%] text-[#FBF4E6] min-w-[14vw] lg:ml-[2vw] self-baseline lg:mt-[15vh] text-right"
         >
           {parse(props?.data?.text || sectionData?.text)}
         </div>
-        <div className="content-image2 relative">
-          <div className="image3 w-[27.65vw] h-[38.1vh] absolute bottom-0 right-0 -mb-[6.8vh] -mr-[8.9vw]">
+        <div className="content-image2 relative w-full flex flex-col gap-y-10">
+          <div className="image3 w-full h-auto lg:w-[27.65vw] lg:h-[38.1vh] lg:absolute lg:bottom-0 lg:right-0 lg:-mb-[6.8vh] lg:-mr-[8.9vw]">
             <Image
               className="w-full object-cover object-center h-full"
               src={
@@ -314,7 +315,7 @@ export default function ImageWithTextSection(props: ChildProps) {
               alt={"Section Image"}
             />
           </div>
-          <div className="image4 w-[47.86vw] h-[65.87vh]">
+          <div className="image4 w-full h-auto lg:w-[47.86vw] lg:h-[65.87vh]">
             <Image
               className="w-full object-cover object-center h-full"
               src={

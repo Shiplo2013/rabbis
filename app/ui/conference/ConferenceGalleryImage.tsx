@@ -17,13 +17,13 @@ export default function ConferenceGalleryImage({
   return (
     <div
       key={index}
-      className="single-gallery will-change-transform w-[39.4vw] h-[47.25vh] overflow-hidden"
+      className="single-gallery will-change-transform w-[80vw] h-[50vw] lg:w-[39.4vw] lg:h-[47.25vh] overflow-hidden"
     >
       {loading && (
         <div className="animate-pulse w-full h-full bg-gray-600"></div>
       )}
       <div
-        className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%] ${loading ? "opacity-0" : "opacity-100"}`}
+        className={`single-gallery-image w-screen h-[100vw] lg:w-[50vw] lg:h-[70vh] absolute top-1/2 left-1/2 -translate-[50%] ${loading ? "opacity-0" : "opacity-100"}`}
       >
         <Image
           className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"

@@ -37,6 +37,8 @@ export default function MarkOfTheRoad(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const imageMove = useRef<HTMLDivElement>(null);
+  const contentSection1 = useRef<HTMLDivElement>(null);
+  const contentSection2 = useRef<HTMLDivElement>(null);
   const text1 = useRef<HTMLDivElement>(null);
   const text2 = useRef<HTMLDivElement>(null);
   const image1 = useRef<HTMLImageElement>(null);
@@ -81,11 +83,13 @@ export default function MarkOfTheRoad(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(titleRef.current) -
-                      window.innerWidth * 0.4
-                    );
+                    return window.innerWidth > 1024
+                      ? getTimelineOffset() +
+                          GetRightPosition(titleRef.current) -
+                          window.innerWidth * 0.4
+                      : (titleRef.current?.getBoundingClientRect().top || 0) +
+                          window.scrollY -
+                          window.innerHeight * 0.8;
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -101,11 +105,13 @@ export default function MarkOfTheRoad(props: ChildProps) {
           const tl = gsap.timeline({
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(imageMove.current) -
-                  window.innerWidth * 0.8
-                );
+                return getTimelineOffset() + window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(imageMove.current) -
+                      window.innerWidth * 0.8
+                  : (imageMove.current?.getBoundingClientRect().top || 0) +
+                      window.scrollY -
+                      window.innerHeight * 0.8;
               },
               end: () => "+=" + window.innerWidth * 2,
               scrub: 2,
@@ -128,11 +134,14 @@ export default function MarkOfTheRoad(props: ChildProps) {
             ease: "expo.inOut",
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(image1.current) -
-                  window.innerWidth * 0.4
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(image1.current) -
+                      window.innerWidth * 0.4
+                  : (contentSection1.current?.getBoundingClientRect().top ||
+                      0) +
+                      window.scrollY -
+                      window.innerHeight * 0.8;
               },
               toggleActions: "restart pause play reverse",
             },
@@ -151,11 +160,14 @@ export default function MarkOfTheRoad(props: ChildProps) {
             ease: "expo.inOut",
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(image2.current) -
-                  window.innerWidth * 0.4
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(image2.current) -
+                      window.innerWidth * 0.4
+                  : (contentSection2.current?.getBoundingClientRect().top ||
+                      0) +
+                      window.scrollY -
+                      window.innerHeight * 0.8;
               },
               toggleActions: "restart pause play reverse",
             },
@@ -181,11 +193,13 @@ export default function MarkOfTheRoad(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(text1.current) -
-                      window.innerWidth * 0.4
-                    );
+                    return window.innerWidth > 1024
+                      ? getTimelineOffset() +
+                          GetRightPosition(text1.current) -
+                          window.innerWidth * 0.4
+                      : (text1.current?.getBoundingClientRect().top || 0) +
+                          window.scrollY -
+                          window.innerHeight * 0.8;
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -214,11 +228,13 @@ export default function MarkOfTheRoad(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(text2.current) -
-                      window.innerWidth * 0.4
-                    );
+                    return window.innerWidth > 1024
+                      ? getTimelineOffset() +
+                          GetRightPosition(text2.current) -
+                          window.innerWidth * 0.4
+                      : (text2.current?.getBoundingClientRect().top || 0) +
+                          window.scrollY -
+                          window.innerHeight * 0.8;
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -244,21 +260,27 @@ export default function MarkOfTheRoad(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="section-row w-full h-full flex px-[6.3vw] py-[4.5vw] gap-x-[10vw]">
+      <div className="section-row w-full h-full flex px-[8vw] lg:px-[6.3vw] py-[10vh] lg:py-[4.5vw] gap-y-[8vh] sm:gap-y-[10vh] gap-x-[10vw] flex-col lg:flex-row">
         <div
           dir="ltr"
-          className="section-title flex items-end w-[15vw] mb-[4vh]"
+          className="section-title flex justify-end lg:items-end w-full lg:w-[15vw] lg:mb-[4vh]"
         >
           <h2
             ref={titleRef}
-            className="text-[161px] leading-[0.7em] text-(--theme-color) text-right"
+            className="text-[80px] sm:text-[120px] lg:text-[161px] leading-[0.7em] text-(--theme-color) text-right"
           >
             {parse(title || "")}
           </h2>
         </div>
-        <div className="section-content flex items-center gap-x-[2.6vw] w-48.5vw">
+        <div
+          ref={contentSection1}
+          className="section-content flex items-center gap-x-[2.6vw] w-full lg:w-[48.5vw] mt-[10vh] lg:mt-0 flex-col lg:flex-row gap-y-8 sm:gap-y-[7vh]"
+        >
           {props?.data?.content_1 && (
-            <div ref={image1} className="image w-110.5 h-111.5 relative">
+            <div
+              ref={image1}
+              className="image w-full h-auto sm:w-110.5 sm:h-111.5 relative"
+            >
               <Image
                 className="w-full object-cover object-center h-full"
                 src={
@@ -275,7 +297,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
               />
               <div
                 ref={imageMove}
-                className="over-image absolute w-82.5 h-85 top-0 right-0 -mt-[8.9vh] -mr-[6.6vw]"
+                className="over-image absolute w-[50vw] h-auto sm:w-82.5 sm:h-85 top-0 right-0 -mt-[8.9vh] -mr-[6.6vw]"
               >
                 <Image
                   className="w-full object-cover object-center h-full"
@@ -295,17 +317,20 @@ export default function MarkOfTheRoad(props: ChildProps) {
               </div>
             </div>
           )}
-          <div dir="ltr" className="title">
+          <div dir="ltr" className="title w-full sm:w-auto">
             <h4
               ref={text1}
-              className="text-[43px] text-(--theme-color) leading-[0.7em]"
+              className="text-[25px] sm:text-[35px] lg:text-[43px] text-(--theme-color) leading-[0.9em] lg:leading-[0.7em]"
             >
               {parse(secTitle)}
             </h4>
           </div>
         </div>
-        <div className="section-content flex items-center gap-x-[2.6vw] w-[49.2vw]">
-          <div ref={image2} className="image w-134.75 h-103.75">
+        <div
+          ref={contentSection2}
+          className="section-content flex items-center gap-x-[2.6vw] w-full lg:w-[49.2vw] flex-col lg:flex-row gap-y-8 sm:gap-y-[7vh]"
+        >
+          <div ref={image2} className="image w-full lg:w-134.75 lg:h-103.75">
             <Image
               className="w-full object-cover object-center h-full"
               src={
@@ -321,10 +346,10 @@ export default function MarkOfTheRoad(props: ChildProps) {
               alt={"Section Image"}
             />
           </div>
-          <div dir="ltr" className="title">
+          <div dir="ltr" className="title w-full sm:w-auto">
             <h4
               ref={text2}
-              className="text-[43px] text-(--theme-color) leading-[0.7em]"
+              className="text-[25px] sm:text-[35px] lg:text-[43px] text-(--theme-color) leading-[0.9em] lg:leading-[0.7em]"
             >
               {parse(secTitle2)}
             </h4>

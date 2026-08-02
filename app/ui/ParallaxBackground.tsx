@@ -33,20 +33,24 @@ export default function ParallaxBackground(props: ChildProps) {
     () => {
       if (props.animatePosition !== 0) {
         // Banner Background
-        gsap.set(background.current, { scale: 1.2, x: "20vw" });
-        gsap.to(background.current, {
-          x: "-20vw",
-          ease: "none",
-          scrollTrigger: {
-            start: () => {
-              return getTimelineOffset() + GetRightPosition(background.current);
+        if (window.innerWidth > 1024) {
+          gsap.set(background.current, { scale: 1.2, x: "20vw" });
+          gsap.to(background.current, {
+            x: "-20vw",
+            ease: "none",
+            scrollTrigger: {
+              start: () => {
+                return (
+                  getTimelineOffset() + GetRightPosition(background.current)
+                );
+              },
+              end: () => {
+                return "+=" + window.innerWidth * 2;
+              },
+              scrub: 2,
             },
-            end: () => {
-              return "+=" + window.innerWidth * 2;
-            },
-            scrub: 2,
-          },
-        });
+          });
+        }
       }
     },
     { scope: background, dependencies: [pathname] },
@@ -54,7 +58,7 @@ export default function ParallaxBackground(props: ChildProps) {
   return (
     <div
       ref={background}
-      className={`parallax-background absolute top-0 left-0 w-full h-screen bg-black z-10 transition-none`}
+      className={`parallax-background absolute top-0 left-0 w-full h-full lg:h-screen bg-black z-10 transition-none`}
     >
       {props.overlayLeft && (
         <div

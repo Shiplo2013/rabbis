@@ -109,7 +109,8 @@ export default function RabbisTimeline4(props: ChildProps) {
       if (
         typeof window === "undefined" ||
         !wrapper.current ||
-        !props.offsetTopAdded
+        !props.offsetTopAdded ||
+        window.innerWidth < 1024
       ) {
         return;
       }
@@ -187,13 +188,13 @@ export default function RabbisTimeline4(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="section-row w-full h-screen flex px-[10vw] py-[10vh] items-center relative z-30 gap-x-[8vw]">
-        <div className="rabbis-title self-end mb-[3vh]">
-          <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F]">
+      <div className="section-row w-full lg:h-screen flex px-[8vw] lg:px-[10vw] py-[7vh] lg:py-[10vh] items-center relative z-30 gap-x-[8vw] flex-col lg:flex-row gap-y-[7vh]">
+        <div className="rabbis-title w-full self-end mb-[3vh]">
+          <h2 className="text-[64px] sm:text-[100px] lg:text-[160px] leading-[0.7em] text-[#C3A13F]">
             {parse(props.data?.title || `ציוני<br /> דרך`)}
           </h2>
         </div>
-        <div className="rabbis-timeline flex h-full items-center relative">
+        <div className="rabbis-timeline flex h-full items-center relative flex-col lg:flex-row">
           <TimelineCardItem
             extraClass={"z-10"}
             animWidthText={0}
@@ -245,7 +246,7 @@ export default function RabbisTimeline4(props: ChildProps) {
           />
           {props?.data?.single_video && (
             <VideoItem
-              extraClass={"card-video mr-[10vw]"}
+              extraClass={"card-video lg:mr-[10vw]"}
               animWidthText={props.animWidthText}
               data={props?.data?.single_video}
               panel={props.panel}

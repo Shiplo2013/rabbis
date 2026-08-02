@@ -48,7 +48,8 @@ export default function OnlyTextSection2(props: ChildProps) {
       if (
         typeof window === "undefined" ||
         !wrapper.current ||
-        !props.offsetTopAdded
+        !props.offsetTopAdded ||
+        window.innerWidth < 1024
       ) {
         return;
       }
@@ -73,11 +74,12 @@ export default function OnlyTextSection2(props: ChildProps) {
                 ease: "expo.inOut",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(wrapper.current) -
-                      window.innerWidth * 0.8
-                    );
+                    return window.innerWidth > 1024
+                      ? getTimelineOffset() +
+                          GetRightPosition(wrapper.current) -
+                          window.innerWidth * 0.8
+                      : (wrapper.current?.getBoundingClientRect().top || 0) +
+                          window.scrollY;
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -103,8 +105,8 @@ export default function OnlyTextSection2(props: ChildProps) {
       className={`${props.extraClass} bg-[#CD5E41] flex items-center relative z-20`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="section-wrapper w-full h-full pr-[7vw] pl-[5.7vw] py-[6.5vh] justify-center flex flex-col">
-        <div className="small-text text-[#FBF4E6] text-[21px] leading-[1.4em] text-right">
+      <div className="section-wrapper w-full h-full px-[8vw] lg:pr-[7vw] lg:pl-[5.7vw] py-[6.5vh] justify-center flex flex-col">
+        <div className="small-text text-[#FBF4E6] text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-right">
           {parse(textData[0].text)}
         </div>
       </div>
