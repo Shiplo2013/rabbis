@@ -172,10 +172,10 @@ export default function HomeSection1(props: ChildProps) {
         panel={props.panel}
         start={props.animWidthPost}
       />
-      <div className="section-content relative z-30 w-full h-full">
+      <div className="section-content relative z-30 w-full h-full px-[8vw] lg:px-0">
         <div
           id="cycle-preview"
-          className="cycle-preview absolute left-[15%] top-1/6 transition-none"
+          className="cycle-preview max-w-[86vw] absolute left-[8vw] lg:left-[15%] top-1/6 transition-none"
         >
           <CardSlider
             SlideData={
