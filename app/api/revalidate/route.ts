@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 type RevalidationPayload = {
@@ -189,6 +189,8 @@ export async function POST(request: NextRequest) {
         revalidatePath(target.path);
       }
     }
+
+    revalidateTag("wordpress-data", "default");
 
     return NextResponse.json({
       revalidated: true,

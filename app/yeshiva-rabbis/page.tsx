@@ -6,7 +6,7 @@ export default async function Page() {
   const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=yeshiva-rabbis&_fields=id,acf`,
     {
-      next: { revalidate: 604800 }, // Cache data for 7 days
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
 
@@ -44,7 +44,7 @@ export default async function Page() {
       const sectionPostsResponse = await wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/yeshiva-rabbis?acf_format=standard&include=${sectionPostIds.join(",")}&orderby=include&per_page=100&_fields=id,slug,title,acf`,
         {
-          next: { revalidate: 604800 }, // Cache data for 7 days
+          next: { revalidate: 60 }, // Cache data for 1 minute
         },
       );
 

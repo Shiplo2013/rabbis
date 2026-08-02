@@ -52,19 +52,19 @@ async function getGlobalData() {
   const headerRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=header&acf_format=standard&_fields=id,acf`,
     {
-      next: { revalidate: 604800 },
+      next: { revalidate: 60 },
     },
   );
   const headerCommunityRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=header-community&acf_format=standard&_fields=id,acf`,
     {
-      next: { revalidate: 604800 },
+      next: { revalidate: 60 },
     },
   );
   const footerRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=footer&acf_format=standard&_fields=id,acf`,
     {
-      next: { revalidate: 604800 },
+      next: { revalidate: 60 },
     },
   );
 

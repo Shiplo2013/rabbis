@@ -17,6 +17,7 @@ interface ChildProps {
   overlayClass: string;
   offsetTopTimeline?: number;
   offsetTopAdded?: boolean;
+  priority?: boolean;
 }
 
 export default function BackgroundImage(props: ChildProps) {
@@ -76,11 +77,13 @@ export default function BackgroundImage(props: ChildProps) {
           props?.bgImage ||
           ""
         }
-        width="1920"
-        height="1080"
+        width={1920}
+        height={1080}
         blurDataURL={CreateShimmerDataUrl(1920, 1080)}
         placeholder={"blur"}
-        loading="lazy"
+        loading={props.priority ? "eager" : "lazy"}
+        priority={props.priority}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 70vw"
         alt="Section Background"
       />
       <div

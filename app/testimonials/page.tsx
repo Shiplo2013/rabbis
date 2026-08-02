@@ -6,7 +6,7 @@ export default async function page() {
   const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=testimonials&_fields=id,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
 

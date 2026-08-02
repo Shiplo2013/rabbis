@@ -11,13 +11,13 @@ export default async function page({ params }: PageProps) {
   const pageRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/posts?acf_format=standard&slug=${slug}&_fields=id,acf`,
     {
-      next: { revalidate: 86400 },
+      next: { revalidate: 60 },
     },
   );
   const postsRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/posts?acf_format=standard&_fields=id,title,slug,excerpt,acf&per_page=20`,
     {
-      next: { revalidate: 86400 },
+      next: { revalidate: 60 },
     },
   );
 

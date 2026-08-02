@@ -14,13 +14,13 @@ export default async function Page({ params }: PageProps) {
   const postsRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?slug=${slug}&acf_format=standard&_fields=id,title,acf,content`,
     {
-      next: { revalidate: 86400 },
+      next: { revalidate: 60 },
     },
   );
   const allPostsRes = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?_fields=id,title,slug&per_page=100`,
     {
-      next: { revalidate: 86400 },
+      next: { revalidate: 60 },
     },
   );
 

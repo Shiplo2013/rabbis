@@ -72,11 +72,12 @@ export default function BigSectionBackground(props: ChildProps) {
       <Image
         className={`w-full object-cover ${props.imagePosition === "bottom" ? "object-bottom" : "object-center"} h-full relative z-10`}
         src={props?.bgImage?.src}
-        width={`${props?.bgImage?.width > 1920 ? props?.bgImage?.width : "1920"}`}
-        height={`${props?.bgImage?.width > 1080 ? props?.bgImage?.width : "1080"}`}
+        width={props?.bgImage?.width > 1920 ? props?.bgImage?.width : 1920}
+        height={props?.bgImage?.width > 1080 ? props?.bgImage?.width : 1080}
         blurDataURL={props?.bgImage?.blurDataURL}
         placeholder={"blur"}
         loading="lazy"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 70vw"
         alt="Introduction Background"
       />
       <div

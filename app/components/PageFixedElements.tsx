@@ -343,6 +343,7 @@ export default function PageFixedElements() {
         pathname.startsWith("/past-rabbis/") ||
         pathname === "/news" ||
         pathname === "/donation" ||
+        pathname === "/communities" ||
         pathname === "/communities/sheets" ||
         pathname === "/cycle-pictures" ||
         pathname.startsWith("/cycle-pictures/") ||

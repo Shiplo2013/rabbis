@@ -6,7 +6,7 @@ export default async function page() {
   const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=communities&acf_format=standard&_fields=id,title,content,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
 
@@ -28,7 +28,7 @@ export default async function page() {
     const categoryRes = await wpFetch(
       `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/communities?communities_cat=${categoryId}&orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,slug,acf.subtitle,acf.post_thumbnail&per_page=10`,
       {
-        next: { revalidate: 86400 }, // Cache data for 24 hours
+        next: { revalidate: 60 }, // Cache data for 1 minute
       },
     );
     if (!categoryRes.ok) {
