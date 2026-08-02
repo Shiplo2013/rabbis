@@ -16,13 +16,13 @@ export default async function Page({ params }: PageProps) {
       wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&slug=${slug}&_fields=id,title,acf,content`,
         {
-          next: { revalidate: 86400 },
+          next: { revalidate: 60 },
         },
       ),
       wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&_fields=id,title,slug,acf&per_page=20`,
         {
-          next: { revalidate: 86400 },
+          next: { revalidate: 60 },
         },
       ),
     ]);

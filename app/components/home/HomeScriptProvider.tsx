@@ -329,6 +329,9 @@ export default function HomeScriptProvider({
 
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 1024 : false,
+  );
   const { animationPlayed, setAnimationPlayed, setAudioFile } = useAppState();
   // Vertical Section
   const [verticalSection, setVerticalSection] =
@@ -336,6 +339,18 @@ export default function HomeScriptProvider({
 
   // Router Path
   const pathname = usePathname();
+
+  useEffect(() => {
+    const updateViewport = () => {
+      setIsMobileOrTablet(window.innerWidth <= 1024);
+    };
+
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+
+    return () => window.removeEventListener("resize", updateViewport);
+  }, []);
+
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
@@ -596,7 +611,8 @@ export default function HomeScriptProvider({
       typeof window !== "undefined" &&
       panel.current &&
       wrapper.current &&
-      window.innerWidth > 1024
+      window.innerWidth > 1024 &&
+      !isMobileOrTablet
     ) {
       // Overflow body
       const scurbScale = 2;
@@ -694,17 +710,16 @@ export default function HomeScriptProvider({
 
   // Set Body Overflow Hidden
   useEffect(() => {
-    if (isAllAnimationComplete) {
+    if (isAllAnimationComplete && !isMobileOrTablet) {
       document.body.classList.remove("!overflow-hidden");
       document.body.classList.add("!overflow-auto");
       verticalSection?.resume();
     } else {
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
       verticalSection?.pause();
     }
-    return () => {
-      //document.body.style.overflow = "auto";
-    };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, isMobileOrTablet, verticalSection]);
 
   if (error) {
     return (

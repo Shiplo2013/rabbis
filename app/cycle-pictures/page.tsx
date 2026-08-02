@@ -12,19 +12,19 @@ export default async function page() {
       wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=cycle-pictures&_fields=id,acf`,
         {
-          next: { revalidate: 86400 }, // Cache data for 24 hours
+          next: { revalidate: 60 }, // Cache data for 1 minute
         },
       ),
       wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee-posts?acf_format=standard&_fields=id,title,acf&per_page=100`,
         {
-          next: { revalidate: 86400 }, // Cache data for 24 hours
+          next: { revalidate: 60 }, // Cache data for 1 minute
         },
       ),
       wpFetch(
         `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee_cat?_fields=id,count,name,slug,parent`,
         {
-          next: { revalidate: 86400 }, // Cache data for 24 hours
+          next: { revalidate: 60 }, // Cache data for 1 minute
         },
       ),
     ]);

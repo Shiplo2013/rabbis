@@ -13,7 +13,7 @@ export default function SingleRabbis(props: ChildProps) {
       dir="ltr"
       className="single-rabbis w-full sm:w-[calc((100%-5vw)/2)] lg:min-w-84 lg:w-84 backface-hidden"
     >
-      <div className="rabbis-image w-full h-86 mb-8.5 relative overflow-hidden">
+      <div className="rabbis-image w-full h-auto sm:h-86 mb-5 sm:mb-8.5 relative overflow-hidden">
         <Image
           className="w-full object-cover object-center h-full relative z-10"
           src={

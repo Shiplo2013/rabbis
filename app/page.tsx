@@ -6,7 +6,7 @@ export default async function page() {
   const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=home&_fields=id,acf`,
     {
-      next: { revalidate: 604800 }, // Cache data for 7 days
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
 
@@ -74,7 +74,7 @@ export default async function page() {
   const postsRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/communities?${params.toString()}&_fields=id,title,slug,acf.subtitle,acf.informations.established`,
     {
-      next: { revalidate: 604800 }, // Cache data for 7 days
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
 

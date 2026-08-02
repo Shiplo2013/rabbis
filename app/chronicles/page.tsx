@@ -6,7 +6,7 @@ export default async function page() {
   const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=chronicles&_fields=id,acf`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
 
@@ -122,31 +122,31 @@ export default async function page() {
   const rabbisPostRes1 = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?${params1.toString()}`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
   const rabbisPostRes2 = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?${params2.toString()}`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
   const rabbisPostRes3 = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?${params3.toString()}`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
   const rabbisPostRes4 = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?${params4.toString()}`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
   const rabbisPostRes5 = wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?${params5.toString()}`,
     {
-      next: { revalidate: 86400 }, // Cache data for 24 hours
+      next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
 
