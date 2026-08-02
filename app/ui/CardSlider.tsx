@@ -148,7 +148,7 @@ export default function CardSlider(props: ChildProps) {
       onMouseMove={window.innerWidth > 1024 ? moveCircle : undefined}
       onMouseEnter={window.innerWidth > 1024 ? handleMouseEnter : undefined}
       onMouseLeave={window.innerWidth > 1024 ? handleMouseLeave : undefined}
-      className="arrow-slider w-full sm:w-117 relative z-10 cursor-none pr-[10%] sm:pr-0"
+      className="arrow-slider w-full sm:w-117 relative z-10 cursor-none pr-0 lg:pr-[10%]"
     >
       <div className="arrow-button fixed left-0 top-0 z-30 -ml-13 -mt-13 cursor-none opacity-0 pointer-events-none scale-0" />
       <div className="card-slider text-[#000000] text-[16px] sm:text-[20px] cursor-none">
@@ -170,7 +170,7 @@ export default function CardSlider(props: ChildProps) {
         </div>
       </div>
 
-      <div className="preview-button block sm:hidden w-20 h-20 absolute top-full left-0 z-50">
+      <div className="preview-button block lg:hidden w-20 h-20 absolute top-full left-0 z-50">
         <button className="w-full h-full rounded-full bg-[#C3A13F] flex items-center justify-center hover:bg-[#c59811] transition-colors cursor-none">
           <CycleArrow />
         </button>

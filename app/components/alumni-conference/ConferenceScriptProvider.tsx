@@ -121,7 +121,7 @@ export default function ConferenceScriptProvider({
         }
       });
 
-      const newSectionWidth = countPostWidth + 18.5 + 9.89 + 42.5;
+      const newSectionWidth = countPostWidth + 18.5 + 9.89 + 42.5 + 15;
 
       setSectionWidth(newSectionWidth);
       setContainerWidth(newSectionWidth + 100);
@@ -138,8 +138,13 @@ export default function ConferenceScriptProvider({
   useGSAP(() => {
     const animations: gsap.core.Animation[] = [];
     let cleanupPageContentAnimation: (() => void) | undefined;
-    if (typeof window !== "undefined" && panel.current && wrapper.current) {
-      cleanupPageContentAnimation = setPageContentAnimation();
+    cleanupPageContentAnimation = setPageContentAnimation();
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -404,7 +409,11 @@ export default function ConferenceScriptProvider({
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return GetRightPosition(imageGallery) - window.innerWidth * 0.8;
+              return window.innerWidth > 1024
+                ? GetRightPosition(imageGallery) - window.innerWidth * 0.8
+                : (imageGallery.getBoundingClientRect().top || 0) +
+                    window.scrollY -
+                    window.innerWidth * 1.2;
             },
             toggleActions: "restart none none reverse",
           },
@@ -433,7 +442,9 @@ export default function ConferenceScriptProvider({
             ease: "expo.inOut",
             scrollTrigger: {
               start: () => {
-                return window.innerWidth * 0.3;
+                return window.innerWidth > 1024
+                  ? window.innerWidth * 0.3
+                  : window.innerWidth * 0.1;
               },
               toggleActions: "restart none none reverse",
             },
@@ -451,22 +462,45 @@ export default function ConferenceScriptProvider({
             const image = item.querySelector(".single-gallery-image");
             if (image) {
               // Banner Background
-              gsap.set(image, { scale: 1.2, x: "10vw" });
-              const imageAnim = gsap.to(image, {
-                x: "-10vw",
-                ease: "none",
-                scrollTrigger: {
-                  trigger: image,
-                  start: () => {
-                    return GetRightPosition(image) - window.innerWidth * 0.5;
+              if (window.innerWidth > 1024) {
+                gsap.set(image, { scale: 1.2, x: "10vw" });
+                const imageAnim = gsap.to(image, {
+                  x: "-10vw",
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: image,
+                    start: () => {
+                      return GetRightPosition(image) - window.innerWidth * 0.5;
+                    },
+                    end: () => {
+                      return "+=" + window.innerWidth * 2.5;
+                    },
+                    scrub: 2,
                   },
-                  end: () => {
-                    return "+=" + window.innerWidth * 2.5;
+                });
+                animations.push(imageAnim);
+              } else {
+                gsap.set(image, { scale: 1.2, y: "-10vh" });
+                const imageAnim = gsap.to(image, {
+                  y: "10vh",
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: image,
+                    start: () => {
+                      return (
+                        (image.getBoundingClientRect().top || 0) +
+                        window.scrollY -
+                        window.innerWidth
+                      );
+                    },
+                    end: () => {
+                      return "+=" + window.innerHeight * 1.5;
+                    },
+                    scrub: 0.1,
                   },
-                  scrub: 2,
-                },
-              });
-              animations.push(imageAnim);
+                });
+                animations.push(imageAnim);
+              }
             }
           }
         });
@@ -529,12 +563,17 @@ export default function ConferenceScriptProvider({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen h-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-nowrap flex-row-reverse w-[${containerWidth}vw] h-screen items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -557,7 +596,12 @@ export default function ConferenceScriptProvider({
               }}
             />
             <ConferenceContentSection
-              extraClass={`min-w-[${sectionWidth}vw] w-[${sectionWidth}vw] h-screen panel-section will-change-transform py-[5vw] px-[9.25vw]`}
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              extraClass={`lg:min-w-(--section-width) w-full lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[10vh] lg:py-[5vw] px-[8vw] lg:px-[9.25vw]`}
               animWidthText={1}
               sectionData={{
                 gallery: alumniConferenceData?.acf?.gallery,

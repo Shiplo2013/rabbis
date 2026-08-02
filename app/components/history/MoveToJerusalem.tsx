@@ -56,7 +56,11 @@ export default function MoveToJerusalem(props: ChildProps) {
       const button = wrapper?.current?.querySelector(".period-button");
       const text = wrapper?.current?.querySelector(".section-text");
       // Image 1
-      if (image1 && image1?.textContent?.length !== 0) {
+      if (
+        image1 &&
+        image1?.textContent?.length !== 0 &&
+        window.innerWidth > 1024
+      ) {
         gsap.set(image1, {
           y: 100,
           opacity: 0,
@@ -68,11 +72,11 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(image1) -
-                window.innerWidth * 0.7
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(image1) -
+                    window.innerWidth * 0.7
+                : (image1?.getBoundingClientRect().top || 0) + window.scrollY;
             },
             toggleActions: "restart pause play reverse",
           },
@@ -105,11 +109,11 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(button) -
-                window.innerWidth * 0.5
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(button) -
+                    window.innerWidth * 0.5
+                : (button?.getBoundingClientRect().top || 0) + window.scrollY;
             },
             end: () => "+=" + window.innerWidth * 3,
             scrub: 2,
@@ -131,11 +135,11 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(image2) -
-                window.innerWidth * 0.5
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(image2) -
+                    window.innerWidth * 0.5
+                : (image2?.getBoundingClientRect().top || 0) + window.scrollY;
             },
             toggleActions: "restart pause play reverse",
           },
@@ -146,11 +150,11 @@ export default function MoveToJerusalem(props: ChildProps) {
           ease: "expo.out",
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(image2) -
-                window.innerWidth * 0.5
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(image2) -
+                    window.innerWidth * 0.5
+                : (image2?.getBoundingClientRect().top || 0) + window.scrollY;
             },
             end: () => "+=" + window.innerWidth * 2.5,
             scrub: 2,
@@ -178,11 +182,12 @@ export default function MoveToJerusalem(props: ChildProps) {
                 ease: "expo.out",
                 scrollTrigger: {
                   start: () => {
-                    return (
-                      getTimelineOffset() +
-                      GetRightPosition(text) -
-                      window.innerWidth * 0.5
-                    );
+                    return window.innerWidth > 1024
+                      ? getTimelineOffset() +
+                          GetRightPosition(text) -
+                          window.innerWidth * 0.5
+                      : (text?.getBoundingClientRect().top || 0) +
+                          window.scrollY;
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -210,9 +215,9 @@ export default function MoveToJerusalem(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       <div className="widget-wrapper w-full h-full flex items-center">
-        <div className="content-wrapper flex pr-[35vw] items-center">
-          <div className="image1 ml-11 relative will-change-transform">
-            <div className="relative h-143.5 w-188.75">
+        <div className="content-wrapper flex py-[7vh] px-[8vw] lg:py-0 lg:pl-0 lg:pr-[35vw] items-center flex-col lg:flex-row gap-y-[7vh]">
+          <div className="image1 w-full lg:w-auto lg:ml-11 relative will-change-transform">
+            <div className="relative w-full h-auto lg:h-143.5 lg:w-188.75">
               <Image
                 className="w-full object-cover object-center h-full"
                 src={props.data?.image_1?.sizes?.large || mtjImage1.src}
@@ -227,13 +232,13 @@ export default function MoveToJerusalem(props: ChildProps) {
               />
             </div>
             <div className="period-button absolute bottom-0 right-0 -mr-[10vw] -mb-11 group will-change-transform">
-              <div className="w-38.25 h-38.25 flex item-center justify-center border-4 rounded-full bg-white text-black border-[#D1A941] text-[33px] leading-[0.8em] p-6 text-center font-bold -rotate-[9.97deg] group-hover:rotate-0 transition-all duration-500">
+              <div className="w-25 h-25 lg:w-38.25 lg:h-38.25 flex item-center justify-center border-2 lg:border-4 rounded-full bg-white text-black border-[#D1A941] text-[18px] sm:text-[22px] lg:text-[33px] leading-[0.8em] p-6 text-center font-bold -rotate-[9.97deg] group-hover:rotate-0 transition-all duration-500">
                 <span className="block my-auto">{`המעבר לירושלים`}</span>
               </div>
             </div>
           </div>
-          <div className="image2 ml-[9.1vw] will-change-transform">
-            <div className="relative h-140 w-236.5">
+          <div className="image2 w-full lg:w-auto lg:ml-[9.1vw] will-change-transform">
+            <div className="relative w-full h-auto lg:h-140 lg:w-236.5">
               <Image
                 className="w-full object-cover object-center h-full"
                 src={props.data?.image_2?.sizes?.large || mtjImage2.src}
@@ -250,7 +255,7 @@ export default function MoveToJerusalem(props: ChildProps) {
           </div>
           <div
             dir="ltr"
-            className="section-text 2xl:text-[21px] xl:text-[18px] sm:text-[16px] leading-[1.4em] text-[#FBF4E6] min-w-[26.3vw] w-[26.3vw] text-right"
+            className="section-text lg:text-[21px] sm:text-[18px] text-[16px] leading-[1.4em] text-[#FBF4E6] min-w-[26.3vw] w-full lg:w-[26.3vw] text-right"
           >
             {parse(moveToJerusalemText)}
           </div>

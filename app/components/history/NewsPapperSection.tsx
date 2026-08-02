@@ -81,11 +81,12 @@ export default function NewsPapperSection(props: ChildProps) {
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(image1Ref.current) -
-                window.innerWidth * 0.5
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(image1Ref.current) -
+                    window.innerWidth * 0.5
+                : (wrapper.current?.getBoundingClientRect().top || 0) +
+                    window.scrollY;
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -104,11 +105,12 @@ export default function NewsPapperSection(props: ChildProps) {
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(image2Ref.current) -
-                window.innerWidth * 0.5
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(image2Ref.current) -
+                    window.innerWidth * 0.5
+                : (wrapper.current?.getBoundingClientRect().top || 0) +
+                    window.scrollY;
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -127,11 +129,12 @@ export default function NewsPapperSection(props: ChildProps) {
           delay: 0,
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(image3Ref.current) -
-                window.innerWidth * 0.5
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(image3Ref.current) -
+                    window.innerWidth * 0.5
+                : (wrapper.current?.getBoundingClientRect().top || 0) +
+                    window.scrollY;
             },
             toggleActions: "restart pause resume reverse",
           },
@@ -153,11 +156,12 @@ export default function NewsPapperSection(props: ChildProps) {
           const content1Animation = gsap.to(content1Split, {
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(content1) -
-                  window.innerWidth * 0.5
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(content1) -
+                      window.innerWidth * 0.5
+                  : (wrapper.current?.getBoundingClientRect().top || 0) +
+                      window.scrollY;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -183,11 +187,12 @@ export default function NewsPapperSection(props: ChildProps) {
           const content2Animation = gsap.to(content2Split, {
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(content2) -
-                  window.innerWidth * 0.5
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(content2) -
+                      window.innerWidth * 0.5
+                  : (wrapper.current?.getBoundingClientRect().top || 0) +
+                      window.scrollY;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -213,11 +218,12 @@ export default function NewsPapperSection(props: ChildProps) {
           const content3Animation = gsap.to(content3Split, {
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(content3) -
-                  window.innerWidth * 0.5
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(content3) -
+                      window.innerWidth * 0.5
+                  : (wrapper.current?.getBoundingClientRect().top || 0) +
+                      window.scrollY;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -243,11 +249,12 @@ export default function NewsPapperSection(props: ChildProps) {
           const content4Animation = gsap.to(content4Split, {
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(content4) -
-                  window.innerWidth * 0.5
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(content4) -
+                      window.innerWidth * 0.5
+                  : (wrapper.current?.getBoundingClientRect().top || 0) +
+                      window.scrollY;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -292,9 +299,9 @@ export default function NewsPapperSection(props: ChildProps) {
       )}
       <div
         dir="rtl"
-        className="flex items-center w-full h-full relative z-30 px-[11.7vw] py-[4vw] gap-x-[18.3vw] text-[21px] leading-[1.4em]"
+        className="flex items-center w-full h-full relative z-30 px-[11.7vw] py-[8vh] sm:py-[10vh] lg:py-[4vw] gap-x-[18.3vw] text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] flex-col lg:flex-row gap-y-8 lg:gap-y-0"
       >
-        <div className="news-section-right w-[70%] flex flex-col gap-y-[9.6vh]">
+        <div className="news-section-right w-full lg:w-[70%] flex flex-col gap-y-[7vh] sm:gap-y-[9.6vh]">
           <div className="news-section-images flex justify-center relative">
             {props?.data?.image_1 && (
               <Draggable
@@ -304,7 +311,7 @@ export default function NewsPapperSection(props: ChildProps) {
               >
                 <div
                   ref={image1Ref}
-                  className="image1 w-137 h-93.5 absolute right-0 bottom-0 rotate-[9.24deg] translate-x-[2vw] translate-y-[1vh] cursor-grab active:cursor-grabbing select-none"
+                  className="image1 w-full h-auto sm:w-137 sm:h-93.5 absolute right-0 bottom-0 rotate-[9.24deg] translate-x-[2vw] translate-y-[1vh] cursor-grab active:cursor-grabbing select-none"
                   style={{ zIndex: draggingImage === 1 ? 50 : undefined }}
                   onDoubleClick={(e) => e.preventDefault()}
                 >
@@ -333,7 +340,7 @@ export default function NewsPapperSection(props: ChildProps) {
               >
                 <div
                   ref={image2Ref}
-                  className={`image2 w-139.5 h-93 relative -translate-x-[2vw] cursor-grab active:cursor-grabbing select-none`}
+                  className={`image2 w-full h-auto sm:w-139.5 sm:h-93 relative -translate-x-[2vw] cursor-grab active:cursor-grabbing select-none`}
                   style={{ zIndex: draggingImage === 2 ? 50 : undefined }}
                   onDoubleClick={(e) => e.preventDefault()}
                 >
@@ -361,7 +368,7 @@ export default function NewsPapperSection(props: ChildProps) {
               >
                 <div
                   ref={image3Ref}
-                  className={`image3 w-104.75 h-76 absolute top-0 left-0 -translate-x-[5vw] translate-y-[1.75vh] cursor-grab active:cursor-grabbing select-none`}
+                  className={`image3 w-full h-auto sm:w-104.75 sm:h-76 absolute top-0 left-0 -translate-x-[5vw] translate-y-[1.75vh] cursor-grab active:cursor-grabbing select-none`}
                   style={{ zIndex: draggingImage === 3 ? 50 : undefined }}
                   onDoubleClick={(e) => e.preventDefault()}
                 >
@@ -384,22 +391,22 @@ export default function NewsPapperSection(props: ChildProps) {
           </div>
           <div
             dir="ltr"
-            className="news-section-text flex gap-x-[6.4vw] text-right"
+            className="news-section-text flex gap-x-[6.4vw] text-right flex-col lg:flex-row gap-y-8"
           >
-            <div className="section-text w-1/2">
+            <div className="section-text w-full lg:w-1/2">
               <div className="content-text2">{parse(text1)}</div>
             </div>
-            <div className="section-text w-1/2">
+            <div className="section-text w-full lg:w-1/2">
               <div className="content-text1">{parse(text2)}</div>
             </div>
           </div>
         </div>
         <div
           dir="ltr"
-          className="news-section-left w-[30%] flex flex-col gap-y-8 text-right"
+          className="news-section-left w-full lg:w-[30%] flex flex-col gap-y-8 text-right"
         >
           <div className="content-text3">{parse(smallText)}</div>
-          <div className="content-text4 text-[28px] leading-[1em]">
+          <div className="content-text4 text-[20px] sm:text-[24px] lg:text-[28px] leading-[1em]">
             {parse(bigText)}
           </div>
         </div>

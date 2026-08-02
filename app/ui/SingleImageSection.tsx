@@ -19,8 +19,8 @@ export default function SingleImageSection(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
-  const wrapper = useRef(null);
-  const image = useRef(null);
+  const wrapper = useRef<HTMLDivElement>(null);
+  const image = useRef<HTMLDivElement>(null);
   const timeline = props.panel;
   const getTimelineOffset = () => {
     return (
@@ -48,13 +48,15 @@ export default function SingleImageSection(props: ChildProps) {
         const tl = gsap.timeline({
           scrollTrigger: {
             start: () => {
-              return (
-                getTimelineOffset() +
-                GetRightPosition(image.current) -
-                window.innerWidth * 0.2
-              );
+              return window.innerWidth > 1024
+                ? getTimelineOffset() +
+                    GetRightPosition(image.current) -
+                    window.innerWidth * 0.2
+                : (image.current?.getBoundingClientRect().top || 0) +
+                    window.scrollY -
+                    window.innerHeight * 0.8;
             },
-            toggleActions: "restart pause play reverse",
+            toggleActions: "restart none none reverse",
           },
         });
         tl.to(image.current, {

@@ -155,15 +155,15 @@ export default function RabbisTimeline(props: ChildProps) {
         animatePosition={props.animWidthText}
         panel={props.panel}
       />
-      <div className="section-row w-full h-full flex px-[15.5vw] py-[5vh] items-center justify-center relative z-30">
-        <div className="rabbis-timeline flex gap-x-[20vw]">
+      <div className="section-row w-full h-full flex px-[8vw] lg:px-[15.5vw] py-[8vh] sm:py-[10vh] lg:py-[5vh] items-center justify-center relative z-30 flex-col lg:flex-row gap-y-[5vh] lg:gap-y-0">
+        <div className="rabbis-timeline w-full sm:w-auto flex sm:gap-x-[5vw] lg:gap-x-[20vw] flex-col sm:flex-row sm:flex-wrap lg:flex-nowrap gap-y-[7vh] lg:gap-y-0">
           {props?.data &&
             props?.data?.map((item: any, index: number) => (
               <div
                 key={index}
-                className="current-rubbis w-64.5 flex flex-col gap-y-[5.5vh]"
+                className="current-rubbis w-full sm:w-[calc((100%-5vw)/2)] lg:w-64.5 flex flex-col gap-y-6 sm:gap-y-10 lg:gap-y-[5.5vh]"
               >
-                <div className="image w-64.5 h-76.25">
+                <div className="image w-full h-[84vw] sm:w-64.5 sm:h-76.25">
                   <Image
                     className="w-full object-cover object-center h-full relative z-10"
                     src={item?.image?.sizes?.medium || item?.image?.src}
@@ -178,14 +178,14 @@ export default function RabbisTimeline(props: ChildProps) {
                   />
                 </div>
                 <div dir="ltr" className="title mt-auto text-right">
-                  <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6]">
+                  <h4 className="text-[22px] sm:text-[32px] lg:text-[43px] leading-[0.8em] lg:leading-[0.7em] text-[#FBF4E6]">
                     {parse(item.title || "")}
                   </h4>
                 </div>
               </div>
             ))}
         </div>
-        <div className="timeline h-2.25 w-10/12 bg-[#C3A13F] absolute top-[59vh] right-[17vw]"></div>
+        <div className="timeline h-2.25 w-10/12 bg-[#C3A13F] absolute top-[59vh] right-[17vw] hidden lg:block"></div>
       </div>
     </section>
   );

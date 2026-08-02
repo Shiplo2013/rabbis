@@ -65,7 +65,8 @@ export default function RabbisTimeline3(props: ChildProps) {
       if (
         typeof window !== "undefined" &&
         wrapper.current &&
-        props.offsetTopAdded
+        props.offsetTopAdded &&
+        window.innerWidth > 1024
       ) {
         // Selector
         const secTitle = wrapper?.current?.querySelector(".rabbis-title>h2");
@@ -181,19 +182,19 @@ export default function RabbisTimeline3(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="section-row w-full h-full flex px-[15.5vw] py-[10vh] items-center justify-center relative z-30 gap-x-[8vw]">
-        <div dir="ltr" className="rabbis-title self-end mb-[3vh]">
-          <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F] text-right">
+      <div className="section-row w-full h-full flex px-[8vw] sm:px-[15.5vw] py-[10vh] items-center justify-center relative z-30 gap-x-[8vw] flex-col lg:flex-row gap-y-[7vh]">
+        <div dir="ltr" className="rabbis-title w-full self-end lg:mb-[3vh]">
+          <h2 className="text-[64px] sm:text-[100px] lg:text-[160px] leading-[0.7em] text-[#C3A13F] text-right">
             {parse(props.data?.title || `ציוני<br /> דרך`)}
           </h2>
         </div>
-        <div className="rabbis-timeline flex gap-x-[20vw] relative">
+        <div className="rabbis-timeline w-full flex gap-y-[7vh] gap-x-[20vw] relative flex-col lg:flex-row">
           {RabbisData.map((item: any, index: number) => (
             <div
               key={index}
-              className="current-rubbis w-64.5 flex flex-col gap-y-[7vh]"
+              className="current-rubbis w-full lg:w-64.5 flex flex-col gap-y-10"
             >
-              <div className="image w-[13.44vw] h-[32.83vh] relative overflow-hidden">
+              <div className="image w-full h-auto lg:w-[13.44vw] lg:h-[32.83vh] relative overflow-hidden">
                 <Image
                   className="w-full object-cover object-center h-full relative z-10"
                   src={item?.image?.sizes?.thumbnail || item?.image?.src}
@@ -208,7 +209,7 @@ export default function RabbisTimeline3(props: ChildProps) {
                 />
               </div>
               <div dir="ltr" className="title mt-auto">
-                <h4 className="text-[40px] leading-[0.7em] text-[#FBF4E6] text-right pt-2">
+                <h4 className="text-[20px] sm:text-[30px] lg:text-[40px] leading-[0.9em] lg:leading-[0.7em] text-[#FBF4E6] text-right pt-2">
                   {parse(item.title || "")}
                 </h4>
               </div>

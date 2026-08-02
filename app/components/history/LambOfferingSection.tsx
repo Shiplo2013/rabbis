@@ -69,7 +69,8 @@ export default function LambOfferingSection(props: ChildProps) {
       if (
         typeof window !== "undefined" &&
         wrapper.current &&
-        props.offsetTopAdded
+        props.offsetTopAdded &&
+        window.innerWidth >= 1024
       ) {
         // Selectors
         const imagesAll = wrapper?.current?.querySelector(".section-image");
@@ -86,11 +87,12 @@ export default function LambOfferingSection(props: ChildProps) {
             delay: 0,
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(imagesAll) -
-                  window.innerWidth * 0.1
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(imagesAll) -
+                      window.innerWidth * 0.1
+                  : (wrapper.current?.getBoundingClientRect().top || 0) +
+                      window.scrollY;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -105,11 +107,12 @@ export default function LambOfferingSection(props: ChildProps) {
             delay: 0,
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(imagesAll) -
-                  window.innerWidth * 0.1
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(imagesAll) -
+                      window.innerWidth * 0.1
+                  : (wrapper.current?.getBoundingClientRect().top || 0) +
+                      window.scrollY;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -124,11 +127,12 @@ export default function LambOfferingSection(props: ChildProps) {
             delay: 0,
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(imagesAll) -
-                  window.innerWidth * 0.1
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(imagesAll) -
+                      window.innerWidth * 0.1
+                  : (wrapper.current?.getBoundingClientRect().top || 0) +
+                      window.scrollY;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -148,11 +152,12 @@ export default function LambOfferingSection(props: ChildProps) {
             ease: "expo.inOut",
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(notification) +
-                  window.innerWidth * 0.2
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(notification) +
+                      window.innerWidth * 0.2
+                  : (wrapper.current?.getBoundingClientRect().top || 0) +
+                      window.scrollY;
               },
               toggleActions: "restart pause play reverse",
             },
@@ -175,11 +180,12 @@ export default function LambOfferingSection(props: ChildProps) {
             ease: "expo.inOut",
             scrollTrigger: {
               start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(notification) +
-                  window.innerWidth * 0.2
-                );
+                return window.innerWidth > 1024
+                  ? getTimelineOffset() +
+                      GetRightPosition(notification) +
+                      window.innerWidth * 0.2
+                  : (wrapper.current?.getBoundingClientRect().top || 0) +
+                      window.scrollY;
               },
               toggleActions: "restart none none reverse",
             },
@@ -285,11 +291,12 @@ export default function LambOfferingSection(props: ChildProps) {
                   ease: "expo.inOut",
                   scrollTrigger: {
                     start: () => {
-                      return (
-                        getTimelineOffset() +
-                        GetRightPosition(sectionTitle) -
-                        window.innerWidth * 0.1
-                      );
+                      return window.innerWidth > 1024
+                        ? getTimelineOffset() +
+                            GetRightPosition(sectionTitle) -
+                            window.innerWidth * 0.1
+                        : (wrapper.current?.getBoundingClientRect().top || 0) +
+                            window.scrollY;
                     },
                     end: () => "+=" + window.innerWidth * 0.5,
                     toggleActions: "restart none none reverse",
@@ -318,11 +325,12 @@ export default function LambOfferingSection(props: ChildProps) {
                   ease: "expo.inOut",
                   scrollTrigger: {
                     start: () => {
-                      return (
-                        getTimelineOffset() +
-                        GetRightPosition(sectionText1) -
-                        window.innerWidth * 0.1
-                      );
+                      return window.innerWidth > 1024
+                        ? getTimelineOffset() +
+                            GetRightPosition(sectionText1) -
+                            window.innerWidth * 0.1
+                        : (wrapper.current?.getBoundingClientRect().top || 0) +
+                            window.scrollY;
                     },
                     end: () => "+=" + window.innerWidth * 0.5,
                     toggleActions: "restart none none reverse",
@@ -351,11 +359,12 @@ export default function LambOfferingSection(props: ChildProps) {
                   ease: "expo.inOut",
                   scrollTrigger: {
                     start: () => {
-                      return (
-                        getTimelineOffset() +
-                        GetRightPosition(sectionText2) -
-                        window.innerWidth * 0.1
-                      );
+                      return window.innerWidth > 1024
+                        ? getTimelineOffset() +
+                            GetRightPosition(sectionText2) -
+                            window.innerWidth * 0.1
+                        : (wrapper.current?.getBoundingClientRect().top || 0) +
+                            window.scrollY;
                     },
                     end: () => "+=" + window.innerWidth * 0.5,
                     toggleActions: "restart none none reverse",
@@ -392,8 +401,8 @@ export default function LambOfferingSection(props: ChildProps) {
         animatePosition={props.animWidthText}
         panel={props.panel}
       />
-      <div className="content-wrapper w-full h-full pr-[11.7vw] pl-[9.6vw] pt-[7vh] pb-[12vh] relative z-30 flex items-center gap-x-[12vw]">
-        <div className="section-image w-[50vw] self-end relative">
+      <div className="content-wrapper w-full h-full px-[8vw] lg:pr-[11.7vw] lg:pl-[9.6vw] py-[7vh] lg:pt-[7vh] lg:pb-[12vh] relative z-30 flex items-center gap-y-[7vh] gap-x-[12vw] flex-col lg:flex-row">
+        <div className="section-image w-full lg:w-[50vw] self-end relative pt-[10vh] sm:pt-[20vh] lg:pt-0 pb-20 lg:pb-0">
           <Draggable
             nodeRef={image1Ref}
             onStart={() => setDraggingImage(1)}
@@ -401,7 +410,7 @@ export default function LambOfferingSection(props: ChildProps) {
           >
             <div
               ref={image1Ref}
-              className="image1 w-[31.35vw] h-[40.15vh] absolute bottom-[19vh] -right-[6.66vw] z-10 cursor-grab active:cursor-grabbing select-none touch-none"
+              className="image1 w-[80%] sm:w-100 h-auto lg:w-[31.35vw] lg:h-[40.15vh] absolute bottom-[15vh] lg:bottom-[19vh] right-0 lg:-right-[6.66vw] z-10 cursor-grab active:cursor-grabbing select-none touch-none"
               style={{ zIndex: draggingImage === 1 ? 50 : undefined }}
               onDoubleClick={(e) => e.preventDefault()}
             >
@@ -420,7 +429,7 @@ export default function LambOfferingSection(props: ChildProps) {
           </Draggable>
           <div
             ref={image2Ref}
-            className="image2 notification-button w-[26.25vw] h-[38.54vh] relative z-30 cursor-pointer select-none touch-none"
+            className="image2 notification-button w-[70%] sm:w-90 h-auto lg:w-[26.25vw] lg:h-[38.54vh] relative z-30 cursor-pointer select-none touch-none"
             style={{ zIndex: draggingImage === 2 ? 50 : undefined }}
             onDoubleClick={(e) => e.preventDefault()}
           >
@@ -443,7 +452,7 @@ export default function LambOfferingSection(props: ChildProps) {
           >
             <div
               ref={image3Ref}
-              className="image3 w-[25vw] h-[60vh] absolute bottom-[9vh] right-[20vw] -rotate-[7.84deg] cursor-grab active:cursor-grabbing select-none touch-none"
+              className="image3 w-[60%] sm:w-80 h-auto lg:w-[25vw] lg:h-[60vh] absolute bottom-[9vh] right-[35vw] lg:right-[20vw] -rotate-[7.84deg] cursor-grab active:cursor-grabbing select-none touch-none"
               style={{ zIndex: draggingImage === 3 ? 50 : undefined }}
               onDoubleClick={(e) => e.preventDefault()}
             >
@@ -467,9 +476,9 @@ export default function LambOfferingSection(props: ChildProps) {
               );
               setOpenNotificationPopup(true);
             }}
-            className="notifiaction notification-button py-5 px-8 w-108 bg-[#5A7C4E] absolute pl-19 mx-auto bottom-[6.38vh] right-[21vw] z-40 cursor-pointer select-none"
+            className="notifiaction notification-button py-5 p-5 lg:px-8 w-full sm:w-108 bg-[#5A7C4E] absolute pl-15 lg:pl-19 mx-auto bottom-0 lg:bottom-[6.38vh] right-0 lg:right-[21vw] z-40 cursor-pointer select-none"
           >
-            <div className="notify-icon w-50.5 h-33.75 absolute top-0 left-0 -translate-x-1/2">
+            <div className="notify-icon w-20 sm:w-30 h-auto lg:w-50.5 lg:h-33.75 absolute top-4 sm:top-0 left-0 -translate-x-1/2">
               <Image
                 className="w-full object-cover object-center h-full"
                 src={bookIcon.src}
@@ -481,23 +490,27 @@ export default function LambOfferingSection(props: ChildProps) {
                 alt={"Book Icon"}
               />
             </div>
-            <p className="text-[20px] leading-[1.25em]">
+            <p className="text-[16px] sm:text-[18px] lg:text-[20px] leading-[1.25em]">
               {parse(sectionData[0].notificationText)}
             </p>
           </div>
         </div>
         <div
           dir="ltr"
-          className="section-content w-[58vw] flex flex-col gap-y-[4.8vh] text-right"
+          className="section-content w-full lg:w-[58vw] flex flex-col gap-y-8 lg:gap-y-[4.8vh] text-right"
         >
           <div className="content-top">
-            <h2 className="title 2xl:text-[58px] xl:text-[48px] sm:text-[32px] leading-[0.7em] text-[#CD5E41]">
+            <h2 className="title lg:text-[58px] sm:text-[42px] text-[32px] leading-[0.7em] text-[#CD5E41]">
               {parse(sectionData[0]?.title)}
             </h2>
           </div>
-          <div className="content-bottom 2xl:text-[21px] xl:text-[18px] sm:text-[16px] flex gap-x-[5.2vw]">
-            <div className="text1 w-1/2">{parse(sectionData[0]?.text2)}</div>
-            <div className="text2 w-1/2">{parse(sectionData[0]?.text1)}</div>
+          <div className="content-bottom lg:text-[21px] sm:text-[18px] text-[16px] flex gap-x-[5.2vw] flex-col lg:flex-row gap-y-10">
+            <div className="text1 w-full lg:w-1/2">
+              {parse(sectionData[0]?.text2)}
+            </div>
+            <div className="text2 w-full lg:w-1/2">
+              {parse(sectionData[0]?.text1)}
+            </div>
           </div>
         </div>
       </div>

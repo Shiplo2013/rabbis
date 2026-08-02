@@ -45,7 +45,7 @@ export default function OnlyParallaxImageSection(props: ChildProps) {
         return;
       }
       // Banner Background
-      if (background.current) {
+      if (background.current && window.innerWidth > 1024) {
         gsap.set(background.current, { scale: 1.4, x: "20vw" });
         gsap.to(background.current, {
           x: "-30vw",
@@ -78,7 +78,7 @@ export default function OnlyParallaxImageSection(props: ChildProps) {
       dir="rtl"
       className={`${props.extraClass} bg-black flex items-center relative z-20 overflow-hidden`}
     >
-      <div ref={background} className="section-wrapper w-full h-screen">
+      <div ref={background} className="section-row w-full h-screen">
         <Image
           className="w-full object-cover object-center h-full"
           src={props.image?.sizes?.large || props?.image?.src}

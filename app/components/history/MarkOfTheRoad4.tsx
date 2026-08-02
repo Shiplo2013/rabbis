@@ -66,7 +66,8 @@ export default function MarkOfTheRoad4(props: ChildProps) {
       if (
         typeof window === "undefined" ||
         !wrapper.current ||
-        !props.offsetTopAdded
+        !props.offsetTopAdded ||
+        window.innerWidth < 1024
       ) {
         return;
       }
@@ -224,10 +225,10 @@ export default function MarkOfTheRoad4(props: ChildProps) {
           offsetTopAdded={props.offsetTopAdded}
         />
       </div>
-      <div className="section-row w-full h-full flex px-[6.3vw] py-[4.5vw] items-center relative z-30">
-        <div className="content-wrapper flex items-end gap-x-[2vw]">
-          <div className="section-content flex items-center gap-x-[2.6vw] w-[50vw]">
-            <div className="image w-[27.8vw] h-[38.3vh]">
+      <div className="section-row w-full h-full flex px-[8vw] lg:px-[6.3vw] py-[7vh] lg:py-[4.5vw] items-center relative z-30">
+        <div className="content-wrapper flex items-end gap-x-[2vw] flex-col lg:flex-row gap-y-[7vh] w-full">
+          <div className="section-content flex items-center gap-x-[2.6vw] w-full lg:w-[50vw] flex-col lg:flex-row gap-y-10">
+            <div className="image w-full h-auto lg:w-[27.8vw] lg:h-[38.3vh]">
               <Image
                 className="w-full object-cover object-center h-full"
                 src={
@@ -247,23 +248,23 @@ export default function MarkOfTheRoad4(props: ChildProps) {
             </div>
             <div
               dir="ltr"
-              className="title w-[24vw] text-[30px] text-black leading-[90%] text-right"
+              className="title w-full lg:w-[24vw] text-[20px] sm:text-[26px] lg:text-[30px] text-black leading-[90%] text-right"
             >
               <div className="text">
                 {parse(props?.data?.content_1?.title || sectionData[0]?.text)}
               </div>
             </div>
           </div>
-          <div className="section-content flex flex-col items-center gap-x-[2.6vw] w-[18vw] gap-y-[4.4vh]">
+          <div className="section-content flex flex-col-reverse lg:flex-col items-center gap-x-[2.6vw] w-full lg:w-[18vw] gap-y-[4.4vh]">
             <div
               dir="ltr"
-              className="title w-full text-[30px] text-black leading-[90%] text-right"
+              className="title w-full text-[20px] sm:text-[26px] lg:text-[30px] text-black leading-[90%] text-right"
             >
               <div className="text text-right">
                 {parse(props?.data?.content_2?.title || sectionData[1]?.title)}
               </div>
             </div>
-            <div className="image w-full h-[50vh]">
+            <div className="image w-full h-auto lg:h-[50vh]">
               <Image
                 className="w-full object-cover object-center h-full"
                 src={
@@ -282,8 +283,8 @@ export default function MarkOfTheRoad4(props: ChildProps) {
               />
             </div>
           </div>
-          <div className="section-content flex flex-col items-center gap-x-[2.6vw] w-[42.4vw] gap-y-[4.4vh]">
-            <div className="image w-full h-[58.5vh]">
+          <div className="section-content flex flex-col items-center gap-x-[2.6vw] w-full lg:w-[42.4vw] gap-y-[4.4vh]">
+            <div className="image w-full h-full lg:h-[58.5vh]">
               <Image
                 className="w-full object-cover object-center h-full"
                 src={

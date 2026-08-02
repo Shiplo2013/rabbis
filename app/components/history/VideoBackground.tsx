@@ -13,7 +13,7 @@ export default function VideoBackground() {
   // GSAP Context for Animations
   useGSAP(() => {
     // Banner Background
-    if (background.current) {
+    if (background.current && window.innerWidth > 1024) {
       gsap.set(background.current, { x: "10vw" });
       gsap.to(background.current, {
         x: "-10vw",

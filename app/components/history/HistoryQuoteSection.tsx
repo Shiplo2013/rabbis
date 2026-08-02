@@ -39,7 +39,8 @@ export default function HistoryQuoteSection(props: ChildProps) {
       if (
         typeof window === "undefined" ||
         !wrapper.current ||
-        !props.offsetTopAdded
+        !props.offsetTopAdded ||
+        window.innerWidth < 1024
       ) {
         return;
       }
@@ -113,12 +114,12 @@ export default function HistoryQuoteSection(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       <div
-        className={`section-row w-full h-full flex px-[2vw] py-[5vh] items-center justify-center relative z-30`}
+        className={`section-row w-full h-full flex px-[8vw] lg:px-[2vw] py-[5vh] items-center justify-center relative z-30`}
       >
         <div
           ref={quote}
           dir="ltr"
-          className={`bg-[#E2D7C3] w-full text-[#000000] text-[45px] leading-[0.8em] px-[5vw] py-[5vh] flex flex-col min-h-[46.8vh] justify-center  text-right ${props.boxClass} [&>p:not(:last-child)]:mb-[3vh]`}
+          className={`bg-[#E2D7C3] w-full text-[#000000] text-[25px] sm:text-[35px] lg:text-[45px] leading-[0.8em] px-[5vw] py-[5vh] flex flex-col min-h-[30vh] sm:min-h-[40vh] lg:min-h-[46.8vh] justify-center text-right ${props.boxClass} [&>p:not(:last-child)]:mb-[3vh]`}
         >
           {parse(props?.data[0]?.content)}
         </div>

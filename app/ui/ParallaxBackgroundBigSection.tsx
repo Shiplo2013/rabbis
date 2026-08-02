@@ -28,7 +28,7 @@ export default function ParallaxBackgroundBigSection(props: ChildProps) {
   // Animation
   useGSAP(
     () => {
-      if (props.animatePosition !== 0) {
+      if (props.animatePosition !== 0 && window.innerWidth > 1024) {
         // Banner Background
         gsap.set(background.current, { scale: 1.2, x: "100vw" });
         gsap.to(background.current, {
@@ -57,7 +57,7 @@ export default function ParallaxBackgroundBigSection(props: ChildProps) {
     <div
       ref={background}
       style={{ backgroundImage: `url(${props.bgImage.src})` }}
-      className={`parallax-background bg-contain bg-repeat-y absolute top-0 right-0 w-full h-screen bg-black z-10 transition-none`}
+      className={`parallax-background bg-contain bg-repeat-y absolute top-0 right-0 w-full h-full lg:h-screen bg-black z-10 transition-none`}
     ></div>
   );
 }

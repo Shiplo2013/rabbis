@@ -117,7 +117,8 @@ function RabbisTimeline2(props: ChildProps) {
       if (
         typeof window === "undefined" ||
         !wrapper.current ||
-        !props.offsetTopAdded
+        !props.offsetTopAdded ||
+        window.innerWidth < 1024
       ) {
         return;
       }
@@ -306,13 +307,16 @@ function RabbisTimeline2(props: ChildProps) {
         panel={props.panel}
         animatePosition={props.animWidthText}
       />
-      <div className="section-row w-full h-full flex px-[10vw] py-[10vh] items-center justify-start relative z-30 gap-x-[8vw]">
-        <div dir="ltr" className="rabbis-title self-end text-right mb-[3vh]">
-          <h2 className="text-[160px] leading-[0.7em] text-[#C3A13F]">
+      <div className="section-row w-full h-full flex px-[8vw] lg:px-[10vw] py-[7vh] lg:py-[10vh] items-center justify-start relative z-30 gap-x-[8vw] flex-col lg:flex-row gap-y-[7vh]">
+        <div
+          dir="ltr"
+          className="rabbis-title w-full self-end text-right lg:mb-[3vh]"
+        >
+          <h2 className="text-[64px] sm:text-[100px] lg:text-[160px] leading-[0.7em] text-[#C3A13F]">
             {parse(props?.data?.title || `ציוני<br /> דרך`)}
           </h2>
         </div>
-        <div className="rabbis-timeline flex gap-x-[20vw] relative">
+        <div className="rabbis-timeline w-full flex gap-x-[20vw] relative flex-col lg:flex-row gap-y-[7vh]">
           {RabbisData.map((item: any, index: number) => {
             //console.log(item);
             if (item.type === "notification") {
@@ -325,9 +329,9 @@ function RabbisTimeline2(props: ChildProps) {
                     );
                     setOpenNotificationPopup(true);
                   }}
-                  className="timeline-content notification-button py-5 px-8 w-108 bg-[#5A7C4E] relative self-start pl-19 mx-auto z-40 mt-[14vh] -ml-[8vw] -mr-[12vw] cursor-pointer"
+                  className="timeline-content notification-button py-5 px-6 lg:px-8 w-full sm:w-108 bg-[#5A7C4E] relative self-start pl-15 lg:pl-19 mx-auto z-40 lg:mt-[14vh] lg:-ml-[8vw] lg:-mr-[12vw] cursor-pointer"
                 >
-                  <div className="notify-icon w-50.5 h-33.75 absolute top-0 left-0 -translate-x-1/2">
+                  <div className="notify-icon w-30 h-auto lg:w-50.5 lg:h-33.75 absolute top-0 left-0 -translate-x-1/2">
                     <Image
                       className="w-full object-cover object-center h-full"
                       src={item?.image?.url || item?.image?.src || ""}
@@ -348,10 +352,10 @@ function RabbisTimeline2(props: ChildProps) {
               return (
                 <div
                   key={index}
-                  className={`timeline-content ${item.size === "portrait" ? "w-64.5" : "w-111.5"} flex flex-col gap-y-[5.5vh]`}
+                  className={`timeline-content ${item.size === "portrait" ? "w-full lg:w-64.5" : "w-full lg:w-111.5"} flex flex-col gap-y-10 sm:gap-y-[5.5vh]`}
                 >
                   {item.size === "portrait" ? (
-                    <div className="image w-64.5 h-76.25">
+                    <div className="image w-full h-auto lg:w-64.5 lg:h-76.25">
                       <Image
                         className="w-full object-cover object-center h-full relative z-10"
                         src={
@@ -369,7 +373,7 @@ function RabbisTimeline2(props: ChildProps) {
                       />
                     </div>
                   ) : (
-                    <div className="image w-111.5 h-76.25">
+                    <div className="image w-full h-auto lg:w-111.5 lg:h-76.25">
                       <Image
                         className="w-full object-cover object-center h-full relative z-10"
                         src={
@@ -388,7 +392,7 @@ function RabbisTimeline2(props: ChildProps) {
                     </div>
                   )}
                   <div dir="ltr" className="title mt-auto text-right">
-                    <h4 className="text-[43px] leading-[0.7em] text-[#FBF4E6]">
+                    <h4 className="text-[22px] sm:text-[32px] lg:text-[43px] leading-[0.9em] lg:leading-[0.7em] text-[#FBF4E6]">
                       {parse(item?.title || "")}
                     </h4>
                   </div>
@@ -398,7 +402,7 @@ function RabbisTimeline2(props: ChildProps) {
           })}
           <div
             style={{ marginTop: "10vh" }}
-            className={`timeline h-2 w-full bg-[#C3A13F] absolute right-0 top-1/2`}
+            className={`timeline h-2 w-full bg-[#C3A13F] absolute right-0 top-1/2 hidden lg:block`}
           ></div>
         </div>
       </div>

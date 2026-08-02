@@ -80,11 +80,13 @@ export default function ContentSection2(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return (
-                    getTimelineOffset() +
-                    GetRightPosition(heading.current) -
-                    window.innerWidth * 0.7
-                  );
+                  return window.innerWidth > 1024
+                    ? getTimelineOffset() +
+                        GetRightPosition(heading.current) -
+                        window.innerWidth * 0.7
+                    : (heading.current?.getBoundingClientRect().top || 0) +
+                        window.scrollY -
+                        window.innerHeight * 0.7;
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -113,11 +115,13 @@ export default function ContentSection2(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return (
-                    getTimelineOffset() +
-                    GetRightPosition(content1.current) -
-                    window.innerWidth * 0.7
-                  );
+                  return window.innerWidth > 1024
+                    ? getTimelineOffset() +
+                        GetRightPosition(content1.current) -
+                        window.innerWidth * 0.7
+                    : (content1.current?.getBoundingClientRect().top || 0) +
+                        window.scrollY -
+                        window.innerHeight * 0.7;
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -146,11 +150,13 @@ export default function ContentSection2(props: ChildProps) {
               ease: "expo.inOut",
               scrollTrigger: {
                 start: () => {
-                  return (
-                    getTimelineOffset() +
-                    GetRightPosition(content2.current) -
-                    window.innerWidth * 0.7
-                  );
+                  return window.innerWidth > 1024
+                    ? getTimelineOffset() +
+                        GetRightPosition(content2.current) -
+                        window.innerWidth * 0.7
+                    : (content2.current?.getBoundingClientRect().top || 0) +
+                        window.scrollY -
+                        window.innerHeight * 0.7;
                 },
                 toggleActions: "restart pause play reverse",
               },
@@ -173,9 +179,9 @@ export default function ContentSection2(props: ChildProps) {
       <div className="absolute top-0 left-0 w-full h-full z-10">
         <VideoBackground />
       </div>
-      <div className="w-full h-full flex items-center justify-center flex-row-reverse text-[21px] text-[#3D3B37] gap-x-[7.5vw] px-[10.4vw] relative z-20">
-        <div className="w-1/2">
-          <div className="text-[44px] leading-[1em] mb-5 w-full">
+      <div className="w-full h-full flex items-center justify-center flex-col lg:flex-row-reverse text-[16px] sm:text-[18px] lg:text-[21px] text-[#3D3B37] gap-y-7 gap-x-[7.5vw] py-[8vh] lg:py-0 px-[8vw] lg:px-[10.4vw] relative z-20">
+        <div className="w-full lg:w-1/2">
+          <div className="text-[22px] sm:text-[32px] lg:text-[44px] leading-[1em] mb-5 w-full">
             {props.loadAnimation && (
               <h2
                 ref={heading}
@@ -189,7 +195,7 @@ export default function ContentSection2(props: ChildProps) {
             {props?.loadAnimation && parse(sectionData[0].text1)}
           </div>
         </div>
-        <div ref={content2} className="w-1/2">
+        <div ref={content2} className="w-full lg:w-1/2">
           {props?.loadAnimation && parse(sectionData[0].text2)}
         </div>
       </div>

@@ -57,11 +57,11 @@ export default function ArrowSliderSection(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
-      if (getTimelineOffset() === 0) return;
+      if (getTimelineOffset() === 0 && window.innerWidth < 1024) return;
       const animations: gsap.core.Animation[] = [];
       // Section Image
       if (imageRef.current) {
-        gsap.set(imageRef.current, { x: "30vw" });
+        gsap.set(imageRef.current, { x: "10vw" });
       }
 
       // Section Slider
@@ -121,7 +121,7 @@ export default function ArrowSliderSection(props: ChildProps) {
     <section
       ref={wrapper}
       dir="rtl"
-      className={`bg-black flex items-center relative z-30 ${props.extraClass}`}
+      className={`bg-black flex relative z-30 ${props.extraClass} py-[8vh] px-[8vw] lg:py-0 lg:px-0`}
       data-scroll-section={props.animWidthText}
     >
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-10">
@@ -138,8 +138,11 @@ export default function ArrowSliderSection(props: ChildProps) {
           />
         )}
       </div>
-      <div className="section-wrapper w-full h-full relative z-30">
-        <div ref={cardSlider} className="absolute left-[8vw] top-[10vh]">
+      <div className="slider-wrapper w-full h-full lg:relative z-30 pl-[10vw] sm:pl-0">
+        <div
+          ref={cardSlider}
+          className="relative lg:absolute lg:left-[8vw] lg:top-[10vh] flex justify-center"
+        >
           <CardSlider
             SlideData={[
               {
@@ -152,7 +155,7 @@ export default function ArrowSliderSection(props: ChildProps) {
         {props?.slideData?.floatingImage && (
           <div
             ref={imageRef}
-            className="section-image w-121 h-80.5 absolute bottom-[15vh] left-0"
+            className="section-image w-80 sm:w-100 h-auto lg:w-121 lg:h-80.5 absolute bottom-[10vh] right-0 lg:left-0"
           >
             <Image
               className={`w-full object-cover h-full relative z-10`}

@@ -70,11 +70,12 @@ export default function IntroductionContent(props: ChildProps) {
                   ease: "expo.out",
                   scrollTrigger: {
                     start: () => {
-                      return (
-                        getTimelineOffset() +
-                        GetRightPosition(wrapper.current) +
-                        window.innerWidth * 0.3
-                      );
+                      return window.innerWidth > 1024
+                        ? getTimelineOffset() +
+                            GetRightPosition(wrapper.current) +
+                            window.innerWidth * 0.3
+                        : (wrapper.current?.getBoundingClientRect().top || 0) +
+                            window.scrollY;
                     },
                     toggleActions: "restart pause play reverse",
                   },
@@ -101,11 +102,12 @@ export default function IntroductionContent(props: ChildProps) {
                   ease: "expo.out",
                   scrollTrigger: {
                     start: () => {
-                      return (
-                        getTimelineOffset() +
-                        GetRightPosition(wrapper.current) +
-                        window.innerWidth * 0.3
-                      );
+                      return window.innerWidth > 1024
+                        ? getTimelineOffset() +
+                            GetRightPosition(wrapper.current) +
+                            window.innerWidth * 0.3
+                        : (wrapper.current?.getBoundingClientRect().top || 0) +
+                            window.scrollY;
                     },
                     toggleActions: "restart pause play reverse",
                   },
@@ -163,7 +165,7 @@ export default function IntroductionContent(props: ChildProps) {
           {props?.data?.title && (
             <h1
               ref={title}
-              className="text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5"
+              className="text-[64px] sm:text-[100px] lg:text-[204px] text-[#AC832E] leading-[0.7em] overflow-hidden relative z-20 py-7.5"
             >
               {parse(props?.data?.title)}
             </h1>

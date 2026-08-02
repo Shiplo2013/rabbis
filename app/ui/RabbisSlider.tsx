@@ -117,7 +117,7 @@ export default function RabbisSlider(props: ChildProps) {
         {props?.data?.map((item: RabbiPost, index: number) => {
           return (
             <SwiperSlide key={index}>
-              <div className="rabbis-wrapper relative min-w-140 flex flex-col items-center justify-center group">
+              <div className="rabbis-wrapper relative w-full sm:min-w-140 flex flex-col items-center justify-center group">
                 <div className="rabbis-thumb w-80 h-87.5 relative z-10">
                   <Image
                     className="w-full object-cover object-center h-full"
@@ -148,7 +148,7 @@ export default function RabbisSlider(props: ChildProps) {
                   />
                   <div className="content leading-[1em] text-[#D1A941] flex justify-center flex-col items-center gap-y-2">
                     {item?.title && (
-                      <h3 className="text-[28px] leading-[1em] text-center max-w-120">
+                      <h3 className="text-[22px] sm:text-[28px] leading-[1em] text-center max-w-120">
                         <Link
                           href={item.buttonLink || "#"}
                           onClick={handleLinkClick}
@@ -174,7 +174,7 @@ export default function RabbisSlider(props: ChildProps) {
           );
         })}
       </Swiper>
-      <div className="swiper-navigation relative h-27 w-full flex items-center justify-center">
+      <div className="swiper-navigation relative h-13 sm:h-27 w-full flex items-center justify-center">
         <div
           ref={paginationRef}
           className="custom-pagination flex items-center justify-center gap-5"
@@ -183,13 +183,13 @@ export default function RabbisSlider(props: ChildProps) {
           style={{
             backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
           }}
-          className="group absolute left-0 bottom-0 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-22 h-22"
+          className="group absolute left-0 bottom-0 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-12 h-12 sm:w-22 sm:h-22"
           disabled={isEnd}
           onClick={() => swiperRef.current?.swiper.slideNext()}
         >
           <div className="w-full h-full flex items-center justify-center bg-[#202325] rounded-full overflow-hidden relative">
             <span className="btn-bg absolute z-10 left-0 top-0 w-full h-full bg-[#000000] translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-[cubic-bezier(0.625,0.05,0,1)]"></span>
-            <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30 w-8 h-auto">
+            <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30 w-6 sm:w-8 h-auto">
               <SwipeLeft />
             </div>
           </div>
@@ -198,13 +198,13 @@ export default function RabbisSlider(props: ChildProps) {
           style={{
             backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
           }}
-          className="group absolute right-0 bottom-0 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-22 h-22"
+          className="group absolute right-0 bottom-0 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-12 h-12 sm:w-22 sm:h-22"
           disabled={isBeginning}
           onClick={() => swiperRef.current?.swiper.slidePrev()}
         >
           <div className="w-full h-full flex items-center justify-center bg-[#202325] rounded-full overflow-hidden relative">
             <span className="btn-bg absolute z-10 left-0 top-0 w-full h-full bg-[#000000] translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-[cubic-bezier(0.625,0.05,0,1)]"></span>
-            <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30 w-8 h-auto">
+            <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30 w-6 sm:w-8 h-auto">
               <SwipeRight />
             </div>
           </div>
