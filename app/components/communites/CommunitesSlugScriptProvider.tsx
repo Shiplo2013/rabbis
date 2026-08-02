@@ -382,12 +382,12 @@ export default function CommunitiesSlugScriptProvider({
     const headerRight = document.querySelector(
       "#header .header-right",
     ) as HTMLDivElement | null;
-    // if (headerLeft) {
-    //   gsap.set(headerLeft, {
-    //     autoAlpha: 0,
-    //     duration: 0,
-    //   });
-    // }
+    if (headerLeft && window.innerWidth > 1024) {
+      gsap.set(headerLeft, {
+        autoAlpha: 0,
+        duration: 0,
+      });
+    }
     if (headerRight) {
       gsap.set(headerRight, {
         autoAlpha: 0,

@@ -741,7 +741,7 @@ export default function HomeScriptProvider({
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp block lg:flex lg:flex-nowrap lg:flex-row-reverse lg:w-[510vw] lg:h-screen will-change-transform`}
+            className={`section-wrapp block lg:flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-[510vw] lg:h-screen will-change-transform`}
           >
             <Suspense
               fallback={

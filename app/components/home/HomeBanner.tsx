@@ -75,7 +75,7 @@ export default function HomeBanner(props: ChildProps) {
         dir="rtl"
         className="flex items-center min-h-screen lg:h-full relative z-30"
       >
-        <div className="section-wrapper">
+        <div className="banner-wrapper px-[8vw] lg:px-[10vw] w-full">
           <h1 className="split-title text-[60px] sm:text-[100px] lg:text-[135px] text-[#AC832E] leading-none overflow-hidden">
             <span className="banner-title1 block overflow-hidden">
               {bannerData?.title_1}
