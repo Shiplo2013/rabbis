@@ -54,7 +54,7 @@ export default function SingleZatzelGraduate(props: ChildProps) {
             CreateShimmerDataUrl(389, 406)
           }
           placeholder={"blur"}
-          loading="eager"
+          loading="lazy"
           alt="Rabbis"
         />
       </div>

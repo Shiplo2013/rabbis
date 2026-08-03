@@ -2,7 +2,6 @@ import CloseIcon2 from "@/app/assets/icons/CloseIcon2";
 import { gsap, useGSAP } from "@/app/ui/plugins";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
@@ -37,10 +36,6 @@ export default function NotificationPopup() {
       openNotificationPopup ? showPopup() : hidePopup();
     }
   }, [openNotificationPopup]);
-
-  useEffect(() => {
-    console.log("Notification Data:", notificationData);
-  }, [notificationData]);
 
   return (
     <div

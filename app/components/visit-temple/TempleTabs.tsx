@@ -229,6 +229,7 @@ export default function TempleTabs(props: ChildProps) {
                             width={100}
                             height={100}
                             alt="Album Icon"
+                            loading="lazy"
                           />
                         </div>
                         <div className="hover absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-110">
@@ -238,6 +239,7 @@ export default function TempleTabs(props: ChildProps) {
                             width={100}
                             height={100}
                             alt="Album Icon"
+                            loading="lazy"
                           />
                         </div>
                       </div>

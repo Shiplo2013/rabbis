@@ -38,6 +38,7 @@ export default function SubmitButton(props: ChildProps) {
             width={"40"}
             height={"30"}
             alt="Button"
+            loading="lazy"
           />
         ) : (
           <div className={`button-icon relative z-30 ${props?.svgIconClass}`}>

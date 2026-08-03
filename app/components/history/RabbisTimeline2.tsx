@@ -5,7 +5,7 @@ import ParallaxBackgroundBigSection from "@/app/ui/ParallaxBackgroundBigSection"
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { RefObject, useEffect, useRef } from "react";
+import { RefObject, useRef } from "react";
 import bookIcon from "../../assets/images/lamb-book-icon.png";
 import rabbisImage10 from "../../assets/images/rabbis-timeline10.jpg";
 import rabbisImage11 from "../../assets/images/rabbis-timeline11.jpg";
@@ -290,10 +290,6 @@ function RabbisTimeline2(props: ChildProps) {
     },
     { scope: wrapper, dependencies: [pathname, props?.offsetTopAdded] },
   );
-
-  useEffect(() => {
-    console.log("Rabbis Timeline Data:", props.data);
-  }, [props.data]);
 
   return (
     <section

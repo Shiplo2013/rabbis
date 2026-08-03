@@ -1,4 +1,5 @@
 "use client";
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -424,6 +425,9 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                                 className="w-full h-full object-cover object-center will-change-transform"
                                 width={768}
                                 height={464}
+                                blurDataURL={CreateShimmerDataUrl(768, 464)}
+                                placeholder={"blur"}
+                                loading="lazy"
                               />
                             </div>
                           )}

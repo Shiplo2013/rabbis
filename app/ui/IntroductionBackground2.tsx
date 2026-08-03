@@ -94,6 +94,7 @@ export default function IntroductionBackground2(props: ChildProps) {
         }
         placeholder={"blur"}
         loading="lazy"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 70vw"
         alt="Introduction Background"
       />
       <div

@@ -509,7 +509,7 @@ export default function HistoryScriptProvider({
             "-=2.5",
           );
         }
-        if (timeline && window.innerWidth > 1024) {
+        if (timeline) {
           tl.to(
             timeline,
             {

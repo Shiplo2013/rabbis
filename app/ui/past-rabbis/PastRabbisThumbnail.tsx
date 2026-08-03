@@ -28,6 +28,7 @@ export default function PastRabbisThumbnail({ item }: { item: MenuPost }) {
         }
         width={122}
         height={125}
+        loading="lazy"
         alt={item?.acf?.title || "Rabbi image"}
         onLoad={() => setLoading(false)}
       />
