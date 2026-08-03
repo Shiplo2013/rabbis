@@ -46,7 +46,7 @@ export default function ConferenceContentSection(props: ChildProps) {
     >
       <div className="sheet-wrapper w-full h-auto flex items-center gap-y-[7vh] gap-x-[9.89vw] flex-col lg:flex-row">
         <div className="conference-content lg:min-w-[42.5vw] w-full lg:w-[42.5vw] h-full will-change-transform overflow-hidden relative">
-          <div className="content-bg absolute top-0 left-0 w-full h-full sm:h-auto sm:relative z-10 scale-150 sm:scale-0">
+          <div className="content-bg absolute top-0 left-0 w-full h-full sm:h-auto sm:relative z-10 scale-150 sm:scale-100">
             <Image
               className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
               src={contentBg?.src}
