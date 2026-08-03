@@ -28,6 +28,7 @@ export default function HistoryTimeline(props: ChildProps) {
         top: getOffsetTop("#page>.timeline" + id),
         behavior: "smooth",
       });
+      setActiveTimeline(false);
     }
   };
   return (
@@ -36,7 +37,7 @@ export default function HistoryTimeline(props: ChildProps) {
       className="history-timeline fixed bottom-5 lg:bottom-[5vh] right-5 lg:right-0 w-screen h-auto z-30 opacity-0"
     >
       <div
-        className={`timeline-wrapper bg-amber-50 lg:bg-transparent px-7 py-5 lg:px-0 lg:py-0 rounded-2xl lg:rounded-none mb-3 w-auto lg:w-[80%] mx-auto overflow-hidden absolute right-0 lg:right-auto bottom-full lg:bottom-auto lg:relative z-30 transition-all duration-300 ${activeTimeline ? "opacity-100 visible" : "opacity-0 invisible"}`}
+        className={`timeline-wrapper bg-amber-50 lg:bg-transparent px-7 py-5 lg:px-0 lg:py-0 rounded-2xl lg:rounded-none mb-3 w-auto lg:w-[80%] mx-auto overflow-hidden absolute right-0 lg:right-auto bottom-full lg:bottom-auto lg:relative z-30 transition-all duration-300 ${activeTimeline ? "opacity-100 visible" : "opacity-0 invisible"} lg:opacity-100 lg:visible`}
       >
         <div className="timeline flex flex-col lg:flex-row lg:items-center lg:justify-center gap-y-2 gap-x-[4.2vw] relative">
           {props?.timelineData?.map((item, index) => {
