@@ -116,6 +116,8 @@ function buildGalleryAnalysisByTab(
         tabIndex,
         itemIndex,
         src: item?.sizes?.large || item?.url || "",
+        tabSrc: item?.sizes?.medium_large || item?.url || "",
+        mobileSrc: item?.sizes?.medium || item?.url || "",
         width,
         height,
         orientation: detectOrientation(width, height),

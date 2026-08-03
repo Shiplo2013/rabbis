@@ -1,7 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
-import AudioPlayer from "../ui/AudioPlayer";
+import { useEffect, useRef, useState } from "react";
 
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -279,9 +278,9 @@ export default function PageFixedElements() {
       {/* End of Cursor Follow */}
 
       {/* Audio Player */}
-      <Suspense fallback={<div className="hidden"></div>}>
+      {/* <Suspense fallback={<div className="hidden"></div>}>
         <AudioPlayer audioRef={audio} src={audioFile || ""} />
-      </Suspense>
+      </Suspense> */}
       {/* End of Audio Player */}
 
       {/* Wish Button */}

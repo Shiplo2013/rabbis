@@ -30,7 +30,7 @@ export default function VisitTempleSection(props: ChildProps) {
     >
       <div className="visit-temple-wrapper flex flex-col lg:flex-row w-full lg:h-full">
         <VideoSection
-          extraClass="video-item w-full lg:w-[25.6vw] min-w-123 will-change-transform"
+          extraClass="video-item w-full lg:w-[25.6vw] lg:min-w-123 will-change-transform"
           animWidthText={0.1}
           data={videoSectionData}
         />

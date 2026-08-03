@@ -141,7 +141,7 @@ export default function VideoSection(props: ChildProps) {
     <div
       ref={wrapper}
       dir="rtl"
-      className={`${props.extraClass} bg-black flex items-center h-screen relative z-20`}
+      className={`${props.extraClass} bg-black flex items-center lg:h-screen relative z-20`}
       data-scroll-section={props.animWidthText}
     >
       <div className="video-wrapper w-full h-full relative">
