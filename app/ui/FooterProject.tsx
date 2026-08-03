@@ -36,7 +36,7 @@ export default function FooterProject(props: ChilProps) {
         <h2 className="text-[50px] lg:text-[94px] leading-[0.9em] font-bold">
           {props.title}
         </h2>
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 overflow-hidden flex gap-2.5">
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 overflow-hidden hidden lg:flex gap-2.5">
           {props.images &&
             props.images.map((image: any, index: number) => (
               <div
