@@ -54,6 +54,7 @@ export default function ThemeButton(props: ChildProps) {
             src={props?.icon?.src}
             width={32}
             height={24}
+            loading="lazy"
             alt="Button"
           />
         ) : (

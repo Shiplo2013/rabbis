@@ -56,6 +56,7 @@ export default function AnimatedBackground(props: ChildProps) {
         blurDataURL={CreateShimmerDataUrl(1920, 1080)}
         placeholder={"blur"}
         loading="lazy"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 70vw"
         alt="Section Background"
       />
       <div className="background-overlay absolute top-0 left-0 w-full h-full bg-black opacity-60 z-20"></div>

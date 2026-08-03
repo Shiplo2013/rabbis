@@ -156,6 +156,7 @@ export default function IntroductionContent(props: ChildProps) {
             blurDataURL={props?.bgOverlay?.blurDataURL}
             placeholder={"blur"}
             loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 70vw"
             alt="Introduction Background Overlay"
           />
         </div>

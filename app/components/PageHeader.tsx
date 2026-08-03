@@ -391,7 +391,6 @@ function PageHeader() {
                       src={donationIcon.src}
                       width={13}
                       height={23}
-                      loading="lazy"
                       //blurDataURL={donationIcon?.blurDataURL}
                       //placeholder="blur"
                       alt={data?.acf?.header_right?.donation_button?.title}
@@ -436,7 +435,6 @@ function PageHeader() {
                               src={donationIcon.src}
                               width={13}
                               height={23}
-                              loading="lazy"
                               //blurDataURL={donationIcon?.blurDataURL}
                               //placeholder="blur"
                               alt="לתרומות"
@@ -647,7 +645,6 @@ function PageHeader() {
                   src={data?.acf?.header_logo?.sizes?.thumbnail || logo.src}
                   width={146}
                   height={112}
-                  loading="lazy"
                   placeholder="blur"
                   blurDataURL={logo?.blurDataURL}
                   alt={"Logo"}
@@ -661,7 +658,6 @@ function PageHeader() {
                   src={logo.src}
                   width={146}
                   height={112}
-                  loading="lazy"
                   placeholder="blur"
                   blurDataURL={logo?.blurDataURL}
                   alt="Logo"

@@ -57,6 +57,7 @@ export default function BackgroundImage3(props: ChildProps) {
         blurDataURL={CreateShimmerDataUrl(1920, 1080)}
         placeholder={"blur"}
         loading="lazy"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 70vw"
         alt="Section Background"
       />
     </div>

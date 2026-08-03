@@ -522,6 +522,7 @@ export default function CommunitiesSlugScriptProvider({
                                 src={item.image?.sizes?.thumbnail || item.src}
                                 width={90}
                                 height={90}
+                                loading="lazy"
                                 alt="Community Image"
                               />
                             </div>

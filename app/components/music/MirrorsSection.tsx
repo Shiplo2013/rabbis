@@ -310,6 +310,7 @@ export default function MirrorsSection(props: ChildProps) {
                       src={Album2.src}
                       width={100}
                       height={100}
+                      loading="lazy"
                       alt="Album Icon"
                     />
                   </div>
@@ -319,6 +320,7 @@ export default function MirrorsSection(props: ChildProps) {
                       src={Album1.src}
                       width={100}
                       height={100}
+                      loading="lazy"
                       alt="Album Icon"
                     />
                   </div>

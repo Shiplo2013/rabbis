@@ -32,6 +32,7 @@ export default function BackgroundImageContain(props: ChildProps) {
         )}
         placeholder={"blur"}
         loading="lazy"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 70vw"
         alt="Section Background"
       />
     </div>

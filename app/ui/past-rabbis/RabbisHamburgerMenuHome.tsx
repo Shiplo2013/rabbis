@@ -279,6 +279,7 @@ export default function RabbisHamburgerMenuHome(
                           src={thumbnailSrc}
                           width={122}
                           height={125}
+                          loading="lazy"
                           alt={item?.title || "Rabbi image"}
                         />
                       ) : (

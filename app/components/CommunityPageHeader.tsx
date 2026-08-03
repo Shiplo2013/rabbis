@@ -92,6 +92,8 @@ export default function CommunityPageHeader() {
                   height={54}
                   loading="lazy"
                   alt="Small Logo"
+                  preload={true}
+                  priority={true}
                 />
               </Link>
             </div>
