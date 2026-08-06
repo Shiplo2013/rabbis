@@ -2,6 +2,7 @@
 import SheetContentSection from "@/app/components/sheets/SheetContentSection";
 import { wpFetch } from "@/app/lib/wpFetch";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
+import SheetContentItem from "@/app/ui/SheetContentItem";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
@@ -34,7 +35,7 @@ export default function CommunitiesSheetsScriptProvider({
   const [error, setError] = useState<string | null>(null);
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
-  const [postPerPage, setPostPerPage] = useState(6);
+  const [postPerPage, setPostPerPage] = useState(10);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
   const [activeCategory, setActiveCategory] = useState(0);
@@ -52,6 +53,8 @@ export default function CommunitiesSheetsScriptProvider({
     Number(data?.postsData?.totalPage ?? 1),
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
+  const [normalPosts, setNormalPosts] = useState<any[]>([]);
 
   // Get Page Data From backend
   useEffect(() => {
@@ -60,6 +63,8 @@ export default function CommunitiesSheetsScriptProvider({
       return;
     }
     setSheetPageData(data);
+    setVerticalPosts(data?.postsData?.posts.slice(0, 6) || []);
+    setNormalPosts(data?.postsData?.posts.slice(6) || []);
   }, [data]);
 
   // // Reset page when category changes
@@ -174,10 +179,11 @@ export default function CommunitiesSheetsScriptProvider({
         const data = await response.json();
 
         if (isMounted) {
-          if (data?.posts?.length < 10) {
+          if (data?.posts?.length < postPerPage) {
             setHasMorePosts(false);
           }
-          sheetPageData.postsData = data || [];
+          setVerticalPosts(data?.postsData?.posts.slice(0, 6) || []);
+          setNormalPosts(data?.postsData?.posts.slice(6) || []);
         }
       } catch (error) {
         console.error(error);
@@ -210,28 +216,12 @@ export default function CommunitiesSheetsScriptProvider({
         }
         const data = await response.json();
 
-        console.log(
-          "LoadMorePosts data: (Page " + (currentPage + 1) + ")",
-          data,
-        );
-
         if (isMounted) {
           if (data?.posts?.length < postPerPage) {
             setHasMorePosts(false);
           }
-          setSheetPageData((prevData: any) => {
-            const updatedPosts = [
-              ...(prevData?.postsData?.posts || []),
-              ...(data || []),
-            ];
-            return {
-              ...prevData,
-              postsData: {
-                ...prevData?.postsData,
-                posts: updatedPosts,
-              },
-            };
-          });
+
+          setNormalPosts((prevPosts) => [...prevPosts, ...(data?.posts || [])]);
         }
       } catch (error) {
         console.error(error);
@@ -241,19 +231,9 @@ export default function CommunitiesSheetsScriptProvider({
           setCurrentPage((prevPage) => prevPage + 1);
           // Refresh vertical section animation after loading more posts
           if (verticalSection) {
-            // verticalSection.scrollTrigger?.refresh();
-            // verticalSection.invalidate();
-            // verticalSection.restart();
-            // verticalSection.scrollTrigger?.update();
-            // verticalSection.play();
-            // verticalSection.clear();
-            // ScrollTrigger.refresh();
-            // verticalSection.restart();
-            // console.log(verticalSection);
-            // verticalSection.parent?.invalidate();
-            // verticalSection.invalidate();
-            // verticalSection.restart();
-            // verticalSection.progress(0.5);
+            verticalSection.clear();
+            ScrollTrigger.refresh();
+            verticalSection.restart();
           }
         }
       }
@@ -272,9 +252,14 @@ export default function CommunitiesSheetsScriptProvider({
 
     const updateSectionWidth = () => {
       const newSectionWidth =
-        sheetPageData?.postsData?.posts.length * 24.3 +
-        (sheetPageData?.postsData?.posts.length - 1) * 15 +
-        30;
+        12.5 + // Section padding
+        11.35 + // Sidebar filters
+        6 * 18 + // Each post width
+        6 * 3.2 + // Gap between posts
+        5.8 + // content gap
+        26.35 + // Subscriber form width
+        5.8 + // content gap
+        10.41; // Readmore button width
       setSectionWidth(newSectionWidth);
       setContainerWidth(newSectionWidth + 100);
     };
@@ -647,7 +632,6 @@ export default function CommunitiesSheetsScriptProvider({
   // Set Body Overflow Hidden
   useEffect(() => {
     if (isAllAnimationComplete) {
-      console.log(verticalSection);
       // Body Overflow Hidden
       document.body.classList.remove("!overflow-hidden");
       document.body.classList.add("!overflow-auto");
@@ -657,6 +641,73 @@ export default function CommunitiesSheetsScriptProvider({
     }
     return () => {
       document.body.style.overflow = "auto";
+    };
+  }, [isAllAnimationComplete]);
+
+  // Hide header-left on scroll down, show on scroll up (only for this page)
+  useGSAP(() => {
+    if (!isAllAnimationComplete || !main.current) {
+      return;
+    }
+
+    const headerLeft = document.querySelector(
+      "#header .header-left",
+    ) as HTMLElement | null;
+
+    if (!headerLeft) {
+      return;
+    }
+
+    let lastScrollY = window.scrollY;
+    let isHidden = false;
+    const deltaThreshold = 6;
+
+    const showHeaderLeft = () => {
+      if (!isHidden) return;
+      isHidden = false;
+      gsap.to(headerLeft, {
+        y: "0%",
+        autoAlpha: 1,
+        duration: 0.28,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
+    const hideHeaderLeft = () => {
+      if (isHidden) return;
+      isHidden = true;
+      gsap.to(headerLeft, {
+        y: "-120%",
+        autoAlpha: 0,
+        duration: 0.22,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      const diff = currentScrollY - lastScrollY;
+
+      if (Math.abs(diff) < deltaThreshold) {
+        return;
+      }
+
+      if (currentScrollY <= 10 || diff < 0) {
+        showHeaderLeft();
+      } else if (diff > 0) {
+        hideHeaderLeft();
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      gsap.set(headerLeft, { clearProps: "transform,opacity,visibility" });
     };
   }, [isAllAnimationComplete]);
 
@@ -739,7 +790,7 @@ export default function CommunitiesSheetsScriptProvider({
               setActiveCategory={setActiveCategory}
               onSelectCategoryId={setSelectedCategoryId}
               data={{
-                posts: sheetPageData?.postsData?.posts || [],
+                posts: verticalPosts || [],
                 categoriesTree: sheetPageData?.categoriesTree || [],
                 isPostLoaded: isPostLoaded,
                 noPostsFound: noPostsFound,
@@ -751,6 +802,36 @@ export default function CommunitiesSheetsScriptProvider({
               currentPage={currentPage}
               totalPages={totalPages}
             />
+          </div>
+        </div>
+        <div className="normal-scrolling w-full min-h-screen bg-black px-[5vw] py-[8vh]">
+          <div className="wrapper w-full max-w-400 flex flex-col items-center justify-center gap-y-[10vh]">
+            <div
+              className={`normal-posts flex flex-row flex-wrap gap-x-[3.2vw] gap-y-[5vh]`}
+            >
+              {normalPosts?.map((post: any, index: number) => {
+                return (
+                  <SheetContentItem key={`normal-post-${index}`} data={post} />
+                );
+              })}
+            </div>
+            {hasMorePosts && currentPage! < totalPages! && (
+              <div
+                className={`sheet-readmore w-full lg:w-50 lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
+              >
+                <button
+                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
+                  onClick={() => {
+                    if (LoadMorePosts) {
+                      LoadMorePosts();
+                    }
+                  }}
+                  disabled={isLoadingMore}
+                >
+                  {isLoadingMore ? "טְעִינָה..." : "טען עוד"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </main>

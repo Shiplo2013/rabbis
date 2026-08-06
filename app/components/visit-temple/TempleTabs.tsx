@@ -316,9 +316,8 @@ export default function TempleTabs(props: ChildProps) {
                             }
                           }}
                         >
-                          {window.innerWidth <= 1024 &&
-                            props.tabGalleryData?.[templeActiveTab]?.images
-                              .length > 0 &&
+                          {props.tabGalleryData?.[templeActiveTab]?.images
+                            .length > 0 &&
                             Object.values(
                               tabsData[templeActiveTab]?.gallery || [],
                             ).map((item: any, index: number) => (

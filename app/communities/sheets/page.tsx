@@ -3,20 +3,20 @@ import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 import { wpFetch } from "@/app/lib/wpFetch";
 
 export default async function page() {
-  const pageRes = wpFetch(
+  const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=issues-magazine&acf_format=standard&_fields=id,title,content,acf`,
     {
       next: { revalidate: 300 }, // Cache data for 5 minutes
     },
   );
-  const categoryRes = wpFetch(
+  const categoryRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines_cat?&_fields=id,count,parent,name&per_page=100`,
     {
       next: { revalidate: 300 }, // Cache data for 5 minutes
     },
   );
-  const postsRes = wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf&per_page=6`,
+  const postsRes = await wpFetch(
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf&per_page=10`,
     {
       next: { revalidate: 300 }, // Cache data for 5 minutes
     },
