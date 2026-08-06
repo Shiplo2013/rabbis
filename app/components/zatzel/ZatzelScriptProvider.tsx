@@ -412,97 +412,97 @@ export default function ZatzelScriptProvider({
       });
     }
     // Contents
-    const zatzelContent = main.current?.querySelectorAll(".zatzel-cat-section");
-    document.fonts.ready.then(() => {
-      if (zatzelContent) {
-        zatzelContent.forEach((section) => {
-          const sectionTitle = section.querySelector(".zatzel-cat-title h2");
-          const sectionItems = section.querySelectorAll(".single-zatzel-post");
-          if (sectionTitle) {
-            const splitTitle = TextSplitLines(sectionTitle);
-            gsap.set(splitTitle, {
-              perspective: 400,
-            });
-            gsap.set(splitTitle, {
-              yPercent: 150,
-              opacity: 0,
-            });
-            gsap.to(splitTitle, {
-              yPercent: 0,
-              opacity: 1,
-              delay: 0,
-              stagger: 0.05,
-              ease: "expo.inOut",
-              duration: 1.5,
-              scrollTrigger: {
-                start: () => {
-                  return GetRightPosition(section) - window.innerWidth * 0.7;
-                },
-                toggleActions: "restart none none reverse",
-              },
-            });
-          }
-          if (sectionItems) {
-            sectionItems.forEach((item) => {
-              const postTitle = item.querySelector(".post-text .post-title");
-              const postExcerpt = item.querySelector(
-                ".post-text .post-excerpt",
-              );
-              // Post Title
-              if (postExcerpt) {
-                const postExcerptSplit = TextSplitLines(postExcerpt);
-                gsap.set(postExcerpt, {
-                  perspective: 400,
-                });
-                gsap.set(postExcerptSplit, {
-                  yPercent: 150,
-                  opacity: 0,
-                });
-                gsap.to(postExcerptSplit, {
-                  yPercent: 0,
-                  opacity: 1,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                  duration: 1.5,
-                  scrollTrigger: {
-                    start: () => {
-                      return GetRightPosition(item) - window.innerWidth * 0.7;
-                    },
-                    toggleActions: "restart none none reverse",
-                  },
-                });
-              }
-              // Post Title
-              if (postTitle) {
-                const postTitleSplit = TextSplitLines(postTitle);
-                gsap.set(postTitle, {
-                  perspective: 400,
-                });
-                gsap.set(postTitleSplit, {
-                  yPercent: 150,
-                  opacity: 0,
-                });
-                gsap.to(postTitleSplit, {
-                  yPercent: 0,
-                  opacity: 1,
-                  delay: 0,
-                  stagger: 0.05,
-                  ease: "expo.inOut",
-                  duration: 1.5,
-                  scrollTrigger: {
-                    start: () => {
-                      return GetRightPosition(item) - window.innerWidth * 0.7;
-                    },
-                    toggleActions: "restart none none reverse",
-                  },
-                });
-              }
-            });
-          }
-        });
-      }
-    });
+    // const zatzelContent = main.current?.querySelectorAll(".zatzel-cat-section");
+    // document.fonts.ready.then(() => {
+    //   if (zatzelContent) {
+    //     zatzelContent.forEach((section) => {
+    //       const sectionTitle = section.querySelector(".zatzel-cat-title h2");
+    //       const sectionItems = section.querySelectorAll(".single-zatzel-post");
+    //       if (sectionTitle) {
+    //         const splitTitle = TextSplitLines(sectionTitle);
+    //         gsap.set(splitTitle, {
+    //           perspective: 400,
+    //         });
+    //         gsap.set(splitTitle, {
+    //           yPercent: 150,
+    //           opacity: 0,
+    //         });
+    //         gsap.to(splitTitle, {
+    //           yPercent: 0,
+    //           opacity: 1,
+    //           delay: 0,
+    //           stagger: 0.05,
+    //           ease: "expo.inOut",
+    //           duration: 1.5,
+    //           scrollTrigger: {
+    //             start: () => {
+    //               return GetRightPosition(section) - window.innerWidth * 0.7;
+    //             },
+    //             toggleActions: "restart none none reverse",
+    //           },
+    //         });
+    //       }
+    //       if (sectionItems) {
+    //         sectionItems.forEach((item) => {
+    //           const postTitle = item.querySelector(".post-text .post-title");
+    //           const postExcerpt = item.querySelector(
+    //             ".post-text .post-excerpt",
+    //           );
+    //           // Post Title
+    //           if (postExcerpt) {
+    //             const postExcerptSplit = TextSplitLines(postExcerpt);
+    //             gsap.set(postExcerpt, {
+    //               perspective: 400,
+    //             });
+    //             gsap.set(postExcerptSplit, {
+    //               yPercent: 150,
+    //               opacity: 0,
+    //             });
+    //             gsap.to(postExcerptSplit, {
+    //               yPercent: 0,
+    //               opacity: 1,
+    //               delay: 0,
+    //               stagger: 0.05,
+    //               ease: "expo.inOut",
+    //               duration: 1.5,
+    //               scrollTrigger: {
+    //                 start: () => {
+    //                   return GetRightPosition(item) - window.innerWidth * 0.7;
+    //                 },
+    //                 toggleActions: "restart none none reverse",
+    //               },
+    //             });
+    //           }
+    //           // Post Title
+    //           if (postTitle) {
+    //             const postTitleSplit = TextSplitLines(postTitle);
+    //             gsap.set(postTitle, {
+    //               perspective: 400,
+    //             });
+    //             gsap.set(postTitleSplit, {
+    //               yPercent: 150,
+    //               opacity: 0,
+    //             });
+    //             gsap.to(postTitleSplit, {
+    //               yPercent: 0,
+    //               opacity: 1,
+    //               delay: 0,
+    //               stagger: 0.05,
+    //               ease: "expo.inOut",
+    //               duration: 1.5,
+    //               scrollTrigger: {
+    //                 start: () => {
+    //                   return GetRightPosition(item) - window.innerWidth * 0.7;
+    //                 },
+    //                 toggleActions: "restart none none reverse",
+    //               },
+    //             });
+    //           }
+    //         });
+    //       }
+    //     });
+    //   }
+    // });
 
     // Arrow Button Animation
     const arrowButton = document.getElementById(

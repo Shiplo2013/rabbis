@@ -205,7 +205,7 @@ export default function CommunitiesSheetsScriptProvider({
 
     const getPostsData = async () => {
       try {
-        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?per_page=${postPerPage}&page=${currentPage + 1}`;
+        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf&per_page=${postPerPage}&page=${currentPage + 1}`;
 
         const response = await wpFetch(postsUrl, {
           cache: "no-store",
@@ -221,7 +221,7 @@ export default function CommunitiesSheetsScriptProvider({
             setHasMorePosts(false);
           }
 
-          setNormalPosts((prevPosts) => [...prevPosts, ...(data?.posts || [])]);
+          setNormalPosts((prevPosts) => [...prevPosts, ...(data || [])]);
         }
       } catch (error) {
         console.error(error);
