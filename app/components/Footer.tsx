@@ -307,6 +307,18 @@ function Footer(props: ChildProps) {
     };
   }, [pathname, footerData]);
 
+  useGSAP(() => {
+    const el = document.getElementById("page");
+    if (!el) return;
+
+    const observer = new ResizeObserver(() => {
+      ScrollTrigger.refresh();
+    });
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   // Handle Link Click
   const handleLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,

@@ -111,12 +111,13 @@ export default function KnessetScriptProvider({
       setIsLoading(false);
       setPostLoading(false);
 
+      console.log(knessetPageData?.postsData?.length);
+
       const updateSectionWidth = () => {
         const newSectionWidth =
           knessetPageData?.postsData?.length * 25.4 +
-          (knessetPageData?.postsData?.length - 1) * 3.2 +
-          100 +
-          48;
+          knessetPageData?.postsData?.length * 3.2 +
+          64;
 
         setSectionWidth(newSectionWidth);
         setContainerWidth(newSectionWidth + 100);
@@ -562,7 +563,7 @@ export default function KnessetScriptProvider({
             id="section-wrapper"
             style={
               {
-                "--section-width": `${sectionWidth}vw`,
+                "--section-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
             className={`section-wrapp w-full flex lg:flex-nowrap flex-col lg:flex-row-reverse lg:w-(--section-width) lg:h-screen items-center will-change-transform`}

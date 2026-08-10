@@ -16,7 +16,7 @@ export default async function page() {
     },
   );
   const postsRes = await wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf&per_page=10`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf&per_page=12`,
     {
       next: { revalidate: 300 }, // Cache data for 5 minutes
     },

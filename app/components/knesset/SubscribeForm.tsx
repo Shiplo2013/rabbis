@@ -6,16 +6,16 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
   return (
     <form
       action={action}
-      className={`subscribe-form p-5 w-full lg:w-full will-change-transform flex flex-col justify-center ${mode === "dark" ? "bg-[#000000] text-white" : "bg-[#C3A13F] text-white"}`}
+      className={`subscribe-form px-[2.5vw] py-[3.7vh] w-full lg:w-[26.35vw] will-change-transform flex flex-col justify-center ${mode === "dark" ? "bg-[#000000] text-white" : "bg-[#C3A13F] text-white"}`}
     >
       <div className="subscribe-form-wrapper">
-        <h2 className="text-[22px] leading-[0.8em]">
+        <h2 className="2xl:text-[38px] xl:text-[30px] sm:text-[24px] leading-[0.8em]">
           קבלו ישירות למייל מאמרים חדשים, גיליונות תורניים ועדכוני תוכן מן
           הישיבה.
         </h2>
-        <div className="form group text-[18px] leading-[0.8em] mt-6 flex flex-col justify-between items-end gap-x-2 gap-y-5">
-          <div className="flex flex-row gap-x-2 w-full">
-            <div className="flex w-full items-center gap-x-2">
+        <div className="form group 2xl:text-[22px] xl:text-[18px] sm:text-[16px] leading-[0.8em] mt-[4vh] flex justify-between items-end gap-x-2">
+          <div className="flex flex-col gap-y-1.25 w-full">
+            <div className="flex items-center gap-x-1 ">
               <label>שם</label>
               <input
                 className="w-full border-b border-white p-0 text-[14px] leading-[0.7em] focus:outline-0"
@@ -33,8 +33,8 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
               </p>
             )}
           </div>
-          <div className="flex flex-col gap-x-2 gap-y-1.25 relative w-full">
-            <div className="flex w-full items-center gap-x-2">
+          <div className="flex flex-col gap-y-1.25 relative w-full">
+            <div className="flex items-center gap-x-1">
               <label>דוא״ל</label>
               <input
                 className="w-full border-b border-white p-0 text-[14px] leading-[0.7em] focus:outline-0"
@@ -55,14 +55,14 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
           <button
             type="submit"
             disabled={isPending}
-            className="text-[20px] w-full leading-[0.8em] text-[#000000] bg-[#E7D45E] px-2.5 pb-2 pt-2.5 hover:bg-black hover:text-[#E7D45E] transition-all duration-300 cursor-pointer"
+            className="2xl:text-[28px] xl:text-[24px] sm:text-[20px] leading-[0.8em] text-[#000000] bg-[#E7D45E] px-2.5 pb-2 pt-2.5 hover:bg-black hover:text-[#E7D45E] transition-all duration-300 cursor-pointer"
           >
             שלח
           </button>
         </div>
 
         {state?.message && (
-          <div className="contact-row mt-5">
+          <div className="contact-row mt-7">
             <p
               dir="rtl"
               className={`${state?.status === "mail_sent" ? "text-black" : "text-gray-800"} text-[14px] text-center leading-[1em]`}
@@ -71,7 +71,7 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
             </p>
           </div>
         )}
-        <div className="text xl:text-[14px] sm:text-[12px] leading-[1em] mt-3 text-center">
+        <div className="text 2xl:text-[16px] xl:text-[14px] sm:text-[12px] leading-[1em] mt-[3vh] text-center">
           <p>אני מאשר/ת קבלת עדכונים מן הישיבה</p>
         </div>
       </div>

@@ -4,10 +4,9 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import SheetContentItem from "@/app/ui/SheetContentItem";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 import Introduction from "../../components/sheets/Introduction";
-import GetRightPosition from "../../ui/GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 import TextSplitLines from "../../ui/TextSplitLines";
 import { useAppState } from "../AppContext";
@@ -33,18 +32,21 @@ export default function CommunitiesSheetsScriptProvider({
   const [sheetPageData, setSheetPageData] = useState<any | []>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
-    useAppState();
-  const [postPerPage, setPostPerPage] = useState(10);
-  const [containerWidth, setContainerWidth] = useState(300);
-  const [sectionWidth, setSectionWidth] = useState(200);
+  const {
+    isLoading,
+    setIsLoading,
+    animationPlayed,
+    setAnimationPlayed,
+    setCommunitySheetsCategoryData,
+    sheetsOnSelectCategoryId,
+  } = useAppState();
+  const [postPerPage, setPostPerPage] = useState(12);
+  const [containerWidth, setContainerWidth] = useState(200);
+  const [sectionWidth, setSectionWidth] = useState(100);
   const [activeCategory, setActiveCategory] = useState(0);
   const [submittedSearch, setSubmittedSearch] = useState("");
   const [isPostLoaded, setIsPostLoaded] = useState(false);
   const [noPostsFound, setNoPostsFound] = useState(false);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null,
-  );
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(
     Number(data?.postsData?.totalPage ?? 1) > 1,
@@ -63,111 +65,26 @@ export default function CommunitiesSheetsScriptProvider({
       return;
     }
     setSheetPageData(data);
-    setVerticalPosts(data?.postsData?.posts.slice(0, 6) || []);
-    setNormalPosts(data?.postsData?.posts.slice(6) || []);
+    setCommunitySheetsCategoryData(data?.categoriesTree || []);
+    setVerticalPosts(data?.postsData?.posts.slice(0, 3) || []);
+    setNormalPosts(data?.postsData?.posts.slice(3) || []);
   }, [data]);
-
-  // // Reset page when category changes
-  // useEffect(() => {
-  //   setCurrentPage(1);
-  //   setCatPostsData(null);
-  //   setHasMorePosts(false);
-  // }, [activeCategory, selectedCategoryId]);
-
-  // Get posts by active category index
-  // useEffect(() => {
-  //   if (!sheetPageData) {
-  //     return;
-  //   }
-
-  //   let isMounted = true;
-  //   if (currentPage === 1) {
-  //     setIsPostLoaded(false);
-  //   } else {
-  //     setIsLoadingMore(true);
-  //   }
-
-  //   const loadPostsByCategory = async () => {
-  //     try {
-  //       const selectedCategory =
-  //         sheetPageData?.categoriesTree?.[activeCategory];
-  //       const childIds = (selectedCategory?.children || [])
-  //         .map((child: { id: number }) => child?.id)
-  //         .filter(Boolean);
-  //       const categoryIds = selectedCategoryId
-  //         ? [selectedCategoryId]
-  //         : selectedCategory?.id
-  //           ? [selectedCategory.id, ...childIds]
-  //           : [];
-
-  //       const postsUrl = categoryIds.length
-  //         ? `/api/communities/sheets/posts?magazines_cat=${categoryIds.join(",")}&per_page=5&page=${currentPage}`
-  //         : `/api/communities/sheets/posts?per_page=5&page=${currentPage}`;
-
-  //       const response2 = await fetch(postsUrl, {
-  //         cache: "no-store",
-  //       });
-
-  //       if (!response2.ok) {
-  //         throw new Error("Failed to load community page data.");
-  //       }
-
-  //       const data2 = await response2.json();
-
-  //       // Fallback: if selected category has no posts, show latest 5 posts.
-  //       if (categoryIds.length && !(data2?.posts?.length > 0)) {
-  //         setNoPostsFound(true);
-  //       } else {
-  //         setNoPostsFound(false);
-  //       }
-
-  //       if (isMounted) {
-  //         setCatPostsData(data2?.posts || []);
-  //         const page = data2?.pagination?.page ?? 1;
-  //         const totalPages = data2?.pagination?.total_pages ?? 1;
-  //         setHasMorePosts(page < totalPages);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     } finally {
-  //       if (isMounted) {
-  //         setIsPostLoaded(true);
-  //         setIsLoadingMore(false);
-  //       }
-  //     }
-  //   };
-
-  //   loadPostsByCategory();
-
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, [activeCategory, selectedCategoryId]);
 
   // Load more posts when currentPage changes
   useEffect(() => {
-    if (selectedCategoryId === null) return; // Skip initial load
+    if (sheetsOnSelectCategoryId === 0) return; // Skip initial load
     let isMounted = true;
     setIsLoadingMore(true);
+    console.log(
+      "currentPage:",
+      currentPage,
+      "sheetsOnSelectCategoryId:",
+      sheetsOnSelectCategoryId,
+    );
 
     const loadMorePosts = async () => {
       try {
-        const selectedCategory =
-          sheetPageData?.categoriesTree?.[activeCategory];
-        const childIds = (selectedCategory?.children || [])
-          .map((child: { id: number }) => child?.id)
-          .filter(Boolean);
-        const categoryIds = selectedCategoryId
-          ? [selectedCategoryId]
-          : selectedCategory?.id
-            ? [selectedCategory.id, ...childIds]
-            : [];
-
-        const postsUrl = categoryIds.length
-          ? `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?magazines_cat=${categoryIds.join(
-              ",",
-            )}&per_page=${postPerPage}&page=${currentPage}`
-          : `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?per_page=${postPerPage}&page=${currentPage}`;
+        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?magazines_cat=${sheetsOnSelectCategoryId}&per_page=${postPerPage}&page=${currentPage}`;
 
         const response = await wpFetch(postsUrl, {
           cache: "no-store",
@@ -178,12 +95,20 @@ export default function CommunitiesSheetsScriptProvider({
         }
         const data = await response.json();
 
+        console.log("Fetched posts data:", data);
+
         if (isMounted) {
-          if (data?.posts?.length < postPerPage) {
+          if (data?.length === 0) {
+            setNoPostsFound(true);
+          }
+          if (data?.length < postPerPage) {
             setHasMorePosts(false);
           }
-          setVerticalPosts(data?.postsData?.posts.slice(0, 6) || []);
-          setNormalPosts(data?.postsData?.posts.slice(6) || []);
+          if (data?.length > 0) {
+            setNoPostsFound(false);
+          }
+          setVerticalPosts(data?.slice(0, 3) || []);
+          setNormalPosts(data?.slice(3) || []);
         }
       } catch (error) {
         console.error(error);
@@ -195,7 +120,7 @@ export default function CommunitiesSheetsScriptProvider({
     };
 
     loadMorePosts();
-  }, [selectedCategoryId]);
+  }, [sheetsOnSelectCategoryId]);
 
   // Get more posts
   const LoadMorePosts = () => {
@@ -229,12 +154,6 @@ export default function CommunitiesSheetsScriptProvider({
         if (isMounted) {
           setIsLoadingMore(false);
           setCurrentPage((prevPage) => prevPage + 1);
-          // Refresh vertical section animation after loading more posts
-          if (verticalSection) {
-            verticalSection.clear();
-            ScrollTrigger.refresh();
-            verticalSection.restart();
-          }
         }
       }
     };
@@ -250,25 +169,25 @@ export default function CommunitiesSheetsScriptProvider({
     setPageDataFetched(true);
     setIsLoading(false);
 
-    const updateSectionWidth = () => {
-      const newSectionWidth =
-        12.5 + // Section padding
-        11.35 + // Sidebar filters
-        6 * 18 + // Each post width
-        6 * 3.2 + // Gap between posts
-        5.8 + // content gap
-        26.35 + // Subscriber form width
-        5.8 + // content gap
-        10.41; // Readmore button width
-      setSectionWidth(newSectionWidth);
-      setContainerWidth(newSectionWidth + 100);
-    };
+    // const updateSectionWidth = () => {
+    //   const newSectionWidth =
+    //     12.5 + // Section padding
+    //     11.35 + // Sidebar filters
+    //     6 * 18 + // Each post width
+    //     6 * 3.2 + // Gap between posts
+    //     5.8 + // content gap
+    //     26.35 + // Subscriber form width
+    //     5.8 + // content gap
+    //     10.41; // Readmore button width
+    //   setSectionWidth(newSectionWidth);
+    //   setContainerWidth(newSectionWidth + 100);
+    // };
 
-    updateSectionWidth();
-    window.addEventListener("resize", updateSectionWidth);
-    return () => {
-      window.removeEventListener("resize", updateSectionWidth);
-    };
+    // updateSectionWidth();
+    // window.addEventListener("resize", updateSectionWidth);
+    // return () => {
+    //   window.removeEventListener("resize", updateSectionWidth);
+    // };
   }, [sheetPageData]);
 
   // Animation State
@@ -512,120 +431,52 @@ export default function CommunitiesSheetsScriptProvider({
   // Set Page Content Animation
   const setPageContentAnimation = () => {
     // Page Content Animation
-    const sheetContent = document.querySelectorAll(
-      ".sheet-content .sheet-item",
-    ) as NodeListOf<HTMLDivElement> | null;
-    const subscribeForm = document.querySelector(
-      ".sheet-content .subscribe-form",
+    const sidebar = document.getElementById(
+      "sheets-sidebar",
     ) as HTMLDivElement | null;
-    const sheetReadmore = document.querySelector(
-      ".sheet-readmore",
-    ) as HTMLDivElement | null;
-    const sidebar = document.querySelector(
-      ".sheet-sidebar .sheet-sidebar-wrapper",
-    ) as HTMLDivElement | null;
+    const page = document.getElementById("page") as HTMLDivElement | null;
 
     // Animations
     if (sidebar) {
-      gsap.from(sidebar, {
-        xPercent: 100,
-        opacity: 0,
-        ease: "expo.inOut",
-        duration: 3,
-        delay: -1,
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * 0.3;
-          },
-          //toggleActions: "restart pause resume reverse",
-        },
+      gsap.set(sidebar, {
+        x: 340,
       });
-    }
-    // Contents
-    if (sheetContent) {
-      sheetContent.forEach((section) => {
-        const imageOverlay = section.querySelector(
-          ".sheet-image-overlay",
-        ) as HTMLDivElement | null;
-        const sheetButtons = section.querySelector(
-          ".sheet-icons",
-        ) as HTMLDivElement | null;
-        // Image Overlay
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            start: () => {
-              return GetRightPosition(section) - window.innerWidth * 0.5;
-            },
-            //toggleActions: "restart pause resume reverse",
-          },
-        });
-        if (imageOverlay) {
-          tl.to(imageOverlay, {
-            yPercent: -100,
-            ease: "expo.inOut",
-            duration: 1.5,
-            delay: 0,
+      // Sidebar Animation
+      const handleScroll = () => {
+        const scrollTop = window.scrollY;
+        const windowWidth = window.innerWidth * 1.8;
+        const pageHeight = page?.offsetHeight;
+        if (
+          pageHeight &&
+          scrollTop > windowWidth &&
+          scrollTop < pageHeight - window.innerHeight
+        ) {
+          gsap.to(sidebar, {
+            x: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(sidebar, {
+            x: 340,
+            duration: 0.5,
+            ease: "power2.out",
           });
         }
-        // Sheets Buttons
-        if (sheetButtons) {
-          gsap.set(sheetButtons, {
-            yPercent: 100,
-            opacity: 0,
+
+        if (pageHeight && scrollTop > pageHeight - window.innerHeight) {
+          gsap.to(sidebar, {
+            x: 340,
+            duration: 0.5,
+            ease: "power2.out",
           });
-          tl.to(
-            sheetButtons,
-            {
-              yPercent: 0,
-              opacity: 1,
-              ease: "expo.inOut",
-              duration: 1.5,
-              delay: 0,
-            },
-            "-=1",
-          );
         }
-      });
-    }
-    // Subscribe From
-    if (subscribeForm) {
-      gsap.set(subscribeForm, {
-        yPercent: 100,
-        opacity: 0,
-      });
-      gsap.to(subscribeForm, {
-        yPercent: 0,
-        opacity: 1,
-        ease: "expo.inOut",
-        duration: 2,
-        delay: 0,
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * 1.4;
-          },
-          //toggleActions: "restart pause resume reverse",
-        },
-      });
-    }
-    // ReadMore Button
-    if (sheetReadmore) {
-      gsap.set(sheetReadmore, {
-        yPercent: 100,
-        opacity: 0,
-      });
-      gsap.to(sheetReadmore, {
-        yPercent: 0,
-        opacity: 1,
-        ease: "expo.inOut",
-        duration: 1,
-        delay: 0,
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * 2.6;
-          },
-          //toggleActions: "restart pause resume reverse",
-        },
-      });
+      };
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
     }
   };
 
@@ -784,11 +635,10 @@ export default function CommunitiesSheetsScriptProvider({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[6vh] sm:py-[10vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]`}
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[6vh] sm:py-[10vh] lg:py-[5vw] px-[8vw] lg:px-14.5`}
               animWidthText={1}
               activeCategory={activeCategory}
               setActiveCategory={setActiveCategory}
-              onSelectCategoryId={setSelectedCategoryId}
               data={{
                 posts: verticalPosts || [],
                 categoriesTree: sheetPageData?.categoriesTree || [],
@@ -804,36 +654,43 @@ export default function CommunitiesSheetsScriptProvider({
             />
           </div>
         </div>
-        <div className="normal-scrolling w-full min-h-screen bg-black px-[5vw] py-[8vh]">
-          <div className="wrapper w-full max-w-400 flex flex-col items-center justify-center gap-y-[10vh]">
-            <div
-              className={`normal-posts flex flex-row flex-wrap gap-x-[3.2vw] gap-y-[5vh]`}
-            >
-              {normalPosts?.map((post: any, index: number) => {
-                return (
-                  <SheetContentItem key={`normal-post-${index}`} data={post} />
-                );
-              })}
-            </div>
-            {hasMorePosts && currentPage! < totalPages! && (
+        {normalPosts.length > 0 && (
+          <div className="normal-scrolling w-full min-h-screen bg-black px-14.5 pb-[10vh] will-change-transform">
+            <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative pr-70">
               <div
-                className={`sheet-readmore w-full lg:w-50 lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
+                className={`normal-posts flex flex-row flex-wrap max-w-290 gap-x-[3.2vw] gap-y-[3.2vw]`}
               >
-                <button
-                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
-                  onClick={() => {
-                    if (LoadMorePosts) {
-                      LoadMorePosts();
-                    }
-                  }}
-                  disabled={isLoadingMore}
-                >
-                  {isLoadingMore ? "טְעִינָה..." : "טען עוד"}
-                </button>
+                {normalPosts?.map((post: any, index: number) => {
+                  return (
+                    <Fragment key={`sheet-entry-${index}`}>
+                      <SheetContentItem
+                        key={`normal-post-${index}`}
+                        data={post}
+                      />
+                    </Fragment>
+                  );
+                })}
               </div>
-            )}
+              {hasMorePosts && currentPage! < totalPages! && (
+                <div
+                  className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
+                >
+                  <button
+                    className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
+                    onClick={() => {
+                      if (LoadMorePosts) {
+                        LoadMorePosts();
+                      }
+                    }}
+                    disabled={isLoadingMore}
+                  >
+                    {isLoadingMore ? "טְעִינָה..." : "טען עוד"}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </main>
     )
   );
