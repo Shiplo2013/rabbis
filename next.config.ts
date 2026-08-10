@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "dovp7.sg-host.com",
+        hostname: "api.chevronyeshiva.org",
         port: "",
         pathname: "/wp-content/uploads/**",
       },

@@ -88,6 +88,11 @@ type ContextType = {
   setCurrentCommunitiesPost: (value: any) => void;
   communityHeaderData: any;
   setCommunityHeaderData: (value: any) => void;
+  communitySheetsCategoryData: any;
+  setCommunitySheetsCategoryData: (value: any) => void;
+  sheetsOnSelectCategoryId: number | null;
+  setSheetsOnSelectCategoryId: (value: number | null) => void;
+
   historyTimelineData: any;
   setHistoryTimelineData: (value: any) => void;
   appData: any; // Add this line to include the appData prop in the context
@@ -189,6 +194,11 @@ export function AppProvider({
   const [currentCommunitiesPost, setCurrentCommunitiesPost] =
     useState<any>(null);
   const [communityHeaderData, setCommunityHeaderData] = useState<any>(null);
+  const [communitySheetsCategoryData, setCommunitySheetsCategoryData] =
+    useState<any>(null);
+  const [sheetsOnSelectCategoryId, setSheetsOnSelectCategoryId] = useState<
+    number | null
+  >(0);
 
   // History Page
   const [historyTimelineData, setHistoryTimelineData] = useState<any>(null);
@@ -260,6 +270,10 @@ export function AppProvider({
         setCurrentCommunitiesPost,
         communityHeaderData,
         setCommunityHeaderData,
+        communitySheetsCategoryData,
+        setCommunitySheetsCategoryData,
+        sheetsOnSelectCategoryId,
+        setSheetsOnSelectCategoryId,
         historyTimelineData,
         setHistoryTimelineData,
         activeRabbisMenu,

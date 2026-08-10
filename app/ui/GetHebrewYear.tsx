@@ -15,9 +15,9 @@ export default function GetHebrewYear(props: GetOptions) {
   const yearData = props.year || {};
 
   const handleYearClick = () => {
-    props.setActiveCategory(props.index);
+    props.setActiveCategory(Number(props.index) + 1);
     if (props.onSelectCategoryId) {
-      props.onSelectCategoryId(yearData.id);
+      props.onSelectCategoryId(Number(yearData.id));
     }
     setActiveMonth(0);
   };
@@ -26,7 +26,7 @@ export default function GetHebrewYear(props: GetOptions) {
     <div className="year-month text-[24px] leading-[1.2em]">
       <div
         onClick={() => {
-          if (props.activeCategory !== props.index) {
+          if (props.activeCategory !== Number(props.index) + 1) {
             handleYearClick();
           }
         }}
@@ -35,7 +35,7 @@ export default function GetHebrewYear(props: GetOptions) {
         {yearData?.name || ""}
       </div>
       <div
-        className={`months ${props.activeCategory === props.index ? "flex" : "hidden"} flex-col gap-y-1 py-4 border-b border-[#CD5E41]`}
+        className={`months ${props.activeCategory === Number(props.index) + 1 ? "flex" : "hidden"} flex-col gap-y-1 py-4 border-b border-[#CD5E41]`}
       >
         {yearData?.children &&
           yearData?.children?.map((item: any, monthIndex: number) => {

@@ -12,6 +12,7 @@ import WishIcon from "../assets/icons/WishIcon";
 import Wave from "../assets/images/wave.svg";
 import CreateShimmerDataUrl from "../ui/CreateShimmerDataUrl";
 import FixedPlayButton from "../ui/FixedPlayButton";
+import GetHebrewYear from "../ui/GetHebrewYear";
 import HistoryTimeline from "../ui/HistoryTimeline";
 import RabbisHamburgerMenuHome from "../ui/past-rabbis/RabbisHamburgerMenuHome";
 import { gsap, useGSAP } from "../ui/plugins";
@@ -24,6 +25,7 @@ import NotificationPopup from "./history/NotificationPopup";
 import VideoPopup from "./history/VideoPopup";
 import LoadingEffect from "./LoadingEffect";
 import MirrorAudioPlayer from "./music/MirrorAudioPlayer";
+import SubscribeForm from "./sheets/SubscribeForm";
 import TabMenu from "./visit-temple/TabMenu";
 
 if (typeof window !== "undefined") {
@@ -38,10 +40,17 @@ export default function PageFixedElements() {
   const moveButton = useRef<HTMLDivElement>(null);
   const audioButton = useRef<HTMLDivElement>(null);
   const [loadingImage, setLoadingImage] = useState(true);
+  const [activeCategory, setActiveCategory] = useState(0);
 
   // Animation State
-  const { animationPlayed, setAnimationPlayed, currentCommunitiesPost } =
-    useAppState();
+  const {
+    animationPlayed,
+    setAnimationPlayed,
+    currentCommunitiesPost,
+    communitySheetsCategoryData,
+    sheetsOnSelectCategoryId,
+    setSheetsOnSelectCategoryId,
+  } = useAppState();
 
   // Play Pause State
   const { isPlaying, setIsPlaying } = useAppState();
@@ -773,6 +782,45 @@ export default function PageFixedElements() {
           <RabbisHamburgerMenuHome extraClass="hidden" data={listOfRabbis} />
         ))}
       {/* Rabbis Hamburger Menu */}
+
+      {/* Community Sidebar */}
+      {pathname === "/communities/sheets" && (
+        <div
+          id="sheets-sidebar"
+          className="sheets-sidebar fixed top-0 right-15 w-70 h-full bg-black flex flex-col z-50"
+        >
+          <div className="sheet-scrollbar-wrapper mt-auto mb-auto pr-5">
+            <SimpleBar
+              style={{ maxHeight: "60vh" }}
+              autoHide={false}
+              data-simplebar-direction="rtl"
+            >
+              <div className="year-month-categories pl-7 pr-3">
+                {communitySheetsCategoryData?.map(
+                  (
+                    item: { id: number; name: string; children: any[] },
+                    index: number,
+                  ) => {
+                    return (
+                      <GetHebrewYear
+                        key={index}
+                        index={index}
+                        year={item}
+                        activeCategory={activeCategory}
+                        setActiveCategory={setActiveCategory}
+                        onSelectCategoryId={setSheetsOnSelectCategoryId}
+                        //setIsPostLoaded={() => setIsLoading(true)}
+                      />
+                    );
+                  },
+                )}
+              </div>
+            </SimpleBar>
+          </div>
+          <SubscribeForm />
+        </div>
+      )}
+      {/* Community Sidebar */}
     </>
   );
 }

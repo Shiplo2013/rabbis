@@ -27,7 +27,7 @@ export default function SheetContentItem(props: { data?: any }) {
     itemData && (
       <div
         data-id={itemData?.id}
-        className="sheet-item will-change-transform overflow-hidden w-full sm:w-[calc((100%-5vw)/2)] lg:w-[18vw] lg:min-w-[18vw]"
+        className="sheet-item will-change-transform overflow-hidden w-full sm:w-[calc((100%-5vw)/2)] lg:w-[calc((100%-6.4vw)/3)] lg:min-w-[18vw]"
       >
         {itemData?.acf?.thumbnail && (
           <FsLightbox
@@ -56,47 +56,45 @@ export default function SheetContentItem(props: { data?: any }) {
               }
               placeholder={"blur"}
               loading="lazy"
-              alt={itemData?.title || "Sheet Item Image"}
+              alt={itemData?.title?.rendered || "Sheet Item Image"}
             />
+            {loading && (
+              <div className="flex h-full items-center justify-center absolute top-0 left-0 w-full z-40 bg-black">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
+                </div>
+              </div>
+            )}
           </div>
         )}
-        {!loading && (
-          <div className="sheet-icons flex justify-center mt-4.5 gap-x-4">
-            <ThemeButton2
-              extraClass="download w-11 h-11 flex item-center justify-center rounded-none cursor-pointer"
-              bgColor="bg-[#C3A13F]"
-              textColor="text-[#000000]"
-              hoverBgColor="bg-[#ffffff]"
-              svgIcon={<ArrowDownIcon />}
-              svgIconClass={""}
-              onClick={() => {
-                if (itemData?.acf?.magazine) {
-                  window.open(itemData?.acf?.magazine?.url, "_blank");
-                }
-              }}
-            />
-            <ThemeButton2
-              extraClass="view-button w-11 h-11 flex item-center justify-center rounded-none cursor-pointer"
-              bgColor="bg-[#C3A13F]"
-              textColor="text-[#000000]"
-              hoverBgColor="bg-[#ffffff]"
-              svgIcon={<ViewIcon />}
-              svgIconClass={""}
-              onClick={() => {
-                if (itemData?.acf?.thumbnail) {
-                  openLightbox();
-                }
-              }}
-            />
-          </div>
-        )}
-        {loading && (
-          <div className="flex h-full items-center justify-center absolute top-0 left-0 w-full z-40 bg-black">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
-            </div>
-          </div>
-        )}
+        <div className="sheet-icons flex justify-center mt-4.5 gap-x-4">
+          <ThemeButton2
+            extraClass="download w-11 h-11 flex item-center justify-center rounded-none cursor-pointer"
+            bgColor="bg-[#C3A13F]"
+            textColor="text-[#000000]"
+            hoverBgColor="bg-[#ffffff]"
+            svgIcon={<ArrowDownIcon />}
+            svgIconClass={""}
+            onClick={() => {
+              if (itemData?.acf?.magazine) {
+                window.open(itemData?.acf?.magazine?.url, "_blank");
+              }
+            }}
+          />
+          <ThemeButton2
+            extraClass="view-button w-11 h-11 flex item-center justify-center rounded-none cursor-pointer"
+            bgColor="bg-[#C3A13F]"
+            textColor="text-[#000000]"
+            hoverBgColor="bg-[#ffffff]"
+            svgIcon={<ViewIcon />}
+            svgIconClass={""}
+            onClick={() => {
+              if (itemData?.acf?.thumbnail) {
+                openLightbox();
+              }
+            }}
+          />
+        </div>
       </div>
     )
   );

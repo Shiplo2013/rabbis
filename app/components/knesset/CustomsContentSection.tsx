@@ -1,8 +1,8 @@
 "use client";
 import CustomContentItem from "@/app/ui/CustomContentItem";
 import { useRef, useState } from "react";
-import SubscribeForm from "../sheets/SubscribeForm";
 import Sidebar from "./Sidebar";
+import SubscribeForm from "./SubscribeForm";
 
 interface ChildProps {
   extraClass: string;
