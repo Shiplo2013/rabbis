@@ -80,7 +80,7 @@ export default function CommunitiesSheetsScriptProvider({
 
     const loadMorePosts = async () => {
       try {
-        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?magazines_cat=${sheetsOnSelectCategoryId}&per_page=${postPerPage}&page=${currentPage}`;
+        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?magazines_cat=${sheetsOnSelectCategoryId}&per_page=${postPerPage}&page=1`;
 
         const response = await wpFetch(postsUrl, {
           cache: "no-store",
