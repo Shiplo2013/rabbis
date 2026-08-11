@@ -379,35 +379,6 @@
         }
       }
     }
-    .sheet-scrollbar-wrapper {
-      .simplebar-scrollable-y {
-        .simplebar-track.simplebar-vertical {
-          width: 5px !important;
-          z-index: 10;
-          &&:after {
-            content: "";
-            display: block;
-            width: 1px;
-            height: 100%;
-            position: absolute;
-            left: 50%;
-            top: 0;
-            background: #cd5e41;
-            margin-left: -1px;
-          }
-          .simplebar-scrollbar {
-            cursor: pointer;
-            background: #cd5e41;
-            z-index: 20;
-
-            &&:before {
-              background-color: #cd5e41 !important;
-              opacity: 1 !important;
-            }
-          }
-        }
-      }
-    }
     .music-cat-wrapper {
       .simplebar-scrollable-y {
         .simplebar-track.simplebar-vertical {
@@ -465,6 +436,37 @@
 
             &&:before {
               background-color: #c3a13f !important;
+              opacity: 1 !important;
+            }
+          }
+        }
+      }
+    }
+  }
+  #main {
+    .sheet-scrollbar-wrapper {
+      .simplebar-scrollable-y {
+        .simplebar-track.simplebar-vertical {
+          width: 5px !important;
+          z-index: 10;
+          &&:after {
+            content: "";
+            display: block;
+            width: 1px;
+            height: 100%;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            background: #cd5e41;
+            margin-left: -1px;
+          }
+          .simplebar-scrollbar {
+            cursor: pointer;
+            background: #cd5e41;
+            z-index: 20;
+
+            &&:before {
+              background-color: #cd5e41 !important;
               opacity: 1 !important;
             }
           }

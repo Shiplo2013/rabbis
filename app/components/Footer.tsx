@@ -154,10 +154,10 @@ function Footer(props: ChildProps) {
     if (projects.length > 0) {
       projects.forEach((project, index) => {
         // Hide all project element
-        gsap.set(project as HTMLElement, {
-          yPercent: 100,
-          opacity: 0,
-        });
+        // gsap.set(project as HTMLElement, {
+        //   yPercent: 100,
+        //   opacity: 0,
+        // });
         // On MouseEnter
         (project as HTMLElement).addEventListener("mouseenter", (e) => {
           // Handle mouse enter event
@@ -181,123 +181,123 @@ function Footer(props: ChildProps) {
           animations.push(animationImage);
         });
         // Animate all project element on scroll
-        const animationScroll = gsap.to(project as HTMLElement, {
-          yPercent: 0,
-          opacity: 1,
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: "top 60%",
-            toggleActions: "play none none none",
-          },
-          ease: "easeInOut",
-          duration: 1,
-        });
-        animations.push(animationScroll);
+        // const animationScroll = gsap.to(project as HTMLElement, {
+        //   yPercent: 0,
+        //   opacity: 1,
+        //   scrollTrigger: {
+        //     trigger: footerRef.current,
+        //     start: "top 60%",
+        //     toggleActions: "play none none none",
+        //   },
+        //   ease: "easeInOut",
+        //   duration: 1,
+        // });
+        // animations.push(animationScroll);
       });
     }
     // Footer Widget
-    const footerWidget1 = footerRef?.current?.querySelector(".footer-widget1");
-    if (footerWidget1) {
-      gsap.set(footerWidget1, {
-        yPercent: 100,
-        opacity: 0,
-      });
-      const animationWidget1 = gsap.to(footerWidget1, {
-        yPercent: 0,
-        opacity: 1,
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 30%",
-          toggleActions: "play none none none",
-        },
-        ease: "easeInOut",
-        duration: 1,
-      });
-      animations.push(animationWidget1);
-    }
-    // Footer Widget
-    const footerWidget2 = footerRef?.current?.querySelector(".footer-widget2");
-    if (footerWidget2) {
-      gsap.set(footerWidget2, {
-        yPercent: 100,
-        opacity: 0,
-      });
-      const animationWidget2 = gsap.to(footerWidget2, {
-        yPercent: 0,
-        opacity: 1,
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 30%",
-          toggleActions: "play none none none",
-        },
-        ease: "easeInOut",
-        duration: 1,
-        delay: 0.2,
-      });
-      animations.push(animationWidget2);
-    }
-    // Footer Widget
-    const footerWidget3 = footerRef?.current?.querySelector(".footer-widget3");
-    if (footerWidget3) {
-      gsap.set(footerWidget3, {
-        yPercent: 100,
-        opacity: 0,
-      });
-      const animationWidget3 = gsap.to(footerWidget3, {
-        yPercent: 0,
-        opacity: 1,
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 30%",
-          toggleActions: "play none none none",
-        },
-        ease: "easeInOut",
-        duration: 1,
-        delay: 0.4,
-      });
-      animations.push(animationWidget3);
-    }
-    // Privacy Policy
-    const privacyPolicy = footerRef?.current?.querySelector(".privacy-policy");
-    if (privacyPolicy) {
-      gsap.set(privacyPolicy, {
-        y: 100,
-        opacity: 0,
-      });
-      const animationPrivacyPolicy = gsap.to(privacyPolicy, {
-        y: 0,
-        opacity: 1,
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 20%",
-          toggleActions: "play none none none",
-        },
-        ease: "easeInOut",
-        duration: 1,
-      });
-      animations.push(animationPrivacyPolicy);
-    }
-    // Footer Cookies
-    const footerCookies = footerRef?.current?.querySelector(".footer-cookies");
-    if (footerCookies) {
-      gsap.set(footerCookies, {
-        yPercent: 100,
-        opacity: 0,
-      });
-      const animationFooterCookies = gsap.to(footerCookies, {
-        yPercent: 0,
-        opacity: 1,
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 20%",
-          toggleActions: "play none none none",
-        },
-        ease: "easeInOut",
-        duration: 1,
-        delay: 0.4,
-      });
-      animations.push(animationFooterCookies);
-    }
+    // const footerWidget1 = footerRef?.current?.querySelector(".footer-widget1");
+    // if (footerWidget1) {
+    //   gsap.set(footerWidget1, {
+    //     yPercent: 100,
+    //     opacity: 0,
+    //   });
+    //   const animationWidget1 = gsap.to(footerWidget1, {
+    //     yPercent: 0,
+    //     opacity: 1,
+    //     scrollTrigger: {
+    //       trigger: footerRef.current,
+    //       start: "top 30%",
+    //       toggleActions: "play none none none",
+    //     },
+    //     ease: "easeInOut",
+    //     duration: 1,
+    //   });
+    //   animations.push(animationWidget1);
+    // }
+    // // Footer Widget
+    // const footerWidget2 = footerRef?.current?.querySelector(".footer-widget2");
+    // if (footerWidget2) {
+    //   gsap.set(footerWidget2, {
+    //     yPercent: 100,
+    //     opacity: 0,
+    //   });
+    //   const animationWidget2 = gsap.to(footerWidget2, {
+    //     yPercent: 0,
+    //     opacity: 1,
+    //     scrollTrigger: {
+    //       trigger: footerRef.current,
+    //       start: "top 30%",
+    //       toggleActions: "play none none none",
+    //     },
+    //     ease: "easeInOut",
+    //     duration: 1,
+    //     delay: 0.2,
+    //   });
+    //   animations.push(animationWidget2);
+    // }
+    // // Footer Widget
+    // const footerWidget3 = footerRef?.current?.querySelector(".footer-widget3");
+    // if (footerWidget3) {
+    //   gsap.set(footerWidget3, {
+    //     yPercent: 100,
+    //     opacity: 0,
+    //   });
+    //   const animationWidget3 = gsap.to(footerWidget3, {
+    //     yPercent: 0,
+    //     opacity: 1,
+    //     scrollTrigger: {
+    //       trigger: footerRef.current,
+    //       start: "top 30%",
+    //       toggleActions: "play none none none",
+    //     },
+    //     ease: "easeInOut",
+    //     duration: 1,
+    //     delay: 0.4,
+    //   });
+    //   animations.push(animationWidget3);
+    // }
+    // // Privacy Policy
+    // const privacyPolicy = footerRef?.current?.querySelector(".privacy-policy");
+    // if (privacyPolicy) {
+    //   gsap.set(privacyPolicy, {
+    //     y: 100,
+    //     opacity: 0,
+    //   });
+    //   const animationPrivacyPolicy = gsap.to(privacyPolicy, {
+    //     y: 0,
+    //     opacity: 1,
+    //     scrollTrigger: {
+    //       trigger: footerRef.current,
+    //       start: "top 20%",
+    //       toggleActions: "play none none none",
+    //     },
+    //     ease: "easeInOut",
+    //     duration: 1,
+    //   });
+    //   animations.push(animationPrivacyPolicy);
+    // }
+    // // Footer Cookies
+    // const footerCookies = footerRef?.current?.querySelector(".footer-cookies");
+    // if (footerCookies) {
+    //   gsap.set(footerCookies, {
+    //     yPercent: 100,
+    //     opacity: 0,
+    //   });
+    //   const animationFooterCookies = gsap.to(footerCookies, {
+    //     yPercent: 0,
+    //     opacity: 1,
+    //     scrollTrigger: {
+    //       trigger: footerRef.current,
+    //       start: "top 20%",
+    //       toggleActions: "play none none none",
+    //     },
+    //     ease: "easeInOut",
+    //     duration: 1,
+    //     delay: 0.4,
+    //   });
+    //   animations.push(animationFooterCookies);
+    // }
 
     // Cleanup function to kill animations
     return () => {
@@ -357,6 +357,7 @@ function Footer(props: ChildProps) {
                       <Link
                         href={item.link}
                         onClick={handleLinkClick}
+                        prefetch={false}
                         className="hover:text-(--theme-color) transition-colors duration-300"
                       >
                         {item.title}
@@ -400,6 +401,7 @@ function Footer(props: ChildProps) {
                     <Link
                       href={item.link}
                       onClick={handleLinkClick}
+                      prefetch={false}
                       className="hover:text-(--theme-color) transition-colors duration-300"
                     >
                       {item.title}

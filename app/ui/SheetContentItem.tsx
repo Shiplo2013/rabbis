@@ -27,7 +27,7 @@ export default function SheetContentItem(props: { data?: any }) {
     itemData && (
       <div
         data-id={itemData?.id}
-        className="sheet-item will-change-transform overflow-hidden w-full sm:w-[calc((100%-5vw)/2)] lg:w-[calc((100%-6.4vw)/3)] lg:min-w-[18vw]"
+        className="sheet-item will-change-transform overflow-hidden w-full sm:w-[calc((100%-5vw)/2)] lg:w-[calc((100%-120px)/4)]"
       >
         {itemData?.acf?.thumbnail && (
           <FsLightbox
@@ -44,15 +44,15 @@ export default function SheetContentItem(props: { data?: any }) {
             <Image
               className="w-full object-cover object-center h-full relative z-10 will-change-transform"
               src={
-                itemData?.acf?.thumbnail?.sizes?.community_sheets_image ||
                 itemData?.acf?.thumbnail?.sizes?.medium ||
+                itemData?.acf?.thumbnail?.sizes?.community_sheets_image ||
                 sheetImg.src
               }
               onLoad={() => setLoading(false)}
-              width="337"
-              height="476"
+              width="270"
+              height="382"
               blurDataURL={
-                CreateShimmerDataUrl(337, 476) || sheetImg?.blurDataURL
+                CreateShimmerDataUrl(270, 382) || sheetImg?.blurDataURL
               }
               placeholder={"blur"}
               loading="lazy"

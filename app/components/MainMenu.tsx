@@ -195,6 +195,7 @@ export default function MainMenu() {
                   <Link
                     href={data.right_menu?.menu_title_link}
                     onClick={handleLinkClick}
+                    prefetch={false}
                   >
                     {data.right_menu?.menu_title}
                   </Link>
@@ -205,7 +206,7 @@ export default function MainMenu() {
             )}
             {!data?.right_menu?.menu_title && (
               <h3 className="text-[30px] sm:text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
-                <Link href="/" onClick={handleLinkClick}>
+                <Link href="/" onClick={handleLinkClick} prefetch={false}>
                   כנסת ישראל
                 </Link>
               </h3>
@@ -228,6 +229,7 @@ export default function MainMenu() {
                         <Link
                           href={item.link}
                           onClick={handleLinkClick}
+                          prefetch={false}
                           className="hover:text-[#C3A13F] transition-colors duration-500"
                         >
                           {item.title}
@@ -243,6 +245,7 @@ export default function MainMenu() {
                     <Link
                       href={item.link}
                       onClick={handleLinkClick}
+                      prefetch={false}
                       className="hover:text-[#C3A13F] transition-colors duration-500"
                     >
                       {item.title}
@@ -259,6 +262,7 @@ export default function MainMenu() {
                   <Link
                     href={data.left_menu?.menu_title_link}
                     onClick={handleLinkClick}
+                    prefetch={false}
                   >
                     {data.left_menu?.menu_title}
                   </Link>
@@ -269,7 +273,7 @@ export default function MainMenu() {
             )}
             {!data?.left_menu && (
               <h3 className="text-[30px] sm:text-[42px] leading-[0.7em] font-normal text-[#E2D7C3] mb-10.75">
-                <Link href="/" onClick={handleLinkClick}>
+                <Link href="/" onClick={handleLinkClick} prefetch={false}>
                   כנסת הבוגרים
                 </Link>
               </h3>
@@ -293,6 +297,7 @@ export default function MainMenu() {
                           <Link
                             href={item.link}
                             onClick={handleLinkClick}
+                            prefetch={false}
                             className="hover:text-[#C3A13F] transition-colors duration-500"
                           >
                             {item.title}
@@ -310,6 +315,7 @@ export default function MainMenu() {
                     <Link
                       href={item.link}
                       onClick={handleLinkClick}
+                      prefetch={false}
                       className="hover:text-[#C3A13F] transition-colors duration-500"
                     >
                       {item.title}
@@ -329,6 +335,7 @@ export default function MainMenu() {
                   <Link
                     href={item.link}
                     onClick={handleLinkClick}
+                    prefetch={false}
                     className="hover:text-[#C3A13F] transition-colors duration-500"
                   >
                     {item.title}
@@ -373,6 +380,7 @@ export default function MainMenu() {
                         key={result.id}
                         href={getLinkUrl(result.url, result.subtype)}
                         onClick={handleLinkClick}
+                        prefetch={false}
                         className="block py-3 px-3 text-[16px] leading-[1em] text-black hover:bg-gray-200 transition-all duration-300 not-last:border-b not-last:border-b-[#C3A13F]"
                       >
                         {parse(result.title)}

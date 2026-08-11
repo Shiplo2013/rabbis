@@ -78,6 +78,7 @@ export default function SubMenuItem(props: ChildProps) {
             <Link
               href={item.link}
               onClick={handleLinkClick}
+              prefetch={false}
               className="hover:text-[#C3A13F] transition-colors duration-500"
             >
               {item.title}
