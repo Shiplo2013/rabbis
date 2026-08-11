@@ -31,6 +31,7 @@ export default function FooterProject(props: ChilProps) {
       <Link
         href={props.link}
         onClick={handleLinkClick}
+        prefetch={false}
         className="block py-10.5"
       >
         <h2 className="text-[50px] lg:text-[94px] leading-[0.9em] font-bold">

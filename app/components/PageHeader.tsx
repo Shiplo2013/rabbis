@@ -253,6 +253,7 @@ function PageHeader() {
                           onClick={(e) => {
                             handleLinkClick(e);
                           }}
+                          prefetch={false}
                         >
                           <span
                             className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-all duration-300`}
@@ -282,6 +283,7 @@ function PageHeader() {
                                           onClick={(e) => {
                                             handleLinkClick(e);
                                           }}
+                                          prefetch={false}
                                           href={subItem.link}
                                           className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-all duration-300 block`}
                                         >
@@ -315,6 +317,7 @@ function PageHeader() {
                                         onClick={(e) => {
                                           handleLinkClick(e);
                                         }}
+                                        prefetch={false}
                                       >
                                         {subItem.title}
                                       </Link>
@@ -335,6 +338,7 @@ function PageHeader() {
                                           onClick={(e) => {
                                             handleLinkClick(e);
                                           }}
+                                          prefetch={false}
                                           className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-all duration-300`}
                                         >
                                           <span>{subItem.title}</span>
@@ -356,6 +360,7 @@ function PageHeader() {
                                           onClick={(e) => {
                                             handleLinkClick(e);
                                           }}
+                                          prefetch={false}
                                           className="submenu-item group/child text-[#E2D7C3] leading-[70%] text-[15px] hover:text-[#C3A13F] relative transition-all duration-300"
                                         >
                                           <span>{subItem.title}</span>
@@ -385,6 +390,7 @@ function PageHeader() {
                     onClick={(e) => {
                       handleLinkClick(e);
                     }}
+                    prefetch={false}
                   >
                     <Image
                       className="w-auto h-auto rotate-90"
@@ -416,6 +422,7 @@ function PageHeader() {
                         onClick={(e) => {
                           handleLinkClick(e);
                         }}
+                        prefetch={false}
                         className={`${
                           link.icon
                             ? "gap-4 bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-all"
@@ -460,6 +467,7 @@ function PageHeader() {
                                 onClick={(e) => {
                                   handleLinkClick(e);
                                 }}
+                                prefetch={false}
                               >
                                 {link.name}
                               </Link>
@@ -481,6 +489,7 @@ function PageHeader() {
                                         onClick={(e) => {
                                           handleLinkClick(e);
                                         }}
+                                        prefetch={false}
                                       >
                                         <span>{item.name}</span>
                                         <span
@@ -499,6 +508,7 @@ function PageHeader() {
                                           onClick={(e) => {
                                             handleLinkClick(e);
                                           }}
+                                          prefetch={false}
                                         >
                                           <span>{item.name}</span>
                                           <span
@@ -524,6 +534,7 @@ function PageHeader() {
                                     onClick={(e) => {
                                       handleLinkClick(e);
                                     }}
+                                    prefetch={false}
                                   >
                                     <span>{item.name}</span>
                                     <span
@@ -609,6 +620,7 @@ function PageHeader() {
                 onClick={(e) => {
                   handleLinkClick(e);
                 }}
+                prefetch={false}
               >
                 <div className="button-content w-19 h-19 rounded-full flex items-center justify-center relative p-2 text-[18px] leading-[1em]">
                   <div className="rounded-full w-full h-full flex items-center justify-center relative z-40">
@@ -639,7 +651,12 @@ function PageHeader() {
           </div>
           <div className="logo w-14 h-auto lg:w-36.5 lg:h-28">
             {data?.acf?.header_logo && (
-              <Link id="logo-light" onClick={handleLinkClick} href={"/"}>
+              <Link
+                id="logo-light"
+                onClick={handleLinkClick}
+                href={"/"}
+                prefetch={false}
+              >
                 <Image
                   className="w-full h-full object-contain object-center white-image"
                   src={data?.acf?.header_logo?.sizes?.thumbnail || logo.src}
@@ -652,7 +669,7 @@ function PageHeader() {
               </Link>
             )}
             {!data?.acf?.header_logo && (
-              <Link onClick={handleLinkClick} href={"/"}>
+              <Link onClick={handleLinkClick} href={"/"} prefetch={false}>
                 <Image
                   className="w-full h-full object-contain object-center white-image"
                   src={logo.src}

@@ -40,6 +40,7 @@ export default function ThemeButton(props: ChildProps) {
         onClick={(e) => {
           handleLinkClick(e);
         }}
+        prefetch={false}
         className={`group flex items-center gap-x-2 overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[22px]"} ${props?.extraClass}`}
         href={props.buttonLink ? props.buttonLink : "/"}
       >

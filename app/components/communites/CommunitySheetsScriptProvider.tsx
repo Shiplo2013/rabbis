@@ -5,6 +5,7 @@ import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import SheetContentItem from "@/app/ui/SheetContentItem";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 import Introduction from "../../components/sheets/Introduction";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
@@ -57,6 +58,7 @@ export default function CommunitiesSheetsScriptProvider({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
   const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  const { ref, inView } = useInView();
 
   // Get Page Data From backend
   useEffect(() => {
@@ -66,8 +68,8 @@ export default function CommunitiesSheetsScriptProvider({
     }
     setSheetPageData(data);
     setCommunitySheetsCategoryData(data?.categoriesTree || []);
-    setVerticalPosts(data?.postsData?.posts.slice(0, 3) || []);
-    setNormalPosts(data?.postsData?.posts.slice(3) || []);
+    setVerticalPosts(data?.postsData?.posts.slice(0, 4) || []);
+    setNormalPosts(data?.postsData?.posts.slice(4) || []);
   }, [data]);
 
   // Load more posts when currentPage changes
@@ -75,12 +77,6 @@ export default function CommunitiesSheetsScriptProvider({
     if (sheetsOnSelectCategoryId === 0) return; // Skip initial load
     let isMounted = true;
     setIsLoadingMore(true);
-    console.log(
-      "currentPage:",
-      currentPage,
-      "sheetsOnSelectCategoryId:",
-      sheetsOnSelectCategoryId,
-    );
 
     const loadMorePosts = async () => {
       try {
@@ -107,8 +103,8 @@ export default function CommunitiesSheetsScriptProvider({
           if (data?.length > 0) {
             setNoPostsFound(false);
           }
-          setVerticalPosts(data?.slice(0, 3) || []);
-          setNormalPosts(data?.slice(3) || []);
+          setVerticalPosts(data?.slice(0, 4) || []);
+          setNormalPosts(data?.slice(4) || []);
         }
       } catch (error) {
         console.error(error);
@@ -120,6 +116,7 @@ export default function CommunitiesSheetsScriptProvider({
     };
 
     loadMorePosts();
+    window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
   }, [sheetsOnSelectCategoryId]);
 
   // Get more posts
@@ -161,6 +158,13 @@ export default function CommunitiesSheetsScriptProvider({
     getPostsData();
   };
 
+  // Load More Posts when inView is true
+  useEffect(() => {
+    if (inView && hasMorePosts && !isLoadingMore) {
+      LoadMorePosts();
+    }
+  }, [inView, hasMorePosts, isLoadingMore]);
+
   // Update section width on window resize
   useEffect(() => {
     if (!sheetPageData) {
@@ -168,26 +172,6 @@ export default function CommunitiesSheetsScriptProvider({
     }
     setPageDataFetched(true);
     setIsLoading(false);
-
-    // const updateSectionWidth = () => {
-    //   const newSectionWidth =
-    //     12.5 + // Section padding
-    //     11.35 + // Sidebar filters
-    //     6 * 18 + // Each post width
-    //     6 * 3.2 + // Gap between posts
-    //     5.8 + // content gap
-    //     26.35 + // Subscriber form width
-    //     5.8 + // content gap
-    //     10.41; // Readmore button width
-    //   setSectionWidth(newSectionWidth);
-    //   setContainerWidth(newSectionWidth + 100);
-    // };
-
-    // updateSectionWidth();
-    // window.addEventListener("resize", updateSectionWidth);
-    // return () => {
-    //   window.removeEventListener("resize", updateSectionWidth);
-    // };
   }, [sheetPageData]);
 
   // Animation State
@@ -203,13 +187,13 @@ export default function CommunitiesSheetsScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
+    setPageContentAnimation();
     if (
       typeof window !== "undefined" &&
       panel.current &&
       wrapper.current &&
       window.innerWidth > 1024
     ) {
-      setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -437,7 +421,7 @@ export default function CommunitiesSheetsScriptProvider({
     const page = document.getElementById("page") as HTMLDivElement | null;
 
     // Animations
-    if (sidebar) {
+    if (sidebar && window.innerWidth > 1024) {
       gsap.set(sidebar, {
         x: 340,
       });
@@ -446,11 +430,7 @@ export default function CommunitiesSheetsScriptProvider({
         const scrollTop = window.scrollY;
         const windowWidth = window.innerWidth * 1.8;
         const pageHeight = page?.offsetHeight;
-        if (
-          pageHeight &&
-          scrollTop > windowWidth &&
-          scrollTop < pageHeight - window.innerHeight
-        ) {
+        if (scrollTop > windowWidth) {
           gsap.to(sidebar, {
             x: 0,
             duration: 0.5,
@@ -463,20 +443,16 @@ export default function CommunitiesSheetsScriptProvider({
             ease: "power2.out",
           });
         }
-
-        if (pageHeight && scrollTop > pageHeight - window.innerHeight) {
-          gsap.to(sidebar, {
-            x: 340,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        }
       };
       window.addEventListener("scroll", handleScroll);
 
       return () => {
         window.removeEventListener("scroll", handleScroll);
       };
+    } else {
+      gsap.set(sidebar, {
+        autoAlpha: 0,
+      });
     }
   };
 
@@ -654,43 +630,37 @@ export default function CommunitiesSheetsScriptProvider({
             />
           </div>
         </div>
-        {normalPosts.length > 0 && (
-          <div className="normal-scrolling w-full min-h-screen bg-black px-14.5 pb-[10vh] will-change-transform">
-            <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative pr-70">
-              <div
-                className={`normal-posts flex flex-row flex-wrap max-w-290 gap-x-[3.2vw] gap-y-[3.2vw]`}
-              >
-                {normalPosts?.map((post: any, index: number) => {
-                  return (
-                    <Fragment key={`sheet-entry-${index}`}>
-                      <SheetContentItem
-                        key={`normal-post-${index}`}
-                        data={post}
-                      />
-                    </Fragment>
-                  );
-                })}
-              </div>
-              {hasMorePosts && currentPage! < totalPages! && (
-                <div
-                  className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
-                >
-                  <button
-                    className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
-                    onClick={() => {
-                      if (LoadMorePosts) {
-                        LoadMorePosts();
-                      }
-                    }}
-                    disabled={isLoadingMore}
-                  >
-                    {isLoadingMore ? "טְעִינָה..." : "טען עוד"}
-                  </button>
-                </div>
-              )}
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-black px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+          <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-70">
+            <div
+              className={`normal-posts flex flex-row flex-wrap max-w-300 gap-x-10 gap-y-12 justify-end`}
+            >
+              {normalPosts?.map((post: any, index: number) => {
+                return (
+                  <Fragment key={`sheet-entry-${index}`}>
+                    <SheetContentItem
+                      key={`normal-post-${index}`}
+                      data={post}
+                    />
+                  </Fragment>
+                );
+              })}
             </div>
+            {hasMorePosts && currentPage! < totalPages! && (
+              <div
+                ref={ref}
+                className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
+              >
+                <button
+                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
+                  disabled={isLoadingMore}
+                >
+                  {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </main>
     )
   );

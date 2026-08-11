@@ -787,9 +787,9 @@ export default function PageFixedElements() {
       {pathname === "/communities/sheets" && (
         <div
           id="sheets-sidebar"
-          className="sheets-sidebar fixed top-0 right-15 w-70 h-full bg-black flex flex-col z-50"
+          className="sheets-sidebar fixed top-0 right-15 w-70 h-full bg-black flex flex-col z-50 border-l border-[#C3A13F]"
         >
-          <div className="sheet-scrollbar-wrapper mt-auto mb-auto pr-5">
+          <div className="sheet-scrollbar-wrapper mt-auto mb-auto pl-5 pr-5">
             <SimpleBar
               style={{ maxHeight: "60vh" }}
               autoHide={false}
