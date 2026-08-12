@@ -335,6 +335,7 @@ function Footer(props: ChildProps) {
     footerData && (
       <footer
         ref={footerRef}
+        id="footer"
         className={`w-full h-auto flex items-center justify-end ${props.className} opacity-0 bg-[#F5F0EB] will-change-transform`}
       >
         <div className="footer-wrapper w-full bg-amber-50 flex items-center justify-center text-black pt-15 sm:pt-30 pb-25">
