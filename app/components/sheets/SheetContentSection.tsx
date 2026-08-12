@@ -37,7 +37,7 @@ export default function SheetContentSection(props: ChildProps) {
       style={props.style}
       className={`${props.extraClass} bg-black flex items-center justify-start relative z-20`}
     >
-      <div className="sheet-wrapper w-full h-auto flex items-center gap-y-[8vh] gap-x-[5.8vw] flex-col lg:flex-row relative justify-center lg:pr-70">
+      <div className="sheet-wrapper w-full h-auto flex items-center gap-y-[8vh] gap-x-[5.8vw] flex-col lg:flex-row relative justify-center lg:pr-85">
         <div className="sheets-sidebar lg:hidden w-full h-auto bg-black flex flex-col z-50 gap-y-10">
           <div className="sheet-scrollbar-wrapper mt-auto mb-auto">
             <SimpleBar

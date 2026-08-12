@@ -58,7 +58,10 @@ export default function CommunitiesSheetsScriptProvider({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
   const [normalPosts, setNormalPosts] = useState<any[]>([]);
-  const { ref, inView } = useInView();
+  const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
+    threshold: 0,
+    triggerOnce: true,
+  });
 
   // Get Page Data From backend
   useEffect(() => {
@@ -160,10 +163,10 @@ export default function CommunitiesSheetsScriptProvider({
 
   // Load More Posts when inView is true
   useEffect(() => {
-    if (inView && hasMorePosts && !isLoadingMore) {
+    if (isReadMoreInView && hasMorePosts && !isLoadingMore) {
       LoadMorePosts();
     }
-  }, [inView, hasMorePosts, isLoadingMore]);
+  }, [isReadMoreInView, hasMorePosts, isLoadingMore]);
 
   // Update section width on window resize
   useEffect(() => {
@@ -418,7 +421,6 @@ export default function CommunitiesSheetsScriptProvider({
     const sidebar = document.getElementById(
       "sheets-sidebar",
     ) as HTMLDivElement | null;
-    const page = document.getElementById("page") as HTMLDivElement | null;
 
     // Animations
     if (sidebar && window.innerWidth > 1024) {
@@ -429,7 +431,8 @@ export default function CommunitiesSheetsScriptProvider({
       const handleScroll = () => {
         const scrollTop = window.scrollY;
         const windowWidth = window.innerWidth * 1.8;
-        const pageHeight = page?.offsetHeight;
+        const pageHeight = main?.current?.offsetHeight;
+
         if (scrollTop > windowWidth) {
           gsap.to(sidebar, {
             x: 0,
@@ -439,6 +442,20 @@ export default function CommunitiesSheetsScriptProvider({
         } else {
           gsap.to(sidebar, {
             x: 340,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        }
+        // Hide sidebar when reaching the end of the page
+        if (scrollTop > (pageHeight || 0) - window.innerHeight) {
+          gsap.to(sidebar, {
+            autoAlpha: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(sidebar, {
+            autoAlpha: 1,
             duration: 0.5,
             ease: "power2.out",
           });
@@ -631,7 +648,7 @@ export default function CommunitiesSheetsScriptProvider({
           </div>
         </div>
         <div className="normal-scrolling w-full lg:min-h-[50vh] bg-black px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
-          <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-70">
+          <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
             <div
               className={`normal-posts flex flex-row flex-wrap max-w-300 gap-x-10 gap-y-12 justify-end`}
             >
@@ -648,7 +665,7 @@ export default function CommunitiesSheetsScriptProvider({
             </div>
             {hasMorePosts && currentPage! < totalPages! && (
               <div
-                ref={ref}
+                ref={readMoreRef}
                 className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
               >
                 <button
