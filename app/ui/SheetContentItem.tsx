@@ -3,7 +3,6 @@ import FsLightbox from "fslightbox-react";
 import Image from "next/image";
 import { useState } from "react";
 import ArrowDownIcon from "../assets/icons/ArrowDownIcon";
-import ViewIcon from "../assets/icons/ViewIcon";
 import sheetImg from "../assets/images/sheet-image1.jpg";
 import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 import ThemeButton2 from "./ThemeButton2";
@@ -67,6 +66,12 @@ export default function SheetContentItem(props: { data?: any }) {
             )}
           </div>
         )}
+        <div
+          dir="rtl"
+          className="sheet-title text-[18px] lg:text-[22px] leading-[1.1em] text-[#CD5E41] font-medium mt-4.5"
+        >
+          {itemData?.title?.rendered || ""}
+        </div>
         <div className="sheet-icons flex justify-center mt-4.5 gap-x-4">
           <ThemeButton2
             extraClass="download w-11 h-11 flex item-center justify-center rounded-none cursor-pointer"
@@ -81,7 +86,7 @@ export default function SheetContentItem(props: { data?: any }) {
               }
             }}
           />
-          <ThemeButton2
+          {/* <ThemeButton2
             extraClass="view-button w-11 h-11 flex item-center justify-center rounded-none cursor-pointer"
             bgColor="bg-[#C3A13F]"
             textColor="text-[#000000]"
@@ -93,7 +98,7 @@ export default function SheetContentItem(props: { data?: any }) {
                 openLightbox();
               }
             }}
-          />
+          /> */}
         </div>
       </div>
     )

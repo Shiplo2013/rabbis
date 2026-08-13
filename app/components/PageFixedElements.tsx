@@ -796,6 +796,17 @@ export default function PageFixedElements() {
               data-simplebar-direction="rtl"
             >
               <div className="year-month-categories pl-7 pr-3">
+                <div className="all-sheets year-month text-[24px] leading-[1.2em]">
+                  <div
+                    onClick={() => {
+                      setActiveCategory(0);
+                      setSheetsOnSelectCategoryId(0);
+                    }}
+                    className="year text-[#CD5E41] cursor-pointer font-medium border-b border-[#CD5E41] py-2.5"
+                  >
+                    כל הגיליונות
+                  </div>
+                </div>
                 {communitySheetsCategoryData?.map(
                   (
                     item: { id: number; name: string; children: any[] },
