@@ -31,6 +31,7 @@ export default function CommunitiesSheetsScriptProvider({
   // Router Path
   const pathname = usePathname();
   const [sheetPageData, setSheetPageData] = useState<any | []>(null);
+  const [sheetPostsData, setSheetPostsData] = useState<any | []>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const {
@@ -41,11 +42,15 @@ export default function CommunitiesSheetsScriptProvider({
     setCommunitySheetsCategoryData,
     sheetsOnSelectCategoryId,
   } = useAppState();
-  const [postPerPage, setPostPerPage] = useState(12);
+  const [postPerPage, setPostPerPage] = useState(100);
+  const [postsPerLoad, setPostsPerLoad] = useState(12);
+  const [postLoadCount, setPostLoadCount] = useState(1);
+  const [postLoadLimit, setPostLoadLimit] = useState(
+    Math.ceil(Number(data?.postsData?.posts?.length || 0) / postsPerLoad),
+  );
   const [containerWidth, setContainerWidth] = useState(200);
   const [sectionWidth, setSectionWidth] = useState(100);
   const [activeCategory, setActiveCategory] = useState(0);
-  const [submittedSearch, setSubmittedSearch] = useState("");
   const [isPostLoaded, setIsPostLoaded] = useState(false);
   const [noPostsFound, setNoPostsFound] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -60,7 +65,7 @@ export default function CommunitiesSheetsScriptProvider({
   const [normalPosts, setNormalPosts] = useState<any[]>([]);
   const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
     threshold: 0,
-    triggerOnce: true,
+    triggerOnce: false,
   });
 
   // Get Page Data From backend
@@ -70,56 +75,44 @@ export default function CommunitiesSheetsScriptProvider({
       return;
     }
     setSheetPageData(data);
+    setSheetPostsData(data?.postsData?.posts || []);
     setCommunitySheetsCategoryData(data?.categoriesTree || []);
-    setVerticalPosts(data?.postsData?.posts.slice(0, 4) || []);
-    setNormalPosts(data?.postsData?.posts.slice(4) || []);
   }, [data]);
+
+  // Set Posts Data when sheetPostsData changes
+  useEffect(() => {
+    if (!sheetPostsData) {
+      return;
+    }
+    setVerticalPosts(sheetPostsData?.slice(0, 4) || []);
+    setNormalPosts(
+      sheetPostsData?.slice(4, postsPerLoad * postLoadCount) || [],
+    );
+    setIsLoadingMore(false);
+  }, [sheetPostsData, postLoadCount]);
 
   // Load more posts when currentPage changes
   useEffect(() => {
-    if (sheetsOnSelectCategoryId === 0) return; // Skip initial load
-    let isMounted = true;
-    setIsLoadingMore(true);
-
-    const loadMorePosts = async () => {
-      try {
-        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?magazines_cat=${sheetsOnSelectCategoryId}&per_page=${postPerPage}&page=1`;
-
-        const response = await wpFetch(postsUrl, {
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to load community page data.");
-        }
-        const data = await response.json();
-
-        console.log("Fetched posts data:", data);
-
-        if (isMounted) {
-          if (data?.length === 0) {
-            setNoPostsFound(true);
-          }
-          if (data?.length < postPerPage) {
-            setHasMorePosts(false);
-          }
-          if (data?.length > 0) {
-            setNoPostsFound(false);
-          }
-          setVerticalPosts(data?.slice(0, 4) || []);
-          setNormalPosts(data?.slice(4) || []);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        if (isMounted) {
-          setIsLoadingMore(false);
-        }
+    if (sheetsOnSelectCategoryId === 0) {
+      setVerticalPosts(sheetPostsData?.slice(0, 4) || []);
+      setNormalPosts(sheetPostsData?.slice(4) || []);
+    } else {
+      const filteredPosts = sheetPostsData?.filter((post: any) => {
+        const postCategoryId = post?.magazines_cat?.[0] || 0;
+        return postCategoryId === sheetsOnSelectCategoryId;
+      });
+      if (filteredPosts?.length === 0) {
+        setNoPostsFound(true);
+        setVerticalPosts([]);
+        setNormalPosts([]);
+      } else {
+        setNoPostsFound(false);
+        setVerticalPosts(filteredPosts?.slice(0, 4) || []);
+        setNormalPosts(filteredPosts?.slice(4) || []);
       }
-    };
 
-    loadMorePosts();
-    window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+      window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+    }
   }, [sheetsOnSelectCategoryId]);
 
   // Get more posts
@@ -130,7 +123,7 @@ export default function CommunitiesSheetsScriptProvider({
 
     const getPostsData = async () => {
       try {
-        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf&per_page=${postPerPage}&page=${currentPage + 1}`;
+        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf,magazines_cat&per_page=${postPerPage}&page=${currentPage + 1}`;
 
         const response = await wpFetch(postsUrl, {
           cache: "no-store",
@@ -146,7 +139,10 @@ export default function CommunitiesSheetsScriptProvider({
             setHasMorePosts(false);
           }
 
-          setNormalPosts((prevPosts) => [...prevPosts, ...(data || [])]);
+          setSheetPostsData((prevPosts: any) => [
+            ...prevPosts,
+            ...(data?.posts || []),
+          ]);
         }
       } catch (error) {
         console.error(error);
@@ -163,10 +159,15 @@ export default function CommunitiesSheetsScriptProvider({
 
   // Load More Posts when inView is true
   useEffect(() => {
-    if (isReadMoreInView && hasMorePosts && !isLoadingMore) {
-      LoadMorePosts();
+    if (isReadMoreInView) {
+      setIsLoadingMore(true);
+      setPostLoadCount((prevCount) => prevCount + 1);
+
+      if (postLoadCount! === postLoadLimit! && hasMorePosts) {
+        LoadMorePosts();
+      }
     }
-  }, [isReadMoreInView, hasMorePosts, isLoadingMore]);
+  }, [isReadMoreInView]);
 
   // Update section width on window resize
   useEffect(() => {
@@ -663,7 +664,7 @@ export default function CommunitiesSheetsScriptProvider({
                 );
               })}
             </div>
-            {hasMorePosts && currentPage! < totalPages! && (
+            {postLoadCount! < postLoadLimit! && (
               <div
                 ref={readMoreRef}
                 className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
