@@ -33,7 +33,8 @@ export default function CustomContentItem({
 
   return (
     <div
-      className={`custom-content-item bg-[#FBF4E6] border border-[#D1CECE] relative will-change-transform w-full lg:w-[25.4vw] py-[8.8vh] pr-7 pl-[4.5vw] text-[#000000]`}
+      dir="rtl"
+      className={`custom-content-item bg-[#FBF4E6] border border-[#D1CECE] relative will-change-transform w-full lg:w-[calc((100%-80px)/3)] py-[8.8vh] pr-7 pl-[4.5vw] text-[#000000]`}
     >
       <div className="custom-content-wrapper">
         <Link
@@ -43,6 +44,7 @@ export default function CustomContentItem({
               : "#"
           }
           onClick={handleLinkClick}
+          prefetch={false}
         >
           <h2 className="text-[#231F20] text-[25px] sm:text-[38px] leading-[1em] font-bold mb-2">
             {parse(parsedData?.title?.rendered || "")}

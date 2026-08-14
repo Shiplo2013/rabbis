@@ -23,6 +23,7 @@ import CookieBanner from "./CookieBanner";
 import CursorFollow from "./CursorFollow";
 import NotificationPopup from "./history/NotificationPopup";
 import VideoPopup from "./history/VideoPopup";
+import Sidebar from "./knesset/Sidebar";
 import LoadingEffect from "./LoadingEffect";
 import MirrorAudioPlayer from "./music/MirrorAudioPlayer";
 import SubscribeForm from "./sheets/SubscribeForm";
@@ -50,7 +51,13 @@ export default function PageFixedElements() {
     communitySheetsCategoryData,
     sheetsOnSelectCategoryId,
     setSheetsOnSelectCategoryId,
+    knessetCategoryData,
+    knessetActiveCategory,
+    knessetSearchQuery,
+    setKnessetActiveCategory,
+    setKnessetSearchQuery,
   } = useAppState();
+  const [knessetSearchQueryLocal, setKnessetSearchQueryLocal] = useState("");
 
   // Play Pause State
   const { isPlaying, setIsPlaying } = useAppState();
@@ -832,6 +839,29 @@ export default function PageFixedElements() {
         </div>
       )}
       {/* Community Sidebar */}
+
+      {/* Knesset Sidebar */}
+      {pathname === "/the-knesset-of-customs" && (
+        <div
+          id="knesset-sidebar"
+          className="knesset-sidebar fixed top-0 right-15 w-70 h-full bg-[#FBF4E6] flex flex-col z-50 border-l border-[#D1CECE]"
+        >
+          <div className="knesset-sidebar-wrapper mt-auto mb-auto pl-5 pr-5">
+            <Sidebar
+              activeCategory={knessetActiveCategory || null}
+              categories={knessetCategoryData || []}
+              onCategorySelect={(id) => {
+                setKnessetActiveCategory(id);
+              }}
+              searchQuery={knessetSearchQueryLocal || ""}
+              onSearchChange={setKnessetSearchQueryLocal}
+              onSearchSubmit={setKnessetSearchQuery}
+            />
+          </div>
+          <SubscribeForm mode="dark" />
+        </div>
+      )}
+      {/* Knesset Sidebar */}
     </>
   );
 }

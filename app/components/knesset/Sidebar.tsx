@@ -113,6 +113,28 @@ export default function Sidebar({
             ))}
           </ul>
         </div>
+        <div className="reset-filter mt-2">
+          <button
+            onClick={() => {
+              onSearchChange("");
+              if (onCategorySelect) {
+                onCategorySelect("0");
+              }
+              if (onSearchSubmit) {
+                onSearchSubmit("");
+              }
+              if (setPostLoading) {
+                setPostLoading(true);
+              }
+              if (setCurrentScrollPos) {
+                setCurrentScrollPos(window.scrollY);
+              }
+            }}
+            className="text-[24px] leading-[1em] text-[#D1A941] hover:text-[#999999] transition-all duration-300 cursor-pointer"
+          >
+            איפוס מסנן
+          </button>
+        </div>
       </div>
       <div className="sidebar-subscription">
         <h4 className="text-[24px] leading-[1.2em] font-medium mb-2.5">

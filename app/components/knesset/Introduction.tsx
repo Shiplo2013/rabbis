@@ -84,10 +84,10 @@ export default function Introduction(props: ChildProps) {
       >
         <div className="intro-wrapper w-full text-right flex flex-col items-end gap-x-[3.75vw] px-[5vw]">
           <h1 className="intro-title w-full text-[64px] sm:text-[128px] lg:text-[208px] text-[#AC832E] leading-[0.2em] sm:leading-[0.5em] lg:leading-[0.6em] overflow-hidden relative z-20 py-7.5 font-bold">
-            {parse(introData?.title)}
+            {parse(introData?.title || "")}
           </h1>
           <h4 className="intro-content overflow-hidden text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] text-[#FBF4E6] mt-0 sm:mt-3 relative z-30 max-w-188.75">
-            {parse(introData?.content)}
+            {parse(introData?.content || "")}
           </h4>
           {introData?.acf?.read_more_button && (
             <div className="readmore mt-4 overflow-hidden relative z-30">
