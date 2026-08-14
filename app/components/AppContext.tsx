@@ -93,6 +93,14 @@ type ContextType = {
   sheetsOnSelectCategoryId: number | null;
   setSheetsOnSelectCategoryId: (value: number | null) => void;
 
+  // Knesset States
+  knessetCategoryData: any;
+  setKnessetCategoryData: (value: any) => void;
+  knessetActiveCategory: string | null;
+  setKnessetActiveCategory: (value: string | null) => void;
+  knessetSearchQuery: string | null;
+  setKnessetSearchQuery: (value: string | null) => void;
+
   historyTimelineData: any;
   setHistoryTimelineData: (value: any) => void;
   appData: any; // Add this line to include the appData prop in the context
@@ -200,6 +208,15 @@ export function AppProvider({
     number | null
   >(0);
 
+  // Knesset States
+  const [knessetCategoryData, setKnessetCategoryData] = useState<any>(null);
+  const [knessetActiveCategory, setKnessetActiveCategory] = useState<
+    string | null
+  >(null);
+  const [knessetSearchQuery, setKnessetSearchQuery] = useState<string | null>(
+    null,
+  );
+
   // History Page
   const [historyTimelineData, setHistoryTimelineData] = useState<any>(null);
   const [activeRabbisMenu, setActiveRabbisMenu] = useState<boolean>(false);
@@ -291,6 +308,13 @@ export function AppProvider({
         // Cycle Pictures States
         cyclePostNavigation,
         setCyclePostNavigation,
+        // Knesset States
+        knessetCategoryData,
+        setKnessetCategoryData,
+        knessetActiveCategory,
+        setKnessetActiveCategory,
+        knessetSearchQuery,
+        setKnessetSearchQuery,
       }}
     >
       {children}

@@ -1,8 +1,8 @@
 "use client";
 import CustomContentItem from "@/app/ui/CustomContentItem";
 import { useRef, useState } from "react";
+import SubscribeForm from "../sheets/SubscribeForm";
 import Sidebar from "./Sidebar";
-import SubscribeForm from "./SubscribeForm";
 
 interface ChildProps {
   extraClass: string;
@@ -25,15 +25,15 @@ export default function CustomsContentSection(props: ChildProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const sectionData = props.data || [];
   const categoriesData = props.categories || [];
-  //
+
   return (
     <section
       dir="rtl"
       style={props.style}
       className={`${props.extraClass} bg-[#F5F0EB] flex items-center justify-start relative z-20`}
     >
-      <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[5.8vw] flex-col lg:flex-row gap-y-[5vh]">
-        <div className="sheet-sidebar w-full lg:w-54.5 min-w-[11.35vw] h-full will-change-transform overflow-hidden">
+      <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[5.8vw] flex-col lg:flex-row gap-y-[5vh] lg:pr-85">
+        <div className="sheet-sidebar w-full block lg:hidden lg:w-54.5 min-w-[11.35vw] h-full will-change-transform overflow-hidden">
           <Sidebar
             activeCategory={props.activeCategory || null}
             categories={categoriesData}
@@ -48,16 +48,24 @@ export default function CustomsContentSection(props: ChildProps) {
             setPostLoading={props.setPostLoading}
             setCurrentScrollPos={props.setCurrentScrollPos}
           />
-        </div>
-        <div className="sheet-content flex items-stretch gap-x-[3.2vw] gap-y-10 will-change-transform flex-col lg:flex-row w-full h-full overflow-hidden">
-          {sectionData?.map((item: any, index: number) => (
-            <CustomContentItem
-              key={index}
-              data={item}
-              postLoading={props.postLoading}
-            />
-          ))}
           <SubscribeForm mode="dark" />
+        </div>
+        <div className="sheet-content flex items-stretch gap-x-10 gap-y-10 will-change-transform flex-col lg:flex-row w-full h-full overflow-hidden">
+          {sectionData?.length > 0 &&
+            sectionData?.map((item: any, index: number) => (
+              <CustomContentItem
+                key={index}
+                data={item}
+                postLoading={props.postLoading}
+              />
+            ))}
+          {sectionData?.length === 0 && (
+            <div className="no-post-found w-full flex items-center justify-center py-20 gap-x-[3.2vw]">
+              <div className="text-black text-[35px] leading-[1em] w-[26.35vw] text-center">
+                לא נמצאו תוצאות
+              </div>
+            </div>
+          )}
         </div>
         {/* <div className="sheet-readmore min-w-50">
           <button className="text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-[#C3A13F] hover:border-[#C3A13F] transition-all duration-500">

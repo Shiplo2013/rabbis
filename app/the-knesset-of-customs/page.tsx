@@ -53,7 +53,7 @@ export default async function Page() {
   categoryData = Array.isArray(parsedCategoryData) ? parsedCategoryData : [];
 
   const postsRes = await wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=100`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle,knesset_cat&per_page=100&page=1`,
     {
       next: { revalidate: 60 }, // Cache data for 1 minute
     },
@@ -71,6 +71,7 @@ export default async function Page() {
     "knesset-posts",
   );
   postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
+  const totalPages = postsRes.headers.get("X-WP-TotalPages");
 
   return (
     <KnessetScriptProvider
@@ -81,7 +82,10 @@ export default async function Page() {
           acf: pageData[0]?.acf || { read_more_button: { text: "", link: "" } },
         },
         categoriesData: categoryData,
-        postsData: postsData,
+        postsData: {
+          posts: postsData,
+          totalPage: totalPages,
+        },
       }}
     />
   );

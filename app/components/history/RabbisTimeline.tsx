@@ -1,5 +1,4 @@
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
-import GetRightPosition from "@/app/ui/GetRightPosition";
 import ParallaxBackground from "@/app/ui/ParallaxBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -58,87 +57,85 @@ export default function RabbisTimeline(props: ChildProps) {
   ];
   // Section Animation
   useGSAP(() => {
-    const animations: gsap.core.Animation[] = [];
-    // Current Rabbis Animatin
-    if (
-      typeof window === "undefined" ||
-      !wrapper.current ||
-      !props.offsetTopAdded
-    ) {
-      return;
-    }
-    const items = wrapper.current?.querySelectorAll(".current-rubbis");
-    items?.length !== 0 &&
-      items?.forEach((item, index) => {
-        const image = item.querySelector(".image") as HTMLElement | null;
-        const title = item.querySelector(".title>h4") as HTMLElement | null;
-
-        // Rubbis Image
-        if (image) {
-          gsap.set(image, {
-            x: -100,
-            opacity: 0,
-          });
-          const imageAnimation = gsap.to(image, {
-            x: 0,
-            opacity: 1,
-            duration: 1,
-            ease: "expo.out",
-            scrollTrigger: {
-              start: () => {
-                return (
-                  getTimelineOffset() +
-                  GetRightPosition(item) -
-                  window.innerWidth * 0.1
-                );
-              },
-              toggleActions: "restart pause play reverse",
-            },
-          });
-          animations.push(imageAnimation);
-        }
-        // Rubbis Title
-        document.fonts.ready.then(() => {
-          // Section Title 1
-          if (title && title?.textContent?.length !== 0) {
-            gsap.set(title, { opacity: 1 });
-            let splititle;
-            SplitText.create(title, {
-              type: "lines",
-              linesClass: "line direction-rtl",
-              autoSplit: true,
-              mask: "lines",
-              onSplit: (self) => {
-                splititle = gsap.from(self.lines, {
-                  duration: 1,
-                  yPercent: 100,
-                  opacity: 0,
-                  delay: 0.1,
-                  stagger: 0.05,
-                  ease: "expo.out",
-                  scrollTrigger: {
-                    start: () => {
-                      return (
-                        getTimelineOffset() +
-                        GetRightPosition(item) -
-                        window.innerWidth * 0.1
-                      );
-                    },
-                    toggleActions: "restart pause play reverse",
-                  },
-                });
-                animations.push(splititle);
-                return splititle;
-              },
-            });
-          }
-        });
-      });
-
-    // Return function to kill animations on unmount or dependency change
-    return () => {
-      animations.forEach((animation) => animation.kill());
-    };
+    // const animations: gsap.core.Animation[] = [];
+    // // Current Rabbis Animatin
+    // if (
+    //   typeof window === "undefined" ||
+    //   !wrapper.current ||
+    //   !props.offsetTopAdded
+    // ) {
+    //   return;
+    // }
+    // const items = wrapper.current?.querySelectorAll(".current-rubbis");
+    // items?.length !== 0 &&
+    //   items?.forEach((item, index) => {
+    //     const image = item.querySelector(".image") as HTMLElement | null;
+    //     const title = item.querySelector(".title>h4") as HTMLElement | null;
+    //     // Rubbis Image
+    //     if (image) {
+    //       gsap.set(image, {
+    //         x: -100,
+    //         opacity: 0,
+    //       });
+    //       const imageAnimation = gsap.to(image, {
+    //         x: 0,
+    //         opacity: 1,
+    //         duration: 1,
+    //         ease: "expo.out",
+    //         scrollTrigger: {
+    //           start: () => {
+    //             return (
+    //               getTimelineOffset() +
+    //               GetRightPosition(item) -
+    //               window.innerWidth * 0.1
+    //             );
+    //           },
+    //           toggleActions: "restart pause play reverse",
+    //         },
+    //       });
+    //       animations.push(imageAnimation);
+    //     }
+    //     // Rubbis Title
+    //     document.fonts.ready.then(() => {
+    //       // Section Title 1
+    //       if (title && title?.textContent?.length !== 0) {
+    //         gsap.set(title, { opacity: 1 });
+    //         let splititle;
+    //         SplitText.create(title, {
+    //           type: "lines",
+    //           linesClass: "line direction-rtl",
+    //           autoSplit: true,
+    //           mask: "lines",
+    //           onSplit: (self) => {
+    //             splititle = gsap.from(self.lines, {
+    //               duration: 1,
+    //               yPercent: 100,
+    //               opacity: 0,
+    //               delay: 0.1,
+    //               stagger: 0.05,
+    //               ease: "expo.out",
+    //               scrollTrigger: {
+    //                 start: () => {
+    //                   return (
+    //                     getTimelineOffset() +
+    //                     GetRightPosition(item) -
+    //                     window.innerWidth * 0.1
+    //                   );
+    //                 },
+    //                 toggleActions: "restart pause play reverse",
+    //               },
+    //             });
+    //             animations.push(splititle);
+    //             return splititle;
+    //           },
+    //         });
+    //       }
+    //     });
+    //   });
+    // // Return function to kill animations on unmount or dependency change
+    // return () => {
+    //   animations.forEach((animation) => animation.kill());
+    // };
   }, [pathname, props?.offsetTopAdded]);
 
   return (

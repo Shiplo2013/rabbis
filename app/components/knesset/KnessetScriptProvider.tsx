@@ -1,12 +1,14 @@
 "use client";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 
+import { wpFetch } from "@/app/lib/wpFetch";
+import CustomContentItem from "@/app/ui/CustomContentItem";
+import { useInView } from "react-intersection-observer";
 import CustomsContentSection from "../../components/knesset/CustomsContentSection";
 import Introduction from "../../components/knesset/Introduction";
-import GetRightPosition from "../../ui/GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 import TextSplitLines from "../../ui/TextSplitLines";
 import { useAppState } from "../AppContext";
@@ -22,6 +24,7 @@ export default function KnessetScriptProvider({
 }) {
   // Selectors
   const [knessetPageData, setKnessetPageData] = useState<null | any>(null);
+  const [knessetPostsData, setKnessetPostsData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
@@ -32,8 +35,8 @@ export default function KnessetScriptProvider({
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(300);
-  const [sectionWidth, setSectionWidth] = useState(200);
+  const [containerWidth, setContainerWidth] = useState(200);
+  const [sectionWidth, setSectionWidth] = useState(100);
   const [submittedSearch, setSubmittedSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentScrollPos, setCurrentScrollPos] = useState(0);
@@ -46,62 +49,137 @@ export default function KnessetScriptProvider({
   const panel = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
 
+  // App States
+  const {
+    knessetCategoryData,
+    setKnessetCategoryData,
+    knessetSearchQuery,
+    knessetActiveCategory,
+  } = useAppState();
+
+  // Posts Data
+  const [postPerPage, setPostPerPage] = useState(100);
+  const [postsPerLoad, setPostsPerLoad] = useState(12);
+  const [postLoadCount, setPostLoadCount] = useState(1);
+  const [postLoadLimit, setPostLoadLimit] = useState(
+    Math.ceil(Number(data?.postsData?.posts?.length || 0) / postsPerLoad),
+  );
+  const [isPostLoaded, setIsPostLoaded] = useState(false);
+  const [noPostsFound, setNoPostsFound] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMorePosts, setHasMorePosts] = useState(
+    Number(data?.postsData?.totalPage ?? 1) > 1,
+  );
+  const [totalPages, setTotalPages] = useState(
+    Number(data?.postsData?.totalPage ?? 1),
+  );
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
+  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
+    threshold: 0,
+    triggerOnce: false,
+  });
+
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
       setError("No data provided.");
       return;
     }
-    setKnessetPageData(data);
+    setKnessetPageData(data.pageData);
+    setKnessetCategoryData(data.categoriesData);
+    setKnessetPostsData(data.postsData?.posts || []);
   }, [data]);
+
+  // Set Posts Data when sheetPostsData changes
+  useEffect(() => {
+    if (!knessetPostsData) {
+      return;
+    }
+    setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
+    setNormalPosts(
+      knessetPostsData?.slice(3, postsPerLoad * postLoadCount) || [],
+    );
+    setIsLoadingMore(false);
+  }, [knessetPostsData, postLoadCount]);
 
   // Search and Category Filter
   useEffect(() => {
-    if (selectedCategory !== null || submittedSearch !== "") {
-      let isMounted = true;
-
-      const loadKnessetPostsData = async () => {
-        const fetchUrl = () => {
-          if (selectedCategory !== null && submittedSearch === "") {
-            return `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?knesset_cat=${selectedCategory}&acf_format=standard&_fields=id,title,excerpt,slug,acf.subtitle&per_page=20`;
-          } else if (submittedSearch !== "" && selectedCategory === null) {
-            return `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?search=${submittedSearch}&acf_format=standard&_fields=id,title,excerpt,slug,acf.subtitle&per_page=20`;
-          } else {
-            return `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?knesset_cat=${selectedCategory}&search=${submittedSearch}&acf_format=standard&_fields=id,title,excerpt,slug,acf.subtitle&per_page=20`;
-          }
-        };
-        try {
-          const response = await fetch(fetchUrl(), {
-            cache: "no-store",
-          });
-
-          if (!response.ok) {
-            throw new Error("Failed to load the knesset of customs page data.");
-          }
-
-          const data = await response.json();
-
-          if (isMounted) {
-            knessetPageData.postsData = data;
-            setKnessetPageData({ ...knessetPageData });
-            setPostLoading(false);
-          }
-        } catch (error) {
-          console.error(error);
-          if (isMounted) {
-            setError("Failed to load the knesset of customs page data.");
-          }
-        }
-      };
-
-      loadKnessetPostsData();
-
-      return () => {
-        isMounted = false;
-      };
+    if (
+      (knessetActiveCategory !== null && knessetActiveCategory !== "0") ||
+      (knessetSearchQuery !== "" && knessetSearchQuery !== null)
+    ) {
+      if (
+        knessetActiveCategory !== null &&
+        knessetActiveCategory !== "0" &&
+        (knessetSearchQuery === "" || knessetSearchQuery === null)
+      ) {
+        const filteredPosts = data?.postsData?.posts?.filter((post: any) => {
+          return post.knesset_cat?.[0] === Number(knessetActiveCategory);
+        });
+        setKnessetPostsData(filteredPosts || []);
+        setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
+        setNormalPosts(
+          knessetPostsData?.slice(3, postsPerLoad * postLoadCount) || [],
+        );
+      }
+      if (
+        knessetSearchQuery !== "" &&
+        knessetSearchQuery !== null &&
+        (knessetActiveCategory === null || knessetActiveCategory === "0")
+      ) {
+        const filteredPosts = data?.postsData?.posts?.filter((post: any) => {
+          return (
+            post.title?.rendered
+              .toLowerCase()
+              .includes(knessetSearchQuery.toLowerCase()) ||
+            post?.excerpt?.rendered
+              .toLowerCase()
+              .includes(knessetSearchQuery.toLowerCase())
+          );
+        });
+        setKnessetPostsData(filteredPosts);
+        setVerticalPosts(filteredPosts?.slice(0, 3) || []);
+        setNormalPosts(
+          filteredPosts?.slice(3, postsPerLoad * postLoadCount) || [],
+        );
+      }
+      if (
+        knessetActiveCategory !== null &&
+        knessetActiveCategory !== "0" &&
+        knessetSearchQuery !== "" &&
+        knessetSearchQuery !== null
+      ) {
+        const filteredPosts = data?.postsData?.posts?.filter((post: any) => {
+          return (
+            post.knesset_cat?.[0] === Number(knessetActiveCategory) &&
+            (post.title?.rendered
+              .toLowerCase()
+              .includes(knessetSearchQuery.toLowerCase()) ||
+              post?.excerpt?.rendered
+                .toLowerCase()
+                .includes(knessetSearchQuery.toLowerCase()))
+          );
+        });
+        setKnessetPostsData(filteredPosts || []);
+        setVerticalPosts(filteredPosts?.slice(0, 3) || []);
+        setNormalPosts(
+          filteredPosts?.slice(3, postsPerLoad * postLoadCount) || [],
+        );
+      }
+    } else {
+      setKnessetPostsData(data?.postsData?.posts || []);
+      setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
+      setNormalPosts(
+        knessetPostsData?.slice(3, postsPerLoad * postLoadCount) || [],
+      );
     }
-  }, [selectedCategory, submittedSearch]);
 
+    window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+  }, [knessetActiveCategory, knessetSearchQuery]);
+
+  // Set Section Width
   useEffect(() => {
     if (!knessetPageData) {
       return;
@@ -110,26 +188,62 @@ export default function KnessetScriptProvider({
       setPageDataFetched(true);
       setIsLoading(false);
       setPostLoading(false);
-
-      console.log(knessetPageData?.postsData?.length);
-
-      const updateSectionWidth = () => {
-        const newSectionWidth =
-          knessetPageData?.postsData?.length * 25.4 +
-          knessetPageData?.postsData?.length * 3.2 +
-          64;
-
-        setSectionWidth(newSectionWidth);
-        setContainerWidth(newSectionWidth + 100);
-      };
-
-      updateSectionWidth();
-      window.addEventListener("resize", updateSectionWidth);
-      return () => {
-        window.removeEventListener("resize", updateSectionWidth);
-      };
     }
   }, [knessetPageData, animationPlayed]);
+
+  // Get more posts
+  const LoadMorePosts = () => {
+    if (isLoadingMore || !hasMorePosts || currentPage >= totalPages) return;
+    setIsLoadingMore(true);
+    let isMounted = true;
+
+    const getPostsData = async () => {
+      try {
+        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=${postPerPage}&page=${currentPage + 1}`;
+
+        const response = await wpFetch(postsUrl, {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load knesset of customs page data.");
+        }
+        const data = await response.json();
+
+        if (isMounted) {
+          if (data?.posts?.length < postPerPage) {
+            setHasMorePosts(false);
+          }
+
+          setKnessetPostsData((prevPosts: any) => [
+            ...prevPosts,
+            ...(data?.posts || []),
+          ]);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) {
+          setIsLoadingMore(false);
+          setCurrentPage((prevPage) => prevPage + 1);
+        }
+      }
+    };
+
+    getPostsData();
+  };
+
+  // Load More Posts when inView is true
+  useEffect(() => {
+    if (isReadMoreInView) {
+      setIsLoadingMore(true);
+      setPostLoadCount((prevCount) => prevCount + 1);
+
+      if (postLoadCount! === postLoadLimit! && hasMorePosts) {
+        LoadMorePosts();
+      }
+    }
+  }, [isReadMoreInView]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -397,94 +511,57 @@ export default function KnessetScriptProvider({
   // Set Page Content Animation
   const setPageContentAnimation = () => {
     // Page Content Animation
-    const sheetContent = main.current?.querySelectorAll(
-      ".sheet-content .custom-content-item",
-    ) as NodeListOf<HTMLElement> | null;
-    const subscribeForm = main.current?.querySelector(
-      ".sheet-content .subscribe-form",
-    ) as HTMLElement | null;
-    const sheetReadmore = main.current?.querySelector(
-      ".sheet-readmore",
-    ) as HTMLElement | null;
-    const sidebar = main.current?.querySelector(
-      ".sheet-sidebar .sheet-sidebar-wrapper",
-    ) as HTMLElement | null;
+    const sidebar = document.getElementById(
+      "knesset-sidebar",
+    ) as HTMLDivElement | null;
 
     // Animations
-    if (sidebar) {
-      gsap.from(sidebar, {
-        xPercent: 100,
-        opacity: 0,
-        ease: "expo.inOut",
-        duration: 3,
-        delay: -1,
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * 0.3;
-          },
-          //toggleActions: "restart pause resume reverse",
-        },
+    if (sidebar && window.innerWidth > 1024) {
+      gsap.set(sidebar, {
+        x: 340,
       });
-    }
-    // Contents
-    if (sheetContent) {
-      sheetContent.forEach((section, index) => {
-        // Custom Content Item
-        if (section) {
-          gsap.from(section, {
-            xPercent: -50,
-            opacity: 0,
-            ease: "slow(0.1,1,false)",
-            duration: 1.5,
-            delay: 0,
-            scrollTrigger: {
-              start: () => {
-                return GetRightPosition(section) - window.innerWidth * 0.7;
-              },
-              //toggleActions: "restart pause resume reverse",
-            },
+      // Sidebar Animation
+      const handleScroll = () => {
+        const scrollTop = window.scrollY;
+        const windowWidth = window.innerWidth * 1.8;
+        const pageHeight = main?.current?.offsetHeight;
+
+        if (scrollTop > windowWidth) {
+          gsap.to(sidebar, {
+            x: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(sidebar, {
+            x: 340,
+            duration: 0.5,
+            ease: "power2.out",
           });
         }
-      });
-    }
-    // Subscribe From
-    if (subscribeForm) {
-      gsap.set(subscribeForm, {
-        xPercent: -50,
-        opacity: 0,
-      });
-      gsap.to(subscribeForm, {
-        xPercent: 0,
-        opacity: 1,
-        ease: "slow(0.1,1,false)",
-        duration: 2,
-        delay: 0,
-        scrollTrigger: {
-          start: () => {
-            return GetRightPosition(subscribeForm) - window.innerWidth * 0.7;
-          },
-          //toggleActions: "restart pause resume reverse",
-        },
-      });
-    }
-    // ReadMore Button
-    if (sheetReadmore) {
-      gsap.set(sheetReadmore, {
-        xPercent: -50,
-        opacity: 0,
-      });
-      gsap.to(sheetReadmore, {
-        xPercent: 0,
-        opacity: 1,
-        ease: "expo.inOut",
-        duration: 1,
-        delay: 0,
-        scrollTrigger: {
-          start: () => {
-            return GetRightPosition(sheetReadmore) - window.innerWidth * 0.7;
-          },
-          //toggleActions: "restart pause resume reverse",
-        },
+        // Hide sidebar when reaching the end of the page
+        if (scrollTop > (pageHeight || 0) - window.innerHeight) {
+          gsap.to(sidebar, {
+            autoAlpha: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(sidebar, {
+            autoAlpha: 1,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        }
+      };
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    } else {
+      gsap.set(sidebar, {
+        autoAlpha: 0,
       });
     }
   };
@@ -501,6 +578,73 @@ export default function KnessetScriptProvider({
     }
     return () => {
       document.body.style.overflow = "auto";
+    };
+  }, [isAllAnimationComplete]);
+
+  // Hide header-left on scroll down, show on scroll up (only for this page)
+  useGSAP(() => {
+    if (!isAllAnimationComplete || !main.current) {
+      return;
+    }
+
+    const headerLeft = document.querySelector(
+      "#header .header-left",
+    ) as HTMLElement | null;
+
+    if (!headerLeft) {
+      return;
+    }
+
+    let lastScrollY = window.scrollY;
+    let isHidden = false;
+    const deltaThreshold = 6;
+
+    const showHeaderLeft = () => {
+      if (!isHidden) return;
+      isHidden = false;
+      gsap.to(headerLeft, {
+        y: "0%",
+        autoAlpha: 1,
+        duration: 0.28,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
+    const hideHeaderLeft = () => {
+      if (isHidden) return;
+      isHidden = true;
+      gsap.to(headerLeft, {
+        y: "-120%",
+        autoAlpha: 0,
+        duration: 0.22,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      const diff = currentScrollY - lastScrollY;
+
+      if (Math.abs(diff) < deltaThreshold) {
+        return;
+      }
+
+      if (currentScrollY <= 10 || diff < 0) {
+        showHeaderLeft();
+      } else if (diff > 0) {
+        hideHeaderLeft();
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      gsap.set(headerLeft, { clearProps: "transform,opacity,visibility" });
     };
   }, [isAllAnimationComplete]);
 
@@ -573,7 +717,7 @@ export default function KnessetScriptProvider({
               animationStatus={isAllAnimationComplete}
               bgImage={IntroBG}
               bgOverlay={""}
-              data={knessetPageData?.pageData}
+              data={knessetPageData}
               extraClass={
                 "first-intro panel-section will-change-transform min-w-screen w-screen"
               }
@@ -591,9 +735,9 @@ export default function KnessetScriptProvider({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-12 px-[10vw] sm:py-[5vw] sm:px-[10vw] sm:px-[6.25vw]`}
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-12 px-[10vw] sm:py-[5vw] sm:px-[10vw] sm:px-[6.25vw] lg:px-14.5`}
               animWidthText={1}
-              data={knessetPageData?.postsData}
+              data={verticalPosts}
               categories={knessetPageData?.categoriesData || []}
               activeCategory={selectedCategory}
               onCategorySelect={setSelectedCategory}
@@ -602,6 +746,38 @@ export default function KnessetScriptProvider({
               postLoading={postLoading}
               setCurrentScrollPos={setCurrentScrollPos}
             />
+          </div>
+        </div>
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#F5F0EB] px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+          <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
+            <div
+              className={`normal-posts flex flex-row flex-wrap gap-x-10 gap-y-12 justify-end`}
+            >
+              {normalPosts?.map((post: any, index: number) => {
+                return (
+                  <Fragment key={`knesset-entry-${index}`}>
+                    <CustomContentItem
+                      key={index}
+                      data={post}
+                      postLoading={postLoading}
+                    />
+                  </Fragment>
+                );
+              })}
+            </div>
+            {postLoadCount! < postLoadLimit! && (
+              <div
+                ref={readMoreRef}
+                className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
+              >
+                <button
+                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
+                  disabled={isLoadingMore}
+                >
+                  {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </main>
