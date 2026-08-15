@@ -60,6 +60,11 @@ type ContextType = {
   setZatzelPopupIndex: (value: { catIndex: number; postIndex: number }) => void;
   zatzelActivePopup: boolean;
   setZatzelActivePopup: (value: boolean) => void;
+  zatzelSelectedDate: Date | null;
+  setZatzelSelectedDate: (value: Date | null) => void;
+  zatzelSearchedData: string | null;
+  setZatzelSearchedData: (value: string | null) => void;
+
   // Temple States
   templeTabData: {
     tab_title?: string;
@@ -182,6 +187,14 @@ export function AppProvider({
   });
   const [zatzelActivePopup, setZatzelActivePopup] = useState<boolean>(false);
 
+  // Zatzel States
+  const [zatzelSelectedDate, setZatzelSelectedDate] = useState<Date | null>(
+    null,
+  );
+  const [zatzelSearchedData, setZatzelSearchedData] = useState<string | null>(
+    null,
+  );
+
   // Temple States
   const [templeTabData, setTempleTabData] = useState<{ tab_title?: string }[]>(
     [],
@@ -259,12 +272,19 @@ export function AppProvider({
         setAudioFile,
         activeHamburgerMenu,
         setActiveHamburgerMenu,
+        // Zatzel States
         zatzelPosts,
         setZatzelPosts,
         zatzelPopupIndex,
         setZatzelPopupIndex,
         zatzelActivePopup,
         setZatzelActivePopup,
+        zatzelSelectedDate,
+        setZatzelSelectedDate,
+        zatzelSearchedData,
+        setZatzelSearchedData,
+
+        // Temple States
         templeTabData,
         setTempleTabData,
         templeActiveTab,

@@ -85,6 +85,32 @@ export default function Sidebar({
           }}
         >
           <ul className="category-list list-none flex flex-col text-[24px] leading-[1em] gap-y-2 font-medium">
+            <li>
+              <button
+                onClick={() => {
+                  onSearchChange("");
+                  if (onCategorySelect) {
+                    onCategorySelect("0");
+                  }
+                  if (onSearchSubmit) {
+                    onSearchSubmit("");
+                  }
+                  if (setPostLoading) {
+                    setPostLoading(true);
+                  }
+                  if (setCurrentScrollPos) {
+                    setCurrentScrollPos(window.scrollY);
+                  }
+                }}
+                className={`text-[24px] leading-[1em] transition-all duration-300 cursor-pointer ${
+                  activeCategory === "0"
+                    ? "text-[#D1A941]"
+                    : "hover:text-[#999999]"
+                }`}
+              >
+                כל המאמרים
+              </button>
+            </li>
             {catData?.map((item, index) => (
               <li key={index}>
                 <button
@@ -112,28 +138,6 @@ export default function Sidebar({
               </li>
             ))}
           </ul>
-        </div>
-        <div className="reset-filter mt-2">
-          <button
-            onClick={() => {
-              onSearchChange("");
-              if (onCategorySelect) {
-                onCategorySelect("0");
-              }
-              if (onSearchSubmit) {
-                onSearchSubmit("");
-              }
-              if (setPostLoading) {
-                setPostLoading(true);
-              }
-              if (setCurrentScrollPos) {
-                setCurrentScrollPos(window.scrollY);
-              }
-            }}
-            className="text-[24px] leading-[1em] text-[#D1A941] hover:text-[#999999] transition-all duration-300 cursor-pointer"
-          >
-            איפוס מסנן
-          </button>
         </div>
       </div>
       <div className="sidebar-subscription">

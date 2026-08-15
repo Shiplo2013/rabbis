@@ -6,7 +6,6 @@ import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import SimpleBar from "simplebar-react";
-import ArrowLeftIcon2 from "../assets/icons/ArrowLeftIcon2";
 import ViewIcon2 from "../assets/icons/ViewIcon2";
 import WishIcon from "../assets/icons/WishIcon";
 import Wave from "../assets/images/wave.svg";
@@ -28,6 +27,7 @@ import LoadingEffect from "./LoadingEffect";
 import MirrorAudioPlayer from "./music/MirrorAudioPlayer";
 import SubscribeForm from "./sheets/SubscribeForm";
 import TabMenu from "./visit-temple/TabMenu";
+import ZatzelSidebar from "./zatzel/ZatzelSidebar";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -56,6 +56,10 @@ export default function PageFixedElements() {
     knessetSearchQuery,
     setKnessetActiveCategory,
     setKnessetSearchQuery,
+    zatzelPosts,
+    setZatzelPosts,
+    setZatzelSearchedData,
+    setZatzelSelectedDate,
   } = useAppState();
   const [knessetSearchQueryLocal, setKnessetSearchQueryLocal] = useState("");
 
@@ -64,8 +68,6 @@ export default function PageFixedElements() {
   const { isLoading, setIsLoading } = useAppState();
   const { audioFile, setAudioFile } = useAppState();
   const {
-    zatzelPosts,
-    setZatzelPosts,
     templeTabData,
     setTempleTabData,
     templeActiveTab,
@@ -85,6 +87,19 @@ export default function PageFixedElements() {
     listOfRabbis,
   } = useAppState();
   const { zatzelPopupIndex, setZatzelPopupIndex } = useAppState();
+  const [zatzelCurrentPost, setZatzelCurrentPost] = useState<any | null>(null);
+
+  // Zatzel popup Post change
+  useEffect(() => {
+    if (zatzelPopupIndex?.postIndex === 0) return;
+    console.log(zatzelPopupIndex);
+    const currentPost = zatzelPosts?.sections[
+      zatzelPopupIndex?.catIndex
+    ]?.sectionContent.filter(
+      (item: any) => item.id === zatzelPopupIndex?.postIndex,
+    );
+    setZatzelCurrentPost(currentPost[0]);
+  }, [zatzelPopupIndex]);
 
   // Rabbis Data
   const TimelineData = [
@@ -393,7 +408,7 @@ export default function PageFixedElements() {
       {/* Next Previous Pagination */}
 
       {/* Arrow Button */}
-      {pathname === "/zatzel-graduates" && (
+      {/* {pathname === "/zatzel-graduates" && (
         <div
           id="arrow-button"
           className="rabbis-arrow-wrapper fixed top-0 left-0 z-50 h-screen w-[20vw] opacity-0 invisible"
@@ -407,81 +422,82 @@ export default function PageFixedElements() {
             </button>
           </div>
         </div>
-      )}
+      )} */}
       {/* End of Arrow Button */}
 
       {/* Zatzel Graduates Popup */}
       {pathname === "/zatzel-graduates" && (
-        <div
-          id={"zatzel-popup"}
-          className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
-        >
-          <div className="popup-wrapper bg-[#FBF4E6] w-[90vw] sm:w-150 h-full relative z-50 py-[5vh] sm:py-[9.3vh] px-[3.8vw]">
-            <div
-              //ref={popupContent}
-              className="popup-content w-full h-full relative z-30"
-            >
-              <SimpleBar
-                style={{
-                  maxHeight: "100%",
-                  paddingRight: 30,
-                  marginRight: -30,
-                }}
-                autoHide={false}
+        <>
+          <div
+            id="zatzel-popup"
+            className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
+          >
+            <div className="popup-wrapper bg-[#FBF4E6] w-[90vw] sm:w-150 h-full relative z-50 py-[5vh] sm:py-[9.3vh] px-[3.8vw]">
+              <div
+                //ref={popupContent}
+                className="popup-content w-full h-full relative z-30"
               >
-                {zatzelPosts?.sections[zatzelPopupIndex?.catIndex]
-                  ?.sectionContent[zatzelPopupIndex?.postIndex]?.popup
-                  ?.title && (
-                  <div className="title mb-[5vh] flex items-center gap-x-5 justify-between">
-                    <h3 className="text-[32px] sm:text-[40px] lg:text-[55px] leading-[70%] text-[#D1A941] font-bold max-w-[60%]">
-                      {parse(
-                        zatzelPosts?.sections[zatzelPopupIndex?.catIndex]
-                          ?.sectionContent[zatzelPopupIndex?.postIndex]?.popup
-                          ?.title || "",
-                      )}
-                    </h3>
-                    <div className="thumbnail w-32 h-25 sm:min-w-49 sm:w-49 sm:h-41">
-                      {loadingImage && (
-                        <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
-                      )}
-                      <Image
-                        src={
-                          zatzelPosts?.sections[zatzelPopupIndex?.catIndex]
-                            ?.sectionContent[zatzelPopupIndex?.postIndex]?.image
-                            ?.sizes?.thumbnail || ""
-                        }
-                        alt="Popup Thumbnail"
-                        width={196}
-                        height={205}
-                        className={`w-full h-full object-cover object-center transition-all duration-300 ${loadingImage ? "opacity-0" : "opacity-100"}`}
-                        onLoad={() => setLoadingImage(false)}
-                        onChange={() => setLoadingImage(true)}
-                        blurDataURL={CreateShimmerDataUrl(196, 205)}
-                        placeholder="blur"
-                        loading="lazy"
-                      />
+                <SimpleBar
+                  style={{
+                    maxHeight: "100%",
+                    paddingRight: 30,
+                    marginRight: -30,
+                  }}
+                  autoHide={false}
+                >
+                  {zatzelCurrentPost && (
+                    <div className="title mb-[5vh] flex items-center gap-x-5 justify-between">
+                      <h3 className="text-[32px] sm:text-[40px] lg:text-[55px] leading-[70%] text-[#D1A941] font-bold max-w-[60%]">
+                        {parse(zatzelCurrentPost?.popup?.title || "")}
+                      </h3>
+                      <div className="thumbnail w-32 h-25 sm:min-w-49 sm:w-49 sm:h-41">
+                        {loadingImage && (
+                          <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
+                        )}
+                        <Image
+                          src={zatzelCurrentPost?.image?.sizes?.thumbnail || ""}
+                          alt="Popup Thumbnail"
+                          width={196}
+                          height={205}
+                          className={`w-full h-full object-cover object-center transition-all duration-300 ${loadingImage ? "opacity-0" : "opacity-100"}`}
+                          onLoad={() => setLoadingImage(false)}
+                          onChange={() => setLoadingImage(true)}
+                          blurDataURL={CreateShimmerDataUrl(196, 205)}
+                          placeholder="blur"
+                          loading="lazy"
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
-                {zatzelPosts?.sections[zatzelPopupIndex?.catIndex]
-                  ?.sectionContent[zatzelPopupIndex?.postIndex]?.popup
-                  ?.content && (
-                  <div className="content text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-black [&>p:not(:last-child)]:mb-6">
-                    {parse(
-                      zatzelPosts?.sections[zatzelPopupIndex?.catIndex]
-                        ?.sectionContent[zatzelPopupIndex?.postIndex]?.popup
-                        ?.content || "",
-                    )}
-                  </div>
-                )}
-              </SimpleBar>
+                  )}
+                  {zatzelCurrentPost?.popup?.content && (
+                    <div className="content text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-black [&>p:not(:last-child)]:mb-6">
+                      {parse(zatzelCurrentPost?.popup?.content || "")}
+                    </div>
+                  )}
+                </SimpleBar>
+              </div>
+              <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">
+                <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
+              </button>
             </div>
-            <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">
-              <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
-            </button>
+            <div className="overlay fixed top-0 right-0 w-screen h-screen z-30 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"></div>
           </div>
-          <div className="overlay fixed top-0 right-0 w-screen h-screen z-30 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"></div>
-        </div>
+          <div
+            id="zatzel-sidebar"
+            className="zatzel-sidebar fixed top-0 right-15 w-70 h-full bg-[#000000] flex flex-col justify-center z-50 border-l border-[#D1CECE]"
+          >
+            <div className="sheet-sidebar p-6 w-full lg:w-70 lg:min-w-70 h-full will-change-transform relative z-20 flex items-center">
+              <div className="sheet-sidebar-wrapper">
+                <ZatzelSidebar
+                  setSelectedDate={setZatzelSelectedDate}
+                  setSearchedData={setZatzelSearchedData}
+                  setZatzelPosts={setZatzelPosts}
+                  allPosts={zatzelPosts}
+                />
+              </div>
+            </div>
+          </div>
+        </>
       )}
       {/* Zatzel Graduates Popup */}
       {/* Music Page Player and fixed image */}
@@ -745,9 +761,11 @@ export default function PageFixedElements() {
         </div>
       )}
       {/* Single news moving button */}
+
       {/* Donation Page Components */}
       {pathname === "/donation" && <FixedPlayButton />}
       {/* Donation Page Components */}
+
       {/* Community Page Loader */}
       {pathname.startsWith("/communities/") &&
         pathname !== "/communities/sheets" && (

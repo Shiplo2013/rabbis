@@ -8,6 +8,7 @@ interface PostData {
   title: string;
   image: any;
   yearOfDeath: string;
+  id: number;
 }
 interface ChildProps {
   data: PostData;
@@ -36,7 +37,7 @@ export default function SingleZatzelGraduate(props: ChildProps) {
       dir="ltr"
       data-index={props.dataIndex}
       data-date={props.data?.yearOfDeath}
-      className="single-zatzel-post group w-full sm:w-[calc((100%-5vw)/2)] lg:min-w-97.25 lg:w-97.25 backface-hidden will-change-transform cursor-pointer"
+      className="single-zatzel-post group w-full sm:w-[calc((100%-5vw)/2)] lg:w-[calc((100%-120px)/3)] backface-hidden will-change-transform cursor-pointer"
     >
       <div className="post-image w-full h-75 sm:h-60 lg:h-101.5 mb-5 sm:mb-8.5 relative overflow-hidden backface-hidden">
         <Image
