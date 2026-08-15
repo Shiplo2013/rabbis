@@ -12,6 +12,7 @@ import Introduction from "../../components/knesset/Introduction";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 import TextSplitLines from "../../ui/TextSplitLines";
 import { useAppState } from "../AppContext";
+import SubscribeForm from "../sheets/SubscribeForm";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -778,6 +779,9 @@ export default function KnessetScriptProvider({
                 </button>
               </div>
             )}
+            <div className="block lg:hidden">
+              <SubscribeForm mode="dark" />
+            </div>
           </div>
         </div>
       </main>

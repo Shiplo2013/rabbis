@@ -1,18 +1,26 @@
 "use client";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 
 import { useAppState } from "../../components/AppContext";
 import Introduction from "../../components/zatzel/Introduction";
 import ZatzelContentSection from "../../components/zatzel/ZatzelContentSection";
-import GetRightPosition from "../../ui/GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 import TextSplitLines from "../../ui/TextSplitLines";
+import SingleZatzelGraduate from "./SingleZatzelGraduate";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
+
+interface ZatzelPost {
+  title: string;
+  image: any;
+  yearOfDeath: string;
+  id: number;
 }
 
 export default function ZatzelScriptProvider({
@@ -29,13 +37,18 @@ export default function ZatzelScriptProvider({
   });
   const { zatzelPosts, setZatzelPosts } = useAppState();
   const { zatzelPopupIndex, setZatzelPopupIndex } = useAppState();
-  const { zatzelActivePopup, setZatzelActivePopup } = useAppState();
+  const {
+    zatzelActivePopup,
+    setZatzelActivePopup,
+    zatzelSearchedData,
+    setZatzelSearchedData,
+    zatzelSelectedDate,
+    setZatzelSelectedDate,
+  } = useAppState();
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [containerWidth, setContainerWidth] = useState<number>(300);
-  const [sectionWidth, setSectionWidth] = useState<number>(200);
+  const [containerWidth, setContainerWidth] = useState<number>(200);
+  const [sectionWidth, setSectionWidth] = useState<number>(100);
   const [error, setError] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [searchedData, setSearchedData] = useState<string | null>(null);
   // Router Path
   const pathname = usePathname();
 
@@ -51,6 +64,36 @@ export default function ZatzelScriptProvider({
   const main = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
+
+  // Post States
+  const [postPerPage, setPostPerPage] = useState(100);
+  const [postsPerLoad, setPostsPerLoad] = useState(12);
+  const [postLoadCount, setPostLoadCount] = useState(1);
+  const [postLoadLimit, setPostLoadLimit] = useState(
+    Math.ceil(
+      Number(allPosts?.sections?.[0]?.sectionContent?.length || 0) /
+        postsPerLoad,
+    ),
+  );
+  const [isPostLoaded, setIsPostLoaded] = useState(false);
+  const [noPostsFound, setNoPostsFound] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMorePosts, setHasMorePosts] = useState(
+    Number(postData?.[0]?.totalPages ?? 1) > 1,
+  );
+  const [totalPages, setTotalPages] = useState(
+    Number(postData?.[0]?.totalPages ?? 1),
+  );
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [verticalPosts, setVerticalPosts] = useState<{
+    sectionTitle: string;
+    sectionContent: ZatzelPost[];
+  } | null>(null);
+  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
+    threshold: 0,
+    triggerOnce: false,
+  });
 
   const [cardPopupTimeline] = useState(
     gsap.timeline({
@@ -84,6 +127,7 @@ export default function ZatzelScriptProvider({
         data?.acf?.introduction || defaultZatzelPageData.introduction,
       sections: data?.acf?.sections || defaultZatzelPageData.sections,
     });
+    console.log(postData);
     setZatzelPosts({
       sections: postData.length ? postData : defaultZatzelPageData.sections,
     });
@@ -92,41 +136,25 @@ export default function ZatzelScriptProvider({
     });
   }, [data, postData]);
 
+  // Set Posts data when zatzelPosts changes
   useEffect(() => {
-    if (!zatzelPosts) {
-      return;
-    }
-    const updateSectionWidth = () => {
-      const postCount = zatzelPosts.sections.reduce(
-        (acc: any, section: any) => acc + section.sectionContent.length,
-        0,
-      );
-      const newSectionWidth =
-        postCount * 20.26 +
-        (postCount - 1) * 5 +
-        (30 + 280 / 19.2) +
-        (data?.acf?.sections.length - 1) * 10; // 20.26vw per post + 5vw gap + 24vw for padding + 10vw per section
-      const roundWidth = newSectionWidth.toFixed(2);
+    if (!allPosts) return;
 
-      setSectionWidth(parseFloat(roundWidth));
-      setContainerWidth(parseFloat(roundWidth) + 100);
-    };
+    setVerticalPosts({
+      sectionTitle: allPosts?.sections?.[0]?.sectionTitle,
+      sectionContent:
+        allPosts?.sections?.[0]?.sectionContent?.slice(0, 3) || [],
+    });
+    setNormalPosts(
+      allPosts?.sections?.[0]?.sectionContent?.slice(
+        3,
+        postsPerLoad * postLoadCount,
+      ) || [],
+    );
+    setIsLoadingMore(false);
+  }, [allPosts, postLoadCount]);
 
-    updateSectionWidth();
-    window.addEventListener("resize", updateSectionWidth);
-    return () => {
-      window.removeEventListener("resize", updateSectionWidth);
-    };
-  }, [zatzelPosts]);
-
-  // On data updated
-  // useEffect(() => {
-  //   if (zatzelVerticalSection) {
-  //     zatzelVerticalSection.invalidate();
-  //     zatzelVerticalSection.restart();
-  //   }
-  // }, [zatzelPosts]);
-
+  // Set Page Data Fetched
   useEffect(() => {
     if (animationPlayed) {
       setPageDataFetched(true);
@@ -142,7 +170,6 @@ export default function ZatzelScriptProvider({
       main.current &&
       window.innerWidth > 1024
     ) {
-      setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -229,6 +256,7 @@ export default function ZatzelScriptProvider({
 
   // Load Page
   useGSAP(() => {
+    setPageContentAnimation();
     if (typeof window !== "undefined" && panel.current && main.current) {
       document.fonts.ready.then(() => {
         zatzelVerticalSection?.pause();
@@ -380,174 +408,78 @@ export default function ZatzelScriptProvider({
     }
   }, [pageDataFetched, animationPlayed]);
 
+  // Set Page Content Animation
+  const setPageContentAnimation = () => {
+    // Page Content Animation
+    const sidebar = document.getElementById(
+      "zatzel-sidebar",
+    ) as HTMLDivElement | null;
+
+    // Animations
+    if (sidebar && window.innerWidth > 1024) {
+      gsap.set(sidebar, {
+        x: 340,
+      });
+      // Sidebar Animation
+      const handleScroll = () => {
+        const scrollTop = window.scrollY;
+        const windowWidth = window.innerWidth * 1.8;
+        const pageHeight = main?.current?.offsetHeight;
+
+        if (scrollTop > windowWidth) {
+          gsap.to(sidebar, {
+            x: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(sidebar, {
+            x: 340,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        }
+        // Hide sidebar when reaching the end of the page
+        if (scrollTop > (pageHeight || 0) - window.innerHeight) {
+          gsap.to(sidebar, {
+            autoAlpha: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(sidebar, {
+            autoAlpha: 1,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        }
+      };
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    } else {
+      gsap.set(sidebar, {
+        autoAlpha: 0,
+      });
+    }
+  };
+
+  // Load More Posts when inView is true
+  useEffect(() => {
+    if (isReadMoreInView) {
+      setIsLoadingMore(true);
+      setPostLoadCount((prevCount) => prevCount + 1);
+    }
+  }, [isReadMoreInView]);
+
   // Change logo
   useEffect(() => {
     const logo = document.getElementById("logo-light");
     const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
     logoImage?.classList.add("white-image");
   }, [pathname]);
-
-  // Set Page Content Animation
-  const setPageContentAnimation = () => {
-    // Page Content Animation
-    const sheetReadmore = main.current?.querySelector(".sheet-readmore");
-    const sidebar = main.current?.querySelector(
-      ".sheet-sidebar .sheet-sidebar-wrapper",
-    );
-
-    // Animations
-    if (sidebar) {
-      gsap.from(sidebar, {
-        yPercent: 100,
-        opacity: 0,
-        ease: "expo.inOut",
-        duration: 3,
-        delay: -1,
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * 0.3;
-          },
-          toggleActions: "restart none none reverse",
-        },
-      });
-    }
-    // Contents
-    // const zatzelContent = main.current?.querySelectorAll(".zatzel-cat-section");
-    // document.fonts.ready.then(() => {
-    //   if (zatzelContent) {
-    //     zatzelContent.forEach((section) => {
-    //       const sectionTitle = section.querySelector(".zatzel-cat-title h2");
-    //       const sectionItems = section.querySelectorAll(".single-zatzel-post");
-    //       if (sectionTitle) {
-    //         const splitTitle = TextSplitLines(sectionTitle);
-    //         gsap.set(splitTitle, {
-    //           perspective: 400,
-    //         });
-    //         gsap.set(splitTitle, {
-    //           yPercent: 150,
-    //           opacity: 0,
-    //         });
-    //         gsap.to(splitTitle, {
-    //           yPercent: 0,
-    //           opacity: 1,
-    //           delay: 0,
-    //           stagger: 0.05,
-    //           ease: "expo.inOut",
-    //           duration: 1.5,
-    //           scrollTrigger: {
-    //             start: () => {
-    //               return GetRightPosition(section) - window.innerWidth * 0.7;
-    //             },
-    //             toggleActions: "restart none none reverse",
-    //           },
-    //         });
-    //       }
-    //       if (sectionItems) {
-    //         sectionItems.forEach((item) => {
-    //           const postTitle = item.querySelector(".post-text .post-title");
-    //           const postExcerpt = item.querySelector(
-    //             ".post-text .post-excerpt",
-    //           );
-    //           // Post Title
-    //           if (postExcerpt) {
-    //             const postExcerptSplit = TextSplitLines(postExcerpt);
-    //             gsap.set(postExcerpt, {
-    //               perspective: 400,
-    //             });
-    //             gsap.set(postExcerptSplit, {
-    //               yPercent: 150,
-    //               opacity: 0,
-    //             });
-    //             gsap.to(postExcerptSplit, {
-    //               yPercent: 0,
-    //               opacity: 1,
-    //               delay: 0,
-    //               stagger: 0.05,
-    //               ease: "expo.inOut",
-    //               duration: 1.5,
-    //               scrollTrigger: {
-    //                 start: () => {
-    //                   return GetRightPosition(item) - window.innerWidth * 0.7;
-    //                 },
-    //                 toggleActions: "restart none none reverse",
-    //               },
-    //             });
-    //           }
-    //           // Post Title
-    //           if (postTitle) {
-    //             const postTitleSplit = TextSplitLines(postTitle);
-    //             gsap.set(postTitle, {
-    //               perspective: 400,
-    //             });
-    //             gsap.set(postTitleSplit, {
-    //               yPercent: 150,
-    //               opacity: 0,
-    //             });
-    //             gsap.to(postTitleSplit, {
-    //               yPercent: 0,
-    //               opacity: 1,
-    //               delay: 0,
-    //               stagger: 0.05,
-    //               ease: "expo.inOut",
-    //               duration: 1.5,
-    //               scrollTrigger: {
-    //                 start: () => {
-    //                   return GetRightPosition(item) - window.innerWidth * 0.7;
-    //                 },
-    //                 toggleActions: "restart none none reverse",
-    //               },
-    //             });
-    //           }
-    //         });
-    //       }
-    //     });
-    //   }
-    // });
-
-    // Arrow Button Animation
-    const arrowButton = document.getElementById(
-      "arrow-button",
-    ) as HTMLDivElement | null;
-    const arrowWrapper = arrowButton?.querySelector(".rabbis-arrow");
-    if (arrowWrapper) {
-      gsap.set(arrowWrapper, {
-        xPercent: -100,
-      });
-      gsap.to(arrowWrapper, {
-        xPercent: 0,
-        autoAlpha: 1,
-        ease: "expo.inOut",
-        duration: 1.5,
-        delay: 0,
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * 1;
-          },
-          toggleActions: "restart pause resume reverse",
-        },
-      });
-    }
-    // ReadMore Button
-    if (sheetReadmore) {
-      gsap.set(sheetReadmore, {
-        xPercent: -50,
-        autoAlpha: 0,
-      });
-      gsap.to(sheetReadmore, {
-        xPercent: 0,
-        autoAlpha: 1,
-        ease: "expo.inOut",
-        duration: 1,
-        delay: 0,
-        scrollTrigger: {
-          start: () => {
-            return GetRightPosition(sheetReadmore) - window.innerWidth * 0.4;
-          },
-          toggleActions: "restart pause resume reverse",
-        },
-      });
-    }
-  };
 
   // Set Body Overflow Hidden
   useEffect(() => {
@@ -561,6 +493,73 @@ export default function ZatzelScriptProvider({
     }
     return () => {
       document.body.style.overflow = "auto";
+    };
+  }, [isAllAnimationComplete]);
+
+  // Hide header-left on scroll down, show on scroll up (only for this page)
+  useGSAP(() => {
+    if (!isAllAnimationComplete || !main.current) {
+      return;
+    }
+
+    const headerLeft = document.querySelector(
+      "#header .header-left",
+    ) as HTMLElement | null;
+
+    if (!headerLeft) {
+      return;
+    }
+
+    let lastScrollY = window.scrollY;
+    let isHidden = false;
+    const deltaThreshold = 6;
+
+    const showHeaderLeft = () => {
+      if (!isHidden) return;
+      isHidden = false;
+      gsap.to(headerLeft, {
+        y: "0%",
+        autoAlpha: 1,
+        duration: 0.28,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
+    const hideHeaderLeft = () => {
+      if (isHidden) return;
+      isHidden = true;
+      gsap.to(headerLeft, {
+        y: "-120%",
+        autoAlpha: 0,
+        duration: 0.22,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      const diff = currentScrollY - lastScrollY;
+
+      if (Math.abs(diff) < deltaThreshold) {
+        return;
+      }
+
+      if (currentScrollY <= 10 || diff < 0) {
+        showHeaderLeft();
+      } else if (diff > 0) {
+        hideHeaderLeft();
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      gsap.set(headerLeft, { clearProps: "transform,opacity,visibility" });
     };
   }, [isAllAnimationComplete]);
 
@@ -656,13 +655,15 @@ export default function ZatzelScriptProvider({
 
   // Filter Posts by Selected Date
   useEffect(() => {
-    if (selectedDate !== null) {
+    if (zatzelSelectedDate !== null) {
       let isMounted = true;
-      const filteredSections = allPosts.sections.map((section) => {
+      const filteredSections = postData.map((section: any) => {
         const filteredContent = section.sectionContent.filter(
           (post: { yearOfDeath: string }) => {
             const postDate = new Date(post.yearOfDeath);
-            return postDate.getTime() === new Date(selectedDate).getTime();
+            return (
+              postDate.getTime() === new Date(zatzelSelectedDate).getTime()
+            );
           },
         );
         return {
@@ -671,30 +672,36 @@ export default function ZatzelScriptProvider({
         };
       });
       if (isMounted) {
-        console.log("Filtered Sections:", filteredSections);
         if (
           filteredSections.length > 0 &&
-          filteredSections.some((section) => section.sectionContent.length > 0)
+          filteredSections.some(
+            (section: any) => section.sectionContent.length > 0,
+          )
         ) {
-          setZatzelPosts({ sections: filteredSections });
+          setAllPosts({ sections: filteredSections });
         } else {
-          setZatzelPosts(allPosts);
+          setNoPostsFound(true);
+          setAllPosts({ sections: [] });
         }
       }
-      return () => {
-        isMounted = false;
-      };
+      window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+    } else {
+      setNoPostsFound(false);
+      setAllPosts({
+        sections: postData.length ? postData : defaultZatzelPageData.sections,
+      });
+      window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     }
-  }, [selectedDate]);
+  }, [zatzelSelectedDate]);
 
   // Filter Posts by Selected Date
   useEffect(() => {
-    if (searchedData !== null) {
+    if (zatzelSearchedData !== null) {
       let isMounted = true;
-      const filteredSections = allPosts.sections.map((section) => {
+      const filteredSections = postData.map((section: any) => {
         const filteredContent = section.sectionContent.filter(
           (post: { title: string }) => {
-            return post.title.includes(searchedData);
+            return post.title.includes(zatzelSearchedData);
           },
         );
         return {
@@ -706,18 +713,25 @@ export default function ZatzelScriptProvider({
         console.log("Filtered Sections:", filteredSections);
         if (
           filteredSections.length > 0 &&
-          filteredSections.some((section) => section.sectionContent.length > 0)
+          filteredSections.some(
+            (section: any) => section.sectionContent.length > 0,
+          )
         ) {
-          setZatzelPosts({ sections: filteredSections });
+          setAllPosts({ sections: filteredSections });
         } else {
-          setZatzelPosts(allPosts);
+          setNoPostsFound(true);
+          setAllPosts({ sections: [] });
         }
       }
-      return () => {
-        isMounted = false;
-      };
+      window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+    } else {
+      setNoPostsFound(false);
+      setAllPosts({
+        sections: postData.length ? postData : defaultZatzelPageData.sections,
+      });
+      window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     }
-  }, [searchedData]);
+  }, [zatzelSearchedData]);
 
   if (error) {
     return (
@@ -759,7 +773,12 @@ export default function ZatzelScriptProvider({
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse lg:w-[${containerWidth}vw] lg:h-screen items-center will-change-transform flex-col`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center will-change-transform flex-col`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -782,16 +801,51 @@ export default function ZatzelScriptProvider({
               }}
             />
             <ZatzelContentSection
-              extraClass={`w-full lg:min-w-[${sectionWidth}vw] lg:w-[${sectionWidth}vw] lg:h-screen panel-section will-change-transform py-[10vw] lg:py-[5vw] px-[6.25vw]`}
-              animWidthText={1}
-              sectionData={
-                zatzelPosts.sections || defaultZatzelPageData.sections
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
               }
-              setSelectedDate={setSelectedDate}
-              setSearchedData={setSearchedData}
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[10vw] lg:py-[5vw] px-[8vw] lg:px-14.5`}
+              animWidthText={1}
+              sectionData={verticalPosts || defaultZatzelPageData.sections[0]}
+              setSelectedDate={setZatzelSelectedDate}
+              setSearchedData={setZatzelSearchedData}
               setZatzelPosts={setZatzelPosts}
               allPosts={allPosts}
             />
+          </div>
+        </div>
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+          <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
+            <div
+              className={`normal-posts w-full flex flex-row flex-wrap gap-x-15 max-w-full lg:w-7xl gap-y-12 justify-end`}
+            >
+              {normalPosts?.map((post: any, index: number) => {
+                return (
+                  <Fragment key={`sheet-entry-${index}`}>
+                    <SingleZatzelGraduate
+                      key={index}
+                      dataIndex={index}
+                      data={post}
+                    />
+                  </Fragment>
+                );
+              })}
+            </div>
+            {postLoadCount! < postLoadLimit! && (
+              <div
+                ref={readMoreRef}
+                className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
+              >
+                <button
+                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
+                  disabled={isLoadingMore}
+                >
+                  {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </main>

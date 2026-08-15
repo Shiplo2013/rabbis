@@ -41,7 +41,7 @@ export default async function Page() {
       }
 
       const sectionPostsResponse = await wpFetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/zatzel-graduates?acf_format=standard&include=${sectionPostIds.join(",")}&orderby=menu_order&order=asc&per_page=100&_fields=id,slug,title,acf`,
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/zatzel-graduates?acf_format=standard&include=${sectionPostIds.join(",")}&orderby=menu_order&order=asc&_fields=id,slug,title,acf&per_page=100&page=1`,
         {
           next: { revalidate: 60 }, // Cache data for 1 minute
         },
@@ -59,6 +59,7 @@ export default async function Page() {
         [],
         `zatzel-graduates-section-${section?.section_title || "unknown"}`,
       );
+      const totalPages = sectionPostsResponse.headers.get("X-WP-TotalPages");
       const sectionPostsData = Array.isArray(parsedSectionPosts)
         ? parsedSectionPosts
         : [];
@@ -68,11 +69,13 @@ export default async function Page() {
         image: post?.acf?.thumbnail || "",
         yearOfDeath: post?.acf?.year_of_death || "",
         popup: post?.acf?.popup || "",
+        id: post?.id || 0,
       }));
 
       return {
         sectionTitle: section?.section_title || "",
         sectionContent,
+        totalPages: totalPages ? parseInt(totalPages, 10) : 1,
       };
     }),
   );

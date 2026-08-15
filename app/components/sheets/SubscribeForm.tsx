@@ -6,6 +6,7 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
   return (
     <form
       action={action}
+      dir="rtl"
       className={`subscribe-form p-5 w-full lg:w-full will-change-transform flex flex-col justify-center ${mode === "dark" ? "bg-[#000000] text-white" : "bg-[#C3A13F] text-white"}`}
     >
       <div className="subscribe-form-wrapper">

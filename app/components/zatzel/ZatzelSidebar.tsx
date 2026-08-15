@@ -15,7 +15,7 @@ interface SidebarProps {
   allPosts?: any;
 }
 
-export default function Sidebar({
+export default function ZatzelSidebar({
   setSelectedDate,
   setSearchedData,
   setZatzelPosts,
