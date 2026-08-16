@@ -1,6 +1,7 @@
 import SingleCyclePicture from "@/app/ui/SingleCyclePicture";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import parse from "html-react-parser";
 import { useEffect, useRef } from "react";
+import SimpleBar from "simplebar-react";
 import { useAppState } from "../AppContext";
 
 interface ChildProps {
@@ -10,9 +11,7 @@ interface ChildProps {
   parentCategories?: any;
   activeCategory: number;
   setActiveCategory: (index: number) => void;
-  postPagination: number;
   totalPostPages: number;
-  setPostPagination: (page: number) => void;
   style?: React.CSSProperties; // Optional style prop
 }
 
@@ -22,11 +21,12 @@ export default function CyclePicturesSection(props: ChildProps) {
   // Section Data
   const SectionData = props.sectionData || [];
   const years = props.parentCategories || [];
-  const { isLoading, setIsLoading } = useAppState();
-  const pathname = usePathname();
-  const router = useRouter();
-  const params = useParams();
-  const currentID = params.slug; // Extracts the ID from the URL
+  const {
+    isLoading,
+    setIsLoading,
+    cycleActiveCategory,
+    setCycleActiveCategory,
+  } = useAppState();
 
   // Section Animation
   useEffect(() => {
@@ -42,26 +42,23 @@ export default function CyclePicturesSection(props: ChildProps) {
       style={props.style} // Apply the optional style prop
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
-      <div className="sheet-wrapper w-full min-w-[80vw] h-auto flex items-center gap-x-[10vw] flex-col lg:flex-row">
-        {/* <div className="sheet-sidebar min-w-50 w-50 h-full will-change-transform overflow-hidden">
+      <div className="sheet-wrapper w-full min-w-[80vw] h-auto flex items-center gap-x-[10vw] flex-col lg:flex-row lg:pr-85">
+        <div className="sheet-sidebar block lg:hidden min-w-50 w-full h-full will-change-transform overflow-hidden mb-10">
           <div className="sheet-sidebar-wrapper">
             <div ref={scrollbarRef} className="sheet-scrollbar-wrapper">
               <SimpleBar
-                style={{ maxHeight: "60vh" }}
+                style={{ maxHeight: "100%" }}
                 autoHide={false}
                 data-simplebar-direction="rtl"
               >
-                <div className="year-month-categories pl-10 pr-2.5">
+                <div className="year-month-categories pl-2.5 lg:pl-10 pr-2.5">
                   <button
-                    disabled={currentID === undefined || isLoading}
+                    disabled={cycleActiveCategory === -1 || isLoading}
                     onClick={(e) => {
                       e.preventDefault();
-                      props.setActiveCategory(-1);
-                      setIsLoading(true);
-                      window.scrollTo(0, 0);
-                      router.push(`/cycle-pictures/`);
+                      setCycleActiveCategory(-1);
                     }}
-                    className={`all-post block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] border-t hover:bg-[#00000058] hover:text-[#ffffff] ${currentID === undefined ? "bg-[#00000058] text-[#ffffff] " : "bg-transparent text-[#CD5E41]"}`}
+                    className={`all-post block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] border-t hover:bg-[#00000058] hover:text-[#ffffff] ${cycleActiveCategory === -1 ? "bg-[#00000058] text-[#ffffff] " : "bg-transparent text-[#CD5E41]"}`}
                   >
                     הכל
                   </button>
@@ -69,15 +66,14 @@ export default function CyclePicturesSection(props: ChildProps) {
                     return (
                       <button
                         key={index}
-                        disabled={Number(currentID) === item.id || isLoading}
+                        disabled={
+                          Number(cycleActiveCategory) === item.id || isLoading
+                        }
                         onClick={(e) => {
                           e.preventDefault();
-                          props.setActiveCategory(item.id);
-                          setIsLoading(true);
-                          window.scrollTo(0, 0);
-                          router.push(`/cycle-pictures/cat/${item.id}`);
+                          setCycleActiveCategory(item.id);
                         }}
-                        className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-all duration-300 ${Number(currentID) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
+                        className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-all duration-300 ${Number(cycleActiveCategory) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
                       >
                         {parse(item.name || "")}
                       </button>
@@ -87,8 +83,8 @@ export default function CyclePicturesSection(props: ChildProps) {
               </SimpleBar>
             </div>
           </div>
-        </div> */}
-        <div className="sheet-content flex items-center gap-x-[10vw] w-full will-change-transform flex-col lg:flex-row gap-y-10 sm:gap-y-15">
+        </div>
+        <div className="sheet-content flex items-center gap-x-15 w-full will-change-transform flex-col lg:flex-row gap-y-10 sm:gap-y-15">
           {SectionData?.length > 0 ? (
             SectionData?.map((item: any, index: number) => (
               <SingleCyclePicture key={index} data={item} />
@@ -101,16 +97,6 @@ export default function CyclePicturesSection(props: ChildProps) {
             </div>
           )}
         </div>
-        {props.postPagination < props.totalPostPages && (
-          <div
-            onClick={() => props.setPostPagination(props.postPagination + 1)}
-            className="sheet-readmore min-w-50"
-          >
-            <button className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-[#C3A13F] hover:border-[#C3A13F] transition-all duration-500">
-              טען עוד
-            </button>
-          </div>
-        )}
       </div>
     </section>
   );

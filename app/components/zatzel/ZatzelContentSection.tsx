@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import ZatzelPostCat from "./ZatzelPostCat";
 import ZatzelSidebar from "./ZatzelSidebar";
 
@@ -28,10 +27,6 @@ interface ChildProps {
 
 export default function ZatzelContentSection(props: ChildProps) {
   const SectionData = props.sectionData;
-
-  useEffect(() => {
-    console.log(props.sectionData);
-  }, [props.sectionData]);
 
   return (
     <section

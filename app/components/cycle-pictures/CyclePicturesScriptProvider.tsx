@@ -1,9 +1,11 @@
 "use client";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 
+import SingleCyclePicture from "@/app/ui/SingleCyclePicture";
+import { useInView } from "react-intersection-observer";
 import CyclePicturesSection from "../../components/cycle-pictures/CyclePicturesSection";
 import Introduction from "../../components/cycle-pictures/Introduction";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
@@ -22,13 +24,12 @@ export default function CyclePicturesScriptProvider({
   // Selectors
   const [picturesPageData, setPicturesPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(300);
-  const [sectionWidth, setSectionWidth] = useState(200);
+  const [containerWidth, setContainerWidth] = useState(200);
+  const [sectionWidth, setSectionWidth] = useState(100);
   const [error, setError] = useState<string | null>(null);
   // Router Path
   const pathname = usePathname();
   const [activeCategory, setActiveCategory] = useState(-1);
-  const [postPagination, setPostPagination] = useState(1);
   const [totalPostPages, setTotalPostPages] = useState(1);
   const [currentPositions, setCurrentPositions] = useState(0);
   const [postDataLoaded, setPostDataLoaded] = useState(false);
@@ -38,8 +39,9 @@ export default function CyclePicturesScriptProvider({
     setIsLoading,
     animationPlayed,
     setAnimationPlayed,
-    cyclePostNavigation,
-    setCyclePostNavigation,
+    cycleCategories,
+    setCycleCategories,
+    cycleActiveCategory,
   } = useAppState();
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
   // Vertical Section
@@ -51,6 +53,29 @@ export default function CyclePicturesScriptProvider({
   const main = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
+  const [allPosts, setAllPosts] = useState<any | []>([]);
+  const [postPerPage, setPostPerPage] = useState(100);
+  const [postsPerLoad, setPostsPerLoad] = useState(12);
+  const [postLoadCount, setPostLoadCount] = useState(1);
+  const [postLoadLimit, setPostLoadLimit] = useState(
+    Math.ceil(Number(data?.postsData?.posts?.length || 0) / postsPerLoad),
+  );
+  const [isPostLoaded, setIsPostLoaded] = useState(false);
+  const [noPostsFound, setNoPostsFound] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMorePosts, setHasMorePosts] = useState(
+    Number(data?.postsData?.totalPage ?? 1) > 1,
+  );
+  const [totalPages, setTotalPages] = useState(
+    Number(data?.postsData?.totalPage ?? 1),
+  );
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
+  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
+    threshold: 0,
+    triggerOnce: false,
+  });
 
   // Get Page Data From backend
   useEffect(() => {
@@ -60,11 +85,53 @@ export default function CyclePicturesScriptProvider({
     }
     setPicturesPageData({
       introduction: data.pageData?.acf?.introduction,
-      posts: data.postsData,
+      posts: data.postsData?.posts,
       parentCategories: data.categoryData,
     });
+    setAllPosts(data.postsData?.posts || []);
+    setCycleCategories(data.categoryData);
   }, [data]);
 
+  // All posts data loaded
+  useEffect(() => {
+    if (!allPosts) {
+      return;
+    }
+    setVerticalPosts(allPosts?.slice(0, 2) || []);
+    setNormalPosts(allPosts?.slice(2, postsPerLoad * postLoadCount) || []);
+    setIsLoadingMore(false);
+  }, [allPosts, postLoadCount]);
+
+  // Load More Posts when inView is true
+  useEffect(() => {
+    if (isReadMoreInView) {
+      setIsLoadingMore(true);
+      setPostLoadCount((prevCount) => prevCount + 1);
+    }
+  }, [isReadMoreInView]);
+
+  // On Category select
+  useEffect(() => {
+    if (cycleActiveCategory === -1) {
+      setAllPosts(data.postsData?.posts || []);
+    } else {
+      const filteredPosts = data.postsData?.posts?.filter((post: any) => {
+        const postCategoryId = post?.committee_cat?.[0] || 0;
+        return postCategoryId === cycleActiveCategory;
+      });
+      if (filteredPosts?.length === 0) {
+        setNoPostsFound(true);
+        setAllPosts([]);
+      } else {
+        setNoPostsFound(false);
+        setAllPosts(filteredPosts);
+      }
+    }
+
+    window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+  }, [cycleActiveCategory]);
+
+  // Page data loaded
   useEffect(() => {
     if (!picturesPageData) {
       return;
@@ -139,42 +206,15 @@ export default function CyclePicturesScriptProvider({
       animations.push(bannerBackgroundOverlayAnim);
     }
 
-    gsap.to(window, {
-      scrollTo: postPagination * window.innerWidth,
-      duration: 0,
-      ease: "none",
-    });
-
     // Return
     return () => {
       animations.forEach((anim) => anim.kill());
     };
   }, [postDataLoaded]);
 
-  useEffect(() => {
-    if (!picturesPageData) {
-      return;
-    }
-    // Update Section Width on Data Change
-    const updateSectionWidth = () => {
-      const newSectionWidth =
-        10 +
-        picturesPageData.posts.length * 44.27 +
-        picturesPageData.posts.length * 10;
-
-      setSectionWidth(newSectionWidth < 100 ? 100 : newSectionWidth);
-      setContainerWidth((newSectionWidth < 100 ? 100 : newSectionWidth) + 100);
-    };
-
-    updateSectionWidth();
-    window.addEventListener("resize", updateSectionWidth);
-    return () => {
-      window.removeEventListener("resize", updateSectionWidth);
-    };
-  }, [picturesPageData]);
-
   // Page Section Animation
   useGSAP(() => {
+    setPageContentAnimation();
     if (
       typeof window !== "undefined" &&
       panel.current &&
@@ -423,6 +463,64 @@ export default function CyclePicturesScriptProvider({
     logoImage?.classList.add("white-image");
   }, [pathname]);
 
+  // Set Page Content Animation
+  const setPageContentAnimation = () => {
+    // Page Content Animation
+    const sidebar = document.getElementById(
+      "cycle-sidebar",
+    ) as HTMLDivElement | null;
+
+    // Animations
+    if (sidebar && window.innerWidth > 1024) {
+      gsap.set(sidebar, {
+        x: 340,
+      });
+      // Sidebar Animation
+      const handleScroll = () => {
+        const scrollTop = window.scrollY;
+        const windowWidth = window.innerWidth * 1.8;
+        const pageHeight = main?.current?.offsetHeight;
+
+        if (scrollTop > windowWidth) {
+          gsap.to(sidebar, {
+            x: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(sidebar, {
+            x: 340,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        }
+        // Hide sidebar when reaching the end of the page
+        if (scrollTop > (pageHeight || 0) - window.innerHeight) {
+          gsap.to(sidebar, {
+            autoAlpha: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(sidebar, {
+            autoAlpha: 1,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        }
+      };
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    } else {
+      gsap.set(sidebar, {
+        autoAlpha: 0,
+      });
+    }
+  };
+
   // Set Body Overflow Hidden
   useEffect(() => {
     if (isAllAnimationComplete) {
@@ -435,6 +533,73 @@ export default function CyclePicturesScriptProvider({
     }
     return () => {
       document.body.style.overflow = "auto";
+    };
+  }, [isAllAnimationComplete]);
+
+  // Hide header-left on scroll down, show on scroll up (only for this page)
+  useGSAP(() => {
+    if (!isAllAnimationComplete || !main.current) {
+      return;
+    }
+
+    const headerLeft = document.querySelector(
+      "#header .header-left",
+    ) as HTMLElement | null;
+
+    if (!headerLeft) {
+      return;
+    }
+
+    let lastScrollY = window.scrollY;
+    let isHidden = false;
+    const deltaThreshold = 6;
+
+    const showHeaderLeft = () => {
+      if (!isHidden) return;
+      isHidden = false;
+      gsap.to(headerLeft, {
+        y: "0%",
+        autoAlpha: 1,
+        duration: 0.28,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
+    const hideHeaderLeft = () => {
+      if (isHidden) return;
+      isHidden = true;
+      gsap.to(headerLeft, {
+        y: "-120%",
+        autoAlpha: 0,
+        duration: 0.22,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      const diff = currentScrollY - lastScrollY;
+
+      if (Math.abs(diff) < deltaThreshold) {
+        return;
+      }
+
+      if (currentScrollY <= 10 || diff < 0) {
+        showHeaderLeft();
+      } else if (diff > 0) {
+        hideHeaderLeft();
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      gsap.set(headerLeft, { clearProps: "transform,opacity,visibility" });
     };
   }, [isAllAnimationComplete]);
 
@@ -508,16 +673,42 @@ export default function CyclePicturesScriptProvider({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[10vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]`}
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[10vh] lg:py-[5vw] px-[8vw] lg:px-15`}
               animWidthText={1}
-              sectionData={picturesPageData.posts}
-              parentCategories={picturesPageData.parentCategories}
+              sectionData={verticalPosts}
+              parentCategories={cycleCategories}
               activeCategory={activeCategory}
               setActiveCategory={setActiveCategory}
-              postPagination={postPagination}
               totalPostPages={totalPostPages}
-              setPostPagination={setPostPagination}
             />
+          </div>
+        </div>
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+          <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
+            <div
+              className={`normal-posts flex flex-row flex-wrap gap-x-15 gap-y-15 justify-end`}
+            >
+              {normalPosts?.map((post: any, index: number) => {
+                return (
+                  <Fragment key={`sheet-entry-${index}`}>
+                    <SingleCyclePicture key={index} data={post} />
+                  </Fragment>
+                );
+              })}
+            </div>
+            {postLoadCount! < postLoadLimit! && (
+              <div
+                ref={readMoreRef}
+                className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
+              >
+                <button
+                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
+                  disabled={isLoadingMore}
+                >
+                  {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </main>

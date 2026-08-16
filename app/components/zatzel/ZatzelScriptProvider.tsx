@@ -1,7 +1,7 @@
 "use client";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 
@@ -69,12 +69,7 @@ export default function ZatzelScriptProvider({
   const [postPerPage, setPostPerPage] = useState(100);
   const [postsPerLoad, setPostsPerLoad] = useState(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(
-    Math.ceil(
-      Number(allPosts?.sections?.[0]?.sectionContent?.length || 0) /
-        postsPerLoad,
-    ),
-  );
+  const [postLoadLimit, setPostLoadLimit] = useState(0);
   const [isPostLoaded, setIsPostLoaded] = useState(false);
   const [noPostsFound, setNoPostsFound] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -127,7 +122,6 @@ export default function ZatzelScriptProvider({
         data?.acf?.introduction || defaultZatzelPageData.introduction,
       sections: data?.acf?.sections || defaultZatzelPageData.sections,
     });
-    console.log(postData);
     setZatzelPosts({
       sections: postData.length ? postData : defaultZatzelPageData.sections,
     });
@@ -139,15 +133,20 @@ export default function ZatzelScriptProvider({
   // Set Posts data when zatzelPosts changes
   useEffect(() => {
     if (!allPosts) return;
-
+    setPostLoadLimit(
+      Math.ceil(
+        Number(allPosts?.sections?.[0]?.sectionContent?.length || 0) /
+          postsPerLoad,
+      ),
+    );
     setVerticalPosts({
       sectionTitle: allPosts?.sections?.[0]?.sectionTitle,
       sectionContent:
-        allPosts?.sections?.[0]?.sectionContent?.slice(0, 3) || [],
+        allPosts?.sections?.[0]?.sectionContent?.slice(0, 4) || [],
     });
     setNormalPosts(
       allPosts?.sections?.[0]?.sectionContent?.slice(
-        3,
+        4,
         postsPerLoad * postLoadCount,
       ) || [],
     );
@@ -566,14 +565,12 @@ export default function ZatzelScriptProvider({
   // Popup Animation
   useGSAP(() => {
     // Popup Animation
-    const cardButton = main.current?.querySelectorAll(".single-zatzel-post");
     const popupCard = document.getElementById(
       "zatzel-popup",
     ) as HTMLDivElement | null;
     // Card Popup Elements
     const popupOverlay = popupCard?.querySelector(".overlay");
     const popupWrapper = popupCard?.querySelector(".popup-wrapper");
-    const closeButton = popupCard?.querySelector("button.close-btn");
 
     // Card Popup Animation
     if (popupCard) {
@@ -611,42 +608,18 @@ export default function ZatzelScriptProvider({
         "-=1",
       );
     }
-    // Card Button click Event
-    if (cardButton) {
-      cardButton?.forEach((button) => {
-        button.addEventListener("click", () => {
-          const index = button.getAttribute("data-index");
-          const catIndex = button
-            .closest(".zatzel-cat-section")
-            ?.getAttribute("data-index");
-          if (index && catIndex) {
-            setZatzelPopupIndex({
-              catIndex: parseInt(catIndex),
-              postIndex: parseInt(index),
-            });
-          }
-          setZatzelActivePopup(true);
-          document.body.classList.add("!overflow-hidden");
-          document.body.classList.remove("!overflow-auto");
-        });
-      });
-    }
-    // Close Popup on Overlay Click
-    if (popupOverlay) {
-      popupOverlay?.addEventListener("click", () => {
-        setZatzelActivePopup(false);
-        document.body.classList.remove("!overflow-hidden");
-        document.body.classList.add("!overflow-auto");
-      });
-    }
-    if (closeButton) {
-      closeButton?.addEventListener("click", () => {
-        setZatzelActivePopup(false);
-        document.body.classList.remove("!overflow-hidden");
-        document.body.classList.add("!overflow-auto");
-      });
-    }
   }, [pathname, pageDataFetched]);
+
+  // On Active popup
+  useEffect(() => {
+    if (zatzelActivePopup) {
+      document.body.classList.add("!overflow-hidden");
+      document.body.classList.remove("!overflow-auto");
+    } else {
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
+    }
+  }, [zatzelActivePopup]);
 
   // Play Card Popup Animation
   useGSAP(() => {
@@ -819,17 +792,16 @@ export default function ZatzelScriptProvider({
         <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
           <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
             <div
-              className={`normal-posts w-full flex flex-row flex-wrap gap-x-15 max-w-full lg:w-7xl gap-y-12 justify-end`}
+              className={`normal-posts w-full flex flex-row flex-wrap gap-x-10 gap-y-10 lg:gap-y-15 justify-end`}
             >
               {normalPosts?.map((post: any, index: number) => {
                 return (
-                  <Fragment key={`sheet-entry-${index}`}>
-                    <SingleZatzelGraduate
-                      key={index}
-                      dataIndex={index}
-                      data={post}
-                    />
-                  </Fragment>
+                  <SingleZatzelGraduate
+                    key={index}
+                    dataIndex={post?.id}
+                    data={post}
+                    catIndex={0}
+                  />
                 );
               })}
             </div>
