@@ -24,6 +24,9 @@ interface ChildProps {
   data?: any;
   offsetTopTimeline?: number;
   offsetTopAdded?: boolean;
+  onMouseMove: any;
+  onMouseEnter: any;
+  onMouseLeave: any;
 }
 
 export default function LambOfferingSection(props: ChildProps) {
@@ -391,6 +394,7 @@ export default function LambOfferingSection(props: ChildProps) {
     <section
       ref={wrapper}
       dir="rtl"
+      onMouseMove={props.onMouseMove}
       className={`${props.extraClass} bg-black flex items-center overflow-hidden relative z-20`}
       data-scroll-section={props.animWidthText}
     >
@@ -410,6 +414,8 @@ export default function LambOfferingSection(props: ChildProps) {
           >
             <div
               ref={image1Ref}
+              onMouseEnter={props.onMouseEnter}
+              onMouseLeave={props.onMouseLeave}
               className="image1 w-[80%] sm:w-100 h-auto lg:w-[31.35vw] lg:h-[40.15vh] absolute bottom-[15vh] lg:bottom-[19vh] right-0 lg:-right-[6.66vw] z-10 cursor-grab active:cursor-grabbing select-none touch-none"
               style={{ zIndex: draggingImage === 1 ? 50 : undefined }}
               onDoubleClick={(e) => e.preventDefault()}
@@ -452,6 +458,8 @@ export default function LambOfferingSection(props: ChildProps) {
           >
             <div
               ref={image3Ref}
+              onMouseEnter={props.onMouseEnter}
+              onMouseLeave={props.onMouseLeave}
               className="image3 w-[60%] sm:w-80 h-auto lg:w-[25vw] lg:h-[60vh] absolute bottom-[9vh] right-[35vw] lg:right-[20vw] -rotate-[7.84deg] cursor-grab active:cursor-grabbing select-none touch-none"
               style={{ zIndex: draggingImage === 3 ? 50 : undefined }}
               onDoubleClick={(e) => e.preventDefault()}
@@ -500,11 +508,11 @@ export default function LambOfferingSection(props: ChildProps) {
           className="section-content w-full lg:w-[58vw] flex flex-col gap-y-8 lg:gap-y-[4.8vh] text-right"
         >
           <div className="content-top">
-            <h2 className="title lg:text-[58px] sm:text-[42px] text-[32px] leading-[0.7em] text-[#CD5E41]">
+            <h2 className="title 2xl:text-[58px] sm:text-[42px] text-[32px] leading-[0.7em] text-[#CD5E41]">
               {parse(sectionData[0]?.title)}
             </h2>
           </div>
-          <div className="content-bottom lg:text-[21px] sm:text-[18px] text-[16px] flex gap-x-[5.2vw] flex-col lg:flex-row gap-y-10">
+          <div className="content-bottom 2xl:text-[21px] sm:text-[18px] text-[16px] flex gap-x-[5.2vw] flex-col lg:flex-row gap-y-10">
             <div className="text1 w-full lg:w-1/2">
               {parse(sectionData[0]?.text2)}
             </div>

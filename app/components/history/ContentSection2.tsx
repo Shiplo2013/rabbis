@@ -179,9 +179,9 @@ export default function ContentSection2(props: ChildProps) {
       <div className="absolute top-0 left-0 w-full h-full z-10">
         <VideoBackground />
       </div>
-      <div className="w-full h-full flex items-center justify-center flex-col lg:flex-row-reverse text-[16px] sm:text-[18px] lg:text-[21px] text-[#3D3B37] gap-y-7 gap-x-[7.5vw] py-[8vh] lg:py-0 px-[8vw] lg:px-[10.4vw] relative z-20">
+      <div className="w-full h-full flex items-center justify-center flex-col lg:flex-row-reverse text-[16px] sm:text-[18px] 2xl:text-[21px] text-[#3D3B37] gap-y-7 gap-x-[7.5vw] py-[8vh] lg:py-0 px-[8vw] lg:px-[10.4vw] relative z-20">
         <div className="w-full lg:w-1/2">
-          <div className="text-[22px] sm:text-[32px] lg:text-[44px] leading-[1em] mb-5 w-full">
+          <div className="text-[22px] sm:text-[32px] 2xl:text-[44px] leading-[1em] mb-5 w-full">
             {props.loadAnimation && (
               <h2
                 ref={heading}

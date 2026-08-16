@@ -994,6 +994,25 @@ export default function HistoryScriptProvider({
     );
   }
 
+  // Dragable Image cursor pointer text
+  const { contextSafe } = useGSAP();
+  // Cursor Follower Function
+  const moveCircle = contextSafe(
+    (e: { screenY: number; clientX: any; clientY: any }) => {
+      const yskale = -(e.screenY / 100) * 1;
+      //console.log(e.clientX, e.clientY)
+      gsap.to("#drag-me", { x: e.clientX, y: e.clientY, duration: 0.2 });
+    },
+  );
+  // On Mouse Enter
+  const handleMouseEnter = contextSafe(() => {
+    gsap.to("#drag-me", { opacity: 1, scale: 1 });
+  });
+  // On Mouse Leave
+  const handleMouseLeave = contextSafe(() => {
+    gsap.to("#drag-me", { opacity: 0, scale: 0 });
+  });
+
   return (
     chroniclesPageData && (
       <main ref={main} id="page" dir="ltr" className="main relative z-10">
@@ -1220,6 +1239,9 @@ export default function HistoryScriptProvider({
                     []
                   }
                   offsetTopTimeline={pageDataFetched ? offsetTopTimeline2 : 0}
+                  onMouseMove={moveCircle}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
                 />
               </Suspense>
               <Suspense
@@ -1468,6 +1490,9 @@ export default function HistoryScriptProvider({
                   }
                   offsetTopTimeline={pageDataFetched ? offsetTopTimeline3 : 0}
                   offsetTopAdded={offsetTopAdded}
+                  onMouseMove={moveCircle}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
                 />
               </Suspense>
             </div>

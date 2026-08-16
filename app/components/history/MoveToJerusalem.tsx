@@ -217,7 +217,7 @@ export default function MoveToJerusalem(props: ChildProps) {
       <div className="widget-wrapper w-full h-full flex items-center">
         <div className="content-wrapper flex py-[7vh] px-[8vw] lg:py-0 lg:pl-0 lg:pr-[35vw] items-center flex-col lg:flex-row gap-y-[7vh]">
           <div className="image1 w-full lg:w-auto lg:ml-11 relative will-change-transform">
-            <div className="relative w-full h-auto lg:h-143.5 lg:w-188.75">
+            <div className="relative w-full h-auto 2xl:h-143.5 2xl:w-188.75 lg:w-150">
               <Image
                 className="w-full object-cover object-center h-full"
                 src={props.data?.image_1?.sizes?.large || mtjImage1.src}
@@ -238,7 +238,7 @@ export default function MoveToJerusalem(props: ChildProps) {
             </div>
           </div>
           <div className="image2 w-full lg:w-auto lg:ml-[9.1vw] will-change-transform">
-            <div className="relative w-full h-auto lg:h-140 lg:w-236.5">
+            <div className="relative w-full h-auto 2xl:h-140 2xl:w-236.5 lg:w-180">
               <Image
                 className="w-full object-cover object-center h-full"
                 src={props.data?.image_2?.sizes?.large || mtjImage2.src}
@@ -255,7 +255,7 @@ export default function MoveToJerusalem(props: ChildProps) {
           </div>
           <div
             dir="ltr"
-            className="section-text lg:text-[21px] sm:text-[18px] text-[16px] leading-[1.4em] text-[#FBF4E6] min-w-[26.3vw] w-full lg:w-[26.3vw] text-right"
+            className="section-text 2xl:text-[21px] sm:text-[18px] text-[16px] leading-[1.4em] text-[#FBF4E6] min-w-[26.3vw] w-full lg:w-[26.3vw] text-right"
           >
             {parse(moveToJerusalemText)}
           </div>

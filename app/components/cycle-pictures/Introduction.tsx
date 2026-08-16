@@ -61,7 +61,7 @@ export default function Introduction(props: ChildProps) {
         dir="ltr"
         className="flex items-center w-full h-full relative z-30 justify-center"
       >
-        <div className="intro-wrapper text-right flex flex-col items-center gap-x-[3.75vw] w-full lg:w-150 px-[10vw] lg:px-0">
+        <div className="intro-wrapper text-right flex flex-col items-center gap-x-[3.75vw] w-full lg:w-162 px-[10vw] lg:px-0">
           {props.data.title && (
             <h1 className="intro-title w-full text-[80px] sm:text-[120px] lg:text-[208px] text-[#AC832E] leading-[0.2em] sm:leading-[0.4em] overflow-hidden relative z-20 py-7.5 font-bold will-change-transform">
               {parse(props.data.title)}
