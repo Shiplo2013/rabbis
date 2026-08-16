@@ -854,6 +854,12 @@ export default function PageFixedElements() {
           />
           <VideoPopup />
           <NotificationPopup />
+          <div
+            id="drag-me"
+            className="fixed left-0 top-0 z-30 cursor-none opacity-0 pointer-events-none scale-0 bg-[#BBA588] text-black px-5 py-2.5 rounded-full text-[20px] leading-[1em]"
+          >
+            <p>ניתן לגרור</p>
+          </div>
         </>
       )}
       {/* Timeline Page Components */}

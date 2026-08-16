@@ -1,12 +1,8 @@
-import MinusIcon from "@/app/assets/icons/MinusIcon";
 import BackgroundImageContain from "@/app/ui/BackgroundImageContain";
-import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { RefObject, useRef } from "react";
-import PlayIcon from "../../assets/icons/PlayIcon";
 import videoThumb from "../../assets/images/evidence-video-thumb.jpg";
 import evidanceBG from "../../assets/images/evidenceBG.png";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
@@ -151,7 +147,7 @@ export default function EvidenceOfPeriod(props: ChildProps) {
     >
       <div className="evidence-wrapper w-full h-full px-[8vw] lg:pl-0 lg:pr-[6vw] py-[7vh] flex">
         <div className="section-content flex gap-y-[7vh] gap-x-[2.4vw] flex-col lg:flex-row w-full justify-center items-center">
-          <div className="video relative flex flex-col gap-y-6 sm:gap-y-[3vh] w-40 lg:w-66.5 lg:h-66.5 mb-0 lg:mb-auto">
+          {/* <div className="video relative flex flex-col gap-y-6 sm:gap-y-[3vh] w-40 lg:w-66.5 lg:h-66.5 mb-0 lg:mb-auto">
             <div
               className="video-popup-button thumb p-2 lg:p-5 bg-[#d9d9d9d5] rounded-full cursor-pointer relative"
               onClick={() => props.videoControl(true)}
@@ -186,7 +182,7 @@ export default function EvidenceOfPeriod(props: ChildProps) {
                 {parse(sectionData?.video?.title)}
               </span>
             </h3>
-          </div>
+          </div> */}
           <div className="content w-full lg:w-[66vw] flex items-center relative py-[5vh] px-[5vw] lg:py-0 lg:px-[4.35vw] overflow-hidden lg:overflow-visible">
             <div className="content-bg absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full lg:h-screen select-none pointer-events-none scale-360 sm:scale-220 lg:scale-100">
               {/* <ImageRevealWithoutParallaxBG2
@@ -200,7 +196,7 @@ export default function EvidenceOfPeriod(props: ChildProps) {
             </div>
             <div
               dir="ltr"
-              className="flex w-full gap-y-8 gap-x-[6.66vw] relative z-30 text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4] text-[#000000] text-right flex-col lg:flex-row"
+              className="flex w-full gap-y-8 gap-x-[6.66vw] relative z-30 text-[16px] sm:text-[18px] 2xl:text-[21px] leading-[1.4] text-[#000000] text-right flex-col lg:flex-row"
             >
               <div className="content-text content-left lg:w-[40%]">
                 {parse(sectionData?.content?.text2)}

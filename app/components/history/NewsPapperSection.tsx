@@ -24,6 +24,9 @@ interface ChildProps {
   panel: RefObject<HTMLDivElement | null>;
   data: any;
   offsetTopTimeline?: number;
+  onMouseMove: any;
+  onMouseEnter: any;
+  onMouseLeave: any;
 }
 
 export default function NewsPapperSection(props: ChildProps) {
@@ -280,6 +283,7 @@ export default function NewsPapperSection(props: ChildProps) {
     <section
       ref={wrapper}
       dir="rtl"
+      onMouseMove={props.onMouseMove}
       className={`${props.extraClass} bg-black flex items-center relative z-20 overflow-hidden`}
       data-scroll-section={props.animWidthText}
     >
@@ -311,6 +315,8 @@ export default function NewsPapperSection(props: ChildProps) {
               >
                 <div
                   ref={image1Ref}
+                  onMouseEnter={props.onMouseEnter}
+                  onMouseLeave={props.onMouseLeave}
                   className="image1 w-full h-auto sm:w-137 sm:h-93.5 absolute right-0 bottom-0 rotate-[9.24deg] translate-x-[2vw] translate-y-[1vh] cursor-grab active:cursor-grabbing select-none"
                   style={{ zIndex: draggingImage === 1 ? 50 : undefined }}
                   onDoubleClick={(e) => e.preventDefault()}
@@ -340,6 +346,8 @@ export default function NewsPapperSection(props: ChildProps) {
               >
                 <div
                   ref={image2Ref}
+                  onMouseEnter={props.onMouseEnter}
+                  onMouseLeave={props.onMouseLeave}
                   className={`image2 w-full h-auto sm:w-139.5 sm:h-93 relative -translate-x-[2vw] cursor-grab active:cursor-grabbing select-none`}
                   style={{ zIndex: draggingImage === 2 ? 50 : undefined }}
                   onDoubleClick={(e) => e.preventDefault()}
@@ -368,6 +376,8 @@ export default function NewsPapperSection(props: ChildProps) {
               >
                 <div
                   ref={image3Ref}
+                  onMouseEnter={props.onMouseEnter}
+                  onMouseLeave={props.onMouseLeave}
                   className={`image3 w-full h-auto sm:w-104.75 sm:h-76 absolute top-0 left-0 -translate-x-[5vw] translate-y-[1.75vh] cursor-grab active:cursor-grabbing select-none`}
                   style={{ zIndex: draggingImage === 3 ? 50 : undefined }}
                   onDoubleClick={(e) => e.preventDefault()}
