@@ -65,6 +65,26 @@ type ContextType = {
   zatzelSearchedData: string | null;
   setZatzelSearchedData: (value: string | null) => void;
 
+  // Cycle Of Pictures States
+  cycleActiveCategory: number | null;
+  setCycleActiveCategory: (value: number | null) => void;
+  cycleCategories: {
+    count: number;
+    id: number;
+    name: string;
+    parent: number;
+    slug: string;
+  }[];
+  setCycleCategories: (
+    value: {
+      count: number;
+      id: number;
+      name: string;
+      parent: number;
+      slug: string;
+    }[],
+  ) => void;
+
   // Temple States
   templeTabData: {
     tab_title?: string;
@@ -195,6 +215,12 @@ export function AppProvider({
     null,
   );
 
+  // Cycle Of Pictures States
+  const [cycleActiveCategory, setCycleActiveCategory] = useState<number | null>(
+    -1,
+  );
+  const [cycleCategories, setCycleCategories] = useState<any>(null);
+
   // Temple States
   const [templeTabData, setTempleTabData] = useState<{ tab_title?: string }[]>(
     [],
@@ -283,6 +309,12 @@ export function AppProvider({
         setZatzelSelectedDate,
         zatzelSearchedData,
         setZatzelSearchedData,
+
+        // Cycle States
+        cycleActiveCategory,
+        setCycleActiveCategory,
+        cycleCategories,
+        setCycleCategories,
 
         // Temple States
         templeTabData,

@@ -45,9 +45,7 @@ export default function CommunitiesSheetsScriptProvider({
   const [postPerPage, setPostPerPage] = useState(100);
   const [postsPerLoad, setPostsPerLoad] = useState(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(
-    Math.ceil(Number(data?.postsData?.posts?.length || 0) / postsPerLoad),
-  );
+  const [postLoadLimit, setPostLoadLimit] = useState(0);
   const [containerWidth, setContainerWidth] = useState(200);
   const [sectionWidth, setSectionWidth] = useState(100);
   const [activeCategory, setActiveCategory] = useState(0);
@@ -84,6 +82,9 @@ export default function CommunitiesSheetsScriptProvider({
     if (!sheetPostsData) {
       return;
     }
+    setPostLoadLimit(
+      Math.ceil(Number(sheetPostsData?.length || 0) / postsPerLoad),
+    );
     setVerticalPosts(sheetPostsData?.slice(0, 4) || []);
     setNormalPosts(
       sheetPostsData?.slice(4, postsPerLoad * postLoadCount) || [],
@@ -94,21 +95,18 @@ export default function CommunitiesSheetsScriptProvider({
   // Load more posts when currentPage changes
   useEffect(() => {
     if (sheetsOnSelectCategoryId === 0) {
-      setVerticalPosts(sheetPostsData?.slice(0, 4) || []);
-      setNormalPosts(sheetPostsData?.slice(4) || []);
+      setSheetPostsData(data?.postsData?.posts || []);
     } else {
-      const filteredPosts = sheetPostsData?.filter((post: any) => {
+      const filteredPosts = data?.postsData?.posts?.filter((post: any) => {
         const postCategoryId = post?.magazines_cat?.[0] || 0;
         return postCategoryId === sheetsOnSelectCategoryId;
       });
       if (filteredPosts?.length === 0) {
         setNoPostsFound(true);
-        setVerticalPosts([]);
-        setNormalPosts([]);
+        setSheetPostsData([]);
       } else {
         setNoPostsFound(false);
-        setVerticalPosts(filteredPosts?.slice(0, 4) || []);
-        setNormalPosts(filteredPosts?.slice(4) || []);
+        setSheetPostsData(filteredPosts);
       }
 
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });

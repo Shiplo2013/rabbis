@@ -40,6 +40,7 @@ export default function PageFixedElements() {
   const wishButton = useRef<HTMLDivElement>(null);
   const moveButton = useRef<HTMLDivElement>(null);
   const audioButton = useRef<HTMLDivElement>(null);
+  const scrollbarRef = useRef<HTMLDivElement>(null);
   const [loadingImage, setLoadingImage] = useState(true);
   const [activeCategory, setActiveCategory] = useState(0);
 
@@ -60,6 +61,10 @@ export default function PageFixedElements() {
     setZatzelPosts,
     setZatzelSearchedData,
     setZatzelSelectedDate,
+    cycleActiveCategory,
+    setCycleActiveCategory,
+    cycleCategories,
+    setZatzelActivePopup,
   } = useAppState();
   const [knessetSearchQueryLocal, setKnessetSearchQueryLocal] = useState("");
 
@@ -92,7 +97,6 @@ export default function PageFixedElements() {
   // Zatzel popup Post change
   useEffect(() => {
     if (zatzelPopupIndex?.postIndex === 0) return;
-    console.log(zatzelPopupIndex);
     const currentPost = zatzelPosts?.sections[
       zatzelPopupIndex?.catIndex
     ]?.sectionContent.filter(
@@ -100,6 +104,8 @@ export default function PageFixedElements() {
     );
     setZatzelCurrentPost(currentPost[0]);
   }, [zatzelPopupIndex]);
+
+  // Cycle of Pictures
 
   // Rabbis Data
   const TimelineData = [
@@ -476,11 +482,21 @@ export default function PageFixedElements() {
                   )}
                 </SimpleBar>
               </div>
-              <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">
+              <button
+                onClick={() => {
+                  setZatzelActivePopup(false);
+                }}
+                className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all"
+              >
                 <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
               </button>
             </div>
-            <div className="overlay fixed top-0 right-0 w-screen h-screen z-30 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"></div>
+            <div
+              onClick={() => {
+                setZatzelActivePopup(false);
+              }}
+              className="overlay fixed top-0 right-0 w-screen h-screen z-30 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"
+            ></div>
           </div>
           <div
             id="zatzel-sidebar"
@@ -880,6 +896,62 @@ export default function PageFixedElements() {
         </div>
       )}
       {/* Knesset Sidebar */}
+
+      {/* Cycle of Pictures Sidebar */}
+      {pathname === "/cycle-pictures" && (
+        <div
+          id="cycle-sidebar"
+          className="cycle-sidebar fixed top-0 right-15 w-70 h-full bg-[#1A1A1A] flex flex-col items-center justify-center z-50 border-l border-[#D1CECE]"
+        >
+          <div className="sheet-sidebar min-w-50 w-50 h-full will-change-transform overflow-hidden flex flex-col justify-center">
+            <div className="sheet-sidebar-wrapper flex items-center">
+              <div
+                ref={scrollbarRef}
+                className="sheet-scrollbar-wrapper w-full"
+              >
+                <SimpleBar
+                  style={{ maxHeight: "60vh" }}
+                  autoHide={false}
+                  data-simplebar-direction="rtl"
+                >
+                  <div className="year-month-categories pl-10 pr-2.5">
+                    <button
+                      disabled={cycleActiveCategory === -1 || isLoading}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCycleActiveCategory(-1);
+                      }}
+                      className={`all-post block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] border-t hover:bg-[#00000058] hover:text-[#ffffff] ${cycleActiveCategory === -1 ? "bg-[#00000058] text-[#ffffff] " : "bg-transparent text-[#CD5E41]"}`}
+                    >
+                      הכל
+                    </button>
+                    {cycleCategories?.length > 0 &&
+                      cycleCategories?.map((item: any, index: number) => {
+                        return (
+                          <button
+                            key={index}
+                            disabled={
+                              Number(cycleActiveCategory) === item.id ||
+                              isLoading
+                            }
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setCycleActiveCategory(item.id);
+                            }}
+                            className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-all duration-300 ${Number(cycleActiveCategory) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
+                          >
+                            {parse(item.name || "")}
+                          </button>
+                        );
+                      })}
+                  </div>
+                </SimpleBar>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Cycle of Pictures Sidebar */}
     </>
   );
 }

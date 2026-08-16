@@ -105,7 +105,7 @@ export default function SingleCyclePicture(props: ChildProps) {
   }, [imageSrc, lightboxImageSrc]);
 
   return (
-    <div className="single-cycle-picture w-full lg:w-[44.27vw] min-w-[44.27vw] will-change-transform">
+    <div className="single-cycle-picture w-full lg:w-[calc((100%-60px)/2)] will-change-transform">
       {imageSrc && isLightboxMounted && (
         <FsLightbox
           toggler={lightboxController.toggler}
@@ -120,8 +120,8 @@ export default function SingleCyclePicture(props: ChildProps) {
           <Image
             className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
             src={Frame?.src}
-            width="855"
-            height="547"
+            width="702"
+            height="450"
             blurDataURL={Frame?.blurDataURL}
             placeholder={"blur"}
             loading="lazy"
@@ -133,18 +133,20 @@ export default function SingleCyclePicture(props: ChildProps) {
                 <Image
                   className="w-full object-cover object-center h-full relative z-10 will-change-transform"
                   src={
-                    SingleData?.acf?.image?.sizes?.large ||
-                    SingleData?.acf?.image?.url
+                    window.innerWidth > 767
+                      ? SingleData?.acf?.image?.sizes?.medium_large
+                      : SingleData?.acf?.image?.sizes?.medium ||
+                        SingleData?.acf?.image?.url
                   }
-                  width="855"
-                  height="547"
+                  width={window.innerWidth > 767 ? "660" : "308"}
+                  height={window.innerWidth > 767 ? "408" : "190"}
                   blurDataURL={
-                    CreateShimmerDataUrl(855, 547) ||
+                    CreateShimmerDataUrl(660, 408) ||
                     SingleData?.acf?.image?.blurDataURL
                   }
                   placeholder={"blur"}
                   loading="lazy"
-                  alt="Graduates"
+                  alt={SingleData?.title?.rendered || ""}
                 />
               </div>
             ) : (
@@ -178,7 +180,7 @@ export default function SingleCyclePicture(props: ChildProps) {
             >
               <button
                 type="button"
-                className="w-15 h-15 sm:w-20 sm:h-20 lg:w-30 lg:h-30 p-3 sm:p-4 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
+                className="w-12 h-12 sm:w-15 sm:h-15 lg:w-20 lg:h-20 p-3 sm:p-4 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
               >
                 <ViewIcon2 />
               </button>
@@ -188,7 +190,7 @@ export default function SingleCyclePicture(props: ChildProps) {
       </div>
 
       <div className="cycle-title mt-8 sm:mt-10 lg:mt-[5.8vh]">
-        <h2 className="text-[25px] sm:text-[35px] lg:text-[55px] text-[#D1A941] leading-[70%] text-center">
+        <h2 className="text-[25px] sm:text-[35px] lg:text-[45px] text-[#D1A941] leading-[70%] text-center">
           {parse(SingleData?.title?.rendered || "")}
         </h2>
       </div>
