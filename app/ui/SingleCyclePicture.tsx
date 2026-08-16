@@ -1,120 +1,29 @@
 "use client";
 import parse from "html-react-parser";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import ViewIcon2 from "../assets/icons/ViewIcon2";
 import Frame from "../assets/images/pictures-frame.png";
+import { useAppState } from "../components/AppContext";
 import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 
 interface ChildProps {
   key: number;
+  index: number;
   data: any;
-}
-
-const FsLightbox = dynamic(() => import("fslightbox-react"), {
-  ssr: false,
-}) as any;
-
-function getImageSrc(image: any) {
-  if (!image) {
-    return "";
-  }
-
-  if (typeof image === "string") {
-    return image;
-  }
-
-  return (
-    image?.sizes?.large || image?.sizes?.url || image?.url || image?.src || ""
-  );
 }
 
 export default function SingleCyclePicture(props: ChildProps) {
   // Section Data
   const SingleData = props.data || {};
-  const imageSrc = getImageSrc(SingleData?.acf?.image);
-  const lightboxImageSrc =
-    SingleData?.acf?.image?.sizes?.large ||
-    SingleData?.acf?.image?.url ||
-    SingleData?.acf?.image?.src ||
-    "";
 
-  // Lightbox State
-  const [lightboxController, setLightboxController] = useState({
-    toggler: false,
-    slide: 1,
-  });
-  const [isLightboxMounted, setIsLightboxMounted] = useState(false);
-
-  const warmupLightbox = () => {
-    if (typeof window !== "undefined") {
-      import("fslightbox-react");
-    }
-
-    if (lightboxImageSrc && typeof window !== "undefined") {
-      const preloadImage = new window.Image();
-      preloadImage.src = lightboxImageSrc;
-    }
-
-    setIsLightboxMounted(true);
-  };
-
-  const openLightbox = () => {
-    warmupLightbox();
-    setLightboxController((prev) => ({
-      toggler: !prev.toggler,
-      slide: 1,
-    }));
-  };
-
-  useEffect(() => {
-    if (!imageSrc) {
-      return;
-    }
-
-    const runWarmup = () => {
-      warmupLightbox();
-    };
-
-    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-      const idleId = (
-        window as Window & {
-          requestIdleCallback: (
-            callback: IdleRequestCallback,
-            options?: IdleRequestOptions,
-          ) => number;
-          cancelIdleCallback: (id: number) => void;
-        }
-      ).requestIdleCallback(runWarmup, { timeout: 3000 });
-
-      return () => {
-        (
-          window as Window & {
-            cancelIdleCallback: (id: number) => void;
-          }
-        ).cancelIdleCallback(idleId);
-      };
-    }
-
-    const timeoutId = setTimeout(runWarmup, 1200);
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [imageSrc, lightboxImageSrc]);
+  const { setActiveCyclePopup, setCyclePopupIndex } = useAppState();
 
   return (
-    <div className="single-cycle-picture w-full lg:w-[calc((100%-60px)/2)] will-change-transform">
-      {imageSrc && isLightboxMounted && (
-        <FsLightbox
-          toggler={lightboxController.toggler}
-          sources={[lightboxImageSrc]}
-          types={["image"]}
-          slide={lightboxController.slide}
-        />
-      )}
-
+    <div
+      data-index={props.index}
+      className="single-cycle-picture w-full lg:w-[calc((100%-60px)/2)] will-change-transform"
+    >
       <div className="cycle-frame relative">
         <div className="group relative z-40 w-full h-full max-w-full">
           <Image
@@ -128,7 +37,7 @@ export default function SingleCyclePicture(props: ChildProps) {
             alt="Graduates"
           />
           <div className="cycle-content-wrapper absolute top-0 left-0 z-10 w-full h-full overflow-hidden flex items-center justify-center">
-            {imageSrc ? (
+            {SingleData?.acf?.image ? (
               <div className="picture-image absolute top-2.5 left-2.5 right-2.5 bottom-2.5 sm:top-5 sm:left-5 sm:right-5 sm:bottom-5 z-10 w-auto h-auto">
                 <Image
                   className="w-full object-cover object-center h-full relative z-10 will-change-transform"
@@ -168,13 +77,13 @@ export default function SingleCyclePicture(props: ChildProps) {
             )}
           </div>
 
-          {imageSrc && (
+          {SingleData?.acf?.image && (
             <div
               className={`picture-view absolute top-0 left-0 w-full h-full flex items-center justify-center z-40 bg-[#00000080] transition-all duration-500 lg:opacity-0 lg:invisible group-hover:opacity-100 group-hover:visible`}
-              onMouseEnter={warmupLightbox}
               onClick={() => {
-                if (imageSrc) {
-                  openLightbox();
+                if (SingleData?.acf?.image) {
+                  setActiveCyclePopup(true);
+                  setCyclePopupIndex(SingleData?.id);
                 }
               }}
             >

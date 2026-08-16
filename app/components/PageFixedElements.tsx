@@ -28,6 +28,18 @@ import MirrorAudioPlayer from "./music/MirrorAudioPlayer";
 import SubscribeForm from "./sheets/SubscribeForm";
 import TabMenu from "./visit-temple/TabMenu";
 import ZatzelSidebar from "./zatzel/ZatzelSidebar";
+// Swiper slider
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import type { SwiperRef } from "swiper/react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import CloseIcon from "../assets/icons/CloseIcon";
+import SwipeLeft from "../assets/icons/SwipeLeft";
+import SwipeRight from "../assets/icons/SwipeRight";
+// Image inner zoom
+import InnerImageZoom from "react-inner-image-zoom";
+import "react-inner-image-zoom/lib/styles.min.css";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -43,6 +55,9 @@ export default function PageFixedElements() {
   const scrollbarRef = useRef<HTMLDivElement>(null);
   const [loadingImage, setLoadingImage] = useState(true);
   const [activeCategory, setActiveCategory] = useState(0);
+  // Cycle Popup Slider
+  const swiperRef = useRef<SwiperRef>(null);
+  const cyclePopupRef = useRef<HTMLDivElement>(null);
 
   // Animation State
   const {
@@ -65,6 +80,11 @@ export default function PageFixedElements() {
     setCycleActiveCategory,
     cycleCategories,
     setZatzelActivePopup,
+    cycleAllPosts,
+    activeCyclePopup,
+    setActiveCyclePopup,
+    cyclePopupIndex,
+    setCyclePopupIndex,
   } = useAppState();
   const [knessetSearchQueryLocal, setKnessetSearchQueryLocal] = useState("");
 
@@ -286,6 +306,27 @@ export default function PageFixedElements() {
       }
     };
   }, [pathname]);
+
+  useGSAP(() => {
+    // Find index of current slide
+    const currentSlide = cycleAllPosts?.findIndex((item: any) => {
+      return item?.id === cyclePopupIndex;
+    });
+    swiperRef?.current?.swiper?.slideToLoop(currentSlide, 0);
+    if (activeCyclePopup) {
+      gsap.to(cyclePopupRef.current, {
+        autoAlpha: 1,
+        duration: 0.5,
+        delay: 0,
+      });
+    } else {
+      gsap.to(cyclePopupRef.current, {
+        autoAlpha: 0,
+        duration: 0.5,
+        delay: 0,
+      });
+    }
+  }, [activeCyclePopup, cyclePopupIndex]);
 
   return (
     <>
@@ -899,57 +940,136 @@ export default function PageFixedElements() {
 
       {/* Cycle of Pictures Sidebar */}
       {pathname === "/cycle-pictures" && (
-        <div
-          id="cycle-sidebar"
-          className="cycle-sidebar fixed top-0 right-15 w-70 h-full bg-[#1A1A1A] flex flex-col items-center justify-center z-50 border-l border-[#D1CECE]"
-        >
-          <div className="sheet-sidebar min-w-50 w-50 h-full will-change-transform overflow-hidden flex flex-col justify-center">
-            <div className="sheet-sidebar-wrapper flex items-center">
-              <div
-                ref={scrollbarRef}
-                className="sheet-scrollbar-wrapper w-full"
-              >
-                <SimpleBar
-                  style={{ maxHeight: "60vh" }}
-                  autoHide={false}
-                  data-simplebar-direction="rtl"
+        <>
+          <div
+            id="cycle-sidebar"
+            className="cycle-sidebar fixed top-0 right-15 w-70 h-full bg-[#1A1A1A] flex flex-col items-center justify-center z-50 border-l border-[#D1CECE]"
+          >
+            <div className="sheet-sidebar min-w-50 w-50 h-full will-change-transform overflow-hidden flex flex-col justify-center">
+              <div className="sheet-sidebar-wrapper flex items-center">
+                <div
+                  ref={scrollbarRef}
+                  className="sheet-scrollbar-wrapper w-full"
                 >
-                  <div className="year-month-categories pl-10 pr-2.5">
-                    <button
-                      disabled={cycleActiveCategory === -1 || isLoading}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setCycleActiveCategory(-1);
-                      }}
-                      className={`all-post block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] border-t hover:bg-[#00000058] hover:text-[#ffffff] ${cycleActiveCategory === -1 ? "bg-[#00000058] text-[#ffffff] " : "bg-transparent text-[#CD5E41]"}`}
-                    >
-                      הכל
-                    </button>
-                    {cycleCategories?.length > 0 &&
-                      cycleCategories?.map((item: any, index: number) => {
-                        return (
-                          <button
-                            key={index}
-                            disabled={
-                              Number(cycleActiveCategory) === item.id ||
-                              isLoading
-                            }
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setCycleActiveCategory(item.id);
-                            }}
-                            className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-all duration-300 ${Number(cycleActiveCategory) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
-                          >
-                            {parse(item.name || "")}
-                          </button>
-                        );
-                      })}
-                  </div>
-                </SimpleBar>
+                  <SimpleBar
+                    style={{ maxHeight: "60vh" }}
+                    autoHide={false}
+                    data-simplebar-direction="rtl"
+                  >
+                    <div className="year-month-categories pl-10 pr-2.5">
+                      <button
+                        disabled={cycleActiveCategory === -1 || isLoading}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCycleActiveCategory(-1);
+                        }}
+                        className={`all-post block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] border-t hover:bg-[#00000058] hover:text-[#ffffff] ${cycleActiveCategory === -1 ? "bg-[#00000058] text-[#ffffff] " : "bg-transparent text-[#CD5E41]"}`}
+                      >
+                        הכל
+                      </button>
+                      {cycleCategories?.length > 0 &&
+                        cycleCategories?.map((item: any, index: number) => {
+                          return (
+                            <button
+                              key={index}
+                              disabled={
+                                Number(cycleActiveCategory) === item.id ||
+                                isLoading
+                              }
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setCycleActiveCategory(item.id);
+                              }}
+                              className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-all duration-300 ${Number(cycleActiveCategory) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
+                            >
+                              {parse(item.name || "")}
+                            </button>
+                          );
+                        })}
+                    </div>
+                  </SimpleBar>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+          <div
+            ref={cyclePopupRef}
+            id="cycle-popup-zoom"
+            className="fixed top-0 left-0 w-screen h-screen bg-[#000000d7] z-999 opacity-0 invisible"
+          >
+            <div className="cycle-popup-wrapper flex flex-col items-center justify-center w-full h-full relative">
+              <button
+                onClick={() => {
+                  setActiveCyclePopup(false);
+                }}
+                className="close-cycle-popup absolute top-5 right-5 cursor-pointer w-10 h-10 sm:w-12 sm:h-12 p-3 sm:p-3.5 bg-[#202325] border border-[#C3A13F] rounded-full z-50"
+              >
+                <CloseIcon className="w-full h-auto" />
+              </button>
+              <Swiper
+                className="w-full relative z-10"
+                ref={swiperRef}
+                slidesPerView={1}
+                loop={true}
+              >
+                {cycleAllPosts?.length > 0 &&
+                  cycleAllPosts?.map((item: any, index: number) => {
+                    return (
+                      <SwiperSlide data-id={item?.id} key={index}>
+                        <div className="flex flex-col items-center h-full justify-center gap-y-5 px-[5vw]">
+                          <div className="cycle-image w-full max-w-5xl h-auto flex items-center justify-center [&>figure]:w-full [&>figure>div>img]:w-full">
+                            <InnerImageZoom
+                              src={
+                                window.innerWidth > 767
+                                  ? item?.acf?.image?.sizes?.large
+                                  : item?.acf?.image?.sizes?.medium
+                              }
+                              zoomSrc={item?.acf?.image?.url}
+                            />
+                          </div>
+                          <div className="cycle-title">
+                            <h3 className="text-[25px] sm:text-[35px] lg:text-[45px] text-[#D1A941] leading-[70%] text-center">
+                              {parse(item?.title?.rendered || "")}
+                            </h3>
+                          </div>
+                        </div>
+                      </SwiperSlide>
+                    );
+                  })}
+              </Swiper>
+              <div className="swiper-navigation w-full flex items-center justify-center">
+                <button
+                  style={{
+                    backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
+                  }}
+                  className="group absolute left-5 bottom-5 sm:bottom-auto sm:top-1/2 sm:-mt-6 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-12 h-12 sm:w-15 sm:h-15"
+                  onClick={() => swiperRef.current?.swiper.slideNext()}
+                >
+                  <div className="w-full h-full flex items-center justify-center bg-[#202325] rounded-full overflow-hidden relative">
+                    <span className="btn-bg absolute z-10 left-0 top-0 w-full h-full bg-[#000000] translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-[cubic-bezier(0.625,0.05,0,1)]"></span>
+                    <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30 w-5 sm:w-6 h-auto">
+                      <SwipeLeft />
+                    </div>
+                  </div>
+                </button>
+                <button
+                  style={{
+                    backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
+                  }}
+                  className="group absolute right-5 bottom-5 sm:bottom-auto sm:top-1/2 sm:-mt-6 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-12 h-12 sm:w-15 sm:h-15"
+                  onClick={() => swiperRef.current?.swiper.slidePrev()}
+                >
+                  <div className="w-full h-full flex items-center justify-center bg-[#202325] rounded-full overflow-hidden relative">
+                    <span className="btn-bg absolute z-10 left-0 top-0 w-full h-full bg-[#000000] translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-[cubic-bezier(0.625,0.05,0,1)]"></span>
+                    <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30 w-5 sm:w-6 h-auto">
+                      <SwipeRight />
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
       {/* Cycle of Pictures Sidebar */}
     </>

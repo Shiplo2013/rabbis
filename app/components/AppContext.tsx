@@ -84,6 +84,12 @@ type ContextType = {
       slug: string;
     }[],
   ) => void;
+  cycleAllPosts: any | null;
+  setCycleAllPosts: (value: any) => void;
+  activeCyclePopup: boolean;
+  setActiveCyclePopup: (value: boolean) => void;
+  cyclePopupIndex: number;
+  setCyclePopupIndex: (value: number) => void;
 
   // Temple States
   templeTabData: {
@@ -220,6 +226,9 @@ export function AppProvider({
     -1,
   );
   const [cycleCategories, setCycleCategories] = useState<any>(null);
+  const [cycleAllPosts, setCycleAllPosts] = useState<any>(null);
+  const [activeCyclePopup, setActiveCyclePopup] = useState(false);
+  const [cyclePopupIndex, setCyclePopupIndex] = useState(0);
 
   // Temple States
   const [templeTabData, setTempleTabData] = useState<{ tab_title?: string }[]>(
@@ -315,6 +324,8 @@ export function AppProvider({
         setCycleActiveCategory,
         cycleCategories,
         setCycleCategories,
+        cycleAllPosts,
+        setCycleAllPosts,
 
         // Temple States
         templeTabData,
@@ -360,6 +371,10 @@ export function AppProvider({
         // Cycle Pictures States
         cyclePostNavigation,
         setCyclePostNavigation,
+        activeCyclePopup,
+        setActiveCyclePopup,
+        cyclePopupIndex,
+        setCyclePopupIndex,
         // Knesset States
         knessetCategoryData,
         setKnessetCategoryData,

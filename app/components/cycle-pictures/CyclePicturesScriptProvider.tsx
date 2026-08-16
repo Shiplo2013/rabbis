@@ -42,6 +42,7 @@ export default function CyclePicturesScriptProvider({
     cycleCategories,
     setCycleCategories,
     cycleActiveCategory,
+    setCycleAllPosts,
   } = useAppState();
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
   // Vertical Section
@@ -97,6 +98,7 @@ export default function CyclePicturesScriptProvider({
     if (!allPosts) {
       return;
     }
+    setCycleAllPosts(allPosts);
     setVerticalPosts(allPosts?.slice(0, 2) || []);
     setNormalPosts(allPosts?.slice(2, postsPerLoad * postLoadCount) || []);
     setIsLoadingMore(false);
@@ -431,7 +433,7 @@ export default function CyclePicturesScriptProvider({
                 duration: 3,
                 delay: 0,
               },
-              "-=2.5",
+              "<",
             );
           }
           if (bannerBackgroundOverlay) {
@@ -691,7 +693,7 @@ export default function CyclePicturesScriptProvider({
               {normalPosts?.map((post: any, index: number) => {
                 return (
                   <Fragment key={`sheet-entry-${index}`}>
-                    <SingleCyclePicture key={index} data={post} />
+                    <SingleCyclePicture key={index} data={post} index={index} />
                   </Fragment>
                 );
               })}
