@@ -87,7 +87,7 @@ export default function CyclePicturesSection(props: ChildProps) {
         <div className="sheet-content flex items-center gap-x-15 w-full will-change-transform flex-col lg:flex-row gap-y-10 sm:gap-y-15">
           {SectionData?.length > 0 ? (
             SectionData?.map((item: any, index: number) => (
-              <SingleCyclePicture key={index} data={item} />
+              <SingleCyclePicture key={index} data={item} index={index} />
             ))
           ) : (
             <div className="error">
