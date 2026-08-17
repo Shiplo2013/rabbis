@@ -308,6 +308,7 @@ export default function PageFixedElements() {
   }, [pathname]);
 
   useGSAP(() => {
+    if (!cyclePopupRef.current) return;
     // Find index of current slide
     const currentSlide = cycleAllPosts?.findIndex((item: any) => {
       return item?.id === cyclePopupIndex;

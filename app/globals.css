@@ -61,13 +61,15 @@
     > .menu-item {
       flex-grow: 1;
 
-      > a {
+      > a,
+      > .submenu-parent {
         font-size: 18px;
         line-height: 1em;
       }
 
       &&:not(:last-child) {
-        > a {
+        > a,
+        > .submenu-parent {
           border-right: 1px solid #dbbd5c80;
         }
       }

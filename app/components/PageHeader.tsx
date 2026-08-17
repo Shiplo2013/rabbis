@@ -247,23 +247,38 @@ function PageHeader() {
                         key={index}
                         className="menu-item group/parent flex items-center justify-center relative"
                       >
-                        <Link
-                          className={`text-[#E2D7C3] w-full h-full flex items-center justify-center`}
-                          href={item.link}
-                          onClick={(e) => {
-                            handleLinkClick(e);
-                          }}
-                          prefetch={false}
-                        >
-                          <span
-                            className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-all duration-300`}
-                          ></span>
-                          <span
-                            className={`flex justify-center items-center w-full h-full  transition-all origin-center border border-[#000000B2] ${haveSubmenu ? "submenu" : "group-hover/parent:border-[#DBBD5C80] group-hover/parent:bg-[#000000B2] group-hover/parent:rotate-90 group-hover/parent:-mt-[50%]"}`}
+                        {haveSubmenu ? (
+                          <div
+                            className={`text-[#E2D7C3] w-full h-full flex items-center justify-center submenu-parent`}
                           >
-                            {item.title}
-                          </span>
-                        </Link>
+                            <span
+                              className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-all duration-300`}
+                            ></span>
+                            <span
+                              className={`flex justify-center items-center w-full h-full  transition-all origin-center border border-[#000000B2] ${haveSubmenu ? "submenu" : "group-hover/parent:border-[#DBBD5C80] group-hover/parent:bg-[#000000B2] group-hover/parent:rotate-90 group-hover/parent:-mt-[50%]"}`}
+                            >
+                              {item.title}
+                            </span>
+                          </div>
+                        ) : (
+                          <Link
+                            className={`text-[#E2D7C3] w-full h-full flex items-center justify-center`}
+                            href={item.link}
+                            onClick={(e) => {
+                              handleLinkClick(e);
+                            }}
+                            prefetch={false}
+                          >
+                            <span
+                              className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-all duration-300`}
+                            ></span>
+                            <span
+                              className={`flex justify-center items-center w-full h-full  transition-all origin-center border border-[#000000B2] ${haveSubmenu ? "submenu" : "group-hover/parent:border-[#DBBD5C80] group-hover/parent:bg-[#000000B2] group-hover/parent:rotate-90 group-hover/parent:-mt-[50%]"}`}
+                            >
+                              {item.title}
+                            </span>
+                          </Link>
+                        )}
                         {haveSubmenu && index === 0 && (
                           <div
                             className={`submenu-content absolute bottom-full pr-10 transition-all duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0`}
