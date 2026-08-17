@@ -89,12 +89,8 @@ export default function ZatzelScriptProvider({
     threshold: 0,
     triggerOnce: false,
   });
-
-  const [cardPopupTimeline] = useState(
-    gsap.timeline({
-      paused: true,
-    }),
-  );
+  // Popup Timeline
+  const cardPopupTimeline = useRef<gsap.core.Timeline | null>(null);
 
   // Default Data
   const defaultZatzelPageData = {
@@ -564,6 +560,8 @@ export default function ZatzelScriptProvider({
 
   // Popup Animation
   useGSAP(() => {
+    // Gsap Timeline
+    cardPopupTimeline.current = gsap.timeline({ paused: true });
     // Popup Animation
     const popupCard = document.getElementById(
       "zatzel-popup",
@@ -574,7 +572,7 @@ export default function ZatzelScriptProvider({
 
     // Card Popup Animation
     if (popupCard) {
-      cardPopupTimeline.to(popupCard, {
+      cardPopupTimeline?.current?.to(popupCard, {
         opacity: 1,
         visibility: "visible",
         duration: 0,
@@ -584,7 +582,7 @@ export default function ZatzelScriptProvider({
     }
     // Overlay
     if (popupOverlay) {
-      cardPopupTimeline.to(popupOverlay, {
+      cardPopupTimeline?.current?.to(popupOverlay, {
         opacity: 1,
         visibility: "visible",
         duration: 0.5,
@@ -597,7 +595,7 @@ export default function ZatzelScriptProvider({
       gsap.set(popupWrapper, {
         x: () => popupWrapper.clientWidth + 50,
       });
-      cardPopupTimeline.to(
+      cardPopupTimeline?.current?.to(
         popupWrapper,
         {
           x: 0,
@@ -608,6 +606,10 @@ export default function ZatzelScriptProvider({
         "-=1",
       );
     }
+    // Clean up timeline on unmount
+    return () => {
+      cardPopupTimeline?.current?.kill();
+    };
   }, [pathname, pageDataFetched]);
 
   // On Active popup
@@ -623,7 +625,9 @@ export default function ZatzelScriptProvider({
 
   // Play Card Popup Animation
   useGSAP(() => {
-    zatzelActivePopup ? cardPopupTimeline.play() : cardPopupTimeline.reverse();
+    zatzelActivePopup
+      ? cardPopupTimeline?.current?.play()
+      : cardPopupTimeline?.current?.reverse();
   }, [zatzelActivePopup]);
 
   // Filter Posts by Selected Date
