@@ -54,7 +54,7 @@ export default function HistoryTimeline(props: ChildProps) {
                     <div className="border-line border-b-2 border-[#C3A13F] border-dotted w-0"></div>
                   </div>
                 )}
-                <div className="w-5 h-5 rounded-full border-[3px] border-(--theme-color) relative z-10 indicator"></div>
+                <div className="w-5 h-5 rounded-full border-[3px] border-(--theme-color) relative z-10 indicator bg-black"></div>
                 <span className="text-[18px] sm:text-[20px] lg:text-[25px] leading-[1em] text-[#000000] lg:text-[#FBF4E6] relative lg:absolute lg:bottom-0 lg:left-1/2 lg:-translate-x-1/2 lg:min-w-[120%] text-center">
                   {item.title}
                 </span>

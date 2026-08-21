@@ -48,12 +48,12 @@ export default function NotificationPopup() {
       >
         <CloseIcon2 />
       </div>
-      <div className="popup-wrapper flex items-center justify-center h-full w-full max-w-250 gap-x-[4vw] gap-y-[4vw] flex-col-reverse lg:flex-row overflow-auto">
-        <div className="notification-content w-full lg:w-[60%]  bg-[#5A7C4E] text-[#F8F8F8] text-[20px] leading-[150%] flex flex-col items-start justify-start gap-y-[2.5vh] pl-[2vw]">
+      <div className="popup-wrapper flex items-center justify-center h-full w-full max-w-300 gap-x-[4vw] gap-y-[4vw] flex-col-reverse lg:flex-row overflow-auto">
+        <div className="notification-content w-full lg:w-[55%]  bg-[#5A7C4E] text-[#F8F8F8] text-[20px] leading-[150%] flex flex-col items-start justify-start gap-y-[2.5vh] pl-[2vw]">
           {parse(notificationData?.content ? notificationData?.content : "")}
         </div>
         <div className="divider w-full h-px lg:w-px lg:h-[80%] bg-white opacity-50"></div>
-        <div className="notification-heading w-full lg:w-[40%]">
+        <div className="notification-heading w-full lg:w-[45%]">
           <h3 className="text-[35px] sm:text-[50px] lg:text-[70px] leading-[0.8em] lg:leading-[70%] text-black">
             {parse(notificationData?.title ? notificationData?.title : "")}
           </h3>

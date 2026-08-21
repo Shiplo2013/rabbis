@@ -94,6 +94,7 @@ export default function CommunityPageHeader() {
                   alt="Small Logo"
                   preload={true}
                   priority={true}
+                  unoptimized
                 />
               </Link>
             </div>

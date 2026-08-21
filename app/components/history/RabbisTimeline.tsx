@@ -174,7 +174,7 @@ export default function RabbisTimeline(props: ChildProps) {
                     alt="Rabbis Image"
                   />
                 </div>
-                <div dir="ltr" className="title mt-auto text-right">
+                <div dir="rtl" className="title mt-auto text-right">
                   <h4 className="text-[22px] sm:text-[32px] lg:text-[43px] leading-[0.8em] lg:leading-[0.7em] text-[#FBF4E6]">
                     {parse(item.title || "")}
                   </h4>

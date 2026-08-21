@@ -53,8 +53,8 @@ export function ChroniclesPageWithCache({ data }: ChronclesPageDataProps) {
   return (
     <HistoryScriptProvider
       data={{
-        pageData: cachedData.pageData,
-        rabbisData: cachedData.rabbisData,
+        pageData: data.pageData,
+        rabbisData: data.rabbisData,
       }}
     />
   );
