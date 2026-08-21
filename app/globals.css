@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "simplebar-react/dist/simplebar.min.css";
+@import "../app/assets/css/loading.module.css";
 
 :root {
   --background: #000000;

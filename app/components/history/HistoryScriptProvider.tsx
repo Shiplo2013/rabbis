@@ -709,7 +709,7 @@ export default function HistoryScriptProvider({
         scrollTrigger: {
           trigger: panel3.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 9.398,
+          end: "+=" + window.innerWidth * 8.498,
           scrub: scurbScale,
           pin: true,
           anticipatePin: 1,
@@ -738,7 +738,7 @@ export default function HistoryScriptProvider({
         scrollTrigger: {
           trigger: panel3.current,
           start: timeline3Ref.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 9.398 - 200),
+          end: "+=" + (window.innerWidth * 8.498 - 200),
           scrub: scurbScale,
         },
       });
@@ -748,7 +748,7 @@ export default function HistoryScriptProvider({
         scrollTrigger: {
           trigger: panel4.current,
           start: "top top",
-          end: "+=" + window.innerWidth * 8.75,
+          end: "+=" + window.innerWidth * 9.55,
           scrub: scurbScale,
           pin: true,
           anticipatePin: 1,
@@ -777,7 +777,7 @@ export default function HistoryScriptProvider({
         scrollTrigger: {
           trigger: panel4.current,
           start: timeline4Ref.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 8.75 - 200),
+          end: "+=" + (window.innerWidth * 9.55 - 200),
           scrub: scurbScale,
         },
       });
@@ -1314,7 +1314,7 @@ export default function HistoryScriptProvider({
           >
             <div
               ref={wrapper3}
-              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[939.8vw] lg:min-w-[939.8vw] lg:h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[849.8vw] lg:min-w-[849.8vw] lg:h-screen will-change-transform`}
             >
               <Suspense
                 fallback={
@@ -1434,7 +1434,7 @@ export default function HistoryScriptProvider({
                 <MarkOfTheRoad3
                   animWidthText={17}
                   extraClass={
-                    "lg:min-w-[285vw] w-full lg:w-[285vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[195vw] w-full lg:w-[195vw] lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline3Ref}
                   data={
@@ -1507,7 +1507,7 @@ export default function HistoryScriptProvider({
           >
             <div
               ref={wrapper4}
-              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[875vw] lg:min-w-[875vw] lg:h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[955vw] lg:min-w-[955vw] lg:h-screen will-change-transform`}
             >
               <Suspense
                 fallback={
@@ -1598,13 +1598,13 @@ export default function HistoryScriptProvider({
               </Suspense>
               <Suspense
                 fallback={
-                  <div className="lg:min-w-[405vw] w-full lg:w-[405vw] lg:h-screen panel-section will-change-transform bg-black" />
+                  <div className="lg:min-w-[485vw] w-full lg:w-[485vw] lg:h-screen panel-section will-change-transform bg-black" />
                 }
               >
                 <RabbisTimeline2
                   animWidthText={26.1}
                   extraClass={
-                    "lg:min-w-[405vw] w-full lg:w-[405vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[485vw] w-full lg:w-[485vw] lg:h-screen panel-section will-change-transform"
                   }
                   bgImage={timelineBG}
                   panel={timeline4Ref}

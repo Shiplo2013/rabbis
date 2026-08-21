@@ -40,6 +40,7 @@ import SwipeRight from "../assets/icons/SwipeRight";
 // Image inner zoom
 import InnerImageZoom from "react-inner-image-zoom";
 import "react-inner-image-zoom/lib/styles.min.css";
+import LoadingAnimation from "../assets/icons/LoadingAnimation";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -335,8 +336,11 @@ export default function PageFixedElements() {
       {isLoading && (
         <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-99 bg-black">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
-            <p>Loading...</p>
+            {/* <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
+            <p>Loading...</p> */}
+            <div className="loading-icon w-50 h-auto">
+              <LoadingAnimation />
+            </div>
           </div>
         </div>
       )}
@@ -513,6 +517,7 @@ export default function PageFixedElements() {
                           blurDataURL={CreateShimmerDataUrl(196, 205)}
                           placeholder="blur"
                           loading="lazy"
+                          unoptimized
                         />
                       </div>
                     </div>
@@ -587,6 +592,7 @@ export default function PageFixedElements() {
                     placeholder={"blur"}
                     loading="lazy"
                     alt={item?.acf?.introduction?.album_title || "Album Image"}
+                    unoptimized
                   />
                 </div>
               );
@@ -712,6 +718,7 @@ export default function PageFixedElements() {
                               blurDataURL={CreateShimmerDataUrl(400, 400)}
                               placeholder="blur"
                               loading="lazy"
+                              unoptimized
                             />
                           </div>
                         </div>
@@ -756,6 +763,7 @@ export default function PageFixedElements() {
                               blurDataURL={CreateShimmerDataUrl(400, 400)}
                               placeholder="blur"
                               loading="lazy"
+                              unoptimized
                             />
                           </div>
                         </div>

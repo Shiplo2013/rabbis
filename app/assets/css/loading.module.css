@@ -1,0 +1,405 @@
+.animation-frame {
+  visibility: hidden;
+  animation-name: show-frame;
+  animation-duration: 3.75s;
+  animation-timing-function: steps(1, end);
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+}
+
+@keyframes show-frame {
+  0%,
+  0.790% {
+    visibility: visible;
+  }
+  0.800%,
+  100% {
+    visibility: hidden;
+  }
+}
+
+#frame-0 {
+  animation-delay: 0s;
+}
+#frame-1 {
+  animation-delay: 0.03s;
+}
+#frame-2 {
+  animation-delay: 0.06s;
+}
+#frame-3 {
+  animation-delay: 0.09s;
+}
+#frame-4 {
+  animation-delay: 0.12s;
+}
+#frame-5 {
+  animation-delay: 0.15s;
+}
+#frame-6 {
+  animation-delay: 0.18s;
+}
+#frame-7 {
+  animation-delay: 0.21s;
+}
+#frame-8 {
+  animation-delay: 0.24s;
+}
+#frame-9 {
+  animation-delay: 0.27s;
+}
+#frame-10 {
+  animation-delay: 0.3s;
+}
+#frame-11 {
+  animation-delay: 0.33s;
+}
+#frame-12 {
+  animation-delay: 0.36s;
+}
+#frame-13 {
+  animation-delay: 0.39s;
+}
+#frame-14 {
+  animation-delay: 0.42s;
+}
+#frame-15 {
+  animation-delay: 0.45s;
+}
+#frame-16 {
+  animation-delay: 0.48s;
+}
+#frame-17 {
+  animation-delay: 0.51s;
+}
+#frame-18 {
+  animation-delay: 0.54s;
+}
+#frame-19 {
+  animation-delay: 0.57s;
+}
+#frame-20 {
+  animation-delay: 0.6s;
+}
+#frame-21 {
+  animation-delay: 0.63s;
+}
+#frame-22 {
+  animation-delay: 0.66s;
+}
+#frame-23 {
+  animation-delay: 0.69s;
+}
+#frame-24 {
+  animation-delay: 0.72s;
+}
+#frame-25 {
+  animation-delay: 0.75s;
+}
+#frame-26 {
+  animation-delay: 0.78s;
+}
+#frame-27 {
+  animation-delay: 0.81s;
+}
+#frame-28 {
+  animation-delay: 0.84s;
+}
+#frame-29 {
+  animation-delay: 0.87s;
+}
+#frame-30 {
+  animation-delay: 0.9s;
+}
+#frame-31 {
+  animation-delay: 0.93s;
+}
+#frame-32 {
+  animation-delay: 0.96s;
+}
+#frame-33 {
+  animation-delay: 0.99s;
+}
+#frame-34 {
+  animation-delay: 1.02s;
+}
+#frame-35 {
+  animation-delay: 1.05s;
+}
+#frame-36 {
+  animation-delay: 1.08s;
+}
+#frame-37 {
+  animation-delay: 1.11s;
+}
+#frame-38 {
+  animation-delay: 1.14s;
+}
+#frame-39 {
+  animation-delay: 1.17s;
+}
+#frame-40 {
+  animation-delay: 1.2s;
+}
+#frame-41 {
+  animation-delay: 1.23s;
+}
+#frame-42 {
+  animation-delay: 1.26s;
+}
+#frame-43 {
+  animation-delay: 1.29s;
+}
+#frame-44 {
+  animation-delay: 1.32s;
+}
+#frame-45 {
+  animation-delay: 1.35s;
+}
+#frame-46 {
+  animation-delay: 1.38s;
+}
+#frame-47 {
+  animation-delay: 1.41s;
+}
+#frame-48 {
+  animation-delay: 1.44s;
+}
+#frame-49 {
+  animation-delay: 1.47s;
+}
+#frame-50 {
+  animation-delay: 1.5s;
+}
+#frame-51 {
+  animation-delay: 1.53s;
+}
+#frame-52 {
+  animation-delay: 1.56s;
+}
+#frame-53 {
+  animation-delay: 1.59s;
+}
+#frame-54 {
+  animation-delay: 1.62s;
+}
+#frame-55 {
+  animation-delay: 1.65s;
+}
+#frame-56 {
+  animation-delay: 1.68s;
+}
+#frame-57 {
+  animation-delay: 1.71s;
+}
+#frame-58 {
+  animation-delay: 1.74s;
+}
+#frame-59 {
+  animation-delay: 1.77s;
+}
+#frame-60 {
+  animation-delay: 1.8s;
+}
+#frame-61 {
+  animation-delay: 1.83s;
+}
+#frame-62 {
+  animation-delay: 1.86s;
+}
+#frame-63 {
+  animation-delay: 1.89s;
+}
+#frame-64 {
+  animation-delay: 1.92s;
+}
+#frame-65 {
+  animation-delay: 1.95s;
+}
+#frame-66 {
+  animation-delay: 1.98s;
+}
+#frame-67 {
+  animation-delay: 2.01s;
+}
+#frame-68 {
+  animation-delay: 2.04s;
+}
+#frame-69 {
+  animation-delay: 2.07s;
+}
+#frame-70 {
+  animation-delay: 2.1s;
+}
+#frame-71 {
+  animation-delay: 2.13s;
+}
+#frame-72 {
+  animation-delay: 2.16s;
+}
+#frame-73 {
+  animation-delay: 2.19s;
+}
+#frame-74 {
+  animation-delay: 2.22s;
+}
+#frame-75 {
+  animation-delay: 2.25s;
+}
+#frame-76 {
+  animation-delay: 2.28s;
+}
+#frame-77 {
+  animation-delay: 2.31s;
+}
+#frame-78 {
+  animation-delay: 2.34s;
+}
+#frame-79 {
+  animation-delay: 2.37s;
+}
+#frame-80 {
+  animation-delay: 2.4s;
+}
+#frame-81 {
+  animation-delay: 2.43s;
+}
+#frame-82 {
+  animation-delay: 2.46s;
+}
+#frame-83 {
+  animation-delay: 2.49s;
+}
+#frame-84 {
+  animation-delay: 2.52s;
+}
+#frame-85 {
+  animation-delay: 2.55s;
+}
+#frame-86 {
+  animation-delay: 2.58s;
+}
+#frame-87 {
+  animation-delay: 2.61s;
+}
+#frame-88 {
+  animation-delay: 2.64s;
+}
+#frame-89 {
+  animation-delay: 2.67s;
+}
+#frame-90 {
+  animation-delay: 2.7s;
+}
+#frame-91 {
+  animation-delay: 2.73s;
+}
+#frame-92 {
+  animation-delay: 2.76s;
+}
+#frame-93 {
+  animation-delay: 2.79s;
+}
+#frame-94 {
+  animation-delay: 2.82s;
+}
+#frame-95 {
+  animation-delay: 2.85s;
+}
+#frame-96 {
+  animation-delay: 2.88s;
+}
+#frame-97 {
+  animation-delay: 2.91s;
+}
+#frame-98 {
+  animation-delay: 2.94s;
+}
+#frame-99 {
+  animation-delay: 2.97s;
+}
+#frame-100 {
+  animation-delay: 3s;
+}
+#frame-101 {
+  animation-delay: 3.03s;
+}
+#frame-102 {
+  animation-delay: 3.06s;
+}
+#frame-103 {
+  animation-delay: 3.09s;
+}
+#frame-104 {
+  animation-delay: 3.12s;
+}
+#frame-105 {
+  animation-delay: 3.15s;
+}
+#frame-106 {
+  animation-delay: 3.18s;
+}
+#frame-107 {
+  animation-delay: 3.21s;
+}
+#frame-108 {
+  animation-delay: 3.24s;
+}
+#frame-109 {
+  animation-delay: 3.27s;
+}
+#frame-110 {
+  animation-delay: 3.3s;
+}
+#frame-111 {
+  animation-delay: 3.33s;
+}
+#frame-112 {
+  animation-delay: 3.36s;
+}
+#frame-113 {
+  animation-delay: 3.39s;
+}
+#frame-114 {
+  animation-delay: 3.42s;
+}
+#frame-115 {
+  animation-delay: 3.45s;
+}
+#frame-116 {
+  animation-delay: 3.48s;
+}
+#frame-117 {
+  animation-delay: 3.51s;
+}
+#frame-118 {
+  animation-delay: 3.54s;
+}
+#frame-119 {
+  animation-delay: 3.57s;
+}
+#frame-120 {
+  animation-delay: 3.6s;
+}
+#frame-121 {
+  animation-delay: 3.63s;
+}
+#frame-122 {
+  animation-delay: 3.66s;
+}
+#frame-123 {
+  animation-delay: 3.69s;
+}
+#frame-124 {
+  animation-delay: 3.72s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animation-frame {
+    animation: none;
+    visibility: hidden;
+  }
+  #frame-0 {
+    visibility: visible;
+  }
+}

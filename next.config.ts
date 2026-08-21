@@ -9,7 +9,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "api.chevronyeshiva.org",
-        port: "",
         pathname: "/wp-content/uploads/**",
       },
     ],

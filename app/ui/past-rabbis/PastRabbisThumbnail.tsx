@@ -31,6 +31,7 @@ export default function PastRabbisThumbnail({ item }: { item: MenuPost }) {
         loading="lazy"
         alt={item?.acf?.title || "Rabbi image"}
         onLoad={() => setLoading(false)}
+        unoptimized
       />
     </div>
   );

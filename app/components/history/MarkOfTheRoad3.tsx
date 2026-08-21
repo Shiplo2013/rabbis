@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import markImage1 from "../../assets/images/markofroad3-image1.jpg";
 import markImage2 from "../../assets/images/markofroad3-image2.jpg";
-import markImage3 from "../../assets/images/markofroad3-image3.jpg";
 import markImage4 from "../../assets/images/markofroad3-image4.jpg";
 import notifyIcon from "../../assets/images/notify-icon.png";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
@@ -57,13 +56,13 @@ export default function MarkOfTheRoad3(props: ChildProps) {
       image: props?.data?.content_2?.image || markImage2,
       notification: "",
     },
-    {
-      title:
-        props?.data?.content_3?.title ||
-        `שנת תרפ"ה:<br/>עליית הסבא והגרמ"מ אפשטיין`,
-      image: props?.data?.content_3?.image || markImage3,
-      notification: "",
-    },
+    // {
+    //   title:
+    //     props?.data?.content_3?.title ||
+    //     `שנת תרפ"ה:<br/>עליית הסבא והגרמ"מ אפשטיין`,
+    //   image: props?.data?.content_3?.image || markImage3,
+    //   notification: "",
+    // },
     {
       title:
         props?.data?.content_4?.title ||
@@ -277,7 +276,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
         {sectionData?.map((item: any, index: number) => (
           <div
             key={index}
-            className="group section-content flex flex-col items-start gap-y-6 sm:gap-y-10 lg:gap-y-[10vh] w-full lg:w-48.5vw self-end lg:-mb-[9vh] lg:px-[2.7vw] lg:pt-[9vh] relative cursor-pointer"
+            className="group section-content flex flex-col items-start gap-y-6 sm:gap-y-10 lg:gap-y-[10vh] w-full lg:w-[39vw] self-end lg:-mb-[9vh] lg:px-[2.7vw] lg:pt-[9vh] relative cursor-pointer"
           >
             {item?.notification !== "" && (
               <div
@@ -311,7 +310,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                 {parse(item?.title)}
               </h4>
             </div>
-            <div className="image w-full lg:w-161 lg:h-106.25 relative z-20">
+            <div className="image w-full lg:w-161 max-w-full lg:h-106.25 max-h-[40vh] relative z-20">
               <div className="image-wrapper w-full h-full transition-all duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] group-hover:scale-105">
                 <Image
                   className="w-full object-cover object-center h-full"
@@ -330,28 +329,31 @@ export default function MarkOfTheRoad3(props: ChildProps) {
             <div className="overlay absolute left-0 bottom-0 w-full h-full bg-white z-10 transition-all duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] opacity-0 translate-y-full group-hover:translate-y-0 group-hover:opacity-100"></div>
           </div>
         ))}
-        <div className="section-content flex items-center gap-y-10 gap-x-[2.6vw] w-full lg:w-[90vw] lg:mr-[2.5vw] flex-col-reverse lg:flex-row">
-          <div className="image w-full lg:w-[62.7vw] lg:h-[56.8vh]">
-            <Image
-              className="w-full object-cover object-center h-full"
-              src={
-                props?.data?.content_5?.image?.sizes?.large || markImage4.src
-              }
-              width={"1205"}
-              height={"614"}
-              blurDataURL={
-                CreateShimmerDataUrl(1205, 614) || markImage4?.blurDataURL
-              }
-              placeholder={"blur"}
-              loading="lazy"
-              alt={"Section Image"}
-            />
-          </div>
-          <div className="title w-full lg:w-[23vw]">
-            <h4 className="text-[40px] sm:text-[60px] lg:text-[90px] text-(--theme-color) leading-[0.7em]">
+        <div className="group section-content flex flex-col items-start gap-y-6 sm:gap-y-10 lg:gap-y-[10vh] w-full lg:w-[39vw] self-end lg:-mb-[9vh] lg:px-[2.7vw] lg:pt-[9vh] relative cursor-pointer">
+          <div dir="ltr" className="title relative z-20">
+            <h4 className="text-[22px] sm:text-[36px] lg:text-[43px] text-(--theme-color) leading-[0.8em] lg:leading-[0.7em] transition-all duration-300 delay-100 group-hover:text-black group-hover text-right">
               {parse(secTitle5)}
             </h4>
           </div>
+          <div className="image w-full lg:w-161 max-w-full lg:h-106.25 relative z-20">
+            <div className="image-wrapper w-full h-full transition-all duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] group-hover:scale-105">
+              <Image
+                className="w-full object-cover object-center h-full"
+                src={
+                  props?.data?.content_5?.image?.sizes?.large || markImage4.src
+                }
+                width={"644"}
+                height={"425"}
+                blurDataURL={
+                  CreateShimmerDataUrl(1205, 614) || markImage4?.blurDataURL
+                }
+                placeholder={"blur"}
+                loading="lazy"
+                alt={"Section Image"}
+              />
+            </div>
+          </div>
+          <div className="overlay absolute left-0 bottom-0 w-full h-full bg-white z-10 transition-all duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] opacity-0 translate-y-full group-hover:translate-y-0 group-hover:opacity-100"></div>
         </div>
       </div>
     </section>

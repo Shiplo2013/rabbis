@@ -66,7 +66,8 @@ export default function SingleZatzelGraduate(props: ChildProps) {
           }
           placeholder={"blur"}
           loading="lazy"
-          alt="Rabbis"
+          alt={ItemData?.title || ""}
+          unoptimized
         />
       </div>
       <div className="post-text text-[18px] sm:text-[25px] text-(--theme-color) leading-[0.9em] text-right">

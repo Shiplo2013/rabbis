@@ -5,7 +5,7 @@ import ParallaxBackgroundBigSection from "@/app/ui/ParallaxBackgroundBigSection"
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { RefObject, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import bookIcon from "../../assets/images/lamb-book-icon.png";
 import rabbisImage10 from "../../assets/images/rabbis-timeline10.jpg";
 import rabbisImage11 from "../../assets/images/rabbis-timeline11.jpg";
@@ -291,6 +291,10 @@ function RabbisTimeline2(props: ChildProps) {
     { scope: wrapper, dependencies: [pathname, props?.offsetTopAdded] },
   );
 
+  useEffect(() => {
+    console.log(props.data);
+  }, [props.data]);
+
   return (
     <section
       ref={wrapper}
@@ -325,7 +329,7 @@ function RabbisTimeline2(props: ChildProps) {
                     );
                     setOpenNotificationPopup(true);
                   }}
-                  className="timeline-content notification-button py-5 px-6 lg:px-8 w-full sm:w-108 bg-[#5A7C4E] relative self-start pl-15 lg:pl-19 mx-auto z-40 lg:mt-[14vh] lg:-ml-[8vw] lg:-mr-[12vw] cursor-pointer"
+                  className="timeline-content notification-button py-5 px-6 lg:px-8 w-full lg:w-108 lg:min-w-100 bg-[#5A7C4E] relative self-start pl-15 lg:pl-19 mx-auto z-40 lg:mt-[14vh] lg:-ml-[8vw] lg:-mr-[12vw] cursor-pointer"
                 >
                   <div className="notify-icon w-30 h-auto lg:w-50.5 lg:h-33.75 absolute top-0 left-0 -translate-x-1/2">
                     <Image
@@ -366,6 +370,7 @@ function RabbisTimeline2(props: ChildProps) {
                         placeholder={"blur"}
                         loading="lazy"
                         alt="Rabbis Image"
+                        unoptimized
                       />
                     </div>
                   ) : (
@@ -384,6 +389,7 @@ function RabbisTimeline2(props: ChildProps) {
                         placeholder={"blur"}
                         loading="lazy"
                         alt="Rabbis Image"
+                        unoptimized
                       />
                     </div>
                   )}
