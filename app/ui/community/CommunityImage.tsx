@@ -7,7 +7,6 @@ export default function CommunityImage({ item }: { item: any }) {
   const [retryCount, setRetryCount] = useState(0);
   const maxRetries = 3;
   const baseImageSrc =
-    item?.content?.image?.sizes?.medium ||
     item?.content?.image?.sizes?.medium_large ||
     item?.content?.image?.sizes?.large ||
     item?.content?.image?.url ||

@@ -670,7 +670,6 @@ export default function CommunitiesSlugScriptProvider({
                                       <Image
                                         className="w-full h-full object-contain object-center"
                                         src={
-                                          item?.content?.image?.sizes?.medium ||
                                           item?.content?.image?.sizes
                                             ?.medium_large ||
                                           item?.content?.image?.sizes?.large ||
