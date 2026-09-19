@@ -12,7 +12,7 @@ export async function sendFormData(prevState: unknown, formData: FormData) {
   // For example, you can send an email, store it in a database, etc.
   try {
     const response = await fetch(
-      "https://dovp7.sg-host.com/wp-json/contact-form-7/v1/contact-forms/2049/feedback",
+      "https://api.chevronyeshiva.org/wp-json/contact-form-7/v1/contact-forms/2049/feedback",
       {
         method: "POST",
         body: formData,
@@ -68,7 +68,7 @@ export async function sendSubscribeData(
   // For example, you can send an email, store it in a database, etc.
   try {
     const response = await fetch(
-      "https://dovp7.sg-host.com/wp-json/contact-form-7/v1/contact-forms/2790/feedback",
+      "https://api.chevronyeshiva.org/wp-json/contact-form-7/v1/contact-forms/2790/feedback",
       {
         method: "POST",
         body: formData,

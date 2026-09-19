@@ -66,7 +66,7 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
           <div className="contact-row mt-5">
             <p
               dir="rtl"
-              className={`${state?.status === "mail_sent" ? "text-black" : "text-gray-800"} text-[14px] text-center leading-[1em]`}
+              className={`${state?.status === "mail_sent" ? (mode !== "dark" ? "text-black" : "text-white") : mode !== "dark" ? "text-gray-800" : "text-gray-50"} text-[14px] text-center leading-[1em]`}
             >
               {state.message}
             </p>

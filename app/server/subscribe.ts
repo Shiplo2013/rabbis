@@ -9,7 +9,7 @@ export async function sendSubscribeData(
 
   try {
     const response = await fetch(
-      `https://dovp7.sg-host.com/wp-json/contact-form-7/v1/contact-forms/2703/feedback`,
+      `https://api.chevronyeshiva.org/wp-json/contact-form-7/v1/contact-forms/2703/feedback`,
       {
         method: "POST",
         body: subscribeFormData,
