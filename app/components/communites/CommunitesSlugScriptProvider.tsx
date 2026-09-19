@@ -655,6 +655,7 @@ export default function CommunitiesSlugScriptProvider({
                               return (
                                 <div
                                   key={index}
+                                  data-index={index}
                                   className="content1 w-full not-first:mt-8.5"
                                 >
                                   <h2 className="text-[22px] sm:text-[26px] lg:text-[33px] leading-[90%] font-bold">
@@ -663,14 +664,15 @@ export default function CommunitiesSlugScriptProvider({
                                   <div className="text1 mt-8.5">
                                     {parse(item?.news_content?.text || "")}
                                   </div>
-                                  {item?.content?.image && (
+                                  {item?.news_content?.image && (
                                     <div className="image1 mt-9 w-xl max-w-full max-h-[66vh]">
                                       <Image
                                         className="w-full h-full object-contain object-center"
                                         src={
-                                          item?.content?.image?.sizes
+                                          item?.news_content?.image?.sizes
                                             ?.medium_large ||
-                                          item?.content?.image?.sizes?.large ||
+                                          item?.news_content?.image?.sizes
+                                            ?.large ||
                                           item?.news_content?.image?.url ||
                                           item?.news_content?.image?.src
                                         }
