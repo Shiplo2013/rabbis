@@ -836,7 +836,8 @@ export default function PageFixedElements() {
 
       {/* Community Page Loader */}
       {pathname.startsWith("/communities/") &&
-        pathname !== "/communities/sheets" && (
+        pathname !== "/communities/sheets" &&
+        pathname !== "/communities/sheets/v2" && (
           <div
             id="community-loader"
             className="community-loader fixed top-0 left-0 w-full h-full bg-[#C3A13F] flex items-center justify-center z-999 text-[#091B24]"

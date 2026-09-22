@@ -12,13 +12,11 @@ import NewsBG from "../../assets/images/news-bg.jpg";
 import CalenderIcon2 from "@/app/assets/icons/CalenderIcon2";
 import CandelIcon from "@/app/assets/icons/CandelIcon";
 import CloseIcon2 from "@/app/assets/icons/CloseIcon2";
-import EventIcon from "@/app/assets/icons/EventIcon";
 import MapMarker from "@/app/assets/icons/MapMarker";
 import UserIcon2 from "@/app/assets/icons/UserIcon2";
 import WishIcon2 from "@/app/assets/icons/WishIcon2";
 import CommunityImage from "@/app/ui/community/CommunityImage";
 import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
-import EventItem from "@/app/ui/EventItem";
 import PostItem2 from "@/app/ui/PostItem2";
 import Image from "next/image";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
@@ -872,7 +870,7 @@ export default function CommunitiesSlugScriptProvider({
                     )}
                   </div>
                 </div>
-                <div className="related-event mt-[9.4vh]">
+                {/* <div className="related-event mt-[9.4vh]">
                   <div className="icon mb-7 w-12 h-auto">
                     <EventIcon />
                   </div>
@@ -893,7 +891,7 @@ export default function CommunitiesSlugScriptProvider({
                       },
                     )}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

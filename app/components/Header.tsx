@@ -13,7 +13,8 @@ export default function Header() {
   ) : pathname.startsWith("/news/") ? (
     <SinglePageHeader link={"/news"} />
   ) : pathname.startsWith("/communities/") &&
-    pathname !== "/communities/sheets" ? (
+    pathname !== "/communities/sheets" &&
+    pathname !== "/communities/sheets/v2" ? (
     <CommunityPageHeader />
   ) : null;
 
