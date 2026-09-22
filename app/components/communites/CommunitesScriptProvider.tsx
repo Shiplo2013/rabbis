@@ -48,13 +48,6 @@ export default function CommunitiesScriptProvider({
     if (!communityPageData) {
       return;
     }
-    console.log("Community Page Data:", communityPageData);
-    console.log(
-      communityPageData?.postsData.reduce(
-        (total: number, item: any) => total + item.posts.length,
-        0,
-      ),
-    );
     const updateSectionWidth = () => {
       const newSectionWidth =
         communityPageData?.postsData.reduce(
@@ -64,7 +57,7 @@ export default function CommunitiesScriptProvider({
           24.3 +
         (communityPageData?.postsData.length - 1) * 15 +
         30 +
-        10; // Add 10vw for padding
+        20; // Add 10vw for padding
 
       setSectionWidth(newSectionWidth);
       setContainerWidth(newSectionWidth + 100);

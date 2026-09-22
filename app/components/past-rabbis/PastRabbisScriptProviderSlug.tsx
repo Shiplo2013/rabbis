@@ -1,11 +1,11 @@
 "use client";
 import Introduction from "@/app/components/past-rabbis/single/Introduction";
-import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import ContentBorder from "@/app/ui/ContentBorder";
 import ContentParts from "@/app/ui/ContentParts";
 import PostNavigation from "@/app/ui/past-rabbis/PostNavigation";
 import RabbisOptions from "@/app/ui/past-rabbis/RabbisOptions";
 import QuoteSection from "@/app/ui/QuoteSection";
+import TextSplitLines2 from "@/app/ui/TextSplitLines2";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import IntroBG from "../../assets/images/past-rabbis-bg.jpg";
@@ -310,7 +310,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
         // Split Title 1
         let splitTitle;
         if (introTitle) {
-          splitTitle = BigTitleSplitLines(introTitle);
+          splitTitle = TextSplitLines2(introTitle);
           gsap.set(introTitle, {
             perspective: 400,
           });
@@ -747,7 +747,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
           className="content-bottom bg-[#F5F0EB] w-full flex justify-center flex-col items-center pb-[7vh] px-[8vw] lg:pt-[7vh] lg:pb-[8vh] lg:pr-25"
         >
           <div className="wrapper w-full lg:w-[80%] max-w-282.5">
-            <ContentBorder extraClass="w-[30vw]" />
+            <ContentBorder extraClass="" />
             {post?.acf?.content_2 && (
               <ContentParts extraClass="mt-11.5" data={post?.acf?.content_2} />
             )}

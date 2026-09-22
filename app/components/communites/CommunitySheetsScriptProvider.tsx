@@ -41,6 +41,7 @@ export default function CommunitiesSheetsScriptProvider({
     setAnimationPlayed,
     setCommunitySheetsCategoryData,
     sheetsOnSelectCategoryId,
+    sheetsOnSelectCategoryChildId,
   } = useAppState();
   const [postPerPage, setPostPerPage] = useState(100);
   const [postsPerLoad, setPostsPerLoad] = useState(12);
@@ -65,6 +66,7 @@ export default function CommunitiesSheetsScriptProvider({
     threshold: 0,
     triggerOnce: false,
   });
+  const [filteredPostsLoading, setFilteredPostsLoading] = useState(false);
 
   // Get Page Data From backend
   useEffect(() => {
@@ -94,24 +96,61 @@ export default function CommunitiesSheetsScriptProvider({
 
   // Load more posts when currentPage changes
   useEffect(() => {
-    if (sheetsOnSelectCategoryId === 0) {
+    if (sheetsOnSelectCategoryId === 0 && sheetsOnSelectCategoryChildId === 0) {
       setSheetPostsData(data?.postsData?.posts || []);
-    } else {
+    }
+    if (
+      sheetsOnSelectCategoryId !== null &&
+      sheetsOnSelectCategoryId !== 0 &&
+      sheetsOnSelectCategoryChildId !== 0
+    ) {
+      setFilteredPostsLoading(true);
       const filteredPosts = data?.postsData?.posts?.filter((post: any) => {
         const postCategoryId = post?.magazines_cat?.[0] || 0;
-        return postCategoryId === sheetsOnSelectCategoryId;
+        return postCategoryId === sheetsOnSelectCategoryChildId;
       });
       if (filteredPosts?.length === 0) {
         setNoPostsFound(true);
         setSheetPostsData([]);
+        setFilteredPostsLoading(false);
       } else {
         setNoPostsFound(false);
         setSheetPostsData(filteredPosts);
+        setFilteredPostsLoading(false);
       }
 
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     }
-  }, [sheetsOnSelectCategoryId]);
+    if (
+      sheetsOnSelectCategoryId !== null &&
+      sheetsOnSelectCategoryId !== 0 &&
+      sheetsOnSelectCategoryChildId === 0
+    ) {
+      setFilteredPostsLoading(true);
+      const categoriesIds = data?.categoriesTree[sheetsOnSelectCategoryId - 1];
+      const categoriesFilterdIds = categoriesIds?.children?.filter(
+        (item: any) => {
+          return item.count !== 0;
+        },
+      );
+
+      const filteredIds = categoriesFilterdIds?.map((item: any) => item.id);
+      const filteredPosts = data?.postsData?.posts?.filter((post: any) =>
+        filteredIds.includes(post?.magazines_cat?.[0] || 0),
+      );
+      if (filteredPosts?.length === 0) {
+        setNoPostsFound(true);
+        setSheetPostsData([]);
+        setFilteredPostsLoading(false);
+      } else {
+        setNoPostsFound(false);
+        setSheetPostsData(filteredPosts);
+        setFilteredPostsLoading(false);
+      }
+
+      window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+    }
+  }, [sheetsOnSelectCategoryId, sheetsOnSelectCategoryChildId]);
 
   // Get more posts
   const LoadMorePosts = () => {
@@ -643,6 +682,7 @@ export default function CommunitiesSheetsScriptProvider({
               setIsPostLoaded={setIsPostLoaded}
               currentPage={currentPage}
               totalPages={totalPages}
+              filteredPostsLoading={filteredPostsLoading}
             />
           </div>
         </div>

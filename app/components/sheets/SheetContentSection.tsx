@@ -18,6 +18,7 @@ interface ChildProps {
   currentPage?: number;
   totalPages?: number;
   style?: React.CSSProperties;
+  filteredPostsLoading: boolean;
 }
 
 export default function SheetContentSection(props: ChildProps) {
@@ -28,8 +29,12 @@ export default function SheetContentSection(props: ChildProps) {
   const [activeCategory, setActiveCategory] = useState(0);
 
   // Animation State
-  const { sheetsOnSelectCategoryId, setSheetsOnSelectCategoryId } =
-    useAppState();
+  const {
+    sheetsOnSelectCategoryId,
+    setSheetsOnSelectCategoryId,
+    sheetsOnSelectCategoryChildId,
+    setSheetsOnSelectCategoryChildId,
+  } = useAppState();
 
   return (
     <section
@@ -67,9 +72,12 @@ export default function SheetContentSection(props: ChildProps) {
                         key={index}
                         index={index}
                         year={item}
-                        activeCategory={activeCategory}
-                        setActiveCategory={setActiveCategory}
-                        onSelectCategoryId={setSheetsOnSelectCategoryId}
+                        activeCategory={sheetsOnSelectCategoryChildId}
+                        setActiveCategory={setSheetsOnSelectCategoryChildId}
+                        sheetsOnSelectCategoryId={sheetsOnSelectCategoryId}
+                        setSheetsOnSelectCategoryId={
+                          setSheetsOnSelectCategoryId
+                        }
                         //setIsPostLoaded={() => setIsLoading(true)}
                       />
                     );
@@ -95,6 +103,17 @@ export default function SheetContentSection(props: ChildProps) {
               </Fragment>
             ))
           )}
+
+          <div
+            className={`absolute top-0 left-0 w-full h-full bg-black z-30 flex items-center justify-center transition-all ${props.filteredPostsLoading ? "opacity-100 visible" : "opacity-0 invisible"}`}
+          >
+            <div role="status">
+              <div className="flex items-center justify-center">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#D1A941] border-t-transparent"></div>
+              </div>
+              <span className="sr-only">Loading...</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
