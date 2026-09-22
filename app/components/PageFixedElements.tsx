@@ -424,7 +424,8 @@ export default function PageFixedElements() {
         pathname.startsWith("/the-circle-of-the-year/") ||
         pathname === "/testimonials" ||
         pathname === "/past-rabbis" ||
-        pathname.startsWith("/past-rabbis/") ||
+        (pathname.startsWith("/past-rabbis/") &&
+          pathname !== "/past-rabbis/v2") ||
         pathname === "/news" ||
         pathname === "/donation" ||
         pathname === "/communities" ||
@@ -837,7 +838,8 @@ export default function PageFixedElements() {
       {/* Community Page Loader */}
       {pathname.startsWith("/communities/") &&
         pathname !== "/communities/sheets" &&
-        pathname !== "/communities/sheets/v2" && (
+        pathname !== "/communities/sheets/v2" &&
+        pathname !== "/communities/sheets/old" && (
           <div
             id="community-loader"
             className="community-loader fixed top-0 left-0 w-full h-full bg-[#C3A13F] flex items-center justify-center z-999 text-[#091B24]"
@@ -884,7 +886,7 @@ export default function PageFixedElements() {
       {/* Rabbis Hamburger Menu */}
 
       {/* Community Sidebar */}
-      {pathname === "/communities/sheets" && (
+      {pathname === "/communities/sheets/old" && (
         <div
           id="sheets-sidebar"
           className="sheets-sidebar fixed top-0 right-15 w-70 h-full bg-black flex flex-col z-50 border-l border-[#C3A13F]"

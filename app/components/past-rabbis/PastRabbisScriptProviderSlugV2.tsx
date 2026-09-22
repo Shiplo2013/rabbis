@@ -1,0 +1,716 @@
+"use client";
+import ContentSection2 from "@/app/components/past-rabbis/single/ContentSection2";
+import Introduction from "@/app/components/past-rabbis/single/Introduction";
+import ContentBorder from "@/app/ui/ContentBorder";
+import ContentParts from "@/app/ui/ContentParts";
+import PostNavigation from "@/app/ui/past-rabbis/PostNavigation";
+import RabbisOptions from "@/app/ui/past-rabbis/RabbisOptions";
+import QuoteSection from "@/app/ui/QuoteSection";
+import TextSplitLines2 from "@/app/ui/TextSplitLines2";
+import { useParams, usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import IntroBG from "../../assets/images/past-rabbis-bg.jpg";
+import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
+import TextSplitLines from "../../ui/TextSplitLines";
+import { useAppState } from "../AppContext";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
+
+type RabbiPost = {
+  id: number;
+  slug: string;
+  link: string;
+  title: { rendered: string };
+  content: string;
+  excerpt: string;
+  acf: {
+    title: string;
+    time: string;
+    blockquote: string;
+    thumbnail: any;
+    quotes: string;
+    content_1: {
+      title: string;
+      text_left: string;
+      text_right: string;
+    };
+    content_2: {
+      title: string;
+      text: string;
+    };
+    content_3: {
+      title: string;
+      text: string;
+    };
+    content_4: {
+      title: string;
+      text: string;
+    };
+    content_5: {
+      title: string;
+      text: string;
+    };
+    content_6: {
+      title: string;
+      text: string;
+    };
+    popup_1: {
+      title: string;
+      text: string;
+    };
+    popup_2: {
+      title: string;
+      image_1: any;
+      image_2: any;
+      text_group_1: {
+        title: string;
+        text: string;
+      };
+      text_group_2: {
+        title: string;
+        text: string;
+      };
+    };
+  };
+};
+
+type AllPosts = {
+  pagination: any;
+  posts: [
+    {
+      id: number;
+      title: string;
+      slug: string;
+      acf: {
+        title: { rendered: string };
+        time: string;
+        blockquote: string;
+        thumbnail: any;
+        quotes: string;
+        content_1: {
+          title: string;
+          text_left: string;
+          text_right: string;
+        };
+        content_2: {
+          title: string;
+          text: string;
+        };
+        content_3: {
+          title: string;
+          text: string;
+        };
+        content_4: {
+          title: string;
+          text: string;
+        };
+        content_5: {
+          title: string;
+          text: string;
+        };
+        content_6: {
+          title: string;
+          text: string;
+        };
+        popup_1: {
+          title: string;
+          text: string;
+        };
+        popup_2: {
+          title: string;
+          image_1: any;
+          image_2: any;
+          text_group_1: {
+            title: string;
+            text: string;
+          };
+          text_group_2: {
+            title: string;
+            text: string;
+          };
+        };
+      };
+    },
+  ];
+};
+
+export default function PastRabbisScriptProviderSlugV2({
+  data,
+}: {
+  data: any;
+}) {
+  // Router Path
+  const pathname = usePathname();
+  const params = useParams();
+  const slug = params?.slug as string;
+  const [post, setPost] = useState<RabbiPost | null>(null);
+  const [allPosts, setAllPosts] = useState<AllPosts | null | any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const {
+    isLoading,
+    setIsLoading,
+    animationPlayed,
+    setAnimationPlayed,
+    setCurrentRabbisPost,
+    allRabbisPosts,
+    setAllRabbisPosts,
+  } = useAppState();
+  const [pageDataFetched, setPageDataFetched] = useState(false);
+
+  // Animation State
+  const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
+  // Vertical Section
+  const [verticalSection, setVerticalSection] =
+    useState<gsap.core.Timeline | null>(null);
+
+  // Get Page Data From backend
+  useEffect(() => {
+    if (!data) {
+      setError("No data provided.");
+      return;
+    }
+    setPost(data.postsData);
+    setCurrentRabbisPost(data.postsData);
+    setAllPosts(data.allPostsData);
+    if (data.allPostsData && data.allPostsData.length > 0) {
+      setAllRabbisPosts(data.allPostsData);
+    }
+  }, [data]);
+
+  // Page Data Loade
+  useEffect(() => {
+    if (!post) {
+      return;
+    }
+    if (animationPlayed) {
+      setPageDataFetched(true);
+      setIsLoading(false);
+    }
+  }, [post, allPosts, animationPlayed]);
+
+  // Popup State
+  const [activeCardPopup, setActiveCardPopup] = useState(false);
+  const [activeBookPopup, setActiveBookPopup] = useState(false);
+  const [cardPopupTimeline] = useState(
+    gsap.timeline({
+      paused: true,
+      timeScale: 3,
+    }),
+  );
+  const [bookPopupTimeline] = useState(
+    gsap.timeline({
+      paused: true,
+      timeScale: 3,
+    }),
+  );
+
+  // Page Refs
+  const main = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const wrapper = useRef<HTMLDivElement>(null);
+
+  // Load Page
+  useGSAP(() => {
+    if (typeof window !== "undefined" && panel.current && wrapper.current) {
+      document.fonts.ready.then(() => {
+        // Selectors
+        const pageWrapper = document.querySelector(
+          "#page-wrapper",
+        ) as HTMLDivElement | null;
+        const rabbisHeader = document.querySelector(
+          ".rabbis-header",
+        ) as HTMLDivElement | null;
+        // Banner Button
+        const introTitle = main.current?.querySelector(
+          ".first-intro .intro-title",
+        );
+        // Rabbis Image
+        const rabbisImage = main.current?.querySelector(
+          ".first-intro .rabbis-image",
+        );
+        // Banner Button
+        const introContent = main.current?.querySelector(
+          ".first-intro .intro-content",
+        );
+        const bannerBackgroundOverlay = main.current?.querySelector(
+          ".first-intro .intro-background .intro-bg-mask",
+        );
+        // Split Title 1
+        let splitTitle;
+        if (introTitle) {
+          splitTitle = TextSplitLines2(introTitle);
+          gsap.set(introTitle, {
+            perspective: 400,
+          });
+          gsap.set(splitTitle, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Split Title 2
+        let splitContent;
+        if (introContent) {
+          splitContent = TextSplitLines(introContent);
+          gsap.set(introContent, {
+            perspective: 400,
+          });
+          gsap.set(splitContent, {
+            yPercent: 150,
+            opacity: 0,
+          });
+        }
+        // Set localStorage variable
+        const userVisit = localStorage.getItem("hasVisited");
+        if (userVisit === "true" && animationPlayed) {
+          // Timeline
+          const tl = gsap.timeline({
+            onComplete: () => {
+              // Set Animation Played to true
+              setIsAllAnimationComplete(true);
+            },
+          });
+          if (pageWrapper) {
+            tl.to(pageWrapper, {
+              opacity: 1,
+              ease: "none",
+              duration: 0.5,
+              delay: 0,
+            });
+          }
+          if (rabbisHeader) {
+            tl.to(rabbisHeader, {
+              opacity: 1,
+              ease: "none",
+              duration: 1,
+            });
+          }
+          if (rabbisImage) {
+            tl.to(
+              rabbisImage,
+              {
+                opacity: 1,
+                ease: "none",
+                duration: 1,
+              },
+              "-=1",
+            );
+          }
+          if (introTitle && splitTitle) {
+            tl.to(
+              splitTitle,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=1.5",
+            );
+          }
+          if (introContent && splitContent) {
+            tl.to(
+              splitContent,
+              {
+                yPercent: 0,
+                opacity: 1,
+                duration: 3,
+                delay: 0,
+                stagger: 0.05,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+          // Wave Line Animation
+          const waveMask = document.getElementById(
+            "wave-mask",
+          ) as HTMLDivElement | null;
+          if (waveMask) {
+            tl.to(
+              waveMask,
+              {
+                translateY: 0,
+                opacity: 1,
+                ease: "expo.inOut",
+                duration: 3,
+                delay: 0,
+              },
+              "-=2.5",
+            );
+          }
+          if (bannerBackgroundOverlay) {
+            tl.to(
+              bannerBackgroundOverlay,
+              {
+                translateY: "-100%",
+                delay: 0,
+                duration: 3,
+                ease: "expo.inOut",
+              },
+              "-=2.5",
+            );
+          }
+        }
+      });
+    }
+  }, [animationPlayed, pageDataFetched]);
+
+  // Change logo
+  useEffect(() => {
+    const logo = document.getElementById("logo-light");
+    const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
+    logoImage?.classList.add("white-image");
+  }, [pathname]);
+
+  // Set Body Overflow Hidden
+  useEffect(() => {
+    if (isAllAnimationComplete) {
+      // Body Overflow Hidden
+      document.body.classList.remove("!overflow-hidden");
+      document.body.classList.add("!overflow-auto");
+      verticalSection?.pause();
+    } else {
+      verticalSection?.resume();
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isAllAnimationComplete]);
+
+  useGSAP(() => {
+    // Popup Animation
+    const cardButton = main.current?.querySelectorAll(
+      ".rabbis-menu-item.card-button",
+    );
+    const bookButton = main.current?.querySelectorAll(
+      ".rabbis-menu-item.book-button",
+    );
+    // Card Popup Elements
+    const popupCardRef = document.getElementById(
+      "popup-card",
+    ) as HTMLDivElement | null;
+    const popupOverlay = popupCardRef?.querySelector(
+      ".overlay",
+    ) as HTMLDivElement | null;
+    const popupWrapper = popupCardRef?.querySelector(
+      ".card-popup-wrapper",
+    ) as HTMLDivElement | null;
+    const closeButton = popupCardRef?.querySelector(
+      "button.close-btn",
+    ) as HTMLButtonElement | null;
+    // Book Popup Elements
+    const popupBookRef = document.getElementById(
+      "popup-book",
+    ) as HTMLDivElement | null;
+    const popupBookOverlay = popupBookRef?.querySelector(
+      ".overlay",
+    ) as HTMLDivElement | null;
+    const popupBookWrapper = popupBookRef?.querySelector(
+      ".popup-wrapper",
+    ) as HTMLDivElement | null;
+    const closeBookButton = popupBookRef?.querySelector(
+      "button.close-btn",
+    ) as HTMLButtonElement | null;
+
+    // Card Popup Animation
+    if (popupCardRef) {
+      cardPopupTimeline.to(
+        popupCardRef,
+        {
+          opacity: 1,
+          visibility: "visible",
+          duration: 0,
+          delay: 0,
+          ease: "none",
+        },
+        "<",
+      );
+    }
+    // Overlay
+    if (popupOverlay) {
+      cardPopupTimeline.to(
+        popupOverlay,
+        {
+          opacity: 1,
+          visibility: "visible",
+          duration: 0,
+          delay: 0.5,
+          ease: "none",
+        },
+        "<",
+      );
+    }
+    // Animate Popup Content
+    if (popupWrapper) {
+      gsap.set(popupWrapper, {
+        x: () => popupWrapper.clientWidth + 50,
+      });
+      cardPopupTimeline.to(
+        popupWrapper,
+        {
+          x: 0,
+          duration: 1.5,
+          delay: 0,
+          ease: "expo.inOut",
+        },
+        "<",
+      );
+    }
+    // Book Popup Animation
+    if (popupBookRef) {
+      bookPopupTimeline.to(
+        popupBookRef,
+        {
+          opacity: 1,
+          visibility: "visible",
+          duration: 0,
+          delay: 0,
+          ease: "none",
+        },
+        "<",
+      );
+    }
+    // Overlay
+    if (popupBookOverlay) {
+      bookPopupTimeline.to(
+        popupBookOverlay,
+        {
+          opacity: 1,
+          visibility: "visible",
+          duration: 0.5,
+          delay: 0,
+          ease: "none",
+        },
+        "<",
+      );
+    }
+    // Animate Popup Content
+    if (popupBookWrapper) {
+      gsap.set(popupBookWrapper, {
+        x: () => popupBookWrapper.clientWidth + 50,
+      });
+      bookPopupTimeline.to(
+        popupBookWrapper,
+        {
+          x: 0,
+          duration: 1.5,
+          delay: 0,
+          ease: "expo.inOut",
+        },
+        "<",
+      );
+    }
+    // Card Button click Event
+    if (cardButton) {
+      cardButton?.forEach((button) => {
+        button.addEventListener("click", () => {
+          setActiveCardPopup(true);
+          document.body.classList.add("!overflow-hidden");
+          document.body.classList.remove("!overflow-auto");
+        });
+      });
+    }
+    // Close Popup on Overlay Click
+    if (popupOverlay) {
+      popupOverlay?.addEventListener("click", () => {
+        setActiveCardPopup(false);
+        document.body.classList.remove("!overflow-hidden");
+        document.body.classList.add("!overflow-auto");
+      });
+    }
+    if (closeButton) {
+      closeButton?.addEventListener("click", () => {
+        setActiveCardPopup(false);
+        document.body.classList.remove("!overflow-hidden");
+        document.body.classList.add("!overflow-auto");
+      });
+    }
+    // Book Button click Event
+    if (bookButton) {
+      bookButton?.forEach((button) => {
+        button.addEventListener("click", () => {
+          setActiveBookPopup(true);
+          document.body.classList.add("!overflow-hidden");
+          document.body.classList.remove("!overflow-auto");
+        });
+      });
+    }
+    // Close Book Popup on Overlay Click
+    if (popupBookOverlay) {
+      popupBookOverlay?.addEventListener("click", () => {
+        setActiveBookPopup(false);
+        document.body.classList.remove("!overflow-hidden");
+        document.body.classList.add("!overflow-auto");
+      });
+    }
+    if (closeBookButton) {
+      closeBookButton?.addEventListener("click", () => {
+        setActiveBookPopup(false);
+        document.body.classList.remove("!overflow-hidden");
+        document.body.classList.add("!overflow-auto");
+      });
+    }
+    // Clear all animations and timelines on unmount
+    return () => {
+      cardPopupTimeline.kill();
+      bookPopupTimeline.kill();
+    };
+  }, [pathname, pageDataFetched]);
+  // Play Card Popup Animation
+  useGSAP(() => {
+    activeCardPopup ? cardPopupTimeline.play() : cardPopupTimeline.reverse();
+  }, [activeCardPopup]);
+  // Play Book Popup Animation
+  useGSAP(() => {
+    activeBookPopup ? bookPopupTimeline.play() : bookPopupTimeline.reverse();
+  }, [activeBookPopup]);
+
+  // On Pathname Change
+  useEffect(() => {
+    const headerLeft = document.querySelector(
+      "#header .header-left",
+    ) as HTMLDivElement | null;
+    const headerRight = document.querySelector(
+      "#header .header-right",
+    ) as HTMLDivElement | null;
+    if (headerLeft) {
+      gsap.set(headerLeft, {
+        autoAlpha: 0,
+        duration: 0,
+      });
+    }
+    if (headerRight) {
+      gsap.set(headerRight, {
+        autoAlpha: 0,
+        duration: 0,
+      });
+    }
+  }, [pathname]);
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <p className="text-gray-600">
+            The requested rabbi post could not be found.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    post && (
+      <main
+        ref={main}
+        id="page"
+        dir="ltr"
+        className="main relative overflow-hidden z-10 bg-[#F5F0EB]"
+      >
+        <div
+          ref={panel}
+          id="panel-wrapper"
+          className="w-screen flex items-end justify-end pb-[5vh] lg:pb-0"
+        >
+          <div
+            ref={wrapper}
+            id="section-wrapper"
+            className={`section-wrapp flex flex-col w-full items-center will-change-transform`}
+          >
+            <Introduction
+              animated={isAllAnimationComplete}
+              animationStatus={isAllAnimationComplete}
+              bgImage={IntroBG}
+              bgOverlay={""}
+              data={{
+                title: post?.title?.rendered || post?.acf?.title,
+                time: post?.acf?.time,
+                thumbnail: post?.acf?.thumbnail,
+              }}
+              extraClass={
+                "first-intro panel-section will-change-transform min-w-screen w-screen"
+              }
+              panel={panel}
+              bgPosition=""
+              overlayClass="bg-[#000000] opacity-0"
+              bgClass=""
+              audioControl={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
+            <ContentSection2
+              extraClass="rabbis-content w-full panel-section will-change-transform pt-[5vw] px-[8vw] lg:px-[6.25vw]"
+              animWidthText={1}
+              data={{
+                title: post?.acf?.title,
+                blockquote: post?.acf?.quotes,
+                content_1: post?.acf?.content_1,
+                popup_1_title: post?.acf?.popup_1?.title,
+              }}
+              setActiveCardPopup={setActiveCardPopup}
+            />
+          </div>
+        </div>
+        <div
+          dir="rtl"
+          className="content-bottom bg-[#F5F0EB] w-full flex justify-center flex-col items-center pb-[7vh] px-[8vw] lg:pt-[7vh] lg:pb-[8vh]"
+        >
+          <div className="wrapper w-full lg:w-[80%] max-w-282.5">
+            <ContentBorder extraClass="" />
+            {post?.acf?.content_2 && (
+              <ContentParts extraClass="mt-11.5" data={post?.acf?.content_2} />
+            )}
+            {post?.acf?.blockquote && (
+              <QuoteSection
+                extraClass="mb-16 mt-16"
+                data={post?.acf?.blockquote}
+              />
+            )}
+            {post?.acf?.content_3 && (
+              <ContentParts extraClass="mt-11.5" data={post?.acf?.content_3} />
+            )}
+            {post?.acf?.content_3 && <ContentBorder extraClass="mt-10" />}
+            {post?.acf?.content_4 && (
+              <ContentParts extraClass="mt-11.5" data={post?.acf?.content_4} />
+            )}
+            {post?.acf?.content_5 && (
+              <ContentParts extraClass="mt-11.5" data={post?.acf?.content_5} />
+            )}
+            {post?.acf?.content_6 && (
+              <ContentParts extraClass="mt-11.5" data={post?.acf?.content_6} />
+            )}
+            <div className="rabbis-options mt-10 sm:mt-15 lg:mt-25">
+              <RabbisOptions extraClass="flex flex-col sm:flex-row lg:flex-col gap-x-[4vw] gap-y-5 lg:gap-y-[4vh]" />
+            </div>
+          </div>
+        </div>
+
+        {allPosts && (
+          <div className="rabbis-navigation w-full pr-0 lg:pr-25 relative pb-5">
+            <PostNavigation
+              extraClass="flex-row-reverse"
+              currentPostId={post?.id}
+              posts={allPosts}
+            />
+          </div>
+        )}
+      </main>
+    )
+  );
+}

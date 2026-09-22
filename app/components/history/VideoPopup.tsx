@@ -19,7 +19,8 @@ export default function VideoPopup() {
   const [videoPlaying, setVideoPlaying] = useState(false);
   const { isVideoPopupOpen, setIsVideoPopupOpen } = useAppState();
   // Data
-  const video = "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
+  const video =
+    "https://api.chevronyeshiva.org/wp-content/uploads/2026/03/video.mp4";
   const videoData = {
     poster: thumb.src,
     link: video,

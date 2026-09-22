@@ -189,7 +189,7 @@ export default function HistoryScriptProvider({
       rabbisPostsData4: data.rabbisData[3],
       rabbisPostsData5: data.rabbisData[4],
     });
-    console.log("Data cached for chronicles page:", data);
+    //console.log("Data cached for chronicles page:", data);
     setChroniclesPageData(data.pageData);
     setRabbisPostsData1(data.rabbisData[0]);
     setRabbisPostsData2(data.rabbisData[1]);

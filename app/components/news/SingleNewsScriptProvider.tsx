@@ -94,7 +94,7 @@ export default function SingleNewsScriptProvider({
       },
       {
         type: "video",
-        src: "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4",
+        src: "https://api.chevronyeshiva.org/wp-content/uploads/2026/03/video.mp4",
         poster: PostImage1.src,
       },
       {

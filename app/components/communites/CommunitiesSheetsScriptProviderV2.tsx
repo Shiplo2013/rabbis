@@ -332,12 +332,6 @@ export default function CommunitiesSheetsScriptProviderV2({
     };
   }, [isAllAnimationComplete]);
 
-  // Update iframe height
-  useEffect(() => {
-    const iFrame = document.getElementById("sheet-frame");
-    console.log(iFrame);
-  }, [isAllAnimationComplete]);
-
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center text-center">
@@ -400,7 +394,7 @@ export default function CommunitiesSheetsScriptProviderV2({
                 throw new Error("Function not implemented.");
               }}
             />
-            <div className="sheets-iframe w-full h-auto min-h-screen bg-black lg:pr-17">
+            <div className="sheets-iframe w-full h-auto min-h-screen bg-black lg:pr-15">
               <iframe
                 id="sheet-frame"
                 src="https://fliphtml5.com/bookcase/emhfq/"
