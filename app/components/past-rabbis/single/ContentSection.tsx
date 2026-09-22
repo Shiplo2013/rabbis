@@ -84,7 +84,7 @@ export default function ContentSection(props: ChildProps) {
 
         {contentData?.title && (
           <div className="rabbis-title text-[50px] sm:text-[80px] lg:text-[115px] leading-[90%] text-[#121212] font-bold lg:w-[59vw] min-w-[59vw] lg:px-[2vw] py-[5vh] text-center relative">
-            <h2>{parse(contentData?.title)}</h2>
+            <h2 className="opacity-0 invisible">{parse(contentData?.title)}</h2>
             <div
               ref={cardFolderRef}
               onClick={() => props.setActiveCardPopup?.(true)}
@@ -102,7 +102,7 @@ export default function ContentSection(props: ChildProps) {
         )}
 
         {contentData?.content_1 && (
-          <div className="rabbis-text2 w-full lg:w-[70vw] min-w-[70vw] lg:px-[5.4vw] sm:py-[5vh] text-right">
+          <div className="rabbis-text2 w-full lg:w-[80vw] min-w-[70vw] lg:px-[5.4vw] sm:py-[5vh] text-right">
             <div className="title mb-6 sm:mb-10 lg:mb-[8vh]">
               <h5 className="text-[32px] sm:text-[40px] lg:text-[55px] leading-[70%] sm:text-center text-[#D1A941]">
                 {parse(contentData?.content_1?.title)}

@@ -120,9 +120,12 @@ type ContextType = {
   communityHeaderData: any;
   setCommunityHeaderData: (value: any) => void;
   communitySheetsCategoryData: any;
-  setCommunitySheetsCategoryData: (value: any) => void;
+  setCommunitySheetsCategoryData: (value: number) => void;
+  // Parent Cat
   sheetsOnSelectCategoryId: number | null;
   setSheetsOnSelectCategoryId: (value: number | null) => void;
+  sheetsOnSelectCategoryChildId: number | null;
+  setSheetsOnSelectCategoryChildId: (value: number | null) => void;
 
   // Knesset States
   knessetCategoryData: any;
@@ -255,6 +258,8 @@ export function AppProvider({
   const [sheetsOnSelectCategoryId, setSheetsOnSelectCategoryId] = useState<
     number | null
   >(0);
+  const [sheetsOnSelectCategoryChildId, setSheetsOnSelectCategoryChildId] =
+    useState<number | null>(0);
 
   // Knesset States
   const [knessetCategoryData, setKnessetCategoryData] = useState<any>(null);
@@ -346,6 +351,7 @@ export function AppProvider({
         setCurrentRabbisPost,
         allRabbisPosts,
         setAllRabbisPosts,
+        // Communites
         currentCommunitiesPost,
         setCurrentCommunitiesPost,
         communityHeaderData,
@@ -354,6 +360,9 @@ export function AppProvider({
         setCommunitySheetsCategoryData,
         sheetsOnSelectCategoryId,
         setSheetsOnSelectCategoryId,
+        sheetsOnSelectCategoryChildId,
+        setSheetsOnSelectCategoryChildId,
+
         historyTimelineData,
         setHistoryTimelineData,
         activeRabbisMenu,

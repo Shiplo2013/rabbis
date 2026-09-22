@@ -68,6 +68,8 @@ export default function PageFixedElements() {
     communitySheetsCategoryData,
     sheetsOnSelectCategoryId,
     setSheetsOnSelectCategoryId,
+    setSheetsOnSelectCategoryChildId,
+    sheetsOnSelectCategoryChildId,
     knessetCategoryData,
     knessetActiveCategory,
     knessetSearchQuery,
@@ -896,7 +898,7 @@ export default function PageFixedElements() {
                 <div className="all-sheets year-month text-[24px] leading-[1.2em]">
                   <div
                     onClick={() => {
-                      setActiveCategory(0);
+                      setSheetsOnSelectCategoryChildId(0);
                       setSheetsOnSelectCategoryId(0);
                     }}
                     className="year text-[#CD5E41] cursor-pointer font-medium border-b border-[#CD5E41] py-2.5"
@@ -914,9 +916,12 @@ export default function PageFixedElements() {
                         key={index}
                         index={index}
                         year={item}
-                        activeCategory={activeCategory}
-                        setActiveCategory={setActiveCategory}
-                        onSelectCategoryId={setSheetsOnSelectCategoryId}
+                        activeCategory={sheetsOnSelectCategoryChildId}
+                        setActiveCategory={setSheetsOnSelectCategoryChildId}
+                        setSheetsOnSelectCategoryId={
+                          setSheetsOnSelectCategoryId
+                        }
+                        sheetsOnSelectCategoryId={sheetsOnSelectCategoryId}
                         //setIsPostLoaded={() => setIsLoading(true)}
                       />
                     );

@@ -33,14 +33,14 @@ export default function SingleCommunityPost(props: ChildProps) {
   return (
     <div
       dir="ltr"
-      className="single-community-post group lg:min-w-116 w-full lg:w-116.75 backface-hidden"
+      className="single-community-post group lg:min-w-[24.3vw] w-full lg:w-[25vw] backface-hidden"
     >
       <Link
         href={postData?.slug ? `/communities/${postData.slug}` : "#"}
         className="block w-full h-full"
         onClick={handleLinkClick}
       >
-        <div className="post-image w-full lg:h-66.75 mb-8.5 relative overflow-hidden backface-hidden">
+        <div className="post-image w-full h-66.75 lg:h-[28vh] mb-8.5 relative overflow-hidden backface-hidden">
           {loading && (
             <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
           )}
