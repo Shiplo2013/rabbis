@@ -39,7 +39,7 @@ export default function VideoItem(props: ChildProps) {
   // Data
   const video =
     props?.data?.video?.url ||
-    "http://dovp7.sg-host.com/wp-content/uploads/2026/03/video.mp4";
+    "https://api.chevronyeshiva.org/wp-content/uploads/2026/03/video.mp4";
   const videoData = {
     poster: {
       url: thumb.src,

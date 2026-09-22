@@ -1,4 +1,4 @@
-import CommunitiesSheetsScriptProviderV2 from "@/app/components/communites/CommunitiesSheetsScriptProviderV2";
+import CommunitiesSheetsScriptProvider from "@/app/components/communites/CommunitiesSheetsScriptProvider";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 import { wpFetch } from "@/app/lib/wpFetch";
 
@@ -70,7 +70,7 @@ export default async function page() {
   });
 
   return (
-    <CommunitiesSheetsScriptProviderV2
+    <CommunitiesSheetsScriptProvider
       data={{
         pageData: pageData[0],
         postsData: { posts: postsData, totalPage: totalPages },
