@@ -20,6 +20,7 @@ export default function PostItem2(props: {
       >
         {props.buttonLabel || "קהילת בני ברק"}
       </Link>
+      <div>בקרוב</div>
     </div>
   );
 }

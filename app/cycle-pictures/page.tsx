@@ -22,7 +22,7 @@ export default async function page() {
         },
       ),
       wpFetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee_cat?_fields=id,count,name,slug,parent`,
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee_cat?_fields=id,count,name,slug,parent&per_page=100&page=1`,
         {
           next: { revalidate: 60 }, // Cache data for 1 minute
         },
