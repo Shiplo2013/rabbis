@@ -114,6 +114,11 @@ type ContextType = {
   setCurrentRabbisPost: (value: any) => void;
   allRabbisPosts: any;
   setAllRabbisPosts: (value: any) => void;
+
+  // Past Rabbis
+  pastRabbisSearchQuery: string | null;
+  setPastRabbisSearchQuery: (value: string | null) => void;
+
   // Communities States
   currentCommunitiesPost: any;
   setCurrentCommunitiesPost: (value: any) => void;
@@ -248,6 +253,7 @@ export function AppProvider({
   // Past Rabbis States
   const [currentRabbisPost, setCurrentRabbisPost] = useState<any>(null);
   const [allRabbisPosts, setAllRabbisPosts] = useState<any>(null);
+  const [pastRabbisSearchQuery, setPastRabbisSearchQuery] = useState<any>();
 
   // Communites States
   const [currentCommunitiesPost, setCurrentCommunitiesPost] =
@@ -351,6 +357,8 @@ export function AppProvider({
         setCurrentRabbisPost,
         allRabbisPosts,
         setAllRabbisPosts,
+        pastRabbisSearchQuery,
+        setPastRabbisSearchQuery,
         // Communites
         currentCommunitiesPost,
         setCurrentCommunitiesPost,
