@@ -1,11 +1,12 @@
 import parse from "html-react-parser";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect } from "react";
 import GraduateBG from "../assets/images/graduate-text-bg.png";
 
 interface ChildProps {
   key: number;
-  data: { title: string; content: string };
+  data: { title: string; content: string; link: string };
 }
 
 export default function SingleGraduates(props: ChildProps) {
@@ -26,12 +27,14 @@ export default function SingleGraduates(props: ChildProps) {
           alt="Graduates"
         />
         <div className="graduate-text absolute top-0 left-0 z-20 w-full h-full flex items-center 2xl:text-[28px] xl:text-[22px] sm:text-[28px] text-[25px] text-black leading-[90%] py-[30%] px-[24%]">
-          <p>{parse(props.data?.content)}</p>
+          <Link href={props.data?.link}>
+            <p>{parse(props.data?.content)}</p>
+          </Link>
         </div>
       </div>
       <div className="graduate-title text-center relative z-30 -mt-5">
         <h2 className="text-[#D1A941] 2xl:text-[55px] xl:text-[45px] sm:text-[35px] text-[30px] leading-[70%]">
-          {parse(props.data?.title)}
+          <Link href={props.data?.link}>{parse(props.data?.title)}</Link>
         </h2>
       </div>
     </div>

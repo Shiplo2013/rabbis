@@ -8,16 +8,17 @@ import SinglePageHeader from "./SinglePageHeader";
 export default function Header() {
   const pathname = usePathname();
 
-  const OtherPageHeader = pathname.startsWith("/past-rabbis/") ? (
-    <RabbisHeader />
-  ) : pathname.startsWith("/news/") ? (
-    <SinglePageHeader link={"/news"} />
-  ) : pathname.startsWith("/communities/") &&
-    pathname !== "/communities/sheets" &&
-    pathname !== "/communities/sheets/v2" &&
-    pathname !== "/communities/sheets/old" ? (
-    <CommunityPageHeader />
-  ) : null;
+  const OtherPageHeader =
+    pathname.startsWith("/past-rabbis/") && pathname !== "/past-rabbis/v2" ? (
+      <RabbisHeader />
+    ) : pathname.startsWith("/news/") ? (
+      <SinglePageHeader link={"/news"} />
+    ) : pathname.startsWith("/communities/") &&
+      pathname !== "/communities/sheets" &&
+      pathname !== "/communities/sheets/v2" &&
+      pathname !== "/communities/sheets/old" ? (
+      <CommunityPageHeader />
+    ) : null;
 
   return (
     <>
