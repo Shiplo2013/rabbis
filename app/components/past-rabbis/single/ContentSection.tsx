@@ -73,7 +73,10 @@ export default function ContentSection(props: ChildProps) {
     >
       <div className="rabbis-content-wrapper w-full h-auto flex items-center flex-col lg:flex-row gap-y-15">
         <div className="rabbis-menu-wrapper w-full lg:w-[25vw] min-w-[25vw] overflow-hidden">
-          <RabbisOptions extraClass="flex flex-col sm:flex-row lg:flex-col gap-x-[4vw] gap-y-5 lg:gap-y-[4vh]" />
+          <RabbisOptions
+            postId={contentData?.post_id}
+            extraClass="flex flex-col sm:flex-row lg:flex-col gap-x-[4vw] gap-y-5 lg:gap-y-[4vh]"
+          />
         </div>
 
         {contentData?.blockquote && (

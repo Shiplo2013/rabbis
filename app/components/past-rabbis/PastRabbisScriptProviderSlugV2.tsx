@@ -662,6 +662,7 @@ export default function PastRabbisScriptProviderSlugV2({
                 blockquote: post?.acf?.quotes,
                 content_1: post?.acf?.content_1,
                 popup_1_title: post?.acf?.popup_1?.title,
+                post_id: post?.id,
               }}
               setActiveCardPopup={setActiveCardPopup}
             />
@@ -696,7 +697,10 @@ export default function PastRabbisScriptProviderSlugV2({
               <ContentParts extraClass="mt-11.5" data={post?.acf?.content_6} />
             )}
             <div className="rabbis-options mt-10 sm:mt-15 lg:mt-25">
-              <RabbisOptions extraClass="flex flex-col sm:flex-row lg:flex-col gap-x-[4vw] gap-y-5 lg:gap-y-[4vh]" />
+              <RabbisOptions
+                extraClass="flex flex-col sm:flex-row lg:flex-col gap-x-[4vw] gap-y-5 lg:gap-y-[4vh]"
+                postId={post?.id}
+              />
             </div>
           </div>
         </div>

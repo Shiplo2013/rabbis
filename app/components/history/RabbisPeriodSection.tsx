@@ -82,6 +82,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
           thumbnail: post.acf?.thumbnail,
           text: post.acf?.time as string,
           buttonLink: `/past-rabbis/${post.slug}`,
+          post_id: post?.id,
         }),
       );
       setSlideData(mappedData);

@@ -2,9 +2,11 @@ import BooksIcon from "@/app/assets/icons/BooksIcon";
 import CardsIcon from "@/app/assets/icons/CardsIcon";
 import MenuIcon from "@/app/assets/icons/MenuIcon";
 import { useAppState } from "@/app/components/AppContext";
+import Link from "next/link";
 
 interface ChildProps {
   extraClass: string;
+  postId: number;
 }
 
 export default function RabbisOptions(props: ChildProps) {
@@ -29,11 +31,16 @@ export default function RabbisOptions(props: ChildProps) {
           <div className="text">ספרים</div>
         </div>
       )}
-      <div className="rabbis-menu-item more-options flex items-center gap-x-[1.8vw] group cursor-pointer">
-        <div className="icon w-15 h-15 p-4 lg:w-17.5 lg:min-w-17.5 lg:h-17.5 border-2 border-[#C3A13F] rounded-full flex items-center justify-center bg-[#43493B] group-hover:bg-[#000000] transition-all duration-300">
-          <MenuIcon />
-        </div>
-        <div className="text">על ציר הזמן</div>
+      <div className="rabbis-menu-item more-options group cursor-pointer">
+        <Link
+          href={`/chronicles?rabbis-post=${props.postId}`}
+          className="flex items-center gap-x-[1.8vw]"
+        >
+          <div className="icon w-15 h-15 p-4 lg:w-17.5 lg:min-w-17.5 lg:h-17.5 border-2 border-[#C3A13F] rounded-full flex items-center justify-center bg-[#43493B] group-hover:bg-[#000000] transition-all duration-300">
+            <MenuIcon />
+          </div>
+          <div className="text">על ציר הזמן</div>
+        </Link>
       </div>
     </div>
   );

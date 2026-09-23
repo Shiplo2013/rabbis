@@ -1,12 +1,12 @@
 import { wpFetch } from "@/app/lib/wpFetch";
-import { ChroniclesPageWithCache } from "../components/history/ChroniclesPageWithCache";
+import HistoryScriptProvider from "../components/history/HistoryScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=chronicles&_fields=id,acf`,
     {
-      next: { revalidate: 60 }, // Cache data for 1 minute
+      cache: "no-store",
     },
   );
 
@@ -52,6 +52,8 @@ export default async function page() {
     "chronicles-page",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
+
+  console.log(pageData);
 
   const params1 = new URLSearchParams({
     include: (
@@ -180,7 +182,7 @@ export default async function page() {
   // console.log("Rabbis Data 5:", rabbisData5);
 
   return (
-    <ChroniclesPageWithCache
+    <HistoryScriptProvider
       data={{
         pageData: pageData[0],
         rabbisData: [
