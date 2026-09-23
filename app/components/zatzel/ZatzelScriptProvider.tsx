@@ -687,7 +687,6 @@ export default function ZatzelScriptProvider({
         };
       });
       if (isMounted) {
-        console.log("Filtered Sections:", filteredSections);
         if (
           filteredSections.length > 0 &&
           filteredSections.some(

@@ -17,9 +17,15 @@ if (typeof window !== "undefined") {
 export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
+  const [rabbisPosts, setRabbisPosts] = useState<null | any>(data?.posts);
   const [error, setError] = useState<string | null>(null);
-  const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
-    useAppState();
+  const {
+    isLoading,
+    setIsLoading,
+    animationPlayed,
+    setAnimationPlayed,
+    pastRabbisSearchQuery,
+  } = useAppState();
   const [pageDataFetched, setPageDataFetched] = useState(false);
   // Router Path
   const pathname = usePathname();
@@ -42,6 +48,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
       return;
     }
     setRabbisPageData(data);
+    setRabbisPosts(data?.posts);
   }, [data]);
 
   // Page Data Loaded
@@ -75,7 +82,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
         );
         // Banner Button
         const introContent = main.current?.querySelectorAll(
-          ".first-intro .intro-content>p",
+          ".first-intro .intro-content",
         );
         // Past Rabbis
         // const firstRabbis = main.current?.querySelector(
@@ -220,12 +227,65 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   // Set Page Content Animation
   useGSAP(() => {
     // Page Content Animation
+    const sidebar = document.getElementById(
+      "pastrabbis-sidebar",
+    ) as HTMLDivElement | null;
     const firstRabbis = main.current?.querySelector(
       ".rabbis-section .rabbis-item:first-child",
     );
     const RabbisItem = main.current?.querySelectorAll(
       ".rabbis-section .rabbis-item:not(:first-child)",
     );
+
+    // Animations
+    if (sidebar && window.innerWidth > 1024) {
+      gsap.set(sidebar, {
+        x: 340,
+      });
+      // Sidebar Animation
+      const handleScroll = () => {
+        const scrollTop = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const pageHeight = main?.current?.offsetHeight;
+
+        if (scrollTop > windowHeight) {
+          gsap.to(sidebar, {
+            x: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(sidebar, {
+            x: 340,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        }
+        // Hide sidebar when reaching the end of the page
+        if (scrollTop > (pageHeight || 0) - window.innerHeight) {
+          gsap.to(sidebar, {
+            autoAlpha: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(sidebar, {
+            autoAlpha: 1,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        }
+      };
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    } else {
+      gsap.set(sidebar, {
+        autoAlpha: 0,
+      });
+    }
 
     // First Rabbis
     if (firstRabbis && window.innerWidth > 1024) {
@@ -355,6 +415,24 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
     };
   }, [isAllAnimationComplete]);
 
+  // Rabbis Search Result
+  useEffect(() => {
+    if (pastRabbisSearchQuery !== null && pastRabbisSearchQuery !== "") {
+      console.log(pastRabbisSearchQuery);
+      console.log(rabbisPageData?.posts);
+      const filteredContent = rabbisPageData?.posts.filter(
+        (post: { title: { rendered: string } }) => {
+          return post.title.rendered.includes(pastRabbisSearchQuery);
+        },
+      );
+      setRabbisPosts(filteredContent);
+      window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+    } else {
+      setRabbisPosts(rabbisPageData?.posts);
+      window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+    }
+  }, [pastRabbisSearchQuery]);
+
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center text-center">
@@ -419,9 +497,9 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
               }}
             />
             <CustomsContentSection2
-              extraClass={`w-screen panel-section will-change-transform py-[5vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]`}
+              extraClass={`w-screen panel-section will-change-transform pt-[5vh] pb-[8vh] lg:pt-[5vw] lg:pb-[10vh] px-[8vw] lg:px-[6.25vw]`}
               animWidthText={1}
-              data={rabbisPageData?.posts}
+              data={rabbisPosts || data?.posts || []}
             />
           </div>
         </div>

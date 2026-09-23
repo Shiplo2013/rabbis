@@ -5,7 +5,7 @@ import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useAppState } from "../AppContext";
 
 interface ChildProps {
@@ -19,7 +19,12 @@ export default function CustomsContentSection2(props: ChildProps) {
   const rabbisPosts = props.data;
   const router = useRouter();
   const pathname = usePathname();
-  const { isLoading, setIsLoading } = useAppState();
+  const {
+    isLoading,
+    setIsLoading,
+    pastRabbisSearchQuery,
+    setPastRabbisSearchQuery,
+  } = useAppState();
   const nameRef = useRef<HTMLInputElement>(null);
   // Handle Link Click
   const handleLinkClick = (
@@ -33,17 +38,24 @@ export default function CustomsContentSection2(props: ChildProps) {
     }
   };
 
+  useEffect(() => {
+    console.log(rabbisPosts);
+  }, [rabbisPosts]);
+
   return (
     <section
       dir="rtl"
       style={props.style}
       className={`${props.extraClass} rabbis-section bg-black flex items-start relative z-20 flex-col lg:flex-row`}
     >
-      <div className="sheet-sidebar w-full lg:w-70 lg:min-w-70 h-auto will-change-transform z-20 mb-10 lg:mb-0 lg:py-[10vh]">
+      <div className="sheet-sidebar w-full lg:w-70 lg:min-w-70 h-auto will-change-transform z-20 mb-10 lg:mb-0 lg:py-[10vh] opacity-100 visible lg:opacity-0 lg:invisible">
         <div className="sheet-sidebar-wrapper">
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const searchValue = formData.get("search-by-user") as string;
+              setPastRabbisSearchQuery?.(searchValue || null);
             }}
             className="search-group relative"
           >
@@ -64,6 +76,7 @@ export default function CustomsContentSection2(props: ChildProps) {
               className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-all duration-300"
               onClick={() => {
                 nameRef.current && (nameRef.current.value = "");
+                setPastRabbisSearchQuery("");
               }}
             >
               איפוס סינון

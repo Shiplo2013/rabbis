@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import AccessibilityWidget from "./components/AccessibilityWidget";
@@ -269,6 +270,7 @@ export default async function RootLayout({
   const globalData = await getGlobalData();
   return (
     <html lang="en" dir="rtl" suppressHydrationWarning>
+      <GoogleAnalytics gaId="G-VMX2XPHCVB" />
       <body
         suppressHydrationWarning
         className={`${customFont.className} antialiased bg-black text-white overflow-hidden`}
