@@ -1,4 +1,5 @@
 import ArrowLeft from "@/app/assets/icons/ArrowLeft";
+import ArrowLeft2 from "@/app/assets/icons/ArrowLeft2";
 import BackwardIcon from "@/app/assets/icons/BackwardIcon";
 import CloseIcon2 from "@/app/assets/icons/CloseIcon2";
 import ForwardIcon from "@/app/assets/icons/ForwardIcon";
@@ -15,7 +16,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
 import "swiper/css";
-import { Mousewheel } from "swiper/modules";
+import "swiper/css/free-mode";
+import { FreeMode, Mousewheel, Navigation } from "swiper/modules";
+import type { SwiperRef } from "swiper/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import AlbumImage from "../../assets/images/album-image.jpg";
 import PlayerBG from "../../assets/images/mirros-bg.jpg";
@@ -94,6 +97,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   const isInfinityActiveRef = useRef(false);
   const shouldAutoPlayRef = useRef(false);
   const pathname = usePathname();
+  const playerCatRef = useRef<SwiperRef>(null);
 
   // State
   const musicPageData = (props.data as MusicItem) || {};
@@ -112,6 +116,20 @@ export default function MirrorAudioPlayer(props: ChildProps) {
     {},
   );
   const [isAlbumTextExpanded, setIsAlbumTextExpanded] = useState(false);
+
+  // Update music
+  useEffect(() => {
+    setActiveMusic({
+      tabIndex: 0,
+      musicIndex: 0,
+      title: `${musicPageData?.album?.music_category[0].musics[0].title}`,
+      link: `${musicPageData?.album?.music_category[0].musics[0].music?.url}`,
+    });
+  }, [musicPageData]);
+
+  useEffect(() => {
+    console.log(isPlaying);
+  }, [isPlaying]);
 
   // Calculate line count and truncate album text to 4 lines
   const albumText =
@@ -596,12 +614,17 @@ export default function MirrorAudioPlayer(props: ChildProps) {
 
             <div className="player-content-tabs flex flex-col gap-y-5">
               {/* Tab headers */}
-              <div className="tab-head max-w-full">
+              <div className="tab-head min-w-full relative pl-12">
                 <Swiper
-                  modules={[Mousewheel]}
+                  ref={playerCatRef}
+                  modules={[FreeMode, Mousewheel, Navigation]}
+                  navigation={{
+                    nextEl: ".my-custom-next",
+                  }}
                   slidesPerView="auto"
                   spaceBetween={24}
                   mousewheel={{ forceToAxis: true, releaseOnEdges: false }}
+                  freeMode={true}
                   className="tab-head-swiper"
                 >
                   {musicPageData?.album?.music_category?.map(
@@ -621,6 +644,9 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                     ),
                   )}
                 </Swiper>
+                <button className="my-custom-next w-10 h-10 rounded-full p-3 bg-black opacity-40 hover:opacity-100 transition-opacity duration-300 absolute top-[50%] left-0 z-50 transform -translate-y-[50%] flex items-center justify-center cursor-pointer">
+                  <ArrowLeft2 />
+                </button>
               </div>
 
               {/* Tab content */}
@@ -663,7 +689,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                               <div
                                 key={index}
                                 onClick={() => {
-                                  if (isActive) return;
+                                  if (isActive && isPlaying) return;
                                   shouldAutoPlayRef.current = true;
                                   setActiveMusic({
                                     ...activeMusic,

@@ -317,19 +317,21 @@ export default function MusicScriptProvider({ data }: { data: any }) {
         },
       });
     } else {
-      gsap.to(turnTable, {
-        yPercent: 100,
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return 0;
+      if (turnTable) {
+        gsap.to(turnTable, {
+          yPercent: 100,
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return 0;
+            },
+            end: () => {
+              return "+=" + window.innerWidth * 1.5;
+            },
+            scrub: 2,
           },
-          end: () => {
-            return "+=" + window.innerWidth * 1.5;
-          },
-          scrub: 2,
-        },
-      });
+        });
+      }
     }
     // Animations
     if (musicCatList && window.innerWidth > 1024) {

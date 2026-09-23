@@ -50,7 +50,6 @@ export default function YeshivaGraduatesScriptProvider({
       setError("Page data is missing or invalid.");
       return;
     }
-    console.log("YeshivaGraduatesScriptProvider - Page Data:", data);
     setPageData(data);
   }, [data]);
 
