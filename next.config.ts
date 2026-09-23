@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   //cacheComponents: true,
   reactStrictMode: false,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",

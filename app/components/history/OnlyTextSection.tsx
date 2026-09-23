@@ -142,10 +142,10 @@ export default function OnlyTextSection(props: ChildProps) {
       className={`${props.extraClass} bg-[#5A7C4E] flex items-center relative z-20`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="section-wrapper w-full h-full px-[8vw] py-[7vh] lg:pr-[7vw] lg:pl-[5.7vw] lg:pt-[6.5vh] lg:pb-[13vh] justify-end flex flex-col">
+      <div className="section-wrapper w-full h-full px-[8vw] py-[7vh] 2xl:pr-[7vw] 2xl:pl-[5.7vw] lg:pr-[5vw] lg:pl-[4vw] lg:pt-[6.5vh] lg:pb-[13vh] justify-end flex flex-col">
         <div
           dir="ltr"
-          className="small-text text-[#FBF4E6] lg:text-[21px] sm:text-[18px] text-[16px] leading-[1.4em] text-right w-full"
+          className="small-text text-[#FBF4E6] lg:text-[21px] sm:text-[18px] text-[16px] leading-[1.2em] text-right w-full"
         >
           {parse(textData.text)}
         </div>

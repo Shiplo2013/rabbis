@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import {
   default as arrowSectionBG,
@@ -64,20 +64,15 @@ export default function HistoryScriptProvider({
 }: {
   data: { pageData: any; rabbisData: any[] };
 }) {
+  const searchParams = useSearchParams();
   const CHRONICLES_CACHE_KEY = "chronicles-page-cache-v1";
-  const CHRONICLES_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+  const CHRONICLES_CACHE_TTL_MS = 60 * 1000;
 
   // Router Path
   const pathname = usePathname();
   const [chroniclesPageData, setChroniclesPageData] = useState<any | []>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loadTimeline1, setLoadTimeline1] = useState(true);
-  const [loadTimeline2, setLoadTimeline2] = useState(false);
-  const [loadTimeline3, setLoadTimeline3] = useState(false);
-  const [loadTimeline4, setLoadTimeline4] = useState(false);
-  const [loadTimeline5, setLoadTimeline5] = useState(false);
-  const [loadTimeline6, setLoadTimeline6] = useState(false);
   const [rabbisPostsData1, setRabbisPostsData1] = useState<any | []>([]);
   const [rabbisPostsData2, setRabbisPostsData2] = useState<any | []>([]);
   const [rabbisPostsData3, setRabbisPostsData3] = useState<any | []>([]);
@@ -106,100 +101,107 @@ export default function HistoryScriptProvider({
       setError("No data provided to History.");
       return;
     }
-    let isMounted = true;
+    // let isMounted = true;
 
-    const controller = new AbortController();
+    // const controller = new AbortController();
 
-    const cacheKey = `${CHRONICLES_CACHE_KEY}:${pathname}`;
+    // const cacheKey = `${CHRONICLES_CACHE_KEY}:${pathname}`;
 
-    const getCachedData = () => {
-      if (typeof window === "undefined") return null;
+    // const getCachedData = () => {
+    //   if (typeof window === "undefined") return null;
 
-      try {
-        const rawCache = localStorage.getItem(cacheKey);
-        if (!rawCache) return null;
+    //   try {
+    //     const rawCache = localStorage.getItem(cacheKey);
+    //     if (!rawCache) return null;
 
-        const parsedCache = JSON.parse(rawCache) as {
-          cachedAt: number;
-          chroniclesPageData: any;
-          rabbisPostsData1: any;
-          rabbisPostsData2: any;
-          rabbisPostsData3: any;
-          rabbisPostsData4: any;
-          rabbisPostsData5: any;
-        };
+    //     const parsedCache = JSON.parse(rawCache) as {
+    //       cachedAt: number;
+    //       chroniclesPageData: any;
+    //       rabbisPostsData1: any;
+    //       rabbisPostsData2: any;
+    //       rabbisPostsData3: any;
+    //       rabbisPostsData4: any;
+    //       rabbisPostsData5: any;
+    //     };
 
-        if (
-          !parsedCache ||
-          typeof parsedCache.cachedAt !== "number" ||
-          Date.now() - parsedCache.cachedAt > CHRONICLES_CACHE_TTL_MS
-        ) {
-          localStorage.removeItem(cacheKey);
-          return null;
-        }
+    //     if (
+    //       !parsedCache ||
+    //       typeof parsedCache.cachedAt !== "number" ||
+    //       Date.now() - parsedCache.cachedAt > CHRONICLES_CACHE_TTL_MS
+    //     ) {
+    //       localStorage.removeItem(cacheKey);
+    //       return null;
+    //     }
 
-        return parsedCache;
-      } catch {
-        localStorage.removeItem(cacheKey);
-        return null;
-      }
-    };
+    //     return parsedCache;
+    //   } catch {
+    //     localStorage.removeItem(cacheKey);
+    //     return null;
+    //   }
+    // };
 
-    const setCachedData = (payload: {
-      chroniclesPageData: any;
-      rabbisPostsData1: any;
-      rabbisPostsData2: any;
-      rabbisPostsData3: any;
-      rabbisPostsData4: any;
-      rabbisPostsData5: any;
-    }) => {
-      if (typeof window === "undefined") return;
+    // const setCachedData = (payload: {
+    //   chroniclesPageData: any;
+    //   rabbisPostsData1: any;
+    //   rabbisPostsData2: any;
+    //   rabbisPostsData3: any;
+    //   rabbisPostsData4: any;
+    //   rabbisPostsData5: any;
+    // }) => {
+    //   if (typeof window === "undefined") return;
 
-      try {
-        localStorage.setItem(
-          cacheKey,
-          JSON.stringify({
-            ...payload,
-            cachedAt: Date.now(),
-          }),
-        );
-      } catch {
-        // Ignore localStorage write errors (private mode / quota exceeded)
-      }
-    };
+    //   try {
+    //     localStorage.setItem(
+    //       cacheKey,
+    //       JSON.stringify({
+    //         ...payload,
+    //         cachedAt: Date.now(),
+    //       }),
+    //     );
+    //   } catch {
+    //     // Ignore localStorage write errors (private mode / quota exceeded)
+    //   }
+    // };
 
-    const cachedData = getCachedData();
-    if (cachedData && isMounted) {
-      setChroniclesPageData(cachedData.chroniclesPageData);
-      setRabbisPostsData1(cachedData.rabbisPostsData1 || []);
-      setRabbisPostsData2(cachedData.rabbisPostsData2 || []);
-      setRabbisPostsData3(cachedData.rabbisPostsData3 || []);
-      setRabbisPostsData4(cachedData.rabbisPostsData4 || []);
-      setRabbisPostsData5(cachedData.rabbisPostsData5 || []);
-      return () => {
-        isMounted = false;
-        controller.abort();
-      };
-    }
-    setCachedData({
-      chroniclesPageData: data.pageData,
-      rabbisPostsData1: data.rabbisData[0],
-      rabbisPostsData2: data.rabbisData[1],
-      rabbisPostsData3: data.rabbisData[2],
-      rabbisPostsData4: data.rabbisData[3],
-      rabbisPostsData5: data.rabbisData[4],
-    });
-    //console.log("Data cached for chronicles page:", data);
+    // const cachedData = getCachedData();
+    // if (cachedData && isMounted) {
+    //   setChroniclesPageData(cachedData.chroniclesPageData);
+    //   setRabbisPostsData1(cachedData.rabbisPostsData1 || []);
+    //   setRabbisPostsData2(cachedData.rabbisPostsData2 || []);
+    //   setRabbisPostsData3(cachedData.rabbisPostsData3 || []);
+    //   setRabbisPostsData4(cachedData.rabbisPostsData4 || []);
+    //   setRabbisPostsData5(cachedData.rabbisPostsData5 || []);
+    //   return () => {
+    //     isMounted = false;
+    //     controller.abort();
+    //   };
+    // }
+    // setCachedData({
+    //   chroniclesPageData: data.pageData,
+    //   rabbisPostsData1: data.rabbisData[0],
+    //   rabbisPostsData2: data.rabbisData[1],
+    //   rabbisPostsData3: data.rabbisData[2],
+    //   rabbisPostsData4: data.rabbisData[3],
+    //   rabbisPostsData5: data.rabbisData[4],
+    // });
+    // //console.log("Data cached for chronicles page:", data);
+    // setChroniclesPageData(data.pageData);
+    // setRabbisPostsData1(data.rabbisData[0]);
+    // setRabbisPostsData2(data.rabbisData[1]);
+    // setRabbisPostsData3(data.rabbisData[2]);
+    // setRabbisPostsData4(data.rabbisData[3]);
+    // setRabbisPostsData5(data.rabbisData[4]);
+    // return () => {
+    //   isMounted = false;
+    //   controller.abort();
+    // };
+
     setChroniclesPageData(data.pageData);
     setRabbisPostsData1(data.rabbisData[0]);
     setRabbisPostsData2(data.rabbisData[1]);
     setRabbisPostsData3(data.rabbisData[2]);
     setRabbisPostsData4(data.rabbisData[3]);
     setRabbisPostsData5(data.rabbisData[4]);
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
   }, [data]);
 
   useEffect(() => {
@@ -983,6 +985,31 @@ export default function HistoryScriptProvider({
     }
   }, [isLoading, isAllAnimationComplete, pageDataFetched]);
 
+  // Get Past Rabbis ids
+  useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const rabbiPostId = urlParams.get("rabbis-post");
+
+    const getRabbisPos = document.getElementById(`past-rabbis-${rabbiPostId}`);
+    if (getRabbisPos !== null) {
+      const section = getRabbisPos.closest(".timeline");
+      console.log(section);
+      // 1. Get position relative to the viewport (changes as you scroll)
+      const relativeToViewport = section?.getBoundingClientRect().top;
+      // 2. Calculate position relative to the entire document (remains constant)
+      if (relativeToViewport !== undefined) {
+        const relativeToDocument = relativeToViewport + window.scrollY;
+        const timer = setTimeout(() => {
+          window.scrollTo({ top: relativeToDocument, behavior: "smooth" });
+        }, 1000); // Delays execution by 3 seconds
+
+        // 2. Return the cleanup function
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isAllAnimationComplete]);
+
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center text-center">
@@ -1017,7 +1044,7 @@ export default function HistoryScriptProvider({
     chroniclesPageData && (
       <main ref={main} id="page" dir="ltr" className="main relative z-10">
         {/* First Panel Start Here */}
-        <div ref={timeline1Ref} className="timeline1" id="timeline1">
+        <div ref={timeline1Ref} className="timeline1 timeline" id="timeline1">
           <div
             ref={panel1}
             className="w-screen lg:h-screen flex items-end justify-end"
@@ -1187,7 +1214,7 @@ export default function HistoryScriptProvider({
         </div>
         {/* First Panel End Here */}
         {/* Second Panel Start Here */}
-        <div ref={timeline2Ref} className="timeline2" id="timeline2">
+        <div ref={timeline2Ref} className="timeline2 timeline" id="timeline2">
           <div
             ref={panel2}
             className="w-screen lg:h-screen flex items-end justify-end"
@@ -1307,7 +1334,7 @@ export default function HistoryScriptProvider({
         </div>
         {/* Second Panel End Here */}
         {/* Third Panel Start Here */}
-        <div ref={timeline3Ref} className="timeline3" id="timeline3">
+        <div ref={timeline3Ref} className="timeline3 timeline" id="timeline3">
           <div
             ref={panel3}
             className="w-screen lg:h-screen flex items-end justify-end"
@@ -1500,7 +1527,7 @@ export default function HistoryScriptProvider({
         </div>
         {/* Third Panel End Here */}
         {/* Fourth Panel Start Here */}
-        <div ref={timeline4Ref} className="timeline4" id="timeline4">
+        <div ref={timeline4Ref} className="timeline4 timeline" id="timeline4">
           <div
             ref={panel4}
             className="w-screen lg:h-screen flex items-end justify-end"
@@ -1638,7 +1665,7 @@ export default function HistoryScriptProvider({
         </div>
         {/* Fourth Panel End Here */}
         {/* Fifth Panel Start Here */}
-        <div ref={timeline5Ref} className="timeline5" id="timeline5">
+        <div ref={timeline5Ref} className="timeline5 timeline" id="timeline5">
           <div
             ref={panel5}
             className="w-screen lg:h-screen flex items-end justify-end"
@@ -1812,7 +1839,7 @@ export default function HistoryScriptProvider({
         </div>
         {/* Fifth Panel End Here */}
         {/* Sixth Panel Start Here */}
-        <div ref={timeline6Ref} className="timeline6" id="timeline6">
+        <div ref={timeline6Ref} className="timeline6 timeline" id="timeline6">
           <div
             ref={panel6}
             className="w-screen lg:h-screen flex items-end justify-end"

@@ -1,10 +1,11 @@
 import parse from "html-react-parser";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MinusIcon2 from "../assets/icons/MinusIcon2";
 import PlusIcon from "../assets/icons/PlusIcon";
 import { gsap, useGSAP } from "../ui/plugins";
 import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
+import HistoryVideoPlayer from "./HistoryVideoPlayer";
 
 interface ChildProps {
   extraClass: string;
@@ -445,6 +446,11 @@ export default function TimelineCardItem(props: ChildProps) {
     },
     { scope: wrapper },
   );
+
+  useEffect(() => {
+    console.log(props.data);
+  }, [props.data]);
+
   return (
     <div
       ref={wrapper}
@@ -482,46 +488,44 @@ export default function TimelineCardItem(props: ChildProps) {
         className={`expand-images ${isOpen ? "block" : "hidden"} lg:block lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:right-full overflow-hidden z-40`}
       >
         <div className="images-wrapper flex gap-x-[2.7vw]">
-          {props.data?.image_1 && (
-            <div className="image1 w-full h-auto lg:w-[28.8vw] lg:h-[38.1vh]">
-              <Image
-                className="w-full object-cover object-center h-full relative z-10"
-                src={
-                  props.data?.image_1?.sizes?.large ||
-                  props.data?.images?.image1?.src ||
-                  "/images/rabbis-timeline1.jpg"
-                }
-                width="553"
-                height="354"
-                blurDataURL={
-                  CreateShimmerDataUrl(553, 354) ||
-                  props.data?.images?.image1?.blurDataURL
-                }
-                placeholder={"blur"}
-                loading="lazy"
-                alt="Card Image"
-              />
-            </div>
-          )}
-          <div className="image2 w-full h-auto lg:w-[12vw] lg:h-[39vh]">
-            <Image
-              className="w-full object-cover object-center h-full relative z-10"
-              src={
-                props.data?.image_2?.sizes?.large ||
-                props.data?.images?.image2?.src ||
-                "/images/rabbis-timeline2.jpg"
+          {props.data?.content &&
+            props.data?.content?.map((item: any, index: number) => {
+              if (item.type === "image") {
+                return (
+                  <div
+                    key={index}
+                    className={`image w-full h-auto ${index === 0 ? "lg:w-[28.8vw] lg:h-[38.1vh]" : "lg:w-[12vw] lg:h-[39vh]"}`}
+                  >
+                    <Image
+                      className="w-full object-cover object-center h-full relative z-10"
+                      src={
+                        item?.image?.sizes?.large ||
+                        item?.image?.src ||
+                        "/images/rabbis-timeline1.jpg"
+                      }
+                      width="553"
+                      height="354"
+                      blurDataURL={
+                        CreateShimmerDataUrl(553, 354) ||
+                        item.image?.blurDataURL
+                      }
+                      placeholder={"blur"}
+                      loading="lazy"
+                      alt="Card Image"
+                    />
+                  </div>
+                );
+              } else {
+                return (
+                  <div
+                    key={index}
+                    className={`video w-full h-auto ${index === 0 ? "lg:w-[28.8vw] lg:h-[38.1vh]" : "lg:w-[12vw] lg:h-[39vh]"} relative group`}
+                  >
+                    <HistoryVideoPlayer data={item} />
+                  </div>
+                );
               }
-              width="258"
-              height="305"
-              blurDataURL={
-                CreateShimmerDataUrl(258, 305) ||
-                props.data?.images?.image2?.blurDataURL
-              }
-              placeholder={"blur"}
-              loading="lazy"
-              alt="Card Image"
-            />
-          </div>
+            })}
         </div>
       </div>
     </div>

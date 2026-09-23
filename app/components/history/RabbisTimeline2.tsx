@@ -312,7 +312,7 @@ function RabbisTimeline2(props: ChildProps) {
             {parse(props?.data?.title || `ציוני<br /> דרך`)}
           </h2>
         </div>
-        <div className="rabbis-timeline w-full flex gap-x-[20vw] relative flex-col lg:flex-row gap-y-[7vh]">
+        <div className="rabbis-timeline w-full flex 2xl:gap-x-[20vw] lg:gap-x-[16vw] relative flex-col lg:flex-row 2xl:gap-y-[7vh] lg:gap-y-[10vh]">
           {RabbisData.map((item: any, index: number) => {
             //console.log(item);
             if (item.type === "notification") {
@@ -325,9 +325,9 @@ function RabbisTimeline2(props: ChildProps) {
                     );
                     setOpenNotificationPopup(true);
                   }}
-                  className="timeline-content notification-button py-5 px-6 lg:px-8 w-full lg:w-108 lg:min-w-100 bg-[#5A7C4E] relative self-start pl-15 lg:pl-19 mx-auto z-40 lg:mt-[14vh] lg:-ml-[8vw] lg:-mr-[12vw] cursor-pointer"
+                  className="timeline-content notification-button py-5 px-6 lg:px-8 w-full 2xl:w-108 lg:w-88 2xl:min-w-100 bg-[#5A7C4E] relative self-start pl-15 lg:pl-19 mx-auto z-40 lg:mt-[14vh] 2xl:-ml-[8vw] lg:-ml-[4vw] 2xl:-mr-[12vw] lg:-mr-[5vw] cursor-pointer"
                 >
-                  <div className="notify-icon w-30 h-auto lg:w-50.5 lg:h-33.75 absolute top-0 left-0 -translate-x-1/2">
+                  <div className="notify-icon w-30 h-auto 2xl:w-50.5 lg:w-30 2xl:h-33.75 lg:h-22 absolute top-0 left-0 -translate-x-1/2">
                     <Image
                       className="w-full object-cover object-center h-full"
                       src={item?.image?.url || item?.image?.src || ""}
@@ -348,10 +348,10 @@ function RabbisTimeline2(props: ChildProps) {
               return (
                 <div
                   key={index}
-                  className={`timeline-content ${item.size === "portrait" ? "w-full lg:w-64.5" : "w-full lg:w-111.5"} flex flex-col gap-y-10 sm:gap-y-[5.5vh]`}
+                  className={`timeline-content ${item.size === "portrait" ? "w-full 2xl:w-[13.4vw] lg:w-[16vw]" : "w-full lg:w-[23.2vw]"} flex flex-col 2xl:gap-y-10 lg:gap-y-[10vh] sm:gap-y-[5.5vh]`}
                 >
                   {item.size === "portrait" ? (
-                    <div className="image w-full h-auto lg:w-64.5 lg:h-76.25">
+                    <div className="image w-full h-auto 2xl:w-[13.4vw] lg:w-[16vw] 2xl:h-[32.8vh] lg:h-[28vh]">
                       <Image
                         className="w-full object-cover object-center h-full relative z-10"
                         src={
@@ -370,7 +370,7 @@ function RabbisTimeline2(props: ChildProps) {
                       />
                     </div>
                   ) : (
-                    <div className="image w-full h-auto lg:w-111.5 lg:h-76.25">
+                    <div className="image w-full h-auto 2xl:w-[23.2vw] lg:w-[28vw] 2xl:h-[32.8vh] lg:h-[28vh]">
                       <Image
                         className="w-full object-cover object-center h-full relative z-10"
                         src={
@@ -390,7 +390,7 @@ function RabbisTimeline2(props: ChildProps) {
                     </div>
                   )}
                   <div dir="ltr" className="title mt-auto text-right">
-                    <h4 className="text-[22px] sm:text-[32px] lg:text-[43px] leading-[0.9em] lg:leading-[0.7em] text-[#FBF4E6]">
+                    <h4 className="text-[22px] sm:text-[32px] 2xl:text-[43px] lg:text-[35px] leading-[0.9em] 2xl:leading-[0.7em] lg::leading-[0.8em] text-[#FBF4E6]">
                       {parse(item?.title || "")}
                     </h4>
                   </div>
@@ -399,8 +399,7 @@ function RabbisTimeline2(props: ChildProps) {
             }
           })}
           <div
-            style={{ marginTop: "10vh" }}
-            className={`timeline h-2 w-full bg-[#C3A13F] absolute right-0 top-1/2 hidden lg:block`}
+            className={`timeline h-2 w-full bg-[#C3A13F] absolute right-0 top-1/2 hidden lg:block 2xl:mt-[10vh] lg:mt-[5vh]`}
           ></div>
         </div>
       </div>
