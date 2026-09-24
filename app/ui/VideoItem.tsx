@@ -18,6 +18,8 @@ interface ChildProps {
   panel?: React.RefObject<HTMLDivElement | null>;
   offsetTopTimeline?: number;
   offsetTopAdded?: boolean;
+  setSingleVideoPlaying: (value: boolean) => void;
+  singleVideoPlaying: boolean;
 }
 
 export default function VideoItem(props: ChildProps) {
@@ -93,8 +95,8 @@ export default function VideoItem(props: ChildProps) {
   const videoElement = wrapper.current?.querySelector("video");
   const videoOverlay = wrapper.current?.querySelector(".video-overlay");
   const buttonIcon = videoButton.current?.querySelector(".button-icon>svg");
-  // video button handler
-  const handleButtonClick = contextSafe(() => {
+
+  useGSAP(() => {
     if (videoElement) {
       if (videoElement.paused) {
         wrapper.current?.classList.add("z-50");
@@ -116,7 +118,7 @@ export default function VideoItem(props: ChildProps) {
           });
           gsap.to(videoButton.current, {
             duration: 0.5,
-            y: "45vh",
+            y: "-45vh",
             scale: 0.5,
             delay: 0,
             ease: "easeInOut",
@@ -166,7 +168,8 @@ export default function VideoItem(props: ChildProps) {
         wrapper.current?.classList.add("z-20");
       }
     }
-  });
+  }, [props.singleVideoPlaying]);
+
   return (
     <div
       ref={wrapper}
@@ -178,17 +181,19 @@ export default function VideoItem(props: ChildProps) {
         <div ref={videoWrap} className="video h-full w-full relative z-10">
           <VideoPlayer extraClass="w-full h-full" data={videoData} />
           <div
-            onClick={handleButtonClick}
+            onClick={() =>
+              props.setSingleVideoPlaying(!props.singleVideoPlaying)
+            }
             className="video-overlay absolute top-0 left-0 w-full h-full bg-black z-40 opacity-40 cursor-pointer"
           ></div>
         </div>
         <div
           ref={videoButton}
-          onClick={handleButtonClick}
+          onClick={() => props.setSingleVideoPlaying(!props.singleVideoPlaying)}
           className="absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
         >
           <ThemeButton2
-            extraClass="w-20 h-20 p-5 sm:p-0 sm:w-29.25 sm:h-29.25 flex items-center justify-center border-2 border-[#C3A13F] group"
+            extraClass="w-20 h-20 p-5 sm:p-0 sm:w-25 sm:h-25 flex items-center justify-center border-2 border-[#C3A13F] group"
             bgColor="bg-[#0F0F0F85]"
             hoverBgColor="bg-[#000000]"
             svgIcon={<PlusIcon />}

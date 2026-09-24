@@ -306,7 +306,7 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
       <main
         ref={main}
         id="page"
-        dir="ltr"
+        dir="rtl"
         className="main relative overflow-hidden z-10 will-change-transform"
       >
         <div className="privacy-policy-page flex w-screen h-auto min-h-screen items-center justify-center relative overflow-hidden pt-[12vh] sm:pt-[15vh] lg:pt-[20vh] pb-[6vh] lg:pb-[10vh]">

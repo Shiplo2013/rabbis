@@ -1,4 +1,5 @@
 import { sendSubscribeData } from "@/app/server/subscribe";
+import Link from "next/link";
 import { useActionState } from "react";
 
 export default function FooterForm() {
@@ -9,13 +10,26 @@ export default function FooterForm() {
       action={action}
       className="form w-full flex flex-col text-[20px] leading-[1em]"
     >
-      <div className="form-col flex items-stretch h-10">
+      <div className="text xl:text-[16px] sm:text-[14px] leading-[1em] mb-3 text-center flex gap-x-2 items-center">
         <input
-          type="hidden"
-          name="text-name"
-          id="text-name"
-          value="footer-subscribe-form"
+          type="checkbox"
+          id="footer-privacy"
+          name="privacy-consent"
+          className="w-4 h-4"
         />
+        <label htmlFor="footer-privacy">
+          קראתי ואני מסכים/ה ל
+          <Link
+            href="/privacy-policy"
+            target="_blank"
+            rel="noopener"
+            className="underline"
+          >
+            מדיניות הפרטיות
+          </Link>
+        </label>
+      </div>
+      <div className="form-col flex items-stretch h-10">
         <div className="input-field w-3/4 flex items-center justify-center">
           <input
             dir="rtl"
@@ -24,7 +38,11 @@ export default function FooterForm() {
             name="email-subscibe"
             type="email"
             placeholder="מייל"
-            defaultValue={state?.payload?.get("email-subscibe") || ""}
+            defaultValue={
+              (state.status !== "mail_sent" &&
+                state?.payload?.get("email-subscibe")) ||
+              ""
+            }
           />
         </div>
         <div className="submit-button w-1/4 flex items-center justify-center">

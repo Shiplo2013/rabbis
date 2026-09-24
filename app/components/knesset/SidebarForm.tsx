@@ -8,12 +8,6 @@ export default function SidebarForm() {
     <form action={action} className="subscription overflow-hidden relative">
       <div className="input-wrapper w-full flex bg-[#FDF9F5] rounded-full items-center relative h-10.75">
         <input
-          type="hidden"
-          name="text-name"
-          id="text-name"
-          value="sidebar-subscribe-form"
-        />
-        <input
           type="email"
           name="email-subscibe"
           className="w-full h-full focus:outline-0 rounded-full p-2.5 pl-15"

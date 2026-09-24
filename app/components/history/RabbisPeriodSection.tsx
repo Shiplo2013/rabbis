@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { RefObject, useEffect, useRef, useState } from "react";
 import contentBG from "../../assets/images/history-section-bg.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
+import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -61,6 +62,12 @@ export default function RabbisPeriodSection(props: ChildProps) {
   const title = useRef<HTMLHeadingElement>(null);
   const slider = useRef<HTMLDivElement>(null);
   const [slideData, setSlideData] = useState<SlideItem[]>([]);
+  const {
+    activeRabbisMenu,
+    setActiveRabbisMenu,
+    setAllRabbisPosts,
+    allRabbisPosts,
+  } = useAppState();
   // Section Ref
   const timeline = props.panel;
   // Get Offset Top of Timeline
@@ -215,8 +222,8 @@ export default function RabbisPeriodSection(props: ChildProps) {
         <div
           ref={button}
           onClick={() => {
-            props.activeMenuFunction?.(!props.activeMenu);
-            props.rabbisData?.(slideData as any);
+            setActiveRabbisMenu(!activeRabbisMenu);
+            setAllRabbisPosts(props.rabbisPosts);
           }}
           className="period-button absolute left-6 top-6 lg:top-[7.8vh] lg:left-[12.7vw] cursor-pointer"
         >

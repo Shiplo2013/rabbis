@@ -1,8 +1,10 @@
 import { sendSubscribeData } from "@/app/server/actions";
-import { useActionState } from "react";
+import Link from "next/link";
+import { useActionState, useState } from "react";
 
 export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
   const [state, action, isPending] = useActionState(sendSubscribeData, {});
+  const [isChecked, setIsChecked] = useState(false);
   return (
     <form
       action={action}
@@ -21,7 +23,11 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
                 className="w-full border-b border-white p-0 text-[14px] leading-[0.7em] focus:outline-0"
                 name="news-name"
                 type="text"
-                defaultValue={state?.payload?.get("news-name") || ""}
+                defaultValue={
+                  (state.status !== "mail_sent" &&
+                    state?.payload?.get("news-name")) ||
+                  ""
+                }
               />
             </div>
             {state?.invalid_fields_object?.["news-name"] && (
@@ -40,7 +46,11 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
                 className="w-full border-b border-white p-0 text-[14px] leading-[0.7em] focus:outline-0"
                 name="news-email"
                 type="email"
-                defaultValue={state?.payload?.get("news-email") || ""}
+                defaultValue={
+                  (state.status !== "mail_sent" &&
+                    state?.payload?.get("news-email")) ||
+                  ""
+                }
               />
             </div>
             {state?.invalid_fields_object?.["news-email"] && (
@@ -71,8 +81,26 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
             </p>
           </div>
         )}
-        <div className="text 2xl:text-[16px] xl:text-[14px] sm:text-[12px] leading-[1em] mt-[3vh] text-center">
-          <p>אני מאשר/ת קבלת עדכונים מן הישיבה</p>
+        <div className="text xl:text-[14px] sm:text-[12px] leading-[1em] mt-3 text-center flex gap-x-2 items-center">
+          <input
+            type="checkbox"
+            id="privacy"
+            name="privacy-consent"
+            className="w-3 h-auto"
+            checked={isChecked}
+            onChange={(e) => setIsChecked(e.target.checked)}
+          />
+          <label onClick={() => setIsChecked(!isChecked)} htmlFor="privacy">
+            קראתי ואני מסכים/ה ל
+            <Link
+              href="/privacy-policy"
+              target="_blank"
+              rel="noopener"
+              className="underline"
+            >
+              מדיניות הפרטיות
+            </Link>
+          </label>
         </div>
       </div>
     </form>

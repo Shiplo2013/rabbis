@@ -1,12 +1,9 @@
 "use client";
-import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import BigTitleSplitLines from "../../ui/BigTitleSplitLines";
-import DonationVideo from "../../ui/DonationVideo";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 import { useAppState } from "../AppContext";
 
@@ -19,8 +16,8 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
     null,
   );
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(300);
-  const [sectionWidth, setSectionWidth] = useState(200);
+  const [containerWidth, setContainerWidth] = useState(100);
+  const [sectionWidth, setSectionWidth] = useState(50);
   const [error, setError] = useState<string | null>(null);
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
@@ -57,109 +54,115 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
     }
   }, [testimonialsPageData, animationPlayed]);
 
-  useEffect(() => {
-    if (!testimonialsPageData) {
-      return;
-    }
-    // Update Section Width on Data Change
-    const updateSectionWidth = () => {
-      const testimonialsItems = document.querySelectorAll(".testimonial-item");
-      let itemWidths = 0;
-      testimonialsItems.forEach((testimonial: any) => {
-        itemWidths += testimonial?.offsetWidth || 0;
-      });
-      const newSectionWidth =
-        testimonialsPageData?.acf?.testimonials?.length * 65 +
-        testimonialsPageData?.acf?.testimonials?.length * 10 +
-        10;
-      setSectionWidth(newSectionWidth);
-      setContainerWidth(newSectionWidth + 40);
-    };
+  // useEffect(() => {
+  //   if (!testimonialsPageData) {
+  //     return;
+  //   }
+  //   // Update Section Width on Data Change
+  //   const updateSectionWidth = () => {
+  //     const testimonialsItems = document.querySelectorAll(".testimonial-item");
+  //     let itemWidths = 0;
+  //     testimonialsItems.forEach((testimonial: any) => {
+  //       itemWidths += testimonial?.offsetWidth || 0;
+  //     });
+  //     const newSectionWidth =
+  //       testimonialsPageData?.acf?.testimonials?.length * 65 +
+  //       testimonialsPageData?.acf?.testimonials?.length * 10 +
+  //       10;
+  //     setSectionWidth(newSectionWidth);
+  //     setContainerWidth(newSectionWidth + 40);
+  //   };
 
-    updateSectionWidth();
-    window.addEventListener("resize", updateSectionWidth);
-    return () => {
-      window.removeEventListener("resize", updateSectionWidth);
-    };
-  }, [testimonialsPageData]);
+  //   updateSectionWidth();
+  //   window.addEventListener("resize", updateSectionWidth);
+  //   return () => {
+  //     window.removeEventListener("resize", updateSectionWidth);
+  //   };
+  // }, [testimonialsPageData]);
 
   // Page Section Animation
-  useGSAP(() => {
-    if (
-      typeof window !== "undefined" &&
-      panel.current &&
-      wrapper.current &&
-      window.innerWidth > 1024
-    ) {
-      // Overflow body
-      const progress = document.getElementById(
-        "progress",
-      ) as HTMLElement | null;
-      const waveLine = document.getElementById(
-        "wave-line",
-      ) as HTMLElement | null;
-      const arrowButton = document.getElementById(
-        "arrow-button",
-      ) as HTMLElement | null;
-      waveLine?.classList.remove("hidden");
-      const scurbScale = 2;
+  // useGSAP(() => {
+  //   if (
+  //     typeof window !== "undefined" &&
+  //     panel.current &&
+  //     wrapper.current &&
+  //     window.innerWidth > 1024
+  //   ) {
+  //     // Overflow body
+  //     const progress = document.getElementById(
+  //       "progress",
+  //     ) as HTMLElement | null;
+  //     const waveLine = document.getElementById(
+  //       "wave-line",
+  //     ) as HTMLElement | null;
+  //     const arrowButton = document.getElementById(
+  //       "arrow-button",
+  //     ) as HTMLElement | null;
+  //     waveLine?.classList.remove("hidden");
+  //     const scurbScale = 2;
 
-      // Vertical Section
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: panel.current,
-          start: "top top",
-          end: "+=" + window.innerHeight * (containerWidth / 100),
-          scrub: scurbScale,
-          pin: true,
-          onUpdate: (self) => {
-            if (progress) {
-              gsap.to(progress, { width: `${100 * self.progress}%` });
-            }
-            if (waveLine) {
-              if (self.progress > 0.97) {
-                gsap.to(waveLine, {
-                  opacity: 0,
-                  duration: 0.1,
-                  delay: 0,
-                });
-              } else {
-                gsap.to(waveLine, {
-                  opacity: 1,
-                  duration: 0.1,
-                  delay: 0,
-                });
-              }
-            }
-          },
-        },
-      });
-      timeline.to(wrapper.current, {
-        x: () =>
-          wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: panel.current,
-          start: panel.current?.offsetTop,
-          end: "+=" + (window.innerHeight * (containerWidth / 100) - 500),
-          scrub: scurbScale,
-        },
-      });
-      setVerticalSection(timeline);
-    }
-    // Return
-    return () => {
-      if (verticalSection) {
-        verticalSection.kill();
-      }
-    };
-  }, [pathname, pageDataFetched]);
+  //     // Vertical Section
+  //     const timeline = gsap.timeline({
+  //       scrollTrigger: {
+  //         trigger: panel.current,
+  //         start: "top top",
+  //         end: "+=" + window.innerHeight * (containerWidth / 100),
+  //         scrub: scurbScale,
+  //         pin: true,
+  //         onUpdate: (self) => {
+  //           if (progress) {
+  //             gsap.to(progress, { width: `${100 * self.progress}%` });
+  //           }
+  //           if (waveLine) {
+  //             if (self.progress > 0.97) {
+  //               gsap.to(waveLine, {
+  //                 opacity: 0,
+  //                 duration: 0.1,
+  //                 delay: 0,
+  //               });
+  //             } else {
+  //               gsap.to(waveLine, {
+  //                 opacity: 1,
+  //                 duration: 0.1,
+  //                 delay: 0,
+  //               });
+  //             }
+  //           }
+  //         },
+  //       },
+  //     });
+  //     timeline.to(wrapper.current, {
+  //       x: () =>
+  //         wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
+  //       ease: "none",
+  //       scrollTrigger: {
+  //         trigger: panel.current,
+  //         start: panel.current?.offsetTop,
+  //         end: "+=" + (window.innerHeight * (containerWidth / 100) - 500),
+  //         scrub: scurbScale,
+  //       },
+  //     });
+  //     setVerticalSection(timeline);
+  //   }
+  //   // Return
+  //   return () => {
+  //     if (verticalSection) {
+  //       verticalSection.kill();
+  //     }
+  //   };
+  // }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
     setPageContentAnimation();
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
       document.fonts.ready.then(() => {
+        const waveLine = document.getElementById(
+          "wave-line",
+        ) as HTMLElement | null;
+        gsap.set(waveLine, {
+          opacity: 0,
+        });
         // Selectors
         const pageWrapper = document.querySelector(
           "#page-wrapper",
@@ -398,7 +401,16 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                 }
                 className={`testimonials flex w-full lg:h-screen items-center justify-center gap-x-[10vw] lg:w-(--section-width) will-change-transform lg:pl-[10vw] flex-col lg:flex-row gap-y-15 sm:gap-y-[10vh]`}
               >
-                {testimonialsPageData?.acf?.testimonials &&
+                <div className="testimonial-item w-full lg:w-[65vw] lg:h-screen flex items-center justify-start gap-x-[2.8vw] will-change-transform flex-col lg:flex-row gap-y-10">
+                  <div className="testimonial-image w-full lg:w-[40vw] min-w-[40vw] lg:h-[50vh] relative">
+                    <div className="w-full h-50 lg:h-full bg-[#111111] flex items-center justify-center">
+                      <h4 className="text-[18px] lg:text-[26px] leading-[1em]">
+                        הראיונות יתעדכנו בקרוב בע״ה
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+                {/* {testimonialsPageData?.acf?.testimonials &&
                   testimonialsPageData?.acf?.testimonials?.map(
                     (testimonial: any, index: number) => (
                       <div
@@ -440,7 +452,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                         </h2>
                       </div>
                     ),
-                  )}
+                  )} */}
               </div>
             </div>
           </div>
