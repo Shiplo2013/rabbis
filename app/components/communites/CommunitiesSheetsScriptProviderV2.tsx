@@ -96,6 +96,80 @@ export default function CommunitiesSheetsScriptProviderV2({
   const panel = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
 
+  // Page Section Animation
+  useGSAP(() => {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      main.current &&
+      window.innerWidth > 1024
+    ) {
+      // Overflow body
+      const progress = document.getElementById(
+        "progress",
+      ) as HTMLElement | null;
+      const waveLine = document.getElementById(
+        "wave-line",
+      ) as HTMLElement | null;
+      const arrowButton = document.getElementById(
+        "arrow-button",
+      ) as HTMLElement | null;
+      waveLine?.classList.remove("hidden");
+      const scurbScale = 2;
+
+      // Vertical Section
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: panel.current,
+          start: "top top",
+          end: "+=" + window.innerWidth * (containerWidth / 100),
+          scrub: scurbScale,
+          pin: true,
+          onUpdate: (self) => {
+            if (progress) {
+              gsap.to(progress, { width: `${100 * self.progress}%` });
+            }
+            if (self.progress > 0.97) {
+              if (waveLine) {
+                gsap.to(waveLine, {
+                  opacity: 0,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
+            } else {
+              if (waveLine) {
+                gsap.to(waveLine, {
+                  opacity: 1,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
+            }
+          },
+        },
+      });
+      timeline.to(wrapper.current, {
+        x: () =>
+          wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: panel.current,
+          start: panel.current?.offsetTop,
+          end: "+=" + (window.innerWidth * (containerWidth / 100) - 500),
+          scrub: scurbScale,
+        },
+      });
+      setVerticalSection(timeline);
+    }
+    // Return
+    return () => {
+      if (verticalSection) {
+        verticalSection.kill();
+      }
+    };
+  }, [pathname, pageDataFetched]);
+
   // Load Page
   useGSAP(() => {
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
@@ -367,12 +441,17 @@ export default function CommunitiesSheetsScriptProviderV2({
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-col h-full w-full items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -394,7 +473,14 @@ export default function CommunitiesSheetsScriptProviderV2({
                 throw new Error("Function not implemented.");
               }}
             />
-            <div className="sheets-iframe w-full h-auto min-h-screen bg-black lg:pr-15">
+            <div
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              className="sheets-iframe w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform min-h-screen bg-black"
+            >
               <iframe
                 id="sheet-frame"
                 src="https://fliphtml5.com/bookcase/emhfq/"

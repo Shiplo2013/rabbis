@@ -5,7 +5,7 @@ import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useAppState } from "../AppContext";
 
 interface ChildProps {
@@ -37,10 +37,6 @@ export default function CustomsContentSection2(props: ChildProps) {
       router.push(e.currentTarget.href);
     }
   };
-
-  useEffect(() => {
-    console.log(rabbisPosts);
-  }, [rabbisPosts]);
 
   return (
     <section
@@ -84,16 +80,16 @@ export default function CustomsContentSection2(props: ChildProps) {
           </div>
         </div>
       </div>
-      <div className="rabbis-wrapper w-full h-full flex gap-y-15 sm:gap-y-[10vh] gap-x-[10vw] flex-col">
+      <div className="rabbis-wrapper w-full h-full flex items-center justify-center gap-y-15 sm:gap-y-[10vh] gap-x-[10vw] flex-col">
         {rabbisPosts.map((item: any, index: number) => {
           return (
             <div
               key={index}
               data-id={item.id}
-              className={`rabbis-item w-full h-full flex items-center justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] will-change-transform flex-col lg:flex-row`}
+              className={`rabbis-item w-full h-auto flex items-end justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] will-change-transform flex-col lg:flex-row`}
             >
               <div className="rabbis-image w-full lg:w-[27.1vw] relative">
-                <div className="image w-full h-[57.2vh] relative">
+                <div className="image w-full h-auto lg:h-[57.2vh] relative">
                   <Link
                     href={item?.slug ? `/past-rabbis/${item.slug}` : "#"}
                     onClick={handleLinkClick}
@@ -132,7 +128,10 @@ export default function CustomsContentSection2(props: ChildProps) {
                   />
                 </div>
               </div>
-              <div className="rabbis-content w-full lg:w-[28vw] text-[#D1A941]">
+              <div
+                dir="rtl"
+                className="rabbis-content w-full lg:w-[28vw] text-[#D1A941]"
+              >
                 <h2 className="text-[30px] sm:text-[40px] lg:text-[55px] leading-[0.85em] overflow-hidden relative">
                   <Link
                     href={item?.slug ? `/past-rabbis/${item.slug}` : "#"}
