@@ -18,11 +18,6 @@ export default function CommunitiesSheetsScriptProviderV2({
 }: {
   data: {
     pageData: any;
-    postsData: {
-      posts: any;
-      totalPage: string | null;
-    };
-    categoriesTree: any;
   };
 }) {
   // Router Path
@@ -50,12 +45,6 @@ export default function CommunitiesSheetsScriptProviderV2({
   const [isPostLoaded, setIsPostLoaded] = useState(false);
   const [noPostsFound, setNoPostsFound] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [hasMorePosts, setHasMorePosts] = useState(
-    Number(data?.postsData?.totalPage ?? 1) > 1,
-  );
-  const [totalPages, setTotalPages] = useState(
-    Number(data?.postsData?.totalPage ?? 1),
-  );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
   const [normalPosts, setNormalPosts] = useState<any[]>([]);
@@ -72,8 +61,6 @@ export default function CommunitiesSheetsScriptProviderV2({
       return;
     }
     setSheetPageData(data);
-    setSheetPostsData(data?.postsData?.posts || []);
-    setCommunitySheetsCategoryData(data?.categoriesTree || []);
   }, [data]);
 
   // Update section width on window resize

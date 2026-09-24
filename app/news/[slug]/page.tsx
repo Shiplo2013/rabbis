@@ -9,13 +9,13 @@ interface PageProps {
 export default async function page({ params }: PageProps) {
   const { slug } = await params;
   const pageRes = wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/posts?acf_format=standard&slug=${slug}&_fields=id,acf`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/posts?acf_format=standard&slug=${slug}&_fields=id,acf,title,content`,
     {
       next: { revalidate: 60 },
     },
   );
   const postsRes = wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/posts?acf_format=standard&_fields=id,title,slug,excerpt,acf&per_page=20`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/posts?acf_format=standard&_fields=id,title,slug,excerpt,acf.gallery&per_page=100`,
     {
       next: { revalidate: 60 },
     },
