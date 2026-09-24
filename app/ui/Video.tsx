@@ -81,6 +81,7 @@ function Video(props: {
       autoPlay
       muted
       onEnded={videoPlayed}
+      controlsList="nodownload"
     >
       <source src={props.link} type="video/mp4" />
     </video>

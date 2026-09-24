@@ -58,6 +58,7 @@ export default function HomeBannerVideo({ bannerData }: HomeBannerVideoProps) {
         onLoadedMetadata={() => setLoading(false)}
         onPlay={() => setLoading(false)}
         className="w-full h-full object-cover"
+        controlsList="nodownload"
       >
         <source src={bannerData?.banner_video?.url} type="video/mp4" />
       </video>

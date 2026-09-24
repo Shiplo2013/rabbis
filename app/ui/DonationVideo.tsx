@@ -156,6 +156,7 @@ export default function DonationVideo(props: ChildProps) {
         muted
         loop={true}
         preload={shouldLoadVideo ? "metadata" : "none"}
+        controlsList="nodownload"
       >
         {shouldLoadVideo && sourceUrl ? (
           <source src={sourceUrl} type="video/mp4" />

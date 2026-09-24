@@ -170,6 +170,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     setPost(data.postsData);
     setCurrentRabbisPost(data.postsData);
     setAllPosts(data.allPostsData);
+    console.log(data.allPostsData);
     if (data.allPostsData && data.allPostsData.length > 0) {
       setAllRabbisPosts(data.allPostsData);
     }

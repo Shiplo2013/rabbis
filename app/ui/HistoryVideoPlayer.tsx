@@ -31,6 +31,7 @@ export default function HistoryVideoPlayer(props: ChildProps) {
         ref={videoRef}
         width="100%"
         className="w-full h-full object-cover object-center"
+        controlsList="nodownload"
       >
         <source src={props?.data?.video?.url} type="video/mp4" />
         Your browser does not support the video tag.

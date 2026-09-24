@@ -336,6 +336,18 @@ export default function PageFixedElements() {
     }
   }, [activeCyclePopup, cyclePopupIndex]);
 
+  // Stop Right click for user
+  useEffect(() => {
+    const handleContextMenu = (e: any) => {
+      e.preventDefault(); // Prevents the right-click menu from opening
+    };
+    document.addEventListener("contextmenu", handleContextMenu);
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, []);
+
   return (
     <>
       {/* Loading Effect */}

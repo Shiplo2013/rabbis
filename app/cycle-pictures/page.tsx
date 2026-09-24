@@ -16,13 +16,13 @@ export default async function page() {
         },
       ),
       wpFetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee-posts?acf_format=standard&_fields=id,title,acf,committee_cat&per_page=100&page=1`,
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee-posts?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf,committee_cat&per_page=100&page=1`,
         {
           next: { revalidate: 60 }, // Cache data for 1 minute
         },
       ),
       wpFetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee_cat?_fields=id,count,name,slug,parent&per_page=100&page=1`,
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/committee_cat?order=asc&_fields=id,count,name,slug,parent&per_page=100&page=1`,
         {
           next: { revalidate: 60 }, // Cache data for 1 minute
         },

@@ -65,6 +65,7 @@ export default function VideoPopup() {
           poster={videoData.poster}
           className="w-full h-full object-cover object-center"
           ref={videoRef}
+          controlsList="nodownload"
         >
           <source src={videoData.link} type="video/mp4" />
           Your browser does not support the video tag.

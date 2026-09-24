@@ -25,6 +25,7 @@ export default function VideoPlayer(props: ChildProps) {
         width="100%"
         poster={videoData?.poster?.url || videoData?.poster?.src || ""}
         className="w-full h-full object-cover object-center"
+        controlsList="nodownload"
       >
         <source
           src={videoData?.video?.url || videoData?.video?.src || ""}
