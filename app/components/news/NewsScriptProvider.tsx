@@ -527,6 +527,7 @@ export default function NewsScriptProvider({
         if (index === 0) {
           gsap.set(image, {
             rotate: -2.38,
+            yPercent: -50,
           });
         }
         if (index === 1) {

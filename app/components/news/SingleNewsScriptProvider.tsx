@@ -21,8 +21,8 @@ if (typeof window !== "undefined") {
 }
 
 type NewsPostData = {
-  title: string;
-  content: string;
+  title: { rendered: string };
+  content: { rendered: string };
   slug: string;
   id: number;
   acf?: {
@@ -129,6 +129,7 @@ export default function SingleNewsScriptProvider({
     }
     setPost(data.post);
     setNavigationData(data.navigationData);
+    console.log(data.post);
   }, [data]);
 
   // Page Data Loade
@@ -477,13 +478,13 @@ export default function SingleNewsScriptProvider({
                 dir="rtl"
                 className="post-title text-[32px] sm:text-[40px] lg:text-[55px] leading-[70%] text-[#C3A13F] text-right pt-2"
               >
-                {parse(post?.title || NewsPostsData?.title)}
+                {parse(post?.title?.rendered || NewsPostsData?.title)}
               </h2>
               <div
                 dir="rtl"
                 className="content mt-10 lg:mt-14 [&>p:not(:last-child)]:mb-7.5 [&>blockquote]:border-r-3 [&>blockquote]:border-[#C3A13F] [&>blockquote]:pr-5 lg:[&>blockquote]:pr-7 [&>blockquote]:mr-5 [&>blockquote]:mb-7.5 [&>blockquote]:text-[18px] sm:[&>blockquote]:text-[22px] lg:[&>blockquote]:text-[28px] [&>blockquote]:leading-[1.1em] [&>blockquote]:font-bold text-right"
               >
-                {parse(post?.content || NewsPostsData?.summary)}
+                {parse(post?.content?.rendered || NewsPostsData?.summary)}
               </div>
             </div>
           </div>
