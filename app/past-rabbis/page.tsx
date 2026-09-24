@@ -1,6 +1,6 @@
+import PastRabbisScriptProvider2 from "@/app/components/past-rabbis/PastRabbisScriptProvider2";
+import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 import { wpFetch } from "@/app/lib/wpFetch";
-import PastRabbisScriptProvider from "../components/past-rabbis/PastRabbisScriptProvider";
-import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export default async function page() {
   let pageDataRes: Response | null = null;
@@ -51,7 +51,7 @@ export default async function page() {
   }
 
   return (
-    <PastRabbisScriptProvider
+    <PastRabbisScriptProvider2
       data={{ pageData: pageData[0], posts: postsData }}
     />
   );

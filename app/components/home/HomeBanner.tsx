@@ -91,7 +91,7 @@ export default function HomeBanner(props: ChildProps) {
           <h4 className="banner-content overflow-hidden text-[25px] sm:text-[35px] leading-[1em] lg:text-[55px] text-[#D1A941] mt-19">
             {bannerData?.subtitle}
           </h4>
-          <div className="banner-button absolute left-13 bottom-19.5">
+          <div className="banner-button absolute left-20 bottom-15">
             <ScrollButton />
           </div>
         </div>

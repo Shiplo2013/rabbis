@@ -16,7 +16,7 @@ export default async function Page() {
         },
       ),
       wpFetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&_fields=id,title,slug,acf&per_page=20`,
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/past-rabbis?acf_format=standard&_fields=id,title,slug,acf&per_page=100`,
         {
           next: { revalidate: 60 },
         },

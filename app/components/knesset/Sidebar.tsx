@@ -2,7 +2,6 @@
 import CaretIcon from "@/app/assets/icons/CaretIcon";
 import SearchIcon from "@/app/assets/icons/SearchIcon";
 import { useState } from "react";
-import SidebarForm from "./SidebarForm";
 
 interface SidebarProps {
   activeCategory: string | null;
@@ -65,7 +64,7 @@ export default function Sidebar({
           <SearchIcon />
         </button>
       </div>
-      <div className="sidebar-menu mb-[6.35vh]">
+      <div className="sidebar-menu">
         <div
           className="head text-[#D1A941] text-[26px] leading-[1.4em] flex items-center gap-x-2 mb-1 cursor-pointer select-none"
           onClick={() => setMenuOpen((prev) => !prev)}
@@ -140,13 +139,13 @@ export default function Sidebar({
           </ul>
         </div>
       </div>
-      <div className="sidebar-subscription">
+      {/* <div className="sidebar-subscription">
         <h4 className="text-[24px] leading-[1.2em] font-medium mb-2.5">
           לקבלת עדכונים
           <br /> חדשים למייל:
         </h4>
         <SidebarForm />
-      </div>
+      </div> */}
     </div>
   );
 }
