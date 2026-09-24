@@ -3,7 +3,7 @@ import TimelineCardItem from "@/app/ui/TimelineCardItem";
 import VideoItem from "@/app/ui/VideoItem";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
-import { RefObject, useEffect, useRef } from "react";
+import { RefObject, useRef, useState } from "react";
 import rabbisImage1 from "../../assets/images/timeline4image1.jpg";
 import rabbisImage2 from "../../assets/images/timeline4image2.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
@@ -25,6 +25,7 @@ export default function RabbisTimeline4(props: ChildProps) {
   const pathname = usePathname();
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
+  const [singleVideoPlaying, setSingleVideoPlaying] = useState(false);
   // Section Ref
   const timeline = props.panel;
   // Get Offset Top of Timeline
@@ -181,10 +182,6 @@ export default function RabbisTimeline4(props: ChildProps) {
     { scope: wrapper, dependencies: [pathname, props.offsetTopAdded] },
   );
 
-  useEffect(() => {
-    console.log(props.data);
-  }, [props.data]);
-
   return (
     <section
       ref={wrapper}
@@ -205,6 +202,8 @@ export default function RabbisTimeline4(props: ChildProps) {
             cardClass={"bg-[#C3A13F] rotate-[7.3deg]"}
             data={props?.data?.card_content_1 || RabbisData[0]}
             dataIndex={1}
+            setSingleVideoPlaying={setSingleVideoPlaying}
+            singleVideoPlaying={singleVideoPlaying}
           />
           <TimelineCardItem
             extraClass={"z-20 -mr-[4vw]"}
@@ -212,6 +211,8 @@ export default function RabbisTimeline4(props: ChildProps) {
             cardClass={"bg-[#D4AF37] -rotate-[6.53deg]"}
             data={props?.data?.card_content_2 || RabbisData[1]}
             dataIndex={2}
+            setSingleVideoPlaying={setSingleVideoPlaying}
+            singleVideoPlaying={singleVideoPlaying}
           />
           <TimelineCardItem
             extraClass={"z-30 -mr-[3.5vw]"}
@@ -219,6 +220,8 @@ export default function RabbisTimeline4(props: ChildProps) {
             cardClass={"bg-[#D1A941] rotate-[4.61deg]"}
             data={props?.data?.card_content_3 || RabbisData[2]}
             dataIndex={3}
+            setSingleVideoPlaying={setSingleVideoPlaying}
+            singleVideoPlaying={singleVideoPlaying}
           />
           <TimelineCardItem
             extraClass={"z-10 -mr-[2.5vw]"}
@@ -226,6 +229,8 @@ export default function RabbisTimeline4(props: ChildProps) {
             cardClass={"bg-[#C3A13F] rotate-[7.3deg]"}
             data={props?.data?.card_content_4 || RabbisData[3]}
             dataIndex={4}
+            setSingleVideoPlaying={setSingleVideoPlaying}
+            singleVideoPlaying={singleVideoPlaying}
           />
           <TimelineCardItem
             extraClass={"z-20 -mr-[4vw]"}
@@ -233,6 +238,8 @@ export default function RabbisTimeline4(props: ChildProps) {
             cardClass={"bg-[#D4AF37] -rotate-[6.53deg]"}
             data={props?.data?.card_content_5 || RabbisData[4]}
             dataIndex={5}
+            setSingleVideoPlaying={setSingleVideoPlaying}
+            singleVideoPlaying={singleVideoPlaying}
           />
           <TimelineCardItem
             extraClass={"z-20 -mr-[3vw]"}
@@ -240,6 +247,8 @@ export default function RabbisTimeline4(props: ChildProps) {
             cardClass={"bg-[#D1A941] rotate-[4.61deg]"}
             data={props?.data?.card_content_6 || RabbisData[5]}
             dataIndex={6}
+            setSingleVideoPlaying={setSingleVideoPlaying}
+            singleVideoPlaying={singleVideoPlaying}
           />
           <TimelineCardItem
             extraClass={"z-20 -mr-[3vw]"}
@@ -247,15 +256,19 @@ export default function RabbisTimeline4(props: ChildProps) {
             cardClass={"bg-[#C3A13F] -rotate-[4.61deg]"}
             data={props?.data?.card_content_7 || RabbisData[6]}
             dataIndex={7}
+            setSingleVideoPlaying={setSingleVideoPlaying}
+            singleVideoPlaying={singleVideoPlaying}
           />
           {props?.data?.single_video && (
             <VideoItem
-              extraClass={"card-video lg:mr-[10vw]"}
+              extraClass={"card-video lg:mr-[10vw] w-full h-auto lg:w-[25.6vw]"}
               animWidthText={props.animWidthText}
               data={props?.data?.single_video}
               panel={props.panel}
               offsetTopTimeline={props.offsetTopTimeline}
               offsetTopAdded={props.offsetTopAdded}
+              setSingleVideoPlaying={setSingleVideoPlaying}
+              singleVideoPlaying={singleVideoPlaying}
             />
           )}
           <TimelineCardItem
@@ -264,6 +277,8 @@ export default function RabbisTimeline4(props: ChildProps) {
             cardClass={"bg-[#D4AF37] rotate-[2.79deg]"}
             data={props?.data?.card_content_8 || RabbisData[7]}
             dataIndex={8}
+            setSingleVideoPlaying={setSingleVideoPlaying}
+            singleVideoPlaying={singleVideoPlaying}
           />
         </div>
       </div>

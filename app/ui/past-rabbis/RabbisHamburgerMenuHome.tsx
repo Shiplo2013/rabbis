@@ -2,13 +2,12 @@ import CloseIcon from "@/app/assets/icons/CloseIcon";
 import { useAppState } from "@/app/components/AppContext";
 import { useGSAP } from "@gsap/react";
 import parse from "html-react-parser";
-import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import RabbisThumb from "../../assets/images/rabbis-thumb.jpg";
 import { gsap } from "../../ui/plugins";
 import TextSplitLines from "../TextSplitLines";
+import PastRabbisThumbnail from "./PastRabbisThumbnail";
 
 interface RabbisHamburgerMenuProps {
   extraClass?: string;
@@ -16,12 +15,13 @@ interface RabbisHamburgerMenuProps {
 }
 
 type PastRabbis = {
-  buttonText: string;
-  title: string;
-  subtitle: string;
-  thumbnail: any;
-  text: string;
-  buttonLink?: string;
+  id?: number;
+  title?: { rendered?: string };
+  slug?: string;
+  acf?: {
+    title?: string;
+    thumbnail?: { url?: string; src?: string; sizes?: { thumbnail?: string } };
+  };
 };
 
 function resolveNestedImageUrl(value: unknown): string | undefined {
@@ -68,8 +68,13 @@ export default function RabbisHamburgerMenuHome(
   const menuOverlay = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const pathname = usePathname();
-  const allPosts = props.data || ([] as PastRabbis[]);
-  const { activeRabbisMenu, setActiveRabbisMenu } = useAppState();
+  const router = useRouter();
+  const {
+    activeRabbisMenu,
+    setActiveRabbisMenu,
+    allRabbisPosts,
+    setIsLoading,
+  } = useAppState();
 
   // Menu State
   const [menuTimeline] = useState(
@@ -231,6 +236,21 @@ export default function RabbisHamburgerMenuHome(
       document.body.classList.add("!overflow-auto");
     }
   }, [activeRabbisMenu]);
+
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setActiveRabbisMenu(false);
+      menuTimeline.current?.timeScale(10).reverse();
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     <>
       <div
@@ -238,7 +258,7 @@ export default function RabbisHamburgerMenuHome(
         style={{
           clipPath: `inset(0% 0% 100% 100%)`,
         }}
-        className="rabbis-hamburger-menu fixed top-0 right-0 z-111 flex items-start justify-start bg-black w-80 sm:w-90 lg:w-1/3 h-screen pt-[10vh] pb-[5vh] sm:py-[9.6vh] pr-[8.9vw] pl-[4.5vw] opacity-0 invisible"
+        className="rabbis-hamburger-menu home fixed top-0 right-0 z-111 flex items-start justify-start bg-black w-80 sm:w-90 lg:w-1/3 h-screen pt-[10vh] pb-[5vh] sm:py-[9.6vh] pr-[8.9vw] pl-[4.5vw] opacity-0 invisible"
       >
         <div className="menu-wrapper overflow-hidden">
           <button
@@ -259,43 +279,29 @@ export default function RabbisHamburgerMenuHome(
             </h3>
           </div>
           <div className="rabbis-burger-menu flex flex-col gap-y-[4.7vh] h-[80vh] sm:h-[75vh] lg:h-[65vh] overflow-y-auto pr-2">
-            {allPosts.map((item: PastRabbis, index: number) => {
-              const thumbnailSrc = resolveImageSrc(
-                item?.thumbnail,
-                RabbisThumb.src,
-              );
-
-              return (
-                <Link
-                  href={item.buttonLink || "#"}
-                  key={index}
-                  className="burger-menu-item group flex gap-x-2.5"
-                >
-                  <div className="image w-20 h-20 lg:w-29.5 lg:h-29.5 overflow-hidden border-dashed border-transparent group-hover:border-[#D1A941]">
-                    <div className="image-inner w-full h-full group-hover:scale-110 transition-all duration-300 grayscale group-hover:grayscale-0">
-                      {thumbnailSrc ? (
-                        <Image
-                          className="w-full h-full object-cover object-center"
-                          src={thumbnailSrc}
-                          width={122}
-                          height={125}
-                          loading="lazy"
-                          alt={item?.title || "Rabbi image"}
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-[#1a1a1a]" />
-                      )}
-                    </div>
-                  </div>
-                  <div
-                    dir="ltr"
-                    className="title text-[18px] lg:text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
+            {allRabbisPosts &&
+              allRabbisPosts.map((item: PastRabbis, index: number) => {
+                return (
+                  <Link
+                    href={item.slug ? `/past-rabbis/${item.slug}` : "#"}
+                    key={index}
+                    onClick={handleLinkClick}
+                    className="burger-menu-item group flex gap-x-2.5"
                   >
-                    <p className="text">{parse(item?.title || "")}</p>
-                  </div>
-                </Link>
-              );
-            })}
+                    <div className="image w-20 h-20 lg:w-29.5 lg:h-29.5 overflow-hidden border-dashed border-transparent group-hover:border-[#D1A941]">
+                      <PastRabbisThumbnail item={item} />
+                    </div>
+                    <div
+                      dir="ltr"
+                      className="title text-[18px] lg:text-[20px] text-[#D1A941] leading-[90%] max-w-40 text-right"
+                    >
+                      <p className="text">
+                        {parse(item?.title?.rendered || item?.acf?.title || "")}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
           </div>
         </div>
       </div>

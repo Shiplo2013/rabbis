@@ -27,8 +27,8 @@ export async function sendSubscribeData(
       result.invalid_fields.forEach((field: any) => {
         result.invalid_fields_object[field.field] = field.message;
       });
-      result.payload = subscribeFormData;
     }
+    result.payload = subscribeFormData;
 
     //console.log("Form data sent successfully:", result);
     return result;

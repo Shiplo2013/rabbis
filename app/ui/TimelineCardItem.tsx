@@ -1,6 +1,6 @@
 import parse from "html-react-parser";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import MinusIcon2 from "../assets/icons/MinusIcon2";
 import PlusIcon from "../assets/icons/PlusIcon";
 import { gsap, useGSAP } from "../ui/plugins";
@@ -13,6 +13,8 @@ interface ChildProps {
   cardClass: string;
   data: any;
   dataIndex: number;
+  setSingleVideoPlaying: (value: boolean) => void;
+  singleVideoPlaying: boolean;
 }
 
 export default function TimelineCardItem(props: ChildProps) {
@@ -30,6 +32,7 @@ export default function TimelineCardItem(props: ChildProps) {
     const button = item?.querySelector(".expand-button");
     const plusButton = item?.querySelector(".expand-button .plus-button");
     const minusButton = item?.querySelector(".expand-button .minus-button");
+    !isOpen && setIsOpen(true);
     if (window.innerWidth > 1024) {
       if (button) {
         button.classList.remove("opacity-0");
@@ -208,7 +211,6 @@ export default function TimelineCardItem(props: ChildProps) {
         }
       }
     } else {
-      isOpen || setIsOpen(true);
       if (plusButton) {
         gsap.to(plusButton, {
           yPercent: -100,
@@ -233,6 +235,7 @@ export default function TimelineCardItem(props: ChildProps) {
     const button = item?.querySelector(".expand-button");
     const plusButton = item?.querySelector(".expand-button .plus-button");
     const minusButton = item?.querySelector(".expand-button .minus-button");
+    isOpen && setIsOpen(false);
     if (window.innerWidth > 1024) {
       const tl = gsap.timeline({
         onComplete: () => {
@@ -385,7 +388,6 @@ export default function TimelineCardItem(props: ChildProps) {
         }
       }
     } else {
-      isOpen && setIsOpen(false);
       if (plusButton) {
         gsap.to(plusButton, {
           yPercent: 0,
@@ -406,6 +408,7 @@ export default function TimelineCardItem(props: ChildProps) {
   // Card Animation
   const handlePlusButtonClick = contextSafe(() => {
     const getActiveCard = document.querySelectorAll(".timeline-card.active");
+    props.setSingleVideoPlaying(false);
     // If Any Card is Active
     if (getActiveCard.length === 0) {
       ActiveCardAnimation(wrapper.current);
@@ -446,10 +449,6 @@ export default function TimelineCardItem(props: ChildProps) {
     },
     { scope: wrapper },
   );
-
-  useEffect(() => {
-    console.log(props.data);
-  }, [props.data]);
 
   return (
     <div
@@ -521,7 +520,7 @@ export default function TimelineCardItem(props: ChildProps) {
                     key={index}
                     className={`video w-full h-auto ${index === 0 ? "lg:w-[28.8vw] lg:h-[38.1vh]" : "lg:w-[12vw] lg:h-[39vh]"} relative group`}
                   >
-                    <HistoryVideoPlayer data={item} />
+                    <HistoryVideoPlayer data={item} isOpen={isOpen} />
                   </div>
                 );
               }

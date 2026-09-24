@@ -1,5 +1,6 @@
 import { sendFormData } from "@/app/server/actions";
 import SubmitButton from "@/app/ui/SubmitButton";
+import Link from "next/link";
 import { useActionState } from "react";
 
 export default function ContactForm() {
@@ -19,7 +20,11 @@ export default function ContactForm() {
               id="form-name"
               name="form-name"
               type="text"
-              defaultValue={state?.payload?.get("form-name") || ""}
+              defaultValue={
+                (state.status !== "mail_sent" &&
+                  state?.payload?.get("form-name")) ||
+                ""
+              }
             />
           </div>
           {state?.invalid_fields_object?.["form-name"] && (
@@ -37,7 +42,11 @@ export default function ContactForm() {
               id="form-family"
               name="form-family"
               type="text"
-              defaultValue={state?.payload?.get("form-family") || ""}
+              defaultValue={
+                (state.status !== "mail_sent" &&
+                  state?.payload?.get("form-family")) ||
+                ""
+              }
             />
           </div>
           {state?.invalid_fields_object?.["form-family"] && (
@@ -57,7 +66,11 @@ export default function ContactForm() {
               id="form-phone"
               name="form-phone"
               type="tel"
-              defaultValue={state?.payload?.get("form-phone") || ""}
+              defaultValue={
+                (state.status !== "mail_sent" &&
+                  state?.payload?.get("form-phone")) ||
+                ""
+              }
             />
           </div>
           {state?.invalid_fields_object?.["form-phone"] && (
@@ -75,7 +88,11 @@ export default function ContactForm() {
               id="form-email"
               name="form-email"
               type="email"
-              defaultValue={state?.payload?.get("form-email") || ""}
+              defaultValue={
+                (state.status !== "mail_sent" &&
+                  state?.payload?.get("form-email")) ||
+                ""
+              }
             />
           </div>
           {state?.invalid_fields_object?.["form-email"] && (
@@ -95,7 +112,11 @@ export default function ContactForm() {
             name="form-message"
             cols={10}
             rows={3}
-            defaultValue={state?.payload?.get("form-message") || ""}
+            defaultValue={
+              (state.status !== "mail_sent" &&
+                state?.payload?.get("form-message")) ||
+              ""
+            }
           ></textarea>
         </div>
         {state?.invalid_fields_object?.["form-message"] && (
@@ -104,7 +125,26 @@ export default function ContactForm() {
           </p>
         )}
       </div>
-      <div className="contact-row flex justify-end">
+      <div className="contact-row flex justify-between">
+        <div className="text xl:text-[16px] sm:text-[14px] leading-[1em] mb-3 text-center flex gap-x-2 items-center">
+          <input
+            type="checkbox"
+            id="privacy"
+            name="privacy-consent"
+            className="w-4 h-4"
+          />
+          <label htmlFor="privacy">
+            קראתי ואני מסכים/ה ל
+            <Link
+              href="/privacy-policy"
+              target="_blank"
+              rel="noopener"
+              className="underline"
+            >
+              מדיניות הפרטיות
+            </Link>
+          </label>
+        </div>
         <SubmitButton
           disabled={isPending}
           svgIconClass={""}
@@ -120,7 +160,7 @@ export default function ContactForm() {
         <div className="contact-row">
           <p
             dir="rtl"
-            className={`${state?.status === "mail_sent" ? "text-green-500 border-green-500" : "text-red-500 border-red-500"} text-base px-4 py-2.5 border text-center leading-[1.2em] rounded-md`}
+            className={`${state?.status === "mail_sent" ? "text-green-500" : "text-red-500"} text-[14px] text-center leading-[1.2em] rounded-md`}
           >
             {state.message}
           </p>

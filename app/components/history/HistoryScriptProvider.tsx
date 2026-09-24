@@ -1,5 +1,5 @@
 "use client";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import {
   default as arrowSectionBG,
@@ -64,7 +64,6 @@ export default function HistoryScriptProvider({
 }: {
   data: { pageData: any; rabbisData: any[] };
 }) {
-  const searchParams = useSearchParams();
   const CHRONICLES_CACHE_KEY = "chronicles-page-cache-v1";
   const CHRONICLES_CACHE_TTL_MS = 60 * 1000;
 
@@ -80,8 +79,6 @@ export default function HistoryScriptProvider({
   const [rabbisPostsData5, setRabbisPostsData5] = useState<any | []>([]);
   // Rabbis Menu State
   const {
-    activeRabbisMenu,
-    setActiveRabbisMenu,
     isVideoPopupOpen,
     setIsVideoPopupOpen,
     animationPlayed,
@@ -1123,8 +1120,6 @@ export default function HistoryScriptProvider({
                     "lg:min-w-screen w-screen lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline1Ref}
-                  activeMenu={activeRabbisMenu}
-                  activeMenuFunction={setActiveRabbisMenu}
                   data={
                     chroniclesPageData?.acf?.timeline_1?.past_rabbis_section ||
                     []
@@ -1301,8 +1296,6 @@ export default function HistoryScriptProvider({
                     "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline2Ref}
-                  activeMenu={activeRabbisMenu}
-                  activeMenuFunction={setActiveRabbisMenu}
                   data={
                     chroniclesPageData?.acf?.timeline_2?.past_rabbis_section ||
                     []
@@ -1441,8 +1434,6 @@ export default function HistoryScriptProvider({
                     "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline3Ref}
-                  activeMenu={activeRabbisMenu}
-                  activeMenuFunction={setActiveRabbisMenu}
                   data={
                     chroniclesPageData?.acf?.timeline_3?.past_rabbis_section ||
                     []
@@ -1611,8 +1602,6 @@ export default function HistoryScriptProvider({
                     "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline4Ref}
-                  activeMenu={activeRabbisMenu}
-                  activeMenuFunction={setActiveRabbisMenu}
                   data={
                     chroniclesPageData?.acf?.timeline_4?.past_rabbis_section ||
                     []
@@ -1803,8 +1792,6 @@ export default function HistoryScriptProvider({
                     "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
                   }
                   panel={timeline5Ref}
-                  activeMenu={activeRabbisMenu}
-                  activeMenuFunction={setActiveRabbisMenu}
                   data={
                     chroniclesPageData?.acf?.timeline_5?.past_rabbis_section ||
                     []

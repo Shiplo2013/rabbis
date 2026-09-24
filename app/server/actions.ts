@@ -30,8 +30,8 @@ export async function sendFormData(prevState: unknown, formData: FormData) {
       result.invalid_fields.forEach((field: any) => {
         result.invalid_fields_object[field.field] = field.message;
       });
-      result.payload = formData;
     }
+    result.payload = formData;
 
     //console.log("Form data sent successfully:", result);
     return result;
@@ -86,8 +86,8 @@ export async function sendSubscribeData(
       result.invalid_fields.forEach((field: any) => {
         result.invalid_fields_object[field.field] = field.message;
       });
-      result.payload = formData;
     }
+    result.payload = formData;
 
     //console.log("Form data sent successfully:", result);
     return result;

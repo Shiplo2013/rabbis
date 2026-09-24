@@ -7,6 +7,7 @@ import { AppProvider } from "./components/AppContext";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import PageFixedElements from "./components/PageFixedElements";
+import SubscriberFormWidget from "./components/SubscriberFormWidget";
 import "./globals.css";
 import { parseJsonResponse } from "./lib/parseJsonResponse";
 import SmoothWrapper from "./ui/SmoothWrapper";
@@ -292,6 +293,7 @@ export default async function RootLayout({
             </div>
             <PageFixedElements />
             <AccessibilityWidget />
+            <SubscriberFormWidget />
           </div>
         </AppProvider>
       </body>
