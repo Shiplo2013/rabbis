@@ -1,8 +1,13 @@
 "use client";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
+import ThemeButton from "@/app/ui/ThemeButton";
+import parse from "html-react-parser";
+import Image from "next/image";
+import Link from "next/link";
 import Introduction from "../../components/past-rabbis/Introduction";
 import GetRightPosition from "../../ui/GetRightPosition";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
@@ -18,6 +23,8 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
   const [rabbisPosts, setRabbisPosts] = useState<null | any>(data?.posts);
+  const [containerWidth, setContainerWidth] = useState<number>(200);
+  const [sectionWidth, setSectionWidth] = useState<number>(100);
   const [error, setError] = useState<string | null>(null);
   const {
     isLoading,
@@ -29,6 +36,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   const [pageDataFetched, setPageDataFetched] = useState(false);
   // Router Path
   const pathname = usePathname();
+  const router = useRouter();
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -40,6 +48,14 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   const main = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
+  // Combined Scrolling
+  const [postPerPage, setPostPerPage] = useState(100);
+  const [postsPerLoad, setPostsPerLoad] = useState(5);
+  const [postLoadCount, setPostLoadCount] = useState(1);
+  const [postLoadLimit, setPostLoadLimit] = useState(0);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [verticalPosts, setVerticalPosts] = useState<any | null>(null);
+  const [normalPosts, setNormalPosts] = useState<any[]>([]);
 
   // Get Page Data From backend
   useEffect(() => {
@@ -51,6 +67,17 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
     setRabbisPosts(data?.posts);
   }, [data]);
 
+  // Set post data
+  useEffect(() => {
+    if (!rabbisPosts) return;
+    setPostLoadLimit(
+      Math.ceil(Number(rabbisPosts?.length || 0) / postsPerLoad),
+    );
+    setVerticalPosts(rabbisPosts?.slice(0, 1) || []);
+    setNormalPosts(rabbisPosts?.slice(1, rabbisPosts?.length) || []);
+    setIsLoadingMore(false);
+  }, [rabbisPosts]);
+
   // Page Data Loaded
   useEffect(() => {
     if (!rabbisPageData) {
@@ -61,6 +88,80 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
       setIsLoading(false);
     }
   }, [rabbisPageData, animationPlayed]);
+
+  // Page Section Animation
+  useGSAP(() => {
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      main.current &&
+      window.innerWidth > 1024
+    ) {
+      // Overflow body
+      const progress = document.getElementById(
+        "progress",
+      ) as HTMLElement | null;
+      const waveLine = document.getElementById(
+        "wave-line",
+      ) as HTMLElement | null;
+      const arrowButton = document.getElementById(
+        "arrow-button",
+      ) as HTMLElement | null;
+      waveLine?.classList.remove("hidden");
+      const scurbScale = 2;
+
+      // Vertical Section
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: panel.current,
+          start: "top top",
+          end: "+=" + window.innerWidth * (containerWidth / 100),
+          scrub: scurbScale,
+          pin: true,
+          onUpdate: (self) => {
+            if (progress) {
+              gsap.to(progress, { width: `${100 * self.progress}%` });
+            }
+            if (self.progress > 0.97) {
+              if (waveLine) {
+                gsap.to(waveLine, {
+                  opacity: 0,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
+            } else {
+              if (waveLine) {
+                gsap.to(waveLine, {
+                  opacity: 1,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
+            }
+          },
+        },
+      });
+      timeline.to(wrapper.current, {
+        x: () =>
+          wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: panel.current,
+          start: panel.current?.offsetTop,
+          end: "+=" + (window.innerWidth * (containerWidth / 100) - 500),
+          scrub: scurbScale,
+        },
+      });
+      setVerticalSection(timeline);
+    }
+    // Return
+    return () => {
+      if (verticalSection) {
+        verticalSection.kill();
+      }
+    };
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {
@@ -245,10 +346,10 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
       // Sidebar Animation
       const handleScroll = () => {
         const scrollTop = window.scrollY;
-        const windowHeight = window.innerHeight;
+        const windowWidth = window.innerWidth * 1.8;
         const pageHeight = main?.current?.offsetHeight;
 
-        if (scrollTop > windowHeight) {
+        if (scrollTop > windowWidth) {
           gsap.to(sidebar, {
             x: 0,
             duration: 0.5,
@@ -418,20 +519,30 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   // Rabbis Search Result
   useEffect(() => {
     if (pastRabbisSearchQuery !== null && pastRabbisSearchQuery !== "") {
-      console.log(pastRabbisSearchQuery);
-      console.log(rabbisPageData?.posts);
       const filteredContent = rabbisPageData?.posts.filter(
         (post: { title: { rendered: string } }) => {
           return post.title.rendered.includes(pastRabbisSearchQuery);
         },
       );
       setRabbisPosts(filteredContent);
-      window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+      window.scrollTo({ top: window.innerWidth * 1.8, behavior: "smooth" });
     } else {
       setRabbisPosts(rabbisPageData?.posts);
-      window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+      window.scrollTo({ top: window.innerWidth * 1.8, behavior: "smooth" });
     }
   }, [pastRabbisSearchQuery]);
+
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
 
   if (error) {
     return (
@@ -468,12 +579,17 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
         <div
           ref={panel}
           id="panel-wrapper"
-          className="w-screen flex items-end justify-end"
+          className="w-screen lg:h-screen flex items-end justify-end"
         >
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-col w-full items-center will-change-transform`}
+            style={
+              {
+                "--container-width": `${containerWidth}vw`,
+              } as React.CSSProperties
+            }
+            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center will-change-transform flex-col`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -486,7 +602,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
                   : []
               }
               extraClass={
-                "first-intro panel-section will-change-transform min-w-screen lg:w-screen"
+                "first-intro panel-section will-change-transform min-w-screen w-screen"
               }
               panel={panel}
               bgPosition=""
@@ -497,10 +613,95 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
               }}
             />
             <CustomsContentSection2
-              extraClass={`w-screen panel-section will-change-transform pt-[5vh] pb-[8vh] lg:pt-[5vw] lg:pb-[10vh] px-[8vw] lg:px-[6.25vw]`}
+              style={
+                {
+                  "--section-width": `${sectionWidth}vw`,
+                } as React.CSSProperties
+              }
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform pt-[5vh] pb-[8vh] lg:pt-[5vw] lg:pb-[10vh] px-[8vw] lg:px-[6.25vw]`}
               animWidthText={1}
-              data={rabbisPosts || data?.posts || []}
+              data={verticalPosts || []}
             />
+          </div>
+        </div>
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-black px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+          <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[15vh] relative lg:pr-70">
+            <div
+              className={`normal-posts w-full flex flex-row flex-wrap gap-x-10 gap-y-10 lg:gap-y-[12vh] justify-end`}
+            >
+              {normalPosts?.map((item: any, index: number) => {
+                return (
+                  <div
+                    key={index}
+                    data-id={item.id}
+                    className={`rabbis-item w-full h-full flex items-end justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] will-change-transform flex-col lg:flex-row-reverse`}
+                  >
+                    <div className="rabbis-image w-full lg:w-[27.1vw] relative">
+                      <div className="image w-full h-auto lg:h-[57.2vh] relative">
+                        <Link
+                          href={item?.slug ? `/past-rabbis/${item.slug}` : "#"}
+                          onClick={handleLinkClick}
+                        >
+                          <Image
+                            className="w-full h-full object-cover object-center"
+                            src={
+                              item?.acf?.thumbnail?.sizes?.medium_large ||
+                              item?.acf?.thumbnail?.url ||
+                              item?.acf?.thumbnail?.src
+                            }
+                            width={522}
+                            height={532}
+                            alt={
+                              item?.acf?.thumbnail?.alt ||
+                              item?.title?.rendered ||
+                              "Past Rabbi"
+                            }
+                            blurDataURL={CreateShimmerDataUrl(522, 532)}
+                            placeholder="blur"
+                            loading="lazy"
+                          />
+                        </Link>
+                      </div>
+                      <div className="read-more absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 z-30">
+                        <ThemeButton
+                          extraClass="rounded-none py-4 sm:py-5 px-5 lg:px-10 items-center leading-[80%] min-w-40 sm:min-w-60 justify-center"
+                          text="הרחב קריאה"
+                          textColor="text-black"
+                          hoverBgColor="bg-[#111111]"
+                          hoverTextColor="group-hover:text-white"
+                          bgColor="bg-[#C3A13F]"
+                          fontSize="text-[18px] sm:text-[22px] lg:text-[30px]"
+                          svgIconClass=""
+                          buttonLink={
+                            item?.slug ? `/past-rabbis/${item.slug}` : "#"
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div
+                      dir="rtl"
+                      className="rabbis-content w-full lg:w-[28vw] text-[#D1A941]"
+                    >
+                      <h2 className="text-[30px] sm:text-[40px] lg:text-[55px] leading-[0.85em] overflow-hidden relative">
+                        <Link
+                          href={item?.slug ? `/past-rabbis/${item.slug}` : "#"}
+                          onClick={handleLinkClick}
+                        >
+                          {parse(
+                            item.title?.rendered
+                              ? item.title.rendered
+                              : item.title,
+                          )}
+                        </Link>
+                      </h2>
+                      <div className="content text-[20px] sm:text-[25px] lg:text-[33px] leading-[1em] mt-5 relative">
+                        {parse(item?.acf?.time)}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </main>
