@@ -18,7 +18,7 @@ export async function wpFetch(url: string, options?: RequestInit) {
       tags: mergedTags,
     } as RequestInit["next"],
     headers: {
-      "User-Agent": "RabbisApp/1.0 (+https://chevronyeshiva.org)",
+      "User-Agent": "RabbisApp/1.0 (+https://www.chevronyeshiva.org)",
       ...nextOptions.headers,
     },
   });
