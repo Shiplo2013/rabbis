@@ -24,6 +24,7 @@ export default function NewsSingleVideo({ data }: NewsSingleVideoProps) {
         src={data.url || data.src}
         poster={data.poster}
         preload="metadata"
+        controlsList="nodownload"
       />
       <button
         onClick={() => {

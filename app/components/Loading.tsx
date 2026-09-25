@@ -69,9 +69,9 @@ function Loading(props: { animated: (value: boolean) => void }) {
         />
         <div className="video-animated-text absolute top-[50%] left-[50%] text-center text-[#D1A941] text-2xl md:text-3xl lg:text-4xl translate-x-[-50%] mt-[-10vh]">
           <p className="flex items-center justify-center gap-4">
-            <span>ירושלים</span>
-            <span className="w-12.5 h-0.5 bg-[#D4AF37] block"></span>
             <span>סלבודקא</span>
+            <span className="w-12.5 h-0.5 bg-[#D4AF37] block"></span>
+            <span>ירושלים</span>
           </p>
           <p>148 שנות מורשת</p>
         </div>

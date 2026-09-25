@@ -43,6 +43,7 @@ export default function VideoBackground() {
         playsInline
         preload="auto"
         className="w-full h-full object-cover"
+        controlsList="nodownload"
       >
         <source src="/river-bg.mp4" type="video/mp4" />
       </video>

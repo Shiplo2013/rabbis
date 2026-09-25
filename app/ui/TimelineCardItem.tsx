@@ -489,7 +489,7 @@ export default function TimelineCardItem(props: ChildProps) {
         <div className="images-wrapper flex gap-x-[2.7vw]">
           {props.data?.content &&
             props.data?.content?.map((item: any, index: number) => {
-              if (item.type === "image") {
+              if (item.type === "image" && item.image) {
                 return (
                   <div
                     key={index}
@@ -520,7 +520,9 @@ export default function TimelineCardItem(props: ChildProps) {
                     key={index}
                     className={`video w-full h-auto ${index === 0 ? "lg:w-[28.8vw] lg:h-[38.1vh]" : "lg:w-[12vw] lg:h-[39vh]"} relative group`}
                   >
-                    <HistoryVideoPlayer data={item} isOpen={isOpen} />
+                    {item.video.url && (
+                      <HistoryVideoPlayer data={item} isOpen={isOpen} />
+                    )}
                   </div>
                 );
               }

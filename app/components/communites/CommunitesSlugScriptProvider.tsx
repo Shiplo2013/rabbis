@@ -482,6 +482,7 @@ export default function CommunitiesSlugScriptProvider({
                                 <video
                                   controls
                                   className="w-full h-full object-contain object-center"
+                                  controlsList="nodownload"
                                 >
                                   <source
                                     src={item.video?.url || item.video?.src}
@@ -630,6 +631,7 @@ export default function CommunitiesSlugScriptProvider({
                                     <video
                                       controls
                                       className="w-full h-full object-contain object-center"
+                                      controlsList="nodownload"
                                     >
                                       <source
                                         src={

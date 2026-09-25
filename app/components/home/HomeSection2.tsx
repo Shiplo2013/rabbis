@@ -4,7 +4,7 @@ import parse from "html-react-parser";
 import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
 
 if (typeof window !== "undefined") {
@@ -130,11 +130,6 @@ export default function HomeSection2(props: ChildProps) {
         },
       });
     }
-  }, [pathname]);
-
-  useEffect(() => {
-    // Any additional effect logic can go here
-    //console.log(props.sectionData);
   }, [pathname]);
 
   const getRabbisURL = (urlString: string) => {
