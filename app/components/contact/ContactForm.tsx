@@ -125,13 +125,13 @@ export default function ContactForm() {
           </p>
         )}
       </div>
-      <div className="contact-row flex justify-between">
-        <div className="text xl:text-[16px] sm:text-[14px] leading-[1em] mb-3 text-center flex gap-x-2 items-center">
+      <div className="contact-row flex justify-between flex-col lg:flex-row gap-y-5">
+        <div className="text lg:text-[18px] text-[14px] leading-[1em]text-center flex gap-x-2 items-center">
           <input
             type="checkbox"
             id="privacy"
             name="privacy-consent"
-            className="w-4 h-4"
+            className="w-3 h-3 lg:w-4 lg:h-4"
           />
           <label htmlFor="privacy">
             קראתי ואני מסכים/ה ל
@@ -148,7 +148,7 @@ export default function ContactForm() {
         <SubmitButton
           disabled={isPending}
           svgIconClass={""}
-          extraClass="bg-[#D4AF37] pt-2 pb-1.25 px-5 rounded-none cursor-pointer"
+          extraClass="bg-[#D4AF37] pt-3 pb-2 lg:pt-2 lg:pb-1.25 px-5 rounded-none cursor-pointer justify-center"
           fontSize="text-[22px]"
           text={isPending ? `מהגשה...` : `שלח טופס`}
           textColor="text-black"

@@ -131,7 +131,7 @@ function Loading(props: { animated: (value: boolean) => void }) {
           style={{
             maskImage: Shape,
           }}
-          className={`loading-mask absolute top-0 left-0 w-full h-full z-40 bg-[#191919] mask-center mask-no-repeat`}
+          className={`loading-mask absolute top-0 left-0 w-full h-full z-40 bg-[#191919] mask-center mask-no-repeat mask-size-[80%] lg:mask-auto`}
         >
           <div
             className={`loading-bar-front loading-animation-bar absolute top-0 left-0 w-[1.5%] h-screen bg-(--theme-color)`}

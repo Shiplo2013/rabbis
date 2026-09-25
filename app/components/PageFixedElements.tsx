@@ -338,15 +338,19 @@ export default function PageFixedElements() {
 
   // Stop Right click for user
   useEffect(() => {
-    const handleContextMenu = (e: any) => {
-      e.preventDefault(); // Prevents the right-click menu from opening
-    };
-    document.addEventListener("contextmenu", handleContextMenu);
-    // Clean up the event listener when the component unmounts
-    return () => {
-      document.removeEventListener("contextmenu", handleContextMenu);
-    };
-  }, []);
+    const domain = window.location.hostname;
+
+    if (domain === "chevronyeshiva.org") {
+      const handleContextMenu = (e: any) => {
+        e.preventDefault(); // Prevents the right-click menu from opening
+      };
+      document.addEventListener("contextmenu", handleContextMenu);
+      // Clean up the event listener when the component unmounts
+      return () => {
+        document.removeEventListener("contextmenu", handleContextMenu);
+      };
+    }
+  }, [pathname]);
 
   return (
     <>
@@ -817,52 +821,49 @@ export default function PageFixedElements() {
           )}
         </>
       )}
-      {pathname === "/past-rabbis" ||
-        (pathname === "/past-rabbis/v2" && (
-          <div
-            id="pastrabbis-sidebar"
-            className="pastrabbis-sidebar fixed top-0 right-15 w-70 h-full bg-[#000000] flex flex-col justify-center z-50 border-l border-[#D1CECE]"
-          >
-            <div className="sheet-sidebar p-6 w-full lg:w-70 lg:min-w-70 h-full will-change-transform relative z-20 flex items-center">
-              <div className="sheet-sidebar-wrapper">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.currentTarget);
-                    const searchValue = formData.get(
-                      "search-by-user",
-                    ) as string;
-                    setPastRabbisSearchQuery?.(searchValue || null);
+      {(pathname === "/past-rabbis" || pathname === "/past-rabbis/v2") && (
+        <div
+          id="pastrabbis-sidebar"
+          className="pastrabbis-sidebar fixed top-0 right-15 w-70 h-full bg-[#000000] flex flex-col justify-center z-50 border-l border-[#D1CECE]"
+        >
+          <div className="sheet-sidebar p-6 w-full lg:w-70 lg:min-w-70 h-full will-change-transform relative z-20 flex items-center">
+            <div className="sheet-sidebar-wrapper">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const searchValue = formData.get("search-by-user") as string;
+                  setPastRabbisSearchQuery?.(searchValue || null);
+                }}
+                className="search-group relative"
+              >
+                <input
+                  ref={nameRef}
+                  className="text-[16px] sm:text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full w-full pl-8"
+                  type="text"
+                  id="search-by-user"
+                  name="search-by-user"
+                  placeholder={`חיפוש לפי שם`}
+                />
+                <button className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2">
+                  <UserIcon />
+                </button>
+              </form>
+              <div className="reset-filter mt-5 flex items-center justify-start gap-x-3">
+                <button
+                  className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-all duration-300"
+                  onClick={() => {
+                    nameRef.current && (nameRef.current.value = "");
+                    setPastRabbisSearchQuery("");
                   }}
-                  className="search-group relative"
                 >
-                  <input
-                    ref={nameRef}
-                    className="text-[16px] sm:text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full w-full pl-8"
-                    type="text"
-                    id="search-by-user"
-                    name="search-by-user"
-                    placeholder={`חיפוש לפי שם`}
-                  />
-                  <button className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2">
-                    <UserIcon />
-                  </button>
-                </form>
-                <div className="reset-filter mt-5 flex items-center justify-start gap-x-3">
-                  <button
-                    className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-all duration-300"
-                    onClick={() => {
-                      nameRef.current && (nameRef.current.value = "");
-                      setPastRabbisSearchQuery("");
-                    }}
-                  >
-                    איפוס סינון
-                  </button>
-                </div>
+                  איפוס סינון
+                </button>
               </div>
             </div>
           </div>
-        ))}
+        </div>
+      )}
       {/* Past Rabbis Elements Start */}
 
       {/* News page component */}
