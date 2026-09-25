@@ -8,6 +8,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import CloseIcon2 from "../assets/icons/CloseIcon2";
 import { gsap, useGSAP } from "../ui/plugins";
 import SubmitButton from "../ui/SubmitButton";
+import { useAppState } from "./AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -18,6 +19,7 @@ export default function SubscriberFormWidget() {
   const formRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [activeFormPopup, setActiveFormPopup] = useState(false);
+  const { animationPlayed } = useAppState();
 
   useGSAP(() => {
     gsap.set(formRef.current, {
@@ -41,7 +43,7 @@ export default function SubscriberFormWidget() {
     // Check if the user has visited before
     const hasSeenPopup = localStorage.getItem("hasSeenNewsletter");
 
-    if (!hasSeenPopup) {
+    if (!hasSeenPopup && animationPlayed) {
       // Show popup after a small delay (e.g., 2 seconds)
       const timer = setTimeout(() => {
         setActiveFormPopup(true);
@@ -49,7 +51,7 @@ export default function SubscriberFormWidget() {
 
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [animationPlayed]);
 
   const handleClose = () => {
     setActiveFormPopup(false);
