@@ -338,18 +338,14 @@ export default function PageFixedElements() {
 
   // Stop Right click for user
   useEffect(() => {
-    const domain = window.location.hostname;
-
-    if (domain === "chevronyeshiva.org") {
-      const handleContextMenu = (e: any) => {
-        e.preventDefault(); // Prevents the right-click menu from opening
-      };
-      document.addEventListener("contextmenu", handleContextMenu);
-      // Clean up the event listener when the component unmounts
-      return () => {
-        document.removeEventListener("contextmenu", handleContextMenu);
-      };
-    }
+    const handleContextMenu = (e: any) => {
+      e.preventDefault(); // Prevents the right-click menu from opening
+    };
+    document.addEventListener("contextmenu", handleContextMenu);
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
   }, [pathname]);
 
   return (
@@ -393,7 +389,7 @@ export default function PageFixedElements() {
         <div
           id="wish-button"
           ref={wishButton}
-          className="wish-button fixed bottom-5 right-28 sm:right-45 z-50 opacity-0 invisible cursor-pointer"
+          className="wish-button fixed bottom-5 right-28 sm:right-45 z-50 opacity-0 invisible cursor-pointer hidden"
         >
           <ThemeButton2
             extraClass="w-13 h-13 flex item-center justify-center"

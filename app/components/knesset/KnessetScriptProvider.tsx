@@ -63,7 +63,7 @@ export default function KnessetScriptProvider({
   const [postsPerLoad, setPostsPerLoad] = useState(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
   const [postLoadLimit, setPostLoadLimit] = useState(
-    Math.ceil(Number(data?.postsData?.posts?.length || 0) / postsPerLoad),
+    Math.ceil(Number(knessetPostsData?.length || 0) / postsPerLoad),
   );
   const [isPostLoaded, setIsPostLoaded] = useState(false);
   const [noPostsFound, setNoPostsFound] = useState(false);
@@ -91,6 +91,9 @@ export default function KnessetScriptProvider({
     setKnessetPageData(data.pageData);
     setKnessetCategoryData(data.categoriesData);
     setKnessetPostsData(data.postsData?.posts || []);
+    setPostLoadLimit(
+      Math.ceil(Number(knessetPostsData?.length || 0) / postsPerLoad),
+    );
   }, [data]);
 
   // Set Posts Data when sheetPostsData changes
@@ -135,6 +138,9 @@ export default function KnessetScriptProvider({
             post.title?.rendered
               .toLowerCase()
               .includes(knessetSearchQuery.toLowerCase()) ||
+            post?.content?.rendered
+              .toLowerCase()
+              .includes(knessetSearchQuery.toLowerCase()) ||
             post?.excerpt?.rendered
               .toLowerCase()
               .includes(knessetSearchQuery.toLowerCase())
@@ -169,6 +175,9 @@ export default function KnessetScriptProvider({
           filteredPosts?.slice(3, postsPerLoad * postLoadCount) || [],
         );
       }
+      setPostLoadLimit(
+        Math.ceil(Number(knessetPostsData?.length || 0) / postsPerLoad),
+      );
     } else {
       setKnessetPostsData(data?.postsData?.posts || []);
       setVerticalPosts(knessetPostsData?.slice(0, 3) || []);

@@ -13,8 +13,12 @@ import { parseJsonResponse } from "./lib/parseJsonResponse";
 import SmoothWrapper from "./ui/SmoothWrapper";
 
 export const metadata: Metadata = {
-  title: "Rabbis",
+  metadataBase: new URL("https://chevronyeshiva.org"),
+  title: "Chevronyeshiva",
   description: "מאה חמישים שנות תורה, מוסר וגדלות האדם",
+  openGraph: {
+    images: "/opengraph-image.jpg",
+  },
 };
 
 const customFont = localFont({

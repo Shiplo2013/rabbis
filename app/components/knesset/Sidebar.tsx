@@ -1,7 +1,7 @@
 "use client";
 import CaretIcon from "@/app/assets/icons/CaretIcon";
 import SearchIcon from "@/app/assets/icons/SearchIcon";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface SidebarProps {
   activeCategory: string | null;
@@ -26,6 +26,7 @@ export default function Sidebar({
 }: SidebarProps) {
   // Menu State
   const [menuOpen, setMenuOpen] = useState(true);
+  const searchField = useRef<HTMLInputElement>(null);
 
   const catData = categories || [];
 
@@ -40,10 +41,11 @@ export default function Sidebar({
 
   return (
     <div className="sheet-sidebar-wrapper text-[#1A1A1A]">
-      <div className="search-group relative mb-[3.6vh]">
+      <div className="search-group relative">
         <input
           className="text-[24px] text-[#D1A941] placeholder:text-[#D1A941] leading-[1em] bg-white p-2.25 focus:outline-0 max-w-full w-full pl-8"
           type="text"
+          ref={searchField}
           id="search-sheet"
           name="Search-Sheet"
           placeholder="חיפוש חופשי"
@@ -62,6 +64,19 @@ export default function Sidebar({
           className="cursor-pointer absolute top-1.5 left-1.75"
         >
           <SearchIcon />
+        </button>
+      </div>
+      <div className="reset-filter mt-5 mb-[3.6vh] flex items-center justify-start gap-x-3">
+        <button
+          className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#000000] transition-all duration-300"
+          onClick={() => {
+            if (onSearchSubmit) {
+              onSearchSubmit("");
+              searchField.current && (searchField.current.value = "");
+            }
+          }}
+        >
+          איפוס סינון
         </button>
       </div>
       <div className="sidebar-menu">
