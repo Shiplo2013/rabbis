@@ -476,6 +476,14 @@
         }
       }
     }
+    #audio-player {
+      .tab-head {
+        .swiper-button-disabled {
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
+    }
   }
 }
 body {

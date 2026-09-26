@@ -1,5 +1,6 @@
 import ArrowLeft from "@/app/assets/icons/ArrowLeft";
 import ArrowLeft2 from "@/app/assets/icons/ArrowLeft2";
+import ArrowRight from "@/app/assets/icons/ArrowRight";
 import BackwardIcon from "@/app/assets/icons/BackwardIcon";
 import CloseIcon2 from "@/app/assets/icons/CloseIcon2";
 import ForwardIcon from "@/app/assets/icons/ForwardIcon";
@@ -620,6 +621,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                   modules={[FreeMode, Mousewheel, Navigation]}
                   navigation={{
                     nextEl: ".my-custom-next",
+                    prevEl: ".my-custom-prev",
                   }}
                   slidesPerView="auto"
                   spaceBetween={24}
@@ -646,6 +648,9 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                 </Swiper>
                 <button className="my-custom-next w-10 h-10 rounded-full p-3 bg-black opacity-40 hover:opacity-100 transition-opacity duration-300 absolute top-[50%] left-0 z-50 transform -translate-y-[50%] flex items-center justify-center cursor-pointer">
                   <ArrowLeft2 />
+                </button>
+                <button className="my-custom-prev w-10 h-10 rounded-full p-3 bg-black opacity-40 hover:opacity-100 transition-opacity duration-300 absolute top-[50%] left-full z-50 transform -translate-y-[50%] flex items-center justify-center cursor-pointer">
+                  <ArrowRight />
                 </button>
               </div>
 
