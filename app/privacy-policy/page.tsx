@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import PrivacyPolicyScriptProvider from "../components/privacy-policy/PrivacyPolicyScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -23,6 +24,10 @@ export default async function page() {
     "privacy-policy-page",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return <PrivacyPolicyScriptProvider data={pageData[0]} />;
 }

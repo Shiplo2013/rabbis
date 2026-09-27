@@ -160,7 +160,7 @@ export default function ContactForm() {
         <div className="contact-row">
           <p
             dir="rtl"
-            className={`${state?.status === "mail_sent" ? "text-green-500" : "text-red-500"} text-[14px] text-center leading-[1.2em] rounded-md`}
+            className={`${state?.status === "mail_sent" ? "text-black" : "text-red-500"} text-[14px] text-center leading-[1.2em] rounded-md`}
           >
             {state.message}
           </p>

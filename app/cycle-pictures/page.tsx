@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import CyclePicturesScriptProvider from "../components/cycle-pictures/CyclePicturesScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -80,6 +81,10 @@ export default async function page() {
       "Failed to load cycle-pictures categories:",
       categoryDataRes.status,
     );
+  }
+
+  if (!pageData[0]) {
+    return notFound();
   }
 
   return (

@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import KnessetScriptProvider from "../components/knesset/KnessetScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -72,6 +73,10 @@ export default async function Page() {
   );
   postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
   const totalPages = postsRes.headers.get("X-WP-TotalPages");
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return (
     <KnessetScriptProvider

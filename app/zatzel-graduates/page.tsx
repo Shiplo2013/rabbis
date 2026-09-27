@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import ZatzelScriptProvider from "../components/zatzel/ZatzelScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -79,6 +80,10 @@ export default async function Page() {
       };
     }),
   );
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return <ZatzelScriptProvider data={pageData[0]} postData={mappedSections} />;
 }

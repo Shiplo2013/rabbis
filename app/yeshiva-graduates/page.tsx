@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import YeshivaGraduatesScriptProvider from "../components/yeshiva-graduates/YeshivaGraduatesScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -22,6 +23,10 @@ export default async function Page() {
     "yeshiva-graduates-page",
   );
   pageData = Array.isArray(parsed) ? parsed : [parsed];
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return <YeshivaGraduatesScriptProvider data={pageData[0]} />;
 }

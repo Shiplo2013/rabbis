@@ -26,6 +26,7 @@ if (typeof window !== "undefined") {
 type HomePageApiResponse = {
   id: number;
   acf: any | HomePageAcf | null;
+  yoast_head_json: any;
 };
 
 type HomePageAcf = {

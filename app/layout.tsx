@@ -2,6 +2,7 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { notFound } from "next/navigation";
 import AccessibilityWidget from "./components/AccessibilityWidget";
 import { AppProvider } from "./components/AppContext";
 import Footer from "./components/Footer";
@@ -273,6 +274,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const globalData = await getGlobalData();
+
+  if (!globalData) {
+    return notFound();
+  }
   return (
     <html lang="en" dir="rtl" suppressHydrationWarning>
       <GoogleAnalytics gaId="G-VMX2XPHCVB" />

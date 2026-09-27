@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import VisitTempleScriptProvider from "../components/visit-temple/VisitTempleScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -22,6 +23,10 @@ export default async function Page() {
     "visit-temple-page",
   );
   pageData = Array.isArray(parsed) ? parsed : [parsed];
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return <VisitTempleScriptProvider data={pageData[0]} />;
 }

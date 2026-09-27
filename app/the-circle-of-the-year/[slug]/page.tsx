@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import MusicScriptProvider from "../../components/music/MusicScriptProvider";
 import { parseJsonResponse } from "../../lib/parseJsonResponse";
 
@@ -37,6 +38,10 @@ export default async function Page() {
     [],
     "circle-of-year-slug-posts",
   );
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return (
     <MusicScriptProvider

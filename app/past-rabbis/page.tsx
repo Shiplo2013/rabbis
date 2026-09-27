@@ -1,6 +1,7 @@
 import PastRabbisScriptProvider2 from "@/app/components/past-rabbis/PastRabbisScriptProvider2";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 
 export default async function page() {
   let pageDataRes: Response | null = null;
@@ -48,6 +49,10 @@ export default async function page() {
     postsData = Array.isArray(parsed) ? parsed : [];
   } else if (postsDataRes) {
     console.error("Failed to load past-rabbis posts:", postsDataRes.status);
+  }
+
+  if (!pageData[0]) {
+    return notFound();
   }
 
   return (

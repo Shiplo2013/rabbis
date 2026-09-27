@@ -1,6 +1,7 @@
 import VisitTempleScriptProviderID from "@/app/components/visit-temple/VisitTempleScriptProviderID";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const pageRes = await wpFetch(
@@ -19,5 +20,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     [{}],
     "visit-temple-id-page",
   );
+
+  if (!pageData[0]) {
+    return notFound();
+  }
+
   return <VisitTempleScriptProviderID data={pageData[0]} />;
 }
