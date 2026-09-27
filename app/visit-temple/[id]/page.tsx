@@ -19,5 +19,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     [{}],
     "visit-temple-id-page",
   );
+
   return <VisitTempleScriptProviderID data={pageData[0]} />;
 }

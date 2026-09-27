@@ -19,5 +19,6 @@ export default async function page() {
     [{ acf: {} }],
     "testimonials-page",
   );
+
   return <TestimonialsScriptProvider data={pageData[0]} />;
 }

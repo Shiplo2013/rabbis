@@ -4,7 +4,7 @@ import { parseJsonResponse } from "./lib/parseJsonResponse";
 
 export default async function page() {
   const pageRes = await wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=home&_fields=id,acf`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=home&_fields=id,acf,yoast_head_json`,
     {
       next: { revalidate: 60 }, // Cache data for 1 minute
     },

@@ -10,15 +10,16 @@ export default async function page() {
     },
   );
 
-  const pageData = [
+  let pageData = [
     { id: 0, title: { rendered: "" }, content: { rendered: "" }, acf: {} },
   ];
 
-  const parsed = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponse<any[]>(
     pageRes,
     pageData,
     "alumni-conference-page",
   );
+  pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
-  return <ConferenceScriptProvider data={parsed[0]} />;
+  return <ConferenceScriptProvider data={pageData[0]} />;
 }
