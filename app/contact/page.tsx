@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import ContactScriptProvider from "../components/contact/ContactScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -34,6 +35,10 @@ export default async function page() {
     "contact-page",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return <ContactScriptProvider data={pageData[0]} />;
 }

@@ -1,6 +1,7 @@
 import CommunitiesSheetsScriptProvider from "@/app/components/communites/CommunitiesSheetsScriptProvider";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 
 export default async function page() {
   const pageRes = await wpFetch(
@@ -68,6 +69,10 @@ export default async function page() {
     );
     return { ...topCat, children: childCategories };
   });
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return (
     <CommunitiesSheetsScriptProvider

@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import DonationScriptProvider from "../components/donation/DonationScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -21,6 +22,10 @@ export default async function page() {
     "donation-page",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return <DonationScriptProvider data={pageData[0]} />;
 }

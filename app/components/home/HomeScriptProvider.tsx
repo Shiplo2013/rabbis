@@ -26,6 +26,7 @@ if (typeof window !== "undefined") {
 type HomePageApiResponse = {
   id: number;
   acf: any | HomePageAcf | null;
+  yoast_head_json: any;
 };
 
 type HomePageAcf = {
@@ -356,7 +357,6 @@ export default function HomeScriptProvider({
     if (!data) {
       return;
     }
-    console.log(data);
     setHomePageData(data);
     if (data?.acf?.banner_section?.audio_music?.url) {
       setAudioFile(data.acf.banner_section.audio_music.url);

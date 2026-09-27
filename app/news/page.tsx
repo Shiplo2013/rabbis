@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import NewsScriptProvider from "../components/news/NewsScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -48,6 +49,10 @@ export default async function page() {
     "news-posts",
   );
   postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return <NewsScriptProvider data={pageData[0]} postsData={postsData} />;
 }

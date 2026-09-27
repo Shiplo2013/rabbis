@@ -1,6 +1,7 @@
 import KnessetScriptProviderSlug from "@/app/components/knesset/KnessetScriptProviderSlug";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -47,9 +48,9 @@ export default async function Page({ params }: PageProps) {
     "knesset-slug-all-posts",
   );
 
-  // if (!postsData || postsData.length === 0) {
-  //   notFound();
-  // }
+  if (!postsData || postsData.length === 0) {
+    notFound();
+  }
 
   return (
     <KnessetScriptProviderSlug

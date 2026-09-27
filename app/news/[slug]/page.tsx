@@ -1,6 +1,7 @@
 import SingleNewsScriptProvider from "@/app/components/news/SingleNewsScriptProvider";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -72,6 +73,10 @@ export default async function page({ params }: PageProps) {
         }
       : { title: "", link: "", image: undefined },
   };
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return (
     <SingleNewsScriptProvider

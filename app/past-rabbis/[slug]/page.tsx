@@ -1,6 +1,7 @@
 import PastRabbisScriptProviderSlug from "@/app/components/past-rabbis/PastRabbisScriptProviderSlug";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -56,6 +57,10 @@ export default async function Page({ params }: PageProps) {
       "Failed to load past-rabbis all posts:",
       allPostsDataRes.status,
     );
+  }
+
+  if (!postsData[0]) {
+    return notFound();
   }
 
   return (

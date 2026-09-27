@@ -1,6 +1,52 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import HomeScriptProvider from "./components/home/HomeScriptProvider";
 import { parseJsonResponse } from "./lib/parseJsonResponse";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const pageRes = await wpFetch(
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=home&_fields=yoast_head_json`,
+    {
+      next: { revalidate: 60 }, // Cache data for 1 minute
+    },
+  );
+  let pageData = [
+    {
+      yoast_head_json: {
+        title: "",
+        description: "",
+        og_description: "",
+        og_title: "",
+        robots: {
+          index: "",
+          follow: "",
+        },
+      },
+    },
+  ];
+  const parsedData = await parseJsonResponse<any[]>(
+    pageRes,
+    pageData,
+    "home-page",
+  );
+  pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
+
+  const yoast = pageData[0]?.yoast_head_json;
+
+  return {
+    title: yoast?.title || yoast?.og_title || "Home",
+    description: yoast?.description || yoast?.og_description,
+
+    alternates: {
+      canonical: "https://www.chevronyeshiva.org",
+    },
+    robots: {
+      index: yoast?.robots?.index === "index",
+      follow: yoast?.robots?.follow === "follow",
+    },
+  };
+}
 
 export default async function page() {
   const pageRes = await wpFetch(
@@ -54,6 +100,12 @@ export default async function page() {
           background_image: [],
         },
       },
+      yoast_head_json: {
+        title: "",
+        description: "",
+        og_description: "",
+        og_title: "",
+      },
     },
   ];
   const parsedData = await parseJsonResponse<any[]>(
@@ -104,6 +156,10 @@ export default async function page() {
     "home-communities-posts",
   );
   postsData = Array.isArray(parsedPostData) ? parsedPostData : [parsedPostData];
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return <HomeScriptProvider data={pageData[0]} postsData={postsData} />;
 }

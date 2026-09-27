@@ -1,6 +1,7 @@
 import CommunitiesSheetsScriptProviderV2 from "@/app/components/communites/CommunitiesSheetsScriptProviderV2";
 import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 
 export default async function page() {
   const pageRes = await wpFetch(
@@ -24,6 +25,10 @@ export default async function page() {
     "communities-sheets-page",
   );
   pageData = Array.isArray(parsedPageData) ? parsedPageData : [parsedPageData];
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return (
     <CommunitiesSheetsScriptProviderV2

@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import YeshivaRabbisScriptProvider from "../components/yeshiva-rabbis/YeshivaRabbisScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -76,6 +77,10 @@ export default async function Page() {
       };
     }),
   );
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return (
     <YeshivaRabbisScriptProvider

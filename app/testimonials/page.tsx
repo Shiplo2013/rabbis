@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import TestimonialsScriptProvider from "../components/testimonials/TestimonialsScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -19,6 +20,10 @@ export default async function page() {
     [{ acf: {} }],
     "testimonials-page",
   );
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return <TestimonialsScriptProvider data={pageData[0]} />;
 }

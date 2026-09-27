@@ -1,4 +1,5 @@
 import { wpFetch } from "@/app/lib/wpFetch";
+import { notFound } from "next/navigation";
 import CommunitiesScriptProvider from "../components/communites/CommunitesScriptProvider";
 import { parseJsonResponse } from "../lib/parseJsonResponse";
 
@@ -59,6 +60,10 @@ export default async function page() {
     (item): item is { categoryId: any; categoryTitle: any; posts: any[] } =>
       item !== null,
   );
+
+  if (!pageData[0]) {
+    return notFound();
+  }
 
   return (
     <CommunitiesScriptProvider
