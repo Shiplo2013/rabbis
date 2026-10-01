@@ -540,7 +540,7 @@ export default function CyclePicturesScriptProvider({
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
-    if (!isAllAnimationComplete || !main.current) {
+    if (!isAllAnimationComplete || !main.current || window.innerWidth < 1024) {
       return;
     }
 

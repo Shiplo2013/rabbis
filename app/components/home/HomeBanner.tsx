@@ -54,7 +54,7 @@ export default function HomeBanner(props: ChildProps) {
       className={`${props.extraClass} home-banner overflow-hidden relative`}
     >
       <div className="banner-background-wrapper absolute top-0 left-0 w-full h-full z-10">
-        {bannerData?.banner_video && window.innerWidth > 1024 ? (
+        {bannerData?.banner_video ? (
           <HomeBannerVideo
             bannerData={{
               banner_video: bannerData.banner_video,

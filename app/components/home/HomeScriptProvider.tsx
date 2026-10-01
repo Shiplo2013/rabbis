@@ -103,10 +103,10 @@ export default function HomeScriptProvider({
         audio_music: {
           id: 73,
           title: "Adrift Among Infinite Stars",
-          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/02/music.mp3",
+          url: "https://api.chevronyeshiva.org/wp-content/uploads/2026/02/music.mp3",
         },
         banner_background: {
-          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/home-banner.jpg",
+          url: "https://api.chevronyeshiva.org/wp-content/uploads/2026/05/home-banner.jpg",
         },
       },
       intro_section: {
@@ -141,7 +141,7 @@ export default function HomeScriptProvider({
             post_modified_gmt: "2026-05-24 20:07:10",
             post_content_filtered: "",
             post_parent: 0,
-            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=418",
+            guid: "https://api.chevronyeshiva.org/?post_type=communities&#038;p=418",
             menu_order: 0,
             post_type: "communities",
             post_mime_type: "",
@@ -167,7 +167,7 @@ export default function HomeScriptProvider({
             post_modified_gmt: "2026-05-24 18:47:37",
             post_content_filtered: "",
             post_parent: 0,
-            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=412",
+            guid: "https://api.chevronyeshiva.org/?post_type=communities&#038;p=412",
             menu_order: 0,
             post_type: "communities",
             post_mime_type: "",
@@ -194,7 +194,7 @@ export default function HomeScriptProvider({
             post_modified_gmt: "2026-05-24 18:09:32",
             post_content_filtered: "",
             post_parent: 0,
-            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=408",
+            guid: "https://api.chevronyeshiva.org/?post_type=communities&#038;p=408",
             menu_order: 0,
             post_type: "communities",
             post_mime_type: "",
@@ -221,7 +221,7 @@ export default function HomeScriptProvider({
             post_modified_gmt: "2026-05-24 17:58:02",
             post_content_filtered: "",
             post_parent: 0,
-            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=370",
+            guid: "https://api.chevronyeshiva.org/?post_type=communities&#038;p=370",
             menu_order: 0,
             post_type: "communities",
             post_mime_type: "",
@@ -247,7 +247,7 @@ export default function HomeScriptProvider({
             post_modified_gmt: "2026-05-24 19:45:02",
             post_content_filtered: "",
             post_parent: 0,
-            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=416",
+            guid: "https://api.chevronyeshiva.org/?post_type=communities&#038;p=416",
             menu_order: 0,
             post_type: "communities",
             post_mime_type: "",
@@ -274,7 +274,7 @@ export default function HomeScriptProvider({
             post_modified_gmt: "2026-05-24 19:17:38",
             post_content_filtered: "",
             post_parent: 0,
-            guid: "https://dovp7.sg-host.com/?post_type=communities&#038;p=414",
+            guid: "https://api.chevronyeshiva.org/?post_type=communities&#038;p=414",
             menu_order: 0,
             post_type: "communities",
             post_mime_type: "",
@@ -283,30 +283,30 @@ export default function HomeScriptProvider({
           },
         ],
         background_image: {
-          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/section-image.jpg",
+          url: "https://api.chevronyeshiva.org/wp-content/uploads/2026/05/section-image.jpg",
         },
       },
       home_section_2: {
         image: {
-          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/section-image2.jpg",
+          url: "https://api.chevronyeshiva.org/wp-content/uploads/2026/05/section-image2.jpg",
         },
         title: "סבא<br/> קדישא",
         foating_image: {
-          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/kaddisha.jpg",
+          url: "https://api.chevronyeshiva.org/wp-content/uploads/2026/05/kaddisha.jpg",
         },
         text: `<p>הסבא מסלבודקא מחולל ומייסד הישיבה שהצמיח ברוממותו דורות של תלמידים נעלים, עיצב נפשות ברוח גדלות האדם ומאז ועד היום ניכרת השפעתו בכל בית מדרש הנושא את רוחו ומורשתו</p>
 `,
       },
       home_section_3: {
         image: {
-          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/juniper.jpg",
+          url: "https://api.chevronyeshiva.org/wp-content/uploads/2026/05/juniper.jpg",
         },
         title: "עוז<br/>רוח",
         text_1: "<p>מרן רבי משה מרדכי אפשטיין זצוק&#8221;ל</p>",
         text_2:
           "<p>הנהיג את הישיבה במסירות נפש מופלאה בתקופות סוערות, והנחיל לתלמידיו מושגים נעלים של עיון התורה ועמלה.</p>",
         background_image: {
-          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/section-bg.jpg",
+          url: "https://api.chevronyeshiva.org/wp-content/uploads/2026/05/section-bg.jpg",
         },
       },
       home_section_4: {
@@ -314,7 +314,7 @@ export default function HomeScriptProvider({
 היא ממשיכה עד היום להבעיר את שלהבת התורה והמוסר בלב אלפי תלמידיה ובוגריה.<br />
 דרכה המיוחדת &#8211; המשלבת גדלות, עומק, בהירות ושאר רוח &#8211; מלווה את הצועדים בדרכה ומעמידה שדרת תלמידי חכמים נאמנים למורשתה.</p>`,
         background_image: {
-          url: "https://dovp7.sg-host.com/wp-content/uploads/2026/05/section-bg2.jpg",
+          url: "https://api.chevronyeshiva.org/wp-content/uploads/2026/05/section-bg2.jpg",
         },
       },
     },

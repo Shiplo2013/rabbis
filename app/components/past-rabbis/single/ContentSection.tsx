@@ -41,25 +41,6 @@ export default function ContentSection(props: ChildProps) {
             scrub: 2,
           },
         });
-      } else if (cardFolderRef.current && window.innerWidth <= 1024) {
-        const cardTitle = wrapper.current?.querySelector(".rabbis-title");
-        gsap.to(cardFolderRef.current, {
-          y: "-100vh",
-          ease: "none",
-          scrollTrigger: {
-            start: () => {
-              return (
-                (cardTitle?.getBoundingClientRect().top || 0) +
-                window.scrollY -
-                window.innerHeight * 1
-              );
-            },
-            end: () => {
-              return "+=" + window.innerWidth * 2;
-            },
-            scrub: 2,
-          },
-        });
       }
     },
     { scope: wrapper, dependencies: [pathname] },
@@ -87,11 +68,13 @@ export default function ContentSection(props: ChildProps) {
 
         {contentData?.title && (
           <div className="rabbis-title text-[50px] sm:text-[80px] lg:text-[115px] leading-[90%] text-[#121212] font-bold lg:w-[59vw] min-w-[59vw] lg:px-[2vw] py-[5vh] text-center relative">
-            <h2 className="opacity-0 invisible">{parse(contentData?.title)}</h2>
+            <h2 className="hidden lg:block lg:opacity-0 lg:invisible">
+              {parse(contentData?.title)}
+            </h2>
             <div
               ref={cardFolderRef}
               onClick={() => props.setActiveCardPopup?.(true)}
-              className="card-folder w-35 sm:w-50 lg:w-76 h-auto absolute left-1/2 -translate-x-1/2 top-full cursor-pointer"
+              className="card-folder w-35 sm:w-50 lg:w-76 h-auto relative lg:absolute left-0 lg:left-1/2 lg:-translate-x-1/2 top-0 lg:top-full cursor-pointer mx-auto"
             >
               <CardFolder />
               <div className="card-folder-text w-[70%] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18px] sm:text-[25px] lg:text-[45px] leading-[1em] italic text-[#000000] text-right">

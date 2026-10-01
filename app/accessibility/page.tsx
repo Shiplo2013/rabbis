@@ -6,7 +6,7 @@ import { parseJsonResponse } from "../lib/parseJsonResponse";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=accessibility&_fields=title,content,yoast_head_json`,
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=accessibility&_fields=title,content,yoast_head_json`,
     {
       next: { revalidate: 60 }, // Cache data for 1 minute
     },
