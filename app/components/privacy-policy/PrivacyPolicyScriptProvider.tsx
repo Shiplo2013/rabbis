@@ -63,7 +63,6 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
     if (!pageData) {
       return;
     }
-    console.log("Page Data Fetched:", pageData);
     if (animationPlayed) {
       setPageDataFetched(true);
       setIsLoading(false);
@@ -212,7 +211,7 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
-    if (!isAllAnimationComplete || !main.current) {
+    if (!isAllAnimationComplete || !main.current || window.innerWidth < 1024) {
       return;
     }
 

@@ -65,6 +65,7 @@ export default function ContactScriptProvider({
     }
     setPageData(data);
   }, [data]);
+
   // Set Page Data Fetched
   useEffect(() => {
     if (!pageData) {
@@ -247,7 +248,7 @@ export default function ContactScriptProvider({
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
-    if (!isAllAnimationComplete || !main.current) {
+    if (!isAllAnimationComplete || !main.current || window.innerWidth < 1024) {
       return;
     }
 

@@ -472,7 +472,7 @@ export default function SingleNewsScriptProvider({
             </div>
           </div>
           <div className="news-left-content w-full lg:w-[60%] px-[8vw] lg:pr-[4.16vw] lg:pl-[7.5vw] py-[6vh] lg:py-[9vh] overflow-hidden relative">
-            <div className="border-line origin-top w-1 lg:w-2 h-[20vh] bg-[#C3A13F] absolute top-0 left-[4vw] lg:left-13"></div>
+            <div className="border-line origin-top w-1 lg:w-2 h-[20vh] bg-[#C3A13F] absolute top-0 left-[4vw] lg:left-13 hidden"></div>
             <div ref={newsContentRef} className="content-wrapper">
               <h2
                 dir="rtl"
