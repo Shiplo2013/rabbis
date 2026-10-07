@@ -292,6 +292,7 @@ export default async function RootLayout({
           <script
             src="https://unpkg.com/react-scan/dist/auto.global.js"
             crossOrigin="anonymous"
+            defer
           />
         )}
         <AppProvider
