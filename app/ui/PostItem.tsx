@@ -34,6 +34,7 @@ export default function PostItem(props: {
         {parse(props.subtitle || "")}
       </h5>
       <Link
+        aria-label={props.buttonLabel || "קהילת בני ברק"}
         className={`absolute left-1.5 bottom-0 ${props.buttonColor || "bg-[#C3A13F] hover:bg-[#c59811]"} text-white text-xs py-0.5 px-2`}
         href={props.buttonLink || "#"}
         onClick={handleLinkClick}

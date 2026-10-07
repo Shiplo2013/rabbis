@@ -171,7 +171,10 @@ export default function CardSlider(props: ChildProps) {
       </div>
 
       <div className="preview-button block lg:hidden w-20 h-20 absolute top-full left-0 z-50">
-        <button className="w-full h-full rounded-full bg-[#C3A13F] flex items-center justify-center hover:bg-[#c59811] transition-colors cursor-none">
+        <button
+          aria-label="Next Slide Button"
+          className="w-full h-full rounded-full bg-[#C3A13F] flex items-center justify-center hover:bg-[#c59811] transition-colors cursor-none"
+        >
           <CycleArrow />
         </button>
       </div>

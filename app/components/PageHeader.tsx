@@ -232,6 +232,7 @@ function PageHeader() {
                 setActiveHamburgerMenu(!activeHamburgerMenu);
               }}
               disabled={!animationPlayed}
+              aria-label="Hamburger Menu Button"
               className="hamburger-btn cursor-pointer w-14.5 h-14.5 flex justify-center items-center"
             >
               <HambergerIcon />
@@ -632,6 +633,7 @@ function PageHeader() {
                   data?.acf?.header_top?.music_button?.link ||
                   "/the-circle-of-the-year"
                 }
+                aria-label="Music Button"
                 onClick={(e) => {
                   handleLinkClick(e);
                 }}
@@ -659,6 +661,7 @@ function PageHeader() {
                 setActiveHamburgerMenu(!activeHamburgerMenu);
               }}
               disabled={!animationPlayed}
+              aria-label="Hamburger Menu Button"
               className="hamburger-btn cursor-pointer w-12 lg:w-14.5 h-12 lg:h-14.5 border border-[#dbbd5c80] flex justify-center items-center"
             >
               <HambergerIcon />

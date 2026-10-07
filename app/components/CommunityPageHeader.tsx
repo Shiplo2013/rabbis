@@ -63,6 +63,7 @@ export default function CommunityPageHeader() {
             <button
               onClick={() => setActiveHamburgerMenu(!activeHamburgerMenu)}
               disabled={!animationPlayed}
+              aria-label="Hamburger Menu Button"
               className="hamburger-btn cursor-pointer w-10 h-10 flex justify-center items-center"
             >
               <HambergerIcon />

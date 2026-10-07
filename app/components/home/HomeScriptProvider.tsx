@@ -737,9 +737,9 @@ export default function HomeScriptProvider({
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <h1 className="text-2xl font-bold">ישיבת חברון כנסת ישראל</h1>
           <p className="text-gray-600">
-            The requested rabbi post could not be found.
+            The requested homepage could not be found.
           </p>
         </div>
       </div>

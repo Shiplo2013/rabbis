@@ -15,8 +15,9 @@ import SmoothWrapper from "./ui/SmoothWrapper";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://chevronyeshiva.org"),
-  title: "Chevronyeshiva",
-  description: "מאה חמישים שנות תורה, מוסר וגדלות האדם",
+  title: "ישיבת חברון כנסת ישראל",
+  description:
+    "ישיבת חברון כנסת ישראל - מאה חמישים שנות תורה, מוסר וגדלות האדם. תולדות הישיבה, רבותיה ותלמידיה לדורותיהם.",
   openGraph: {
     images: "/opengraph-image.jpg",
   },
@@ -280,11 +281,19 @@ export default async function RootLayout({
   }
   return (
     <html lang="en" dir="rtl" suppressHydrationWarning>
-      <GoogleAnalytics gaId="G-VMX2XPHCVB" />
+      <head>
+        <GoogleAnalytics gaId="G-VMX2XPHCVB" />
+      </head>
       <body
         suppressHydrationWarning
         className={`${customFont.className} antialiased bg-black text-white overflow-hidden`}
       >
+        {process.env.NODE_ENV === "development" && (
+          <script
+            src="https://unpkg.com/react-scan/dist/auto.global.js"
+            crossOrigin="anonymous"
+          />
+        )}
         <AppProvider
           appData={{
             header: globalData.header,
