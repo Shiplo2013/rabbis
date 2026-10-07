@@ -77,20 +77,35 @@ export default function HomeBanner(props: ChildProps) {
         className="flex items-center min-h-screen lg:h-full relative z-30"
       >
         <div className="banner-wrapper px-[8vw] lg:px-[10vw] w-full">
-          <h1 className="split-title text-[60px] sm:text-[100px] lg:text-[135px] text-[#AC832E] leading-none overflow-hidden">
-            <span className="banner-title1 block overflow-hidden">
+          <h1
+            className="split-title text-[60px] sm:text-[100px] lg:text-[135px] text-[#AC832E] leading-none overflow-hidden"
+            aria-label={`${bannerData?.title_1} ${bannerData?.title_2} ${bannerData?.title_3}`}
+          >
+            <span
+              aria-label={bannerData?.title_1}
+              className="banner-title1 block overflow-hidden"
+            >
               {bannerData?.title_1}
             </span>
-            <span className="banner-title2 block overflow-hidden text-[120px] sm:text-[150px] lg:text-[250px] text-[#D1A941] relative z-10 leading-none -mt-6 -mb-6 sm:-mt-10 sm:-mb-10 lg:-mt-15 lg:-mb-15 font-bold italic">
+            <span
+              aria-label={bannerData?.title_2}
+              className="banner-title2 block overflow-hidden text-[120px] sm:text-[150px] lg:text-[250px] text-[#D1A941] relative z-10 leading-none -mt-6 -mb-6 sm:-mt-10 sm:-mb-10 lg:-mt-15 lg:-mb-15 font-bold italic"
+            >
               {bannerData?.title_2}
             </span>
-            <span className="banner-title3 block overflow-hidden">
+            <span
+              aria-label={bannerData?.title_3}
+              className="banner-title3 block overflow-hidden"
+            >
               {bannerData?.title_3}
             </span>
           </h1>
-          <h4 className="banner-content overflow-hidden text-[25px] sm:text-[35px] leading-[1em] lg:text-[55px] text-[#D1A941] mt-19">
+          <p
+            className="banner-content overflow-hidden text-[25px] sm:text-[35px] leading-[1em] lg:text-[55px] text-[#D1A941] mt-19 "
+            aria-label={bannerData?.subtitle}
+          >
             {bannerData?.subtitle}
-          </h4>
+          </p>
           <div className="banner-button absolute left-20 bottom-15">
             <ScrollButton />
           </div>

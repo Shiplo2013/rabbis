@@ -198,6 +198,7 @@ export default function HomeSection1(props: ChildProps) {
           <div className="post-grid bg-[#F1EADA] text-[#C3A13F] p-11 max-h-100 relative">
             <Link
               href={"/communities"}
+              aria-label="Back to Communities"
               onClick={(e) => {
                 handleLinkClick(e);
               }}

@@ -6,7 +6,8 @@
     "dev": "NODE_OPTIONS=--use-system-ca next dev",
     "build": "NODE_OPTIONS=--use-system-ca next build",
     "start": "NODE_OPTIONS=--use-system-ca next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "doctor": "npx react-doctor@latest"
   },
   "dependencies": {
     "@apollo/client": "^4.1.6",
@@ -44,6 +45,8 @@
     "@types/three": "^0.184.0",
     "eslint": "^4.0.0",
     "eslint-config-next": "^0.2.4",
+    "react-doctor": "^0.9.17",
+    "react-scan": "^0.5.7",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
