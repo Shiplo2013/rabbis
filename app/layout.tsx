@@ -282,7 +282,11 @@ export default async function RootLayout({
   return (
     <html lang="en" dir="rtl" suppressHydrationWarning>
       <head>
-        <GoogleAnalytics gaId="G-VMX2XPHCVB" />
+        {process.env.NODE_ENV === "production" && (
+          <GoogleAnalytics
+            gaId={process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID!}
+          />
+        )}
       </head>
       <body
         suppressHydrationWarning
