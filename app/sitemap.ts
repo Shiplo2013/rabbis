@@ -72,10 +72,16 @@ async function getKnessetOfCustomsPosts(): Promise<Post[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getPosts();
-  const communities = await getCommunityPosts();
-  const pastRabbis = await getPastRabbisPosts();
-  const knessetOfCustoms = await getKnessetOfCustomsPosts();
+  const postsRes = getPosts();
+  const communitiesRes = getCommunityPosts();
+  const pastRabbisRes = getPastRabbisPosts();
+  const knessetOfCustomsRes = getKnessetOfCustomsPosts();
+  const [posts, communities, pastRabbis, knessetOfCustoms] = await Promise.all([
+    postsRes,
+    communitiesRes,
+    pastRabbisRes,
+    knessetOfCustomsRes,
+  ]);
   const baseUrl = "https://www.chevronyeshiva.org";
 
   // Map database posts to sitemap format
