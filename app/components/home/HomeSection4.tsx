@@ -73,14 +73,13 @@ export default function HomeSection4(props: ChildProps) {
       <div
         className={`section-content w-full h-auto flex items-center justify-center p-[5%] relative z-40`}
       >
-        <div
+        <h2
           dir="ltr"
-          role="button"
           aria-label={props.sectionData?.content}
           className="text text-[25px] sm:text-[35px] leading-[0.9] text-[#EEECDD] font-medium w-[80%] lg:w-[60%]"
         >
           {parse(props.sectionData?.content || "")}
-        </div>
+        </h2>
       </div>
     </section>
   );
