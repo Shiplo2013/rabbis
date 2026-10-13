@@ -75,7 +75,7 @@ export default function HomeSection4(props: ChildProps) {
       >
         <div
           dir="ltr"
-          aria-role="text"
+          role="button"
           aria-label={props.sectionData?.content}
           className="text text-[25px] sm:text-[35px] leading-[0.9] text-[#EEECDD] font-medium w-[80%] lg:w-[60%]"
         >
