@@ -1,6 +1,8 @@
+import BannerImage from "@/app/assets/images/home-banner.webp";
 import { gsap, useGSAP } from "@/app/ui/plugins";
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
+import { preload } from "react-dom";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -41,6 +43,20 @@ export default function HomeBannerVideo({ bannerData }: HomeBannerVideoProps) {
     }
   }, [pathname]);
 
+  // Preload the poster image with high fetch priority
+  preload(BannerImage.src, {
+    as: "image",
+    fetchPriority: "high",
+  });
+
+  // Preload the core video source early
+  if (bannerData?.banner_video?.url) {
+    preload(bannerData.banner_video.url, {
+      as: "video",
+      fetchPriority: "high",
+    });
+  }
+
   return (
     <div
       ref={background}
@@ -49,7 +65,7 @@ export default function HomeBannerVideo({ bannerData }: HomeBannerVideoProps) {
     >
       <video
         id="banner-video-element"
-        poster="/home-banner.jpg"
+        poster={BannerImage.src}
         autoPlay
         muted
         loop
@@ -61,6 +77,7 @@ export default function HomeBannerVideo({ bannerData }: HomeBannerVideoProps) {
         controlsList="nodownload"
       >
         <source src={bannerData?.banner_video?.url} type="video/mp4" />
+        <track kind="captions" />
       </video>
       <div
         className={`video-overlay absolute top-0 left-0 w-full h-full bg-black ${loading ? "opacity-0" : "opacity-70"}`}

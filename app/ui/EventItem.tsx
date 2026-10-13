@@ -13,12 +13,13 @@ export default function EventItem(props: {
 }) {
   return (
     <div className="post-item border-b border-[#C3A13F] pb-12 pt-7.5 text-[22px] leading-[1em] flex flex-col gap-y-2 relative">
-      <h4 className="font-bold">{parse(props.title)}</h4>
+      <h2 className="font-bold">{parse(props.title)}</h2>
       <p>{parse(props.content || "")}</p>
-      <h5 className="font-bold">{parse(props.subtitle || "")}</h5>
+      <p className="font-bold">{parse(props.subtitle || "")}</p>
       <Link
         className={`absolute right-1.5 bottom-0 ${props.buttonColor || "bg-[#C3A13F] hover:bg-[#c59811]"} text-white text-[18px] py-0.5 px-3`}
         href={props.buttonLink || "/"}
+        aria-label={props.buttonLabel || "קהילת בני ברק"}
       >
         {props.buttonLabel || "קהילת בני ברק"}
       </Link>

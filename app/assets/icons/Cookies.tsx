@@ -6,6 +6,7 @@ export default function Cookies() {
       viewBox="0 0 30 30"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      aria-label="Cookies Icon"
     >
       <g clipPath="url(#clip0_2016_3415)">
         <path

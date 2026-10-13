@@ -154,6 +154,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
 
   // Load Page
   useGSAP(() => {
+    if (!panel.current && !wrapper.current) return;
     setPageContentAnimation();
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
       document.fonts.ready.then(() => {

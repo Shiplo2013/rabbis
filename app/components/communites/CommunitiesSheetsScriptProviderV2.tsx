@@ -85,6 +85,7 @@ export default function CommunitiesSheetsScriptProviderV2({
 
   // Page Section Animation
   useGSAP(() => {
+    if (!panel.current && !wrapper.current) return;
     if (
       typeof window !== "undefined" &&
       panel.current &&

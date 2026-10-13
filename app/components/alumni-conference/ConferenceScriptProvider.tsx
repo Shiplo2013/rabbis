@@ -136,6 +136,7 @@ export default function ConferenceScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
+    if (!panel.current && !wrapper.current) return;
     const animations: gsap.core.Animation[] = [];
     let cleanupPageContentAnimation: (() => void) | undefined;
     cleanupPageContentAnimation = setPageContentAnimation();

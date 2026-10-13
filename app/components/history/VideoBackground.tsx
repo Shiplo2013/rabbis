@@ -46,6 +46,7 @@ export default function VideoBackground() {
         controlsList="nodownload"
       >
         <source src="/river-bg.mp4" type="video/mp4" />
+        <track kind="captions" />
       </video>
     </div>
   );

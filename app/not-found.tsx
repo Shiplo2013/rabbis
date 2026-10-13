@@ -96,16 +96,23 @@ export default function NotFound() {
   return (
     <section className="flex flex-col items-center justify-center min-h-screen text-center w-screen h-screen bg-black text-white">
       <div className="max-w-5xl">
-        <h1 className="text-[32px] sm:text-4xl lg:text-6xl leading-[1.2em]">
+        <h1
+          aria-label="404 - Page Not Found"
+          className="text-[32px] sm:text-4xl lg:text-6xl leading-[1.2em]"
+        >
           404 - Page Not Found
         </h1>
-        <p className="text-[16px] lg:text-[18px] leading-[1em] mt-4">
+        <p
+          aria-label="The page you are looking for does not exist."
+          className="text-[16px] lg:text-[18px] leading-[1em] mt-4"
+        >
           The page you are looking for does not exist.
         </p>
         <div className="mt-10 flex items-center justify-center">
           <a
             href="/"
             onClick={handleLinkClick}
+            aria-label="Go back to Home"
             className="bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-all w-full h-full flex items-center justify-center py-3 px-4 rounded-md text-[16px] leading-[1em] font-bold max-w-xs"
           >
             Go back to Home

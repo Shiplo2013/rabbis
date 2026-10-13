@@ -171,7 +171,10 @@ export default function HomeSection2(props: ChildProps) {
       <div
         className={`section-content w-full lg:w-[60vw] min-h-[60vh] lg:h-full flex items-center justify-center pr-[10%] pl-[5%] pt-[8%] relative z-40`}
       >
-        <h2 className="over-title absolute top-[35%] right-[7%] text-[#D1A941] text-[120px] sm:text-[150px] lg:text-[290px] font-bold leading-[0.75] -mt-[22%] opacity-20 z-0">
+        <h2
+          aria-label={props.sectionData?.title}
+          className="over-title absolute top-[35%] right-[7%] text-[#D1A941] text-[120px] sm:text-[150px] lg:text-[290px] font-bold leading-[0.75] -mt-[22%] opacity-20 z-0"
+        >
           {parse(props.sectionData?.title || "")}
         </h2>
         <div className="mouse-follower absolute top-[20%] right-[20%] w-40 h-auto sm:w-auto">
@@ -194,6 +197,7 @@ export default function HomeSection2(props: ChildProps) {
           <Link
             href={getRabbisURL(props.sectionData?.rabbis_link || "#") || "#"}
             className="block"
+            aria-label={props.sectionData?.title || "Link to the rabbis page"}
           >
             <div className="text">{parse(props.sectionData?.text || "")}</div>
           </Link>

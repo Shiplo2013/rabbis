@@ -1,6 +1,6 @@
 "use client";
-import FormIcon from "@/app/assets/images/form-icon.png";
-import HebronBook from "@/app/assets/images/hebron-book.png";
+import FormIcon from "@/app/assets/images/form-icon.webp";
+import HebronBook from "@/app/assets/images/hebron-book.webp";
 import { sendFormData } from "@/app/server/visitor";
 import Image from "next/image";
 import Link from "next/link";
@@ -81,6 +81,7 @@ export default function SubscriberFormWidget() {
       >
         <button
           onClick={handleClose}
+          aria-label="Close Form"
           className="close-form w-10 h-10 absolute top-0 right-0 p-3 border-l border-b border-[#C3A13F] rounded-bl-2xl group cursor-pointer"
         >
           <CloseIcon2 className="w-full h-auto transition-all group-hover:rotate-180" />
@@ -95,6 +96,7 @@ export default function SubscriberFormWidget() {
               alt="Visitor Form"
               blurDataURL={HebronBook.blurDataURL}
               placeholder={"blur"}
+              aria-label="Visitor Form Image"
             />
           </div>
           <div className="content flex flex-col gap-y-3">

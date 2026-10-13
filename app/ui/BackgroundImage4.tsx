@@ -22,6 +22,7 @@ export default function BackgroundImage4(props: ChildProps) {
   // Section Animation
   useGSAP(
     () => {
+      if (!background.current) return;
       if (background.current && window.innerWidth > 1024) {
         // Banner Background
         gsap.set(background.current, { scale: 1.4, x: "20vw" });

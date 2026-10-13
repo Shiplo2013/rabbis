@@ -216,6 +216,7 @@ export default function CyclePicturesScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
+    if (!panel.current && !wrapper.current) return;
     setPageContentAnimation();
     if (
       typeof window !== "undefined" &&
