@@ -415,7 +415,7 @@ function PageHeader() {
                       height={23}
                       //blurDataURL={donationIcon?.blurDataURL}
                       //placeholder="blur"
-                      alt={data?.acf?.header_right?.donation_button?.title}
+                      alt={"היה שות לקול התורה"}
                     />
                     <span>
                       {data?.acf?.header_right?.donation_button?.title}
@@ -613,7 +613,7 @@ function PageHeader() {
             <ThemeButton
               extraClass="py-2 px-5 hidden lg:flex"
               bgColor="bg-[#5a7c4e]"
-              textColor="text-[#000000]"
+              textColor="text-[#ffffff]"
               hoverBgColor="bg-[#ac832e]"
               hoverTextColor="group-hover:text-[#000000]"
               icon={buttonIcon2}
@@ -674,6 +674,7 @@ function PageHeader() {
                 onClick={handleLinkClick}
                 href={"/"}
                 prefetch={false}
+                aria-label="Home Page"
               >
                 <Image
                   className="w-full h-full object-contain object-center white-image"
@@ -687,7 +688,12 @@ function PageHeader() {
               </Link>
             )}
             {!data?.acf?.header_logo && (
-              <Link onClick={handleLinkClick} href={"/"} prefetch={false}>
+              <Link
+                aria-label="Home Page"
+                onClick={handleLinkClick}
+                href={"/"}
+                prefetch={false}
+              >
                 <Image
                   className="w-full h-full object-contain object-center white-image"
                   src={logo.src}

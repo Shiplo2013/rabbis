@@ -225,6 +225,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
 
   // Page Section Animation
   useGSAP(() => {
+    if (!panel.current && !wrapper.current) return;
     const animations: gsap.core.Animation[] = [];
     if (
       typeof window !== "undefined" &&

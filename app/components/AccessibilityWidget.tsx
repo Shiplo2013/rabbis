@@ -132,7 +132,10 @@ export default function AccessibilityWidget() {
       {isOpen && (
         <div className="w-72 rounded-lg border bg-white p-4 shadow-xl dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700">
           <div className="flex items-center justify-between border-b pb-2 mb-3">
-            <h2 className="text-sm font-bold text-zinc-900 dark:text-white">
+            <h2
+              aria-label="Accessibility Tools"
+              className="text-sm font-bold text-zinc-900 dark:text-white"
+            >
               Accessibility Tools
             </h2>
             <button

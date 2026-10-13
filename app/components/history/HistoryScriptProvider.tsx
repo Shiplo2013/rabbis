@@ -586,6 +586,21 @@ export default function HistoryScriptProvider({
 
   // Page Section Animation
   useGSAP(() => {
+    if (
+      !panel1.current &&
+      !wrapper1.current &&
+      !panel2.current &&
+      !wrapper2.current &&
+      !panel3.current &&
+      !wrapper3.current &&
+      !panel4.current &&
+      !wrapper4.current &&
+      !panel5.current &&
+      !wrapper5.current &&
+      !panel6.current &&
+      !wrapper6.current
+    )
+      return;
     //ScrollTrigger.normalizeScroll(true);
     let timeline1 = null;
     let timeline2 = null;

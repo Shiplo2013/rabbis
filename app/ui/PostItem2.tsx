@@ -11,9 +11,13 @@ export default function PostItem2(props: {
 }) {
   return (
     <div className="post-item border-b border-[#C3A13F] pb-3 pt-7.5 text-[22px] leading-[1em] flex flex-col gap-y-2 relative">
-      {props.title && <h4 className="font-bold">{parse(props.title)}</h4>}
+      {props.title && (
+        <h2 aria-label={props.title} className="font-bold">
+          {parse(props.title)}
+        </h2>
+      )}
       {props.content && <p>{parse(props.content)}</p>}
-      {props.subtitle && <h5 className="font-bold">{parse(props.subtitle)}</h5>}
+      {props.subtitle && <p className="font-bold">{parse(props.subtitle)}</p>}
       <Link
         className={`absolute left-1.5 bottom-0 ${props.buttonColor || "bg-[#C3A13F] hover:bg-[#c59811]"} text-white text-[18px] py-0.5 px-3`}
         href={props.buttonLink || "/"}

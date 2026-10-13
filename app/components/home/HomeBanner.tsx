@@ -82,30 +82,30 @@ export default function HomeBanner(props: ChildProps) {
             aria-label={`${bannerData?.title_1} ${bannerData?.title_2} ${bannerData?.title_3}`}
           >
             <span
-              aria-label={bannerData?.title_1}
+              aria-hidden={true}
               className="banner-title1 block overflow-hidden"
             >
               {bannerData?.title_1}
             </span>
             <span
-              aria-label={bannerData?.title_2}
+              aria-hidden={true}
               className="banner-title2 block overflow-hidden text-[120px] sm:text-[150px] lg:text-[250px] text-[#D1A941] relative z-10 leading-none -mt-6 -mb-6 sm:-mt-10 sm:-mb-10 lg:-mt-15 lg:-mb-15 font-bold italic"
             >
               {bannerData?.title_2}
             </span>
             <span
-              aria-label={bannerData?.title_3}
+              aria-hidden={true}
               className="banner-title3 block overflow-hidden"
             >
               {bannerData?.title_3}
             </span>
           </h1>
-          <p
+          <h2
             className="banner-content overflow-hidden text-[25px] sm:text-[35px] leading-[1em] lg:text-[55px] text-[#D1A941] mt-19 "
             aria-label={bannerData?.subtitle}
           >
             {bannerData?.subtitle}
-          </p>
+          </h2>
           <div className="banner-button absolute left-20 bottom-15">
             <ScrollButton />
           </div>

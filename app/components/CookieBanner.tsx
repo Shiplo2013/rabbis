@@ -90,6 +90,7 @@ export default function CookieBanner() {
         target="_blank"
         onClick={handleLinkClick}
         className="cookies-icon ml-2"
+        aria-label="Privacy Policy"
       >
         <Cookies />
       </Link>
@@ -105,6 +106,8 @@ export default function CookieBanner() {
             showBanner,
           );
         }}
+        aria-label="Accept Cookies"
+        role="button"
         className="cookies-text text-[17px] leading-[1em] bg-(--theme-color) hover:bg-[#DBBD5C80] text-[#010101] py-2 px-5 h-10 flex items-center cursor-pointer"
       >
         <p>אישור</p>
