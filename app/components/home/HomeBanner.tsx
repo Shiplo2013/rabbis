@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import BackgroundImage from "../../ui/BackgroundImage";
 import { gsap, useGSAP } from "../../ui/plugins";
 import ScrollButton from "../../ui/ScrollButton";
@@ -28,14 +29,34 @@ export default function HomeBanner(props: ChildProps) {
   const { contextSafe } = useGSAP();
   const { isPlaying, setIsPlaying } = useAppState();
   const bannerData = props.bannerData as BannerData;
-  // Cursor Follower Function
-  const moveCircle = contextSafe(
-    (e: { screenY: number; clientX: any; clientY: any }) => {
-      const yskale = -(e.screenY / 100) * 1;
-      //console.log(e.clientX, e.clientY)
-      gsap.to("#cursorFollower", { x: e.clientX, y: e.clientY, duration: 0.2 });
-    },
-  );
+  const bannerRef = useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    const banner = bannerRef.current;
+    const cursor = document.querySelector<HTMLElement>("#cursorFollower");
+    if (
+      !banner ||
+      !cursor ||
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) {
+      return;
+    }
+
+    const xTo = gsap.quickTo(cursor, "x", { duration: 0.2, overwrite: true });
+    const yTo = gsap.quickTo(cursor, "y", { duration: 0.2, overwrite: true });
+    const moveCircle = contextSafe((event: PointerEvent) => {
+      if (event.pointerType !== "mouse") return;
+      xTo(event.clientX);
+      yTo(event.clientY);
+    });
+
+    banner.addEventListener("pointermove", moveCircle, { passive: true });
+    return () => {
+      banner.removeEventListener("pointermove", moveCircle);
+      gsap.killTweensOf(cursor);
+    };
+  }, []);
+
   // On Mouse Enter
   const handleMouseEnter = contextSafe(() => {
     gsap.to("#cursorFollower", { opacity: 1, scale: 1 });
@@ -47,8 +68,8 @@ export default function HomeBanner(props: ChildProps) {
 
   return (
     <section
+      ref={bannerRef}
       onClick={() => setIsPlaying(!isPlaying)}
-      onMouseMove={moveCircle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={`${props.extraClass} home-banner overflow-hidden relative`}

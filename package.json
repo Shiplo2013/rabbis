@@ -7,7 +7,8 @@
     "build": "NODE_OPTIONS=--use-system-ca next build",
     "start": "NODE_OPTIONS=--use-system-ca next start",
     "lint": "eslint",
-    "doctor": "npx react-doctor@latest"
+    "doctor": "npx react-doctor@latest",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@apollo/client": "^4.1.6",
