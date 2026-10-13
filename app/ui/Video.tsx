@@ -84,6 +84,7 @@ function Video(props: {
       controlsList="nodownload"
     >
       <source src={props.link} type="video/mp4" />
+      <track kind="captions" />
     </video>
   );
 }

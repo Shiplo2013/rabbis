@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const parsedData = await parseJsonResponse<any[]>(
     pageRes,
     pageData,
-    "home-page",
+    "yeshiva-rabbis-page",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 

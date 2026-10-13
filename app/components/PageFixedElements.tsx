@@ -232,65 +232,51 @@ export default function PageFixedElements() {
   };
 
   // On Mouse Move
-  useGSAP(() => {
-    const movingButtonRef = moveButton.current;
-    if (movingButtonRef !== null) {
-      const xSetter = gsap.quickSetter(movingButtonRef, "x", "px");
-      const ySetter = gsap.quickSetter(movingButtonRef, "y", "px");
+  useGSAP(
+    () => {
+      const movingButtonRef = moveButton.current;
+      if (
+        movingButtonRef &&
+        pathname.startsWith("/past-rabbis/") &&
+        window.matchMedia("(hover: hover) and (pointer: fine)").matches
+      ) {
+        const xSetter = gsap.quickSetter(movingButtonRef, "x", "px");
+        const ySetter = gsap.quickSetter(movingButtonRef, "y", "px");
+        const handleMouseMove = (event: MouseEvent) => {
+          xSetter(event.clientX);
+          ySetter(event.clientY);
+        };
 
-      window.addEventListener("mousemove", (e) => {
-        xSetter(e.clientX);
-        ySetter(e.clientY);
-      });
-      // Show view on mouse hover
-      const pageNav = document.querySelectorAll(
-        ".rabbis-navigation a.nav-link",
-      ) as NodeListOf<HTMLAnchorElement> | null;
-      if (pageNav) {
+        window.addEventListener("mousemove", handleMouseMove, {
+          passive: true,
+        });
+        // Show view on mouse hover
+        const pageNav = document.querySelectorAll<HTMLAnchorElement>(
+          ".rabbis-navigation a.nav-link",
+        );
+        const showMovingButton = () => {
+          gsap.to(movingButtonRef, { opacity: 1, scaleY: 1, duration: 0.3 });
+        };
+        const hideMovingButton = () => {
+          gsap.to(movingButtonRef, { opacity: 0, scaleY: 0, duration: 0.3 });
+        };
+
         pageNav.forEach((nav) => {
-          nav.addEventListener("mouseenter", () => {
-            gsap.to(movingButtonRef, {
-              opacity: 1,
-              scaleY: 1,
-              duration: 0.3,
-            });
-          });
-          nav.addEventListener("mouseleave", () => {
-            gsap.to(movingButtonRef, {
-              opacity: 0,
-              scaleY: 0,
-              duration: 0.3,
-            });
-          });
+          nav.addEventListener("mouseenter", showMovingButton);
+          nav.addEventListener("mouseleave", hideMovingButton);
         });
-      }
 
-      return () => {
-        window.removeEventListener("mousemove", (e) => {
-          xSetter(e.clientX);
-          ySetter(e.clientY);
-        });
-        if (pageNav) {
+        return () => {
+          window.removeEventListener("mousemove", handleMouseMove);
           pageNav.forEach((nav) => {
-            nav.removeEventListener("mouseenter", () => {
-              gsap.to(movingButtonRef, {
-                opacity: 1,
-                scaleY: 2,
-                duration: 0.3,
-              });
-            });
-            nav.removeEventListener("mouseleave", () => {
-              gsap.to(movingButtonRef, {
-                opacity: 0,
-                scaleY: 0,
-                duration: 0.3,
-              });
-            });
+            nav.removeEventListener("mouseenter", showMovingButton);
+            nav.removeEventListener("mouseleave", hideMovingButton);
           });
-        }
-      };
-    }
-  }, [moveButton]);
+        };
+      }
+    },
+    { dependencies: [pathname], revertOnUpdate: true },
+  );
 
   // Page default
   useEffect(() => {
@@ -298,20 +284,6 @@ export default function PageFixedElements() {
     // Page Overflow Hidden
     document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
-    const mainWrapper = document.getElementById("main") as HTMLElement | null;
-    // Set onbeforeunload to fade out page
-    window.onbeforeunload = function () {
-      setIsLoading(true);
-      if (mainWrapper) {
-        gsap.to(mainWrapper, {
-          opacity: 0,
-          duration: 0,
-          onComplete: () => {
-            window.scrollTo(0, 0);
-          },
-        });
-      }
-    };
   }, [pathname]);
 
   useGSAP(() => {
