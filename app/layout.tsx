@@ -287,7 +287,7 @@ export default async function RootLayout({
       >
         {process.env.NODE_ENV === "development" && (
           <script
-            src="https://unpkg.com/react-scan/dist/auto.global.js"
+            src="https://cdn.jsdelivr.net/npm/react-scan@0.5.7/dist/auto.global.min.js"
             crossOrigin="anonymous"
             defer
           />

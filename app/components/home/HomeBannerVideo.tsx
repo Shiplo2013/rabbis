@@ -50,12 +50,12 @@ export default function HomeBannerVideo({ bannerData }: HomeBannerVideoProps) {
   });
 
   // Preload the core video source early
-  if (bannerData?.banner_video?.url) {
-    preload(bannerData.banner_video.url, {
-      as: "video",
-      fetchPriority: "high",
-    });
-  }
+  // if (bannerData?.banner_video?.url) {
+  //   preload(bannerData.banner_video.url, {
+  //     as: "track",
+  //     fetchPriority: "high",
+  //   });
+  // }
 
   return (
     <div

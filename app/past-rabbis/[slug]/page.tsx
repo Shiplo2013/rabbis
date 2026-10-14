@@ -43,7 +43,10 @@ export async function generateMetadata({
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
   const yoast = pageData[0]?.yoast_head_json;
-  const url = new URL(yoast?.canonical);
+  const url = new URL(
+    yoast?.canonical || `/past-rabbis/${slug}`,
+    "https://www.chevronyeshiva.org",
+  );
   url.hostname = "www.chevronyeshiva.org";
 
   return {
