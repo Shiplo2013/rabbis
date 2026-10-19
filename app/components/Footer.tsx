@@ -3,9 +3,9 @@ import parse from "html-react-parser";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import FooterForm from "../ui/footer/FooterForm";
 import FooterProject from "../ui/FooterProject";
 import { gsap, ScrollToPlugin, ScrollTrigger, useGSAP } from "../ui/plugins";
+import SignUpButton from "../ui/SignUpButton";
 import { useAppState } from "./AppContext";
 import FooterCredits from "./FooterCredits";
 
@@ -391,7 +391,8 @@ function Footer(props: ChildProps) {
                   </div>
                 )}
                 <div className="footer-form mt-7.5 w-full max-w-100">
-                  <FooterForm />
+                  <SignUpButton text={"להרשמה"} />
+                  {/* <FooterForm /> */}
                 </div>
               </div>
             </div>
