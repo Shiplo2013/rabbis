@@ -18,15 +18,16 @@ export default function SignUpButton(props: ChildProps) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
+    window.open("https://hevron.friman.app/join", "_blank");
   };
   return (
     <button
-      className="theme-button overflow-hidden"
+      className="theme-button overflow-hidden w-full"
       type="button"
       onClick={handleLinkClick}
     >
       <div
-        className={`group flex items-center overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[28px]"} ${props?.extraClass} backface-hidden`}
+        className={`group flex items-center justify-center overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[28px]"} ${props?.extraClass} backface-hidden`}
       >
         {props?.text && (
           <span className={`text block relative z-30 ${props?.hoverTextColor}`}>

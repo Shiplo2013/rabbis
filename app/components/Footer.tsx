@@ -391,7 +391,14 @@ function Footer(props: ChildProps) {
                   </div>
                 )}
                 <div className="footer-form mt-7.5 w-full max-w-100">
-                  <SignUpButton text={"להרשמה"} />
+                  <SignUpButton
+                    text={"להרשמה"}
+                    extraClass="bg-[#D4AF37] pt-2 pb-1.25 px-5 rounded-none cursor-pointer"
+                    fontSize="text-[16px] lg:text-[22px]"
+                    textColor="text-black"
+                    hoverBgColor="bg-[#000000]"
+                    hoverTextColor="group-hover:text-[#D4AF37]"
+                  />
                   {/* <FooterForm /> */}
                 </div>
               </div>
