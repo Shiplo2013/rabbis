@@ -3,9 +3,9 @@ import parse from "html-react-parser";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import FooterForm from "../ui/footer/FooterForm";
 import FooterProject from "../ui/FooterProject";
 import { gsap, ScrollToPlugin, ScrollTrigger, useGSAP } from "../ui/plugins";
+import SignUpButton from "../ui/SignUpButton";
 import { useAppState } from "./AppContext";
 import FooterCredits from "./FooterCredits";
 
@@ -391,7 +391,15 @@ function Footer(props: ChildProps) {
                   </div>
                 )}
                 <div className="footer-form mt-7.5 w-full max-w-100">
-                  <FooterForm />
+                  <SignUpButton
+                    text={"להרשמה"}
+                    extraClass="bg-[#D4AF37] pt-2 pb-1.25 px-5 rounded-none cursor-pointer"
+                    fontSize="text-[16px] lg:text-[22px]"
+                    textColor="text-black"
+                    hoverBgColor="bg-[#000000]"
+                    hoverTextColor="group-hover:text-[#D4AF37]"
+                  />
+                  {/* <FooterForm /> */}
                 </div>
               </div>
             </div>

@@ -1,5 +1,6 @@
 "use client";
 import { sendSubscribeData } from "@/app/server/actions";
+import SignUpButton from "@/app/ui/SignUpButton";
 import Link from "next/link";
 import { useActionState, useState } from "react";
 
@@ -17,7 +18,17 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
           קבלו ישירות למייל מאמרים חדשים, גיליונות תורניים ועדכוני תוכן מן
           הישיבה.
         </h2>
-        <div className="form group text-[18px] leading-[0.8em] mt-6 flex flex-col justify-between items-end gap-x-2 gap-y-5">
+        <div className="mt-5">
+          <SignUpButton
+            text={"להרשמה"}
+            extraClass="bg-[#D4AF37] pt-2 pb-1.25 px-5 rounded-none cursor-pointer"
+            fontSize="text-[16px] lg:text-[18px]"
+            textColor="text-black"
+            hoverBgColor="bg-white"
+            hoverTextColor="group-hover:text-[#D4AF37]"
+          />
+        </div>
+        <div className="form group text-[18px] leading-[0.8em] mt-6 flex-col justify-between items-end gap-x-2 gap-y-5 hidden">
           <div className="flex flex-row gap-x-2 w-full">
             <div className="flex w-full items-center gap-x-2">
               <label>שם</label>
@@ -86,7 +97,7 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
             </p>
           </div>
         )}
-        <div className="text xl:text-[14px] sm:text-[12px] leading-[1em] mt-3 text-center flex gap-x-2 items-center">
+        <div className="text xl:text-[14px] sm:text-[12px] leading-[1em] mt-3 text-center gap-x-2 items-center hidden">
           <input
             type="checkbox"
             id="privacy"

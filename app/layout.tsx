@@ -283,7 +283,7 @@ export default async function RootLayout({
     return notFound();
   }
   return (
-    <html lang="en" dir="rtl" suppressHydrationWarning>
+    <html lang="en" dir="rtl" suppressHydrationWarning={true}>
       <body
         suppressHydrationWarning
         className={`${customFont.className} antialiased bg-black text-white overflow-hidden`}
