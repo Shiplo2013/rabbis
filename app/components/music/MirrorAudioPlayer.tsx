@@ -128,10 +128,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
     });
   }, [musicPageData]);
 
-  useEffect(() => {
-    console.log(isPlaying);
-  }, [isPlaying]);
-
   // Calculate line count and truncate album text to 4 lines
   const albumText =
     musicPageData?.album?.music_category?.[props.activeTab]?.album_text || "";

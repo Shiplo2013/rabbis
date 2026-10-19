@@ -36,7 +36,10 @@ export async function generateMetadata(): Promise<Metadata> {
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
   const yoast = pageData[0]?.yoast_head_json;
-  const url = new URL(yoast?.canonical);
+  const url = new URL(
+    yoast?.canonical || "/communities",
+    "https://www.chevronyeshiva.org",
+  );
   url.hostname = "www.chevronyeshiva.org";
 
   return {
