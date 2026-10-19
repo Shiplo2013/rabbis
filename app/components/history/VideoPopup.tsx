@@ -53,12 +53,16 @@ export default function VideoPopup() {
 
   return (
     <div className="video-popup fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex items-center justify-center z-999 backdrop-blur-sm opacity-0 invisible">
-      <div
+      <button
         onClick={() => setIsVideoPopupOpen(false)}
+        onKeyDown={(e) => e.key === "Enter" && setIsVideoPopupOpen(false)}
+        type="button"
+        aria-label="Close Video Popup"
+        tabIndex={0}
         className="close-video w-12 h-12 lg:w-15 lg:h-15 p-3.5 lg:p-3 border border-white rounded-full flex items-center justify-center absolute top-5 right-5 cursor-pointer z-50"
       >
         <CloseIcon2 />
-      </div>
+      </button>
       <div className="video-popup-wrapper group w-103 h-150 relative">
         <video
           width="100%"
@@ -72,6 +76,8 @@ export default function VideoPopup() {
         </video>
         {videoPlaying ? (
           <button
+            type="button"
+            aria-label="Pause Video"
             onClick={() => pauseVideo()}
             className={`pause-button absolute w-20 lg:w-30 top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 ml-3 cursor-pointer ${videoPlaying ? "opacity-0" : "opacity-100"} transition-opacity duration-300 group-hover:opacity-100`}
           >
@@ -79,6 +85,8 @@ export default function VideoPopup() {
           </button>
         ) : (
           <button
+            type="button"
+            aria-label="Play Video"
             onClick={() => playVideo()}
             className={`play-button absolute w-20 lg:w-30 top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 ml-3 cursor-pointer ${videoPlaying ? "opacity-0" : "opacity-100"} transition-opacity duration-300 group-hover:opacity-100`}
           >

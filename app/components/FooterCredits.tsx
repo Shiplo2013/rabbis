@@ -19,6 +19,7 @@ export default function FooterCredits() {
   return (
     <>
       <button
+        type="button"
         onClick={handleCopy}
         className="text-[16px] lg:text-[18px] cursor-pointer transition-all flex gap-x-1 hover:text-[#555555]"
       >

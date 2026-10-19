@@ -57,6 +57,15 @@ export default function SheetContentSection(props: ChildProps) {
                       setActiveCategory(0);
                       setSheetsOnSelectCategoryId(0);
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setActiveCategory(0);
+                        setSheetsOnSelectCategoryId(0);
+                      }
+                    }}
+                    role="button"
+                    aria-label="View All Sheets"
+                    tabIndex={0}
                     className="year text-[#CD5E41] cursor-pointer font-medium border-b border-[#CD5E41] py-2.5"
                   >
                     כל הגיליונות

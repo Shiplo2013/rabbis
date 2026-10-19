@@ -16,7 +16,14 @@ interface ChildProps {
 
 export default function ThemeButton2(props: ChildProps) {
   return (
-    <div className="theme-button overflow-hidden" onClick={props?.onClick}>
+    <div
+      className="theme-button overflow-hidden"
+      onClick={props?.onClick}
+      onKeyDown={(e) => e.key === "Enter" && props?.onClick}
+      role="button"
+      aria-label={props?.text}
+      tabIndex={0}
+    >
       <div
         className={`group flex items-center ${props?.icon !== undefined ? "pl-18" : ""} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[28px]"} ${props?.extraClass} backface-hidden`}
       >

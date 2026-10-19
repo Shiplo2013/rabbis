@@ -177,6 +177,7 @@ export default function ZatzelSidebar({
         />
         <button
           type="button"
+          aria-label="Toggle Date Picker"
           className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2"
           onClick={() => setIsDatePickerOpen((prev) => !prev)}
         >
@@ -188,6 +189,7 @@ export default function ZatzelSidebar({
             <div className="calendar-top flex items-stretch justify-between mb-3">
               <button
                 type="button"
+                aria-label="Previous Month"
                 className="w-9 h-9 rounded-full bg-[#ffffff] leading-none cursor-pointer flex items-center justify-center shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
                 onClick={goToPrevMonth}
               >
@@ -243,6 +245,8 @@ export default function ZatzelSidebar({
                 type="button"
                 className="w-9 h-9 rounded-full bg-[#FFFFFF] leading-none cursor-pointer flex items-center justify-center shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
                 onClick={goToNextMonth}
+                aria-label="Next Month"
+                onKeyDown={(e) => e.key === "Enter" && goToNextMonth()}
               >
                 <span className="block w-2">
                   <ArrowLeftCalender />
@@ -266,6 +270,11 @@ export default function ZatzelSidebar({
                 <button
                   key={`${day ?? "empty"}-${index}`}
                   type="button"
+                  aria-label={
+                    day !== null
+                      ? `Select ${gematriya(day)} ${hebrewMonths[viewMonth - 1]} ${gematriya(viewYear)}`
+                      : "Empty Day"
+                  }
                   disabled={day === null}
                   className={`h-10 rounded-md text-[16px] leading-none font-medium transition-all duration-200 shadow-[0_1px_1px_rgba(0,0,0,0.05)] ${
                     day === null
@@ -309,12 +318,18 @@ export default function ZatzelSidebar({
           name="search-by-user"
           placeholder={`חיפוש לפי שם`}
         />
-        <button className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2">
+        <button
+          type="button"
+          aria-label={"Search Submit"}
+          className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2"
+        >
           <UserIcon />
         </button>
       </form>
       <div className="reset-filter mt-5 flex items-center justify-start gap-x-3">
         <button
+          type="button"
+          aria-label={"Reset Filter"}
           className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-all duration-300"
           onClick={() => {
             setSelectedDate?.(null);

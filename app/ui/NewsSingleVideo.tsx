@@ -27,6 +27,7 @@ export default function NewsSingleVideo({ data }: NewsSingleVideoProps) {
         controlsList="nodownload"
       />
       <button
+        type="button"
         onClick={() => {
           if (videoRef.current) {
             const videoElement = videoRef.current.querySelector("video");

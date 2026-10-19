@@ -34,7 +34,7 @@ type MenuPost = {
 export default function RabbisHamburgerMenu() {
   // Selector
   const hamurgerMenu = useRef<HTMLDivElement>(null);
-  const menuOverlay = useRef<HTMLDivElement>(null);
+  const menuOverlay = useRef<HTMLButtonElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -218,6 +218,8 @@ export default function RabbisHamburgerMenu() {
       >
         <div className="menu-wrapper overflow-hidden h-full">
           <button
+            type="button"
+            aria-label={"Close Rabbis Menu"}
             onClick={() => {
               setActiveRabbisMenu(false);
             }}
@@ -259,13 +261,21 @@ export default function RabbisHamburgerMenu() {
           </div>
         </div>
       </div>
-      <div
+      <button
         ref={menuOverlay}
         onClick={() => {
           setActiveRabbisMenu(false);
         }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            setActiveRabbisMenu(false);
+          }
+        }}
+        type="button"
+        aria-label="Close Menu Overlay"
+        tabIndex={0}
         className="overlay fixed top-0 right-0 w-screen h-screen z-100 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"
-      ></div>
+      ></button>
     </>
   );
 }

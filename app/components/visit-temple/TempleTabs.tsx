@@ -210,6 +210,7 @@ export default function TempleTabs(props: ChildProps) {
                       />
                     )}
                     <button
+                      type="button"
                       onClick={() => setToggler(!toggler)}
                       className="video-popup cursor-pointer w-25 h-auto flex items-center justify-center flex-col group text-[18px]"
                     >
@@ -383,6 +384,7 @@ export default function TempleTabs(props: ChildProps) {
                             className="custom-pagination flex items-center justify-center gap-5"
                           ></div>
                           <button
+                            type="button"
                             style={{
                               backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
                             }}
@@ -400,6 +402,7 @@ export default function TempleTabs(props: ChildProps) {
                             </div>
                           </button>
                           <button
+                            type="button"
                             style={{
                               backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
                             }}

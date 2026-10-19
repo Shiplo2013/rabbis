@@ -112,10 +112,14 @@ export default function MusicCategoryList(props: ChildProps) {
             >
               <div className="music-cat-list border-b border-[#F4EDDD]">
                 {catList?.map((item: any, index: number) => (
-                  <div
+                  <button
                     key={index}
                     data-index={index}
                     onClick={() => handleClick(index)}
+                    onKeyDown={(e) => e.key === "Enter" && handleClick(index)}
+                    type="button"
+                    aria-label={`Select music category ${index + 1}`}
+                    tabIndex={0}
                     className={`music-cat border-t border-[#F4EDDD] py-[3vh] cursor-pointer text-center ${
                       props.activeMusicItem === index ? "active" : ""
                     }`}
@@ -127,17 +131,21 @@ export default function MusicCategoryList(props: ChildProps) {
                     <h3 className="text-[40px] sm:text-[77px] font-light leading-[100%]">
                       {parse(item?.acf?.introduction?.album_title || "")}
                     </h3>
-                  </div>
+                  </button>
                 ))}
               </div>
             </SimpleBar>
           ) : (
             <div className="music-cat-list border-b border-[#F4EDDD]">
               {catList?.map((item: any, index: number) => (
-                <div
+                <button
                   key={index}
                   data-index={index}
                   onClick={() => handleClick(index)}
+                  onKeyDown={(e) => e.key === "Enter" && handleClick(index)}
+                  type="button"
+                  aria-label={`Select music category ${index + 1}`}
+                  tabIndex={0}
                   className={`music-cat border-t border-[#F4EDDD] py-[3vh] cursor-pointer text-center ${
                     props.activeMusicItem === index ? "active" : ""
                   }`}
@@ -149,7 +157,7 @@ export default function MusicCategoryList(props: ChildProps) {
                   <h3 className="text-[40px] sm:text-[77px] font-light leading-[100%]">
                     {parse(item?.acf?.introduction?.album_title || "")}
                   </h3>
-                </div>
+                </button>
               ))}
             </div>
           )}

@@ -100,7 +100,7 @@ export default async function page({ params }: PageProps) {
   const postsData = await parseJsonResponse<any[]>(
     postsDataRes,
     [],
-    "news-slug-posts",
+    "news-posts",
   );
 
   // Find the index of the current post in the list of all posts

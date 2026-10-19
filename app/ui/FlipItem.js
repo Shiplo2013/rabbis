@@ -38,7 +38,7 @@ export default function FlipItem() {
 
   return (
     <div ref={container} className="app-container">
-      <button onClick={toggleLayout}>Toggle Layout</button>
+      <button type="button" onClick={toggleLayout}>Toggle Layout</button>
       
       <div className={`layout-container ${isToggled ? 'toggled-style' : ''}`}>
         {/* Your elements that will be flipped */}

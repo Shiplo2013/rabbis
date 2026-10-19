@@ -212,16 +212,26 @@ export default function PageFixedElements() {
     const audioElement = document.getElementById(
       "audio-player",
     ) as HTMLAudioElement | null;
+
+    // 1. Define the handler function reference
+    const handleAudioEnded = () => {
+      if (audioElement) {
+        audioElement.currentTime = 0;
+        audioElement.play();
+      }
+    };
+
     if (audioElement) {
-      audioElement.addEventListener(
-        "ended",
-        () => {
-          audioElement.currentTime = 0;
-          audioElement.play();
-        },
-        false,
-      );
+      // 2. Pass the reference to add
+      audioElement.addEventListener("ended", handleAudioEnded, false);
     }
+
+    return () => {
+      if (audioElement) {
+        // 3. Pass the EXACT SAME reference to remove
+        audioElement.removeEventListener("ended", handleAudioEnded, false);
+      }
+    };
   }, [audio.current]);
 
   // Handle Scroll Position
@@ -384,6 +394,7 @@ export default function PageFixedElements() {
           onClick={() => {
             setIsPlaying(!isPlaying);
           }}
+          onKeyDown={(e) => e.key === "Enter" && setIsPlaying(!isPlaying)}
           className="equalizer-button flex gap-2 items-center fixed py-1 px-3 bottom-5 right-5 sm:right-20 z-40 cursor-pointer bg-[#c3a23fb0] text-[#000000] opacity-0 hover:opacity-100 invisible translate-y-5 rounded-full"
         >
           <span>{isPlaying ? "ON" : "OFF"}</span>
@@ -523,20 +534,30 @@ export default function PageFixedElements() {
                 </SimpleBar>
               </div>
               <button
+                type="button"
                 onClick={() => {
                   setZatzelActivePopup(false);
                 }}
+                onKeyDown={(e) =>
+                  e.key === "Enter" && setZatzelActivePopup(false)
+                }
+                aria-label="Close Zatzel Popup"
                 className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all"
               >
                 <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
               </button>
             </div>
-            <div
+            <button
               onClick={() => {
                 setZatzelActivePopup(false);
               }}
+              onKeyDown={(e) =>
+                e.key === "Enter" && setZatzelActivePopup(false)
+              }
+              type="button"
+              aria-label="Close Overlay"
               className="overlay fixed top-0 right-0 w-screen h-screen z-30 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"
-            ></div>
+            ></button>
           </div>
           <div
             id="zatzel-sidebar"
@@ -659,7 +680,11 @@ export default function PageFixedElements() {
                     )}
                   </SimpleBar>
                 </div>
-                <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">
+                <button
+                  type="button"
+                  aria-label="Close Popup"
+                  className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all"
+                >
                   <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
                 </button>
               </div>
@@ -782,7 +807,11 @@ export default function PageFixedElements() {
                     )}
                   </SimpleBar>
                 </div>
-                <button className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-1/2 cursor-e-resize hover:w-8 duration-300 transition-all">
+                <button
+                  type="button"
+                  aria-label="Close Popup"
+                  className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-1/2 cursor-e-resize hover:w-8 duration-300 transition-all"
+                >
                   <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
                 </button>
               </div>
@@ -814,13 +843,20 @@ export default function PageFixedElements() {
                   id="search-by-user"
                   name="search-by-user"
                   placeholder={`חיפוש לפי שם`}
+                  aria-label="Search"
                 />
-                <button className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2">
+                <button
+                  type="submit"
+                  className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2"
+                  aria-label="Submit Search"
+                >
                   <UserIcon />
                 </button>
               </form>
               <div className="reset-filter mt-5 flex items-center justify-start gap-x-3">
                 <button
+                  type="button"
+                  aria-label="Reset Filter"
                   className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-all duration-300"
                   onClick={() => {
                     nameRef.current && (nameRef.current.value = "");
@@ -842,7 +878,11 @@ export default function PageFixedElements() {
           id="view-button"
           className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-50 select-none pointer-events-none opacity-0 scale-0"
         >
-          <button className="w-25 h-25 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer">
+          <button
+            type="button"
+            aria-label="View News"
+            className="w-25 h-25 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
+          >
             <span className="block w-12 h-auto">
               <ViewIcon2 />
             </span>
@@ -937,6 +977,14 @@ export default function PageFixedElements() {
                       setSheetsOnSelectCategoryChildId(0);
                       setSheetsOnSelectCategoryId(0);
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setSheetsOnSelectCategoryChildId(0);
+                        setSheetsOnSelectCategoryId(0);
+                      }
+                    }}
+                    role="button"
+                    aria-label="View All Sheets"
                     className="year text-[#CD5E41] cursor-pointer font-medium border-b border-[#CD5E41] py-2.5"
                   >
                     כל הגיליונות
@@ -1014,6 +1062,8 @@ export default function PageFixedElements() {
                   >
                     <div className="year-month-categories pl-10 pr-2.5">
                       <button
+                        type="button"
+                        aria-label="Select All Categories"
                         disabled={cycleActiveCategory === -1 || isLoading}
                         onClick={(e) => {
                           e.preventDefault();
@@ -1027,6 +1077,8 @@ export default function PageFixedElements() {
                         cycleCategories?.map((item: any, index: number) => {
                           return (
                             <button
+                              type="button"
+                              aria-label={`Select Category ${item.name}`}
                               key={index}
                               disabled={
                                 Number(cycleActiveCategory) === item.id ||
@@ -1055,6 +1107,8 @@ export default function PageFixedElements() {
           >
             <div className="cycle-popup-wrapper flex flex-col items-center justify-center w-full h-full relative">
               <button
+                type="button"
+                aria-label="Close Cycle Popup"
                 onClick={() => {
                   setActiveCyclePopup(false);
                 }}
@@ -1095,6 +1149,8 @@ export default function PageFixedElements() {
               </Swiper>
               <div className="swiper-navigation w-full flex items-center justify-center">
                 <button
+                  type="button"
+                  aria-label="Next Slide"
                   style={{
                     backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
                   }}
@@ -1109,6 +1165,8 @@ export default function PageFixedElements() {
                   </div>
                 </button>
                 <button
+                  type="button"
+                  aria-label="Previous Slide"
                   style={{
                     backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
                   }}

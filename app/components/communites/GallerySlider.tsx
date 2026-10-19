@@ -43,12 +43,14 @@ export default function GallerySlider(props: ChildProps) {
           ))}
       </Swiper>
       <button
+        type="button"
         onClick={() => galleryRef.current?.swiper.slidePrev()}
         className="w-10 h-10 rounded-full p-3 bg-black opacity-40 hover:opacity-100 transition-opacity duration-300 absolute top-[50%] right-3 z-50 transform -translate-y-[50%] flex items-center justify-center cursor-pointer"
       >
         <ArrowRight />
       </button>
       <button
+        type="button"
         onClick={() => galleryRef.current?.swiper.slideNext()}
         className="w-10 h-10 rounded-full p-3 bg-black opacity-40 hover:opacity-100 transition-opacity duration-300 absolute top-[50%] left-3 z-50 transform -translate-y-[50%] flex items-center justify-center cursor-pointer"
       >

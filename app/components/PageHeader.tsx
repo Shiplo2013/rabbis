@@ -228,6 +228,7 @@ function PageHeader() {
         <div className="header-right items-start pr-17 opacity-0 hidden lg:flex">
           <div className="horizontal-menu bg-[#000000B2] border border-[#DBBD5C80] h-screen fixed top-0 right-0">
             <button
+              type="button"
               onClick={() => {
                 setActiveHamburgerMenu(!activeHamburgerMenu);
               }}
@@ -657,6 +658,7 @@ function PageHeader() {
           </div>
           <div className="mobile-btn block lg:hidden ml-auto">
             <button
+              type="button"
               onClick={() => {
                 setActiveHamburgerMenu(!activeHamburgerMenu);
               }}

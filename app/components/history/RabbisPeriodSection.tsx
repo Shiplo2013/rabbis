@@ -204,13 +204,6 @@ export default function RabbisPeriodSection(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center relative z-10 overflow-hidden`}
       data-scroll-section={props.animWidthText}
     >
-      {/* <ImageRevealWithParallaxBG
-        bgImage={contentBG}
-        overlayLeft={true}
-        overlayLeftColor={"#0a0a0a"}
-        animatePosition={props.animWidthText - 0.3}
-        panel={props.panel}
-      /> */}
       <BackgroundImage2
         bgImage={contentBG}
         start={props.animWidthText - 0.3}

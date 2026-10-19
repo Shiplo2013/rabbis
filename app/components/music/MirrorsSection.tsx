@@ -242,11 +242,19 @@ export default function MirrorsSection(props: ChildProps) {
               {pageData.images?.length !== 0 &&
                 pageData.images?.map((item: any, index: number) => {
                   return (
-                    <div
+                    <button
                       key={index}
                       onClick={() => {
                         swiperRef.current?.swiper.slideTo(index);
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          swiperRef.current?.swiper.slideTo(index);
+                        }
+                      }}
+                      type="button"
+                      aria-label={`Go to slide ${index + 1}`}
+                      tabIndex={0}
                       className={`slide-thumb thumb-image-${index} w-12.5 h-12.5 sm:w-15 sm:h-15 transition-none cursor-pointer`}
                     >
                       <Image
@@ -259,7 +267,7 @@ export default function MirrorsSection(props: ChildProps) {
                         loading="lazy"
                         alt="Mirrors Thumb"
                       />
-                    </div>
+                    </button>
                   );
                 })}
             </div>
@@ -300,6 +308,7 @@ export default function MirrorsSection(props: ChildProps) {
                 />
               )}
               <button
+                type="button"
                 onClick={() => setToggler(!toggler)}
                 className="video-popup cursor-pointer w-25 h-auto flex items-center justify-center flex-col group text-[16px] sm:text-[18px]"
               >
@@ -332,9 +341,15 @@ export default function MirrorsSection(props: ChildProps) {
           <div className="image-thumb absolute bottom-0 right-0 lg:flex flex-col gap-y-3 hidden">
             {pageData.images?.map((item: any, index: number) => {
               return (
-                <div
+                <button
                   key={index}
                   onClick={() => handleThumbClick(index)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && handleThumbClick(index)
+                  }
+                  type="button"
+                  aria-label={`Go to slide ${index + 1}`}
+                  tabIndex={0}
                   className={`slide-thumb thumb-image-${index} w-15 h-15 transition-none ${index !== 0 && "opacity-50"} cursor-pointer`}
                 >
                   <Image
@@ -347,7 +362,7 @@ export default function MirrorsSection(props: ChildProps) {
                     loading="lazy"
                     alt="Mirrors Thumb"
                   />
-                </div>
+                </button>
               );
             })}
           </div>

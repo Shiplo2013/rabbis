@@ -185,13 +185,6 @@ export default function EvidenceOfPeriod(props: ChildProps) {
           </div> */}
           <div className="content w-full lg:w-[66vw] flex items-center relative py-[5vh] px-[5vw] lg:py-0 lg:px-[4.35vw] overflow-hidden lg:overflow-visible">
             <div className="content-bg absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full lg:h-screen select-none pointer-events-none scale-360 sm:scale-220 lg:scale-100">
-              {/* <ImageRevealWithoutParallaxBG2
-                bgImage={evidanceBG}
-                overlayLeft={false}
-                overlayLeftColor={""}
-                animatePosition={props.animWidthText - 0.7}
-                panel={props.panel}
-              /> */}
               <BackgroundImageContain bgImage={evidanceBG} overlayClass={""} />
             </div>
             <div

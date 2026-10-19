@@ -60,6 +60,7 @@ export default function Sidebar({
         />
         <button
           type="button"
+          aria-label="Submit Search"
           onClick={handleSearchSubmit}
           className="cursor-pointer absolute top-1.5 left-1.75"
         >
@@ -68,6 +69,8 @@ export default function Sidebar({
       </div>
       <div className="reset-filter mt-5 mb-[3.6vh] flex items-center justify-start gap-x-3">
         <button
+          type="button"
+          aria-label="Reset Filter"
           className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#000000] transition-all duration-300"
           onClick={() => {
             if (onSearchSubmit) {
@@ -75,14 +78,28 @@ export default function Sidebar({
               searchField.current && (searchField.current.value = "");
             }
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              if (onSearchSubmit) {
+                onSearchSubmit("");
+                searchField.current && (searchField.current.value = "");
+              }
+            }
+          }}
+          role="button"
+          tabIndex={0}
         >
           איפוס סינון
         </button>
       </div>
       <div className="sidebar-menu">
-        <div
+        <button
           className="head text-[#D1A941] text-[26px] leading-[1.4em] flex items-center gap-x-2 mb-1 cursor-pointer select-none"
           onClick={() => setMenuOpen((prev) => !prev)}
+          onKeyDown={(e) => e.key === "Enter" && setMenuOpen((prev) => !prev)}
+          type="button"
+          aria-label="Toggle Categories Menu"
+          tabIndex={0}
         >
           <p>בחר נושא</p>
           <span
@@ -90,7 +107,7 @@ export default function Sidebar({
           >
             <CaretIcon />
           </span>
-        </div>
+        </button>
         <div
           className="menu overflow-hidden transition-all duration-300 ease-in-out"
           style={{
@@ -101,6 +118,7 @@ export default function Sidebar({
           <ul className="category-list list-none flex flex-col text-[24px] leading-[1em] gap-y-2 font-medium">
             <li>
               <button
+                type="button"
                 onClick={() => {
                   onSearchChange("");
                   if (onCategorySelect) {
@@ -116,6 +134,26 @@ export default function Sidebar({
                     setCurrentScrollPos(window.scrollY);
                   }
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    onSearchChange("");
+                    if (onCategorySelect) {
+                      onCategorySelect("0");
+                    }
+                    if (onSearchSubmit) {
+                      onSearchSubmit("");
+                    }
+                    if (setPostLoading) {
+                      setPostLoading(true);
+                    }
+                    if (setCurrentScrollPos) {
+                      setCurrentScrollPos(window.scrollY);
+                    }
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label="Select All Articles"
                 className={`text-[24px] leading-[1em] transition-all duration-300 cursor-pointer ${
                   activeCategory === "0"
                     ? "text-[#D1A941]"
@@ -126,8 +164,9 @@ export default function Sidebar({
               </button>
             </li>
             {catData?.map((item, index) => (
-              <li key={index}>
+              <li key={item.id}>
                 <button
+                  type="button"
                   data-category={item.id}
                   onClick={() => {
                     if (activeCategory === String(item.id)) {
@@ -141,6 +180,23 @@ export default function Sidebar({
                       setCurrentScrollPos(window.scrollY);
                     }
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      if (activeCategory === String(item.id)) {
+                        return;
+                      }
+                      onCategorySelect(String(item.id));
+                      if (setPostLoading) {
+                        setPostLoading(true);
+                      }
+                      if (setCurrentScrollPos) {
+                        setCurrentScrollPos(window.scrollY);
+                      }
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Select category ${item.name}`}
                   className={`transition-all duration-300 cursor-pointer ${
                     activeCategory === String(item.id)
                       ? "text-[#D1A941]"

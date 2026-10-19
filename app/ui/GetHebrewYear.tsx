@@ -33,6 +33,16 @@ export default function GetHebrewYear(props: GetOptions) {
             handleYearClick();
           }
         }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            if (props.sheetsOnSelectCategoryId !== Number(props.index) + 1) {
+              handleYearClick();
+            }
+          }
+        }}
+        role="button"
+        aria-label={`View sheets for year ${yearData?.name || ""}`}
+        tabIndex={0}
         className="year text-[#CD5E41] cursor-pointer font-medium border-b border-[#CD5E41] py-2.5"
       >
         {yearData?.name || ""}
@@ -44,7 +54,8 @@ export default function GetHebrewYear(props: GetOptions) {
           yearData?.children?.map((item: any, monthIndex: number) => {
             return (
               <button
-                key={monthIndex}
+                type="button"
+                key={item.id}
                 data-cat-id={item.id}
                 onClick={() => {
                   if (

@@ -61,6 +61,7 @@ export default function CommunityPageHeader() {
         <div className="header-wrapper flex items-center justify-between">
           <div className="header-right flex items-center gap-x-9">
             <button
+              type="button"
               onClick={() => setActiveHamburgerMenu(!activeHamburgerMenu)}
               disabled={!animationPlayed}
               aria-label="Hamburger Menu Button"

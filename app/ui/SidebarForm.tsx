@@ -150,9 +150,11 @@ export default function SidebarForm() {
           value={selectedDateLabel}
           readOnly
           onClick={() => setIsDatePickerOpen((prev) => !prev)}
+          aria-label={"Search By Date Input"}
         />
         <button
           type="button"
+          aria-label={"Search By Date Submit"}
           className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2"
           onClick={() => setIsDatePickerOpen((prev) => !prev)}
         >
@@ -164,6 +166,7 @@ export default function SidebarForm() {
             <div className="calendar-top flex items-stretch justify-between mb-3">
               <button
                 type="button"
+                aria-label={"Go To Prev Month"}
                 className="w-9 h-9 rounded-full bg-[#ffffff] leading-none cursor-pointer flex items-center justify-center shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
                 onClick={goToPrevMonth}
               >
@@ -217,6 +220,7 @@ export default function SidebarForm() {
 
               <button
                 type="button"
+                aria-label={"Go To Next Month"}
                 className="w-9 h-9 rounded-full bg-[#FFFFFF] leading-none cursor-pointer flex items-center justify-center shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
                 onClick={goToNextMonth}
               >
@@ -242,6 +246,7 @@ export default function SidebarForm() {
                 <button
                   key={`${day ?? "empty"}-${index}`}
                   type="button"
+                  aria-label={day !== null ? "Select " + gematriya(day) : ""}
                   disabled={day === null}
                   className={`h-10 rounded-md text-[16px] leading-none font-medium transition-all duration-200 shadow-[0_1px_1px_rgba(0,0,0,0.05)] ${
                     day === null
@@ -275,8 +280,13 @@ export default function SidebarForm() {
           id="search-by-user"
           name="Search-By-User"
           placeholder={`חיפוש לפי שם`}
+          aria-label={"Search By User Input"}
         />
-        <button className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2">
+        <button
+          type="button"
+          aria-label={"Search By User Submit"}
+          className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2"
+        >
           <UserIcon />
         </button>
       </div>

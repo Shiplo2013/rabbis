@@ -250,10 +250,12 @@ export default function SingleNewsScriptProvider({
     const xSetter = gsap.quickSetter(movingButtonRef, "x", "px");
     const ySetter = gsap.quickSetter(movingButtonRef, "y", "px");
 
-    window.addEventListener("mousemove", (e) => {
+    const getMousePosition = (e: any) => {
       xSetter(e.clientX);
       ySetter(e.clientY);
-    });
+    };
+
+    window.addEventListener("mousemove", getMousePosition);
     // Show view on mouse hover
     const pageNav = main.current?.querySelectorAll(
       ".post-navigation a.nav-link",
@@ -278,10 +280,7 @@ export default function SingleNewsScriptProvider({
     }
 
     return () => {
-      window.removeEventListener("mousemove", (e) => {
-        xSetter(e.clientX);
-        ySetter(e.clientY);
-      });
+      window.removeEventListener("mousemove", getMousePosition);
       if (pageNav) {
         pageNav.forEach((nav) => {
           nav.removeEventListener("mouseenter", () => {
@@ -381,6 +380,7 @@ export default function SingleNewsScriptProvider({
             >
               {/* Custom Prev Button */}
               <button
+                type="button"
                 onClick={() => swiperRef.current?.slidePrev()}
                 aria-label="Previous slide"
                 className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-11 h-11 rounded-full bg-black/60 text-[#C3A13F] transition-all duration-300 cursor-pointer ${
@@ -406,6 +406,7 @@ export default function SingleNewsScriptProvider({
               </button>
               {/* Custom Next Button */}
               <button
+                type="button"
                 onClick={() => swiperRef.current?.slideNext()}
                 aria-label="Next slide"
                 className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-11 h-11 rounded-full bg-black/60 text-[#C3A13F] transition-all duration-300 cursor-pointer ${

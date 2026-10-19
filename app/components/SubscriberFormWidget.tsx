@@ -62,6 +62,7 @@ export default function SubscriberFormWidget() {
   return (
     <>
       <button
+        type="button"
         ref={buttonRef}
         onClick={() => setActiveFormPopup(true)}
         className={`subcribe-button w-12 fixed left-5 bottom-20 z-50 bg-white rounded-full cursor-pointer transition-transform hover:scale-105`}
@@ -80,6 +81,7 @@ export default function SubscriberFormWidget() {
         className="fixed bottom-5 right-5 lg:right-20 z-50 bg-[#0A0A0A] w-85 max-w-[86vw] px-6 py-10 rounded-2xl shadow-md shadow-[#C3A13F] inset-shadow-sm ring-1 ring-[#C3A13F]"
       >
         <button
+          type="button"
           onClick={handleClose}
           aria-label="Close Form"
           className="close-form w-10 h-10 absolute top-0 right-0 p-3 border-l border-b border-[#C3A13F] rounded-bl-2xl group cursor-pointer"

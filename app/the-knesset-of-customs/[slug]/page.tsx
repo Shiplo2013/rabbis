@@ -99,12 +99,12 @@ export default async function Page({ params }: PageProps) {
   const postsData = await parseJsonResponse<any[]>(
     postsDataRes,
     [],
-    `knesset-slug-post-${slug}`,
+    `knesset-post-${slug}`,
   );
   const allPostsData = await parseJsonResponse<any[]>(
     allPostsDataRes,
     [],
-    "knesset-slug-all-posts",
+    "knesset-posts",
   );
 
   if (!postsData || postsData.length === 0) {

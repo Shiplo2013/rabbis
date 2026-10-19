@@ -179,9 +179,11 @@ export default function MainMenu() {
         className="menu-background bg-cover absolute top-0 right-0 w-full h-full"
       ></div>
       <button
+        type="button"
         onClick={() => {
           setActiveHamburgerMenu(!activeHamburgerMenu);
         }}
+        aria-label="Close Menu"
         className="menu-close group absolute top-5 right-5 sm:top-8 sm:right-7 lg:right-12.5 w-12 lg:w-18 h-12 lg:h-18 flex justify-center items-center cursor-pointer border border-[#C3A13F] rounded-full bg-[#0000007f] z-50"
       >
         <CloseIcon className="group-hover:rotate-180 transition-all duration-300 w-4 h-auto lg:w-auto" />
@@ -352,6 +354,7 @@ export default function MainMenu() {
             <form
               className="search relative h-10 bg-[#FDF9F5] w-50 flex justify-stretch group"
               onSubmit={handleSearch}
+              aria-label="Search Form"
             >
               <input
                 ref={searchRef}
@@ -361,11 +364,13 @@ export default function MainMenu() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 disabled={isSearching}
+                aria-label="Search"
               />
               <button
                 className="absolute left-2 top-1/2 -translate-y-1/2 disabled:opacity-50"
                 type="submit"
                 disabled={isSearching}
+                aria-label="Submit Search"
               >
                 <Search />
               </button>
@@ -382,6 +387,7 @@ export default function MainMenu() {
                         onClick={handleLinkClick}
                         prefetch={false}
                         className="block py-3 px-3 text-[16px] leading-[1em] text-black hover:bg-gray-200 transition-all duration-300 not-last:border-b not-last:border-b-[#C3A13F]"
+                        aria-label={result.title}
                       >
                         {parse(result.title)}
                       </Link>

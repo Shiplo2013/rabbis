@@ -465,22 +465,30 @@ export default function TimelineCardItem(props: ChildProps) {
       </div>
       <div className="expand-button bg-linear-to-t from-[#C3A13F] to-[#966814] w-12 h-12 sm:w-16.75 sm:h-16.75 rounded-full p-0.5 shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] cursor-pointer absolute bottom-0 lg:bottom-auto lg:top-1/2 left-1/2 -ml-8 lg:ml-0 lg:left-auto lg:right-full lg:-translate-y-1/2 lg:translate-x-1/2 transition-all duration-500 lg:opacity-0 group-hover:opacity-100 z-50">
         <div className="button-wrapper overflow-hidden w-full h-full rounded-full relative">
-          <div
+          <button
             onClick={handlePlusButtonClick}
+            onKeyDown={(e) => e.key === "Enter" && handlePlusButtonClick()}
+            type="button"
+            aria-label="Expand Images"
+            tabIndex={0}
             className={`plus-button bg-black w-full h-full flex items-center justify-center absolute top-0 left-0`}
           >
             <div className="w-6 h-6 sm:w-8 sm:h-8">
               <PlusIcon />
             </div>
-          </div>
-          <div
+          </button>
+          <button
             onClick={handleMinusButtonClick}
+            onKeyDown={(e) => e.key === "Enter" && handleMinusButtonClick()}
+            type="button"
+            aria-label="Collapse Images"
+            tabIndex={0}
             className="minus-button bg-black w-full h-full flex items-center justify-center absolute top-full left-0"
           >
             <div className="w-4 h-4 sm:w-5 sm:h-5">
               <MinusIcon2 />
             </div>
-          </div>
+          </button>
         </div>
       </div>
       <div

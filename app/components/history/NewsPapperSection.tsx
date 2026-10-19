@@ -288,13 +288,6 @@ export default function NewsPapperSection(props: ChildProps) {
       data-scroll-section={props.animWidthText}
     >
       {props.bgImage !== "" && (
-        // <ImageRevealWithParallaxBG
-        //   bgImage={props.bgImage}
-        //   overlayLeft={false}
-        //   overlayLeftColor={""}
-        //   animatePosition={props.animWidthText - 0.3}
-        //   panel={props.panel}
-        // />
         <BackgroundImage2
           bgImage={props.bgImage}
           start={props.animWidthText - 0.3}

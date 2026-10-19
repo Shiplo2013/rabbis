@@ -32,7 +32,7 @@ export default function DonationVideo(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
   // Section Selector
-  const wrapper = useRef<HTMLDivElement>(null);
+  const wrapper = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { contextSafe } = useGSAP();
   const [videoPlay, setVideoPlay] = useState(true);
@@ -98,19 +98,21 @@ export default function DonationVideo(props: ChildProps) {
     }
   };
   // Cursor Follower Function
-  const handleMouseMove = contextSafe((e: ReactMouseEvent<HTMLDivElement>) => {
-    //const yskale = -(e.screenY / 100) * 1;
-    //console.log(e.clientX, e.clientY)
-    const playButton = document.querySelector("#main .play-button");
-    if (playButton) {
-      gsap.to(playButton, {
-        x: e.clientX,
-        y: e.clientY,
-        delay: 0,
-        duration: 0.2,
-      });
-    }
-  });
+  const handleMouseMove = contextSafe(
+    (e: ReactMouseEvent<HTMLButtonElement>) => {
+      //const yskale = -(e.screenY / 100) * 1;
+      //console.log(e.clientX, e.clientY)
+      const playButton = document.querySelector("#main .play-button");
+      if (playButton) {
+        gsap.to(playButton, {
+          x: e.clientX,
+          y: e.clientY,
+          delay: 0,
+          duration: 0.2,
+        });
+      }
+    },
+  );
   // On Mouse Enter
   const handleMouseEnter = contextSafe(() => {
     const playButton = document.querySelector("#main .play-button");
@@ -137,9 +139,13 @@ export default function DonationVideo(props: ChildProps) {
   });
 
   return (
-    <div
+    <button
       ref={wrapper}
       onClick={(e) => handleClickEvent(e)}
+      onKeyDown={(e) => e.key === "Enter" && handleClickEvent(e)}
+      type="button"
+      aria-label="Play/Pause Video"
+      tabIndex={0}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -178,6 +184,6 @@ export default function DonationVideo(props: ChildProps) {
           <PixelIcon4 />
         </div>
       </div>
-    </div>
+    </button>
   );
 }

@@ -62,13 +62,20 @@ export default function CustomsContentSection2(props: ChildProps) {
               id="search-by-user"
               name="search-by-user"
               placeholder={`חיפוש לפי שם`}
+              aria-label="Search Past Rabbis by Name"
             />
-            <button className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2">
+            <button
+              type="submit"
+              aria-label="Submit Search"
+              className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2"
+            >
               <UserIcon />
             </button>
           </form>
           <div className="reset-filter mt-5 flex items-center justify-start gap-x-3">
             <button
+              type="button"
+              aria-label="Reset Search"
               className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-all duration-300"
               onClick={() => {
                 nameRef.current && (nameRef.current.value = "");
