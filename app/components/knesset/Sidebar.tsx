@@ -86,7 +86,6 @@ export default function Sidebar({
               }
             }
           }}
-          role="button"
           tabIndex={0}
         >
           איפוס סינון
@@ -151,7 +150,6 @@ export default function Sidebar({
                     }
                   }
                 }}
-                role="button"
                 tabIndex={0}
                 aria-label="Select All Articles"
                 className={`text-[24px] leading-[1em] transition-all duration-300 cursor-pointer ${
@@ -194,7 +192,6 @@ export default function Sidebar({
                       }
                     }
                   }}
-                  role="button"
                   tabIndex={0}
                   aria-label={`Select category ${item.name}`}
                   className={`transition-all duration-300 cursor-pointer ${

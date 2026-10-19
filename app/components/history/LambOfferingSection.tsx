@@ -477,7 +477,7 @@ export default function LambOfferingSection(props: ChildProps) {
               />
             </div>
           </Draggable>
-          <div
+          <button
             onClick={() => {
               setNotificationData(
                 props?.data?.notification?.notification_popup,
@@ -492,7 +492,7 @@ export default function LambOfferingSection(props: ChildProps) {
                 setOpenNotificationPopup(true);
               }
             }}
-            role="button"
+            type="button"
             aria-label="Open Notification Popup"
             tabIndex={0}
             className="notifiaction notification-button py-5 p-5 lg:px-8 w-full sm:w-108 bg-[#5A7C4E] absolute pl-15 lg:pl-19 mx-auto bottom-0 lg:bottom-[6.38vh] right-0 lg:right-[21vw] z-40 cursor-pointer select-none"
@@ -512,7 +512,7 @@ export default function LambOfferingSection(props: ChildProps) {
             <p className="text-[16px] sm:text-[18px] lg:text-[20px] leading-[1.25em]">
               {parse(sectionData[0].notificationText)}
             </p>
-          </div>
+          </button>
         </div>
         <div
           dir="ltr"

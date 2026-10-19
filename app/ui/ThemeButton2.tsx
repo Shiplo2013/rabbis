@@ -16,11 +16,11 @@ interface ChildProps {
 
 export default function ThemeButton2(props: ChildProps) {
   return (
-    <div
+    <button
       className="theme-button overflow-hidden"
       onClick={props?.onClick}
       onKeyDown={(e) => e.key === "Enter" && props?.onClick}
-      role="button"
+      type="button"
       aria-label={props?.text}
       tabIndex={0}
     >
@@ -50,6 +50,6 @@ export default function ThemeButton2(props: ChildProps) {
           className={`btn-bg absolute z-10 left-0 top-0 w-full h-full will-change-transform ${props?.hoverBgColor} backface-hidden`}
         ></span>
       </div>
-    </div>
+    </button>
   );
 }

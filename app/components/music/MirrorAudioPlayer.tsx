@@ -574,7 +574,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
               {/* Folder buttons */}
               <div className="album-result mt-3 flex flex-col gap-y-2 max-h-37 overflow-y-auto">
                 {musicPageData?.allAlbums?.map((item: any, index: number) => (
-                  <div
+                  <button
                     onClick={() => {
                       props.setActiveMusicFolder(index);
                       props.setActiveTab(0);
@@ -585,14 +585,14 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                         props.setActiveTab(0);
                       }
                     }}
-                    role="button"
+                    type="button"
                     tabIndex={0}
                     aria-label={`Select music folder ${item.album_title}`}
                     key={index}
                     className={`text-[#F4EDDD] text-[18px] leading-[100%] ${props.activeMusicFolder === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.10)] rounded-2xl text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300`}
                   >
                     {item.album_title}
-                  </div>
+                  </button>
                 ))}
               </div>
 
@@ -644,7 +644,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                   {musicPageData?.album?.music_category?.map(
                     (item: any, index: number) => (
                       <SwiperSlide key={index} className="w-auto!">
-                        <div
+                        <button
                           data-key={index}
                           onClick={() => props.setActiveTab(index)}
                           onKeyDown={(e) => {
@@ -652,7 +652,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                               props.setActiveTab(index);
                             }
                           }}
-                          role="button"
+                          type="button"
                           tabIndex={0}
                           aria-label={`Select music category ${item.album_title}`}
                           className={`single-tab-head min-w-40 sm:min-w-60 w-auto text-[#ffffff] text-[18px] sm:text-[24px] leading-[100%] ${props.activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300 ${props.activeTab === index && "active-tab"}`}
@@ -661,7 +661,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                           <span className="icon w-3">
                             <ArrowLeft extraClass="fill-white" />
                           </span>
-                        </div>
+                        </button>
                       </SwiperSlide>
                     ),
                   )}
@@ -699,7 +699,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                               handleAlbumTextReadMore();
                             }
                           }}
-                          role="button"
                           tabIndex={0}
                           aria-label={
                             isAlbumTextExpanded
@@ -732,7 +731,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                               activeMusic.musicIndex === index &&
                               activeMusic.tabIndex === props.activeTab;
                             return (
-                              <div
+                              <button
                                 key={index}
                                 onClick={() => {
                                   if (isActive && isPlaying) return;
@@ -758,7 +757,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                                     });
                                   }
                                 }}
-                                role="button"
+                                type="button"
                                 tabIndex={0}
                                 aria-label={`Play music ${item?.title}`}
                                 className={`single-music flex items-center justify-between gap-4 ${isActive ? "bg-[rgba(0,0,0,0.8)] active-music" : "bg-[rgba(0,0,0,0.4)]"} py-4 px-5 rounded-full relative cursor-pointer hover:bg-[rgba(0,0,0,0.8)] transition-all duration-300`}
@@ -790,7 +789,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                                         "0:00"}
                                   </p>
                                 </div>
-                              </div>
+                              </button>
                             );
                           })}
                         </div>
@@ -858,56 +857,56 @@ export default function MirrorAudioPlayer(props: ChildProps) {
 
                 {/* Buttons */}
                 <div className="controls flex gap-x-2.5 items-center flex-row-reverse">
-                  <div
+                  <button
                     onClick={handleBackward}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         handleBackward();
                       }
                     }}
-                    role="button"
+                    type="button"
                     tabIndex={0}
                     aria-label="Skip backward 10 seconds"
                     className="backward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300"
                   >
                     <BackwardIcon />
-                  </div>
-                  <div
+                  </button>
+                  <button
                     onClick={handlePlayPause}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         handlePlayPause();
                       }
                     }}
-                    role="button"
+                    type="button"
                     tabIndex={0}
                     aria-label={isPlaying ? "Pause" : "Play"}
                     className={`play cursor-pointer bg-[#C3A13F] border border-[#FFFFFF1A] w-10.5 h-10.5 rounded-full flex items-center justify-center pt-3.5 pr-3 pb-3.5 ${isPlaying ? "pl-3.5" : "pl-4"} hover:bg-[#eacb70] transition-colors duration-300`}
                   >
                     {isPlaying ? <PauseIcon /> : <PlayIcon3 />}
-                  </div>
-                  <div
+                  </button>
+                  <button
                     onClick={handleForward}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         handleForward();
                       }
                     }}
-                    role="button"
+                    type="button"
                     tabIndex={0}
                     aria-label="Skip forward 10 seconds"
                     className="forward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300"
                   >
                     <ForwardIcon />
-                  </div>
-                  <div
+                  </button>
+                  <button
                     onClick={() => handleInfinityToggle()}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         handleInfinityToggle();
                       }
                     }}
-                    role="button"
+                    type="button"
                     tabIndex={0}
                     aria-label={
                       isInfinityActive
@@ -918,7 +917,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                     className={`infinity cursor-pointer border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300 ${isInfinityActive ? "bg-[#C3A13F]" : "bg-[#FFFFFF0A]"}`}
                   >
                     <ReplayIcon />
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>

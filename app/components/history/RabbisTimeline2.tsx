@@ -317,7 +317,7 @@ function RabbisTimeline2(props: ChildProps) {
             //console.log(item);
             if (item.type === "notification") {
               return (
-                <div
+                <button
                   key={index}
                   onClick={() => {
                     setNotificationData(
@@ -333,7 +333,7 @@ function RabbisTimeline2(props: ChildProps) {
                       setOpenNotificationPopup(true);
                     }
                   }}
-                  role="button"
+                  type="button"
                   tabIndex={0}
                   aria-label={`Open notification: ${item?.title || ""}`}
                   className="timeline-content notification-button py-5 px-6 lg:px-8 w-full 2xl:w-108 lg:w-88 2xl:min-w-100 bg-[#5A7C4E] relative self-start pl-15 lg:pl-19 mx-auto z-40 lg:mt-[14vh] 2xl:-ml-[8vw] lg:-ml-[4vw] 2xl:-mr-[12vw] lg:-mr-[5vw] cursor-pointer"
@@ -353,7 +353,7 @@ function RabbisTimeline2(props: ChildProps) {
                   <div className="text-[20px] leading-[1.25em] text-right">
                     {parse(item?.title || "")}
                   </div>
-                </div>
+                </button>
               );
             } else {
               return (

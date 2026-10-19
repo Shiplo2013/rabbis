@@ -27,7 +27,7 @@ export default function GetHebrewYear(props: GetOptions) {
 
   return (
     <div className="year-month text-[24px] leading-[1.2em]">
-      <div
+      <button
         onClick={() => {
           if (props.sheetsOnSelectCategoryId !== Number(props.index) + 1) {
             handleYearClick();
@@ -40,13 +40,13 @@ export default function GetHebrewYear(props: GetOptions) {
             }
           }
         }}
-        role="button"
+        type="button"
         aria-label={`View sheets for year ${yearData?.name || ""}`}
         tabIndex={0}
         className="year text-[#CD5E41] cursor-pointer font-medium border-b border-[#CD5E41] py-2.5"
       >
         {yearData?.name || ""}
-      </div>
+      </button>
       <div
         className={`months ${props.sheetsOnSelectCategoryId === Number(props.index) + 1 ? "flex" : "hidden"} flex-col gap-y-1 py-4 border-b border-[#CD5E41]`}
       >

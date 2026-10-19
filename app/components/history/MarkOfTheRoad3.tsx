@@ -279,7 +279,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
             className="group section-content flex flex-col items-start gap-y-6 sm:gap-y-10 lg:gap-y-[10vh] w-full lg:w-[39vw] self-end lg:-mb-[9vh] lg:px-[2.7vw] lg:pt-[9vh] relative cursor-pointer"
           >
             {item?.notification !== "" && (
-              <div
+              <button
                 onClick={() => {
                   setNotificationData(
                     props?.data?.content_4?.notification?.notification_popup,
@@ -294,7 +294,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                     setOpenNotificationPopup(true);
                   }
                 }}
-                role="button"
+                type="button"
                 aria-label="Open Notification Popup"
                 tabIndex={0}
                 className="notifiaction notification-button py-5 px-8 w-full sm:w-108 bg-[#5A7C4E] relative pl-19 mx-auto z-20 cursor-pointer select-none"
@@ -314,7 +314,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                 <div className="text-[16px] sm:text-[18px] lg:text-[20px] leading-[1.25em]">
                   {parse(item?.notification)}
                 </div>
-              </div>
+              </button>
             )}
             <div dir="ltr" className="title relative z-20">
               <h4 className="text-[22px] sm:text-[36px] lg:text-[43px] text-(--theme-color) leading-[0.8em] lg:leading-[0.7em] transition-all duration-300 delay-100 group-hover:text-black group-hover text-right">

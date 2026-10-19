@@ -508,7 +508,7 @@ export default function CommunitiesSlugScriptProvider({
                         if (item?.type === "image") {
                           return (
                             <button
-                              key={index}
+                              key={item.image?.id}
                               className="pagination-item w-7.5 h-22.5 bg-[#C3A13F] cursor-pointer"
                               onClick={() => {
                                 swiperRef.current?.swiper.slideTo(index);
@@ -534,7 +534,7 @@ export default function CommunitiesSlugScriptProvider({
                         } else {
                           return (
                             <button
-                              key={index}
+                              key={item.video?.id}
                               className="pagination-item w-7.5 h-22.5 bg-[#C3A13F] cursor-pointer rounded flex items-center justify-center"
                               onClick={() => {
                                 swiperRef.current?.swiper.slideTo(index);
