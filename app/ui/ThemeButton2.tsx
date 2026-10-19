@@ -16,7 +16,14 @@ interface ChildProps {
 
 export default function ThemeButton2(props: ChildProps) {
   return (
-    <div className="theme-button overflow-hidden" onClick={props?.onClick}>
+    <button
+      className="theme-button overflow-hidden"
+      onClick={props?.onClick}
+      onKeyDown={(e) => e.key === "Enter" && props?.onClick}
+      type="button"
+      aria-label={props?.text}
+      tabIndex={0}
+    >
       <div
         className={`group flex items-center ${props?.icon !== undefined ? "pl-18" : ""} overflow-hidden relative ${props?.bgColor} ${props?.textColor} rounded-full ${props?.fontSize ? props?.fontSize : "text-[28px]"} ${props?.extraClass} backface-hidden`}
       >
@@ -43,6 +50,6 @@ export default function ThemeButton2(props: ChildProps) {
           className={`btn-bg absolute z-10 left-0 top-0 w-full h-full will-change-transform ${props?.hoverBgColor} backface-hidden`}
         ></span>
       </div>
-    </div>
+    </button>
   );
 }

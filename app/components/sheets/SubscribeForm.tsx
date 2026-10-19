@@ -30,6 +30,7 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
                     state?.payload?.get("news-name")) ||
                   ""
                 }
+                aria-label="Name Input"
               />
             </div>
             {state?.invalid_fields_object?.["news-name"] && (
@@ -53,6 +54,7 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
                     state?.payload?.get("news-email")) ||
                   ""
                 }
+                aria-label="Email Input"
               />
             </div>
             {state?.invalid_fields_object?.["news-email"] && (
@@ -66,6 +68,7 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
           </div>
           <button
             type="submit"
+            aria-label="Submit Subscription"
             disabled={isPending}
             className={`text-[20px] w-full leading-[0.8em] text-[#000000] bg-[#E7D45E] ${mode === "dark" ? "hover:bg-[#f2f2f2] hover:text-black" : "hover:bg-black hover:text-[#E7D45E]"} px-2.5 pb-2 pt-2.5 transition-all duration-300 cursor-pointer`}
           >
@@ -91,6 +94,7 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
             className="w-3 h-auto"
             checked={isChecked}
             onChange={(e) => setIsChecked(e.target.checked)}
+            aria-label="Privacy Consent"
           />
           <label onClick={() => setIsChecked(!isChecked)} htmlFor="privacy">
             קראתי ואני מסכים/ה ל

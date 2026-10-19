@@ -26,7 +26,7 @@ interface ChildProps {
   data: TabsData[];
 }
 
-export default function TempleTabs(props: ChildProps) {
+export default function TempleTabs2(props: ChildProps) {
   const [activeTab, setActiveTab] = useState(0);
   const tabsData = props.data as TabsData[];
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -93,10 +93,18 @@ export default function TempleTabs(props: ChildProps) {
           </div>
           <div className="tab-head-wrapper flex flex-col gap-y-5 relative z-30">
             {tabsData.map((tab: any, index: number) => (
-              <div
+              <button
                 key={index}
                 className={`tab-head-item group flex text-[24px] leading-[1.2em] relative cursor-pointer ${activeTab === index ? "active" : ""}`}
                 onClick={() => setActiveTab(index)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setActiveTab(index);
+                  }
+                }}
+                type="button"
+                aria-label={`Select tab ${index + 1}`}
+                tabIndex={0}
               >
                 <span className="relative">
                   {tab.tab_title}
@@ -104,7 +112,7 @@ export default function TempleTabs(props: ChildProps) {
                     className={`w-full h-0.5  bg-[#FBF4E6] ${activeTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-all duration-300`}
                   ></div>
                 </span>
-              </div>
+              </button>
             ))}
           </div>
         </div>

@@ -507,12 +507,19 @@ export default function CommunitiesSlugScriptProvider({
                       (item: any, index: number) => {
                         if (item?.type === "image") {
                           return (
-                            <div
-                              key={index}
+                            <button
+                              key={item.image?.id}
                               className="pagination-item w-7.5 h-22.5 bg-[#C3A13F] cursor-pointer"
                               onClick={() => {
                                 swiperRef.current?.swiper.slideTo(index);
                               }}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  swiperRef.current?.swiper.slideTo(index);
+                                }
+                              }}
+                              type="button"
+                              aria-label={`Go to slide ${index + 1}`}
                             >
                               <Image
                                 className="w-full h-full object-cover object-center"
@@ -522,16 +529,23 @@ export default function CommunitiesSlugScriptProvider({
                                 loading="lazy"
                                 alt="Community Image"
                               />
-                            </div>
+                            </button>
                           );
                         } else {
                           return (
-                            <div
-                              key={index}
+                            <button
+                              key={item.video?.id}
                               className="pagination-item w-7.5 h-22.5 bg-[#C3A13F] cursor-pointer rounded flex items-center justify-center"
                               onClick={() => {
                                 swiperRef.current?.swiper.slideTo(index);
                               }}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  swiperRef.current?.swiper.slideTo(index);
+                                }
+                              }}
+                              type="button"
+                              aria-label={`Go to slide ${index + 1}`}
                             >
                               <svg
                                 fill="#000000"
@@ -543,7 +557,7 @@ export default function CommunitiesSlugScriptProvider({
                                   <path d="M245.359,0.359C109.852,0.359,0,110.049,0,245.358s109.852,245,245.359,245s245.359-109.691,245.359-245   S380.866,0.359,245.359,0.359z M176.828,341.011V140.824l187.489,100.098L176.828,341.011z" />
                                 </g>
                               </svg>
-                            </div>
+                            </button>
                           );
                         }
                       },
@@ -570,9 +584,12 @@ export default function CommunitiesSlugScriptProvider({
               <div className="tab-head border-t border-b border-[#000000] border-opacity-50 w-full flex items-center justify-start">
                 {communityTabs.map((tab, index) => (
                   <button
+                    type="button"
                     key={index}
                     className={`tab-head-item w-full text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] p-4 sm:p-6 cursor-pointer ${activeTab === index ? "bg-[#091B24] text-white" : "text-[#091B24]"} transition-colors duration-300 ${index !== 0 && "border-r border-black"}`}
                     onClick={() => setActiveTab(index)}
+                    onKeyDown={(e) => e.key === "Enter" && setActiveTab(index)}
+                    aria-label={`Go to tab ${index + 1}`}
                   >
                     {tab.title}
                   </button>
@@ -818,14 +835,20 @@ export default function CommunitiesSlugScriptProvider({
           </div>
           <div className="community-sidebar bg-[#091B24] text-[#FBF4E6] w-full lg:w-112.5 h-full py-19 px-10 lg:absolute lg:top-0 lg:left-0 z-50">
             <button
+              type="button"
               onClick={() => setIsSidebarOpen(false)}
+              onKeyDown={(e) => e.key === "Enter" && setIsSidebarOpen(false)}
               className="sidebar-close w-6 h-6 p-1 absolute top-4 right-4 cursor-pointer z-20 hidden lg:block"
+              aria-label="Close Sidebar"
             >
               <CloseIcon2 className="w-full h-auto" />
             </button>
             <button
+              type="button"
               className={`sidebar-open absolute top-25 right-0 bg-[#091B24] text-white p-2 ${isSidebarOpen ? "cursor-default" : "cursor-pointer"} z-20 w-8 h-10 hidden lg:flex lg:items-center lg:justify-center opacity-0 visibility-hidden`}
               onClick={() => setIsSidebarOpen(true)}
+              onKeyDown={(e) => e.key === "Enter" && setIsSidebarOpen(true)}
+              aria-label="Open Sidebar"
             >
               <span className="block w-3 h-3 border-t border-r border-white rotate-45"></span>
             </button>

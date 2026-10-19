@@ -294,9 +294,15 @@ export default function TerribleDaysSection(props: ChildProps) {
           <div className="music-albums flex gap-x-[3.85vw] my-auto w-full">
             {pageData?.acf?.music_albums?.albums?.map(
               (item: any, index: number) => (
-                <div
+                <button
                   key={index}
                   onClick={() => handleAlbumClick(index)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && handleAlbumClick(index)
+                  }
+                  type="button"
+                  aria-label={`Open music album ${index + 1}`}
+                  tabIndex={0}
                   className="music-album group flex flex-col gap-y-5 lg:gap-y-3 cursor-pointer max-w-1/3 lg:max-w-[12.5vw] w-full items-center justify-top"
                 >
                   <div className="icon w-20 sm:w-30 lg:w-[12.5vw] h-auto relative">
@@ -336,7 +342,7 @@ export default function TerribleDaysSection(props: ChildProps) {
                       {item.album_title}
                     </h4>
                   </div>
-                </div>
+                </button>
               ),
             )}
           </div>

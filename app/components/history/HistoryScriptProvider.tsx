@@ -1022,17 +1022,6 @@ export default function HistoryScriptProvider({
     }
   }, [isAllAnimationComplete]);
 
-  if (error) {
-    return (
-      <div className="flex h-screen items-center justify-center text-center">
-        <div>
-          <h1 className="text-2xl font-bold">Error</h1>
-          <p className="text-gray-600">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
   // Dragable Image cursor pointer text
   const { contextSafe } = useGSAP();
   // Cursor Follower Function
@@ -1051,6 +1040,17 @@ export default function HistoryScriptProvider({
   const handleMouseLeave = contextSafe(() => {
     gsap.to("#drag-me", { opacity: 0, scale: 0 });
   });
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-center">
+        <div>
+          <h1 className="text-2xl font-bold">Error</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     chroniclesPageData && (

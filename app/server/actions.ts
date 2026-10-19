@@ -1,16 +1,25 @@
 "use server";
 
-export async function sendFormData(prevState: unknown, formData: FormData) {
-  //   const name = formData.get("form-name") as string;
-  //   const family = formData.get("form-family") as string;
-  //   const phone = formData.get("form-phone") as string;
-  //   const email = formData.get("form-email") as string;
-  //   const message = formData.get("form-message") as string;
+// Helper function to verify authentication
+// Replace this logic with your actual auth library (e.g., auth() from NextAuth/Auth.js)
+async function checkAuth() {
+  // const session = await auth();
+  // if (!session) throw new Error("Unauthorized");
+  // return session;
 
-  // Perform server-side processing with the form data
-  formData.append("_wpcf7_unit_tag", "b1eeb74");
-  // For example, you can send an email, store it in a database, etc.
+  const isAuthenticated = false; // FIXME: Implement actual auth logic
+  if (!isAuthenticated) {
+    throw new Error("Unauthorized access attempt.");
+  }
+}
+
+export async function sendFormData(prevState: unknown, formData: FormData) {
   try {
+    // 1. Authorize the user before executing any API call
+    await checkAuth();
+
+    formData.append("_wpcf7_unit_tag", "b1eeb74");
+
     const response = await fetch(
       "https://api.chevronyeshiva.org/wp-json/contact-form-7/v1/contact-forms/2049/feedback",
       {
@@ -31,42 +40,32 @@ export async function sendFormData(prevState: unknown, formData: FormData) {
         result.invalid_fields_object[field.field] = field.message;
       });
     }
-    result.payload = formData;
 
-    //console.log("Form data sent successfully:", result);
+    result.payload = formData;
     return result;
-  } catch (error) {
-    //console.error("Error sending form data:", error);
-    //throw error;
+  } catch (error: any) {
     return {
       success: false,
       error: "Failed to send form data.",
-      message: "An unexpected error occurred. Please try again later.",
+      message:
+        error.message === "Unauthorized access attempt."
+          ? "You must be logged in to perform this action."
+          : "An unexpected error occurred. Please try again later.",
       payload: formData,
     };
   }
-
-  // Simulating a delay for demonstration purposes
-  //await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  // Return a response or any relevant data
-  //return { success: true, name, family, phone, email, message };
 }
 
 export async function sendSubscribeData(
   prevState: unknown,
   formData: FormData,
 ) {
-  //   const name = formData.get("form-name") as string;
-  //   const family = formData.get("form-family") as string;
-  //   const phone = formData.get("form-phone") as string;
-  //   const email = formData.get("form-email") as string;
-  //   const message = formData.get("form-message") as string;
-
-  // Perform server-side processing with the form data
-  formData.append("_wpcf7_unit_tag", "66876f8");
-  // For example, you can send an email, store it in a database, etc.
   try {
+    // 1. Authorize the user before executing any API call
+    await checkAuth();
+
+    formData.append("_wpcf7_unit_tag", "66876f8");
+
     const response = await fetch(
       "https://api.chevronyeshiva.org/wp-json/contact-form-7/v1/contact-forms/2790/feedback",
       {
@@ -87,24 +86,18 @@ export async function sendSubscribeData(
         result.invalid_fields_object[field.field] = field.message;
       });
     }
-    result.payload = formData;
 
-    //console.log("Form data sent successfully:", result);
+    result.payload = formData;
     return result;
-  } catch (error) {
-    //console.error("Error sending form data:", error);
-    //throw error;
+  } catch (error: any) {
     return {
       success: false,
       error: "Failed to send form data.",
-      message: "An unexpected error occurred. Please try again later.",
+      message:
+        error.message === "Unauthorized access attempt."
+          ? "You must be logged in to perform this action."
+          : "An unexpected error occurred. Please try again later.",
       payload: formData,
     };
   }
-
-  // Simulating a delay for demonstration purposes
-  //await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  // Return a response or any relevant data
-  //return { success: true, name, family, phone, email, message };
 }

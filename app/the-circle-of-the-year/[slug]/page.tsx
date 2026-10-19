@@ -92,12 +92,12 @@ export default async function Page() {
   const pageData = await parseJsonResponse<any[]>(
     pageDataRes,
     [{}],
-    "circle-of-year-slug-page",
+    "circle-of-year-page",
   );
   const postsData = await parseJsonResponse<any[]>(
     postsDataRes,
     [],
-    "circle-of-year-slug-posts",
+    "circle-of-year-posts",
   );
 
   if (!pageData[0]) {

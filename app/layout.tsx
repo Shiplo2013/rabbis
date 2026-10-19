@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   openGraph: {
     images: "/opengraph-image.jpg",
   },
+  other: {
+    "google-site-verification": "yxV91ujpwfvaGB2wjITiXKJ8-fLj2JXGeFsqb7eEr-g",
+  },
 };
 
 const customFont = localFont({

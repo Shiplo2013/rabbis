@@ -65,7 +65,7 @@ export default function RabbisHamburgerMenuHome(
 ) {
   // Selector
   const hamurgerMenu = useRef<HTMLDivElement>(null);
-  const menuOverlay = useRef<HTMLDivElement>(null);
+  const menuOverlay = useRef<HTMLButtonElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -262,9 +262,12 @@ export default function RabbisHamburgerMenuHome(
       >
         <div className="menu-wrapper overflow-hidden">
           <button
+            type="button"
             onClick={() => {
               setActiveRabbisMenu(false);
             }}
+            onKeyDown={(e) => e.key === "Enter" && setActiveRabbisMenu(false)}
+            aria-label="Close Menu"
             className="menu-close lg:w-18 lg:h-18 sm:w-12 sm:h-12 w-10 h-10 p-3 sm:p-3.5 flex items-center justify-center rounded-full border border-[#C3A13F] absolute top-6 right-6 lg:right-12.5 z-30 cursor-pointer"
           >
             <CloseIcon />
@@ -305,13 +308,16 @@ export default function RabbisHamburgerMenuHome(
           </div>
         </div>
       </div>
-      <div
+      <button
         ref={menuOverlay}
         onClick={() => {
           setActiveRabbisMenu(false);
         }}
+        onKeyDown={(e) => e.key === "Enter" && setActiveRabbisMenu(false)}
+        aria-label="Close Menu"
+        type="button"
         className="overlay fixed top-0 right-0 w-screen h-screen z-50 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"
-      ></div>
+      ></button>
     </>
   );
 }

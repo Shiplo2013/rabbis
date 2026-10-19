@@ -36,7 +36,7 @@ export default function SingleZatzelGraduate(props: ChildProps) {
     setHebrewDateStr(formatted);
   }, [props.data?.yearOfDeath]);
   return (
-    <div
+    <button
       dir="ltr"
       data-index={props.dataIndex}
       data-date={props.data?.yearOfDeath}
@@ -47,6 +47,18 @@ export default function SingleZatzelGraduate(props: ChildProps) {
         });
         setZatzelActivePopup(true);
       }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          setZatzelPopupIndex({
+            catIndex: props.catIndex,
+            postIndex: props.dataIndex,
+          });
+          setZatzelActivePopup(true);
+        }
+      }}
+      type="button"
+      aria-label={`Open details for ${ItemData?.title}`}
+      tabIndex={0}
       className="single-zatzel-post group w-full sm:w-[calc((100%-5vw)/2)] lg:w-[calc((100%-120px)/4)] backface-hidden will-change-transform cursor-pointer"
     >
       <div className="post-image w-full h-75 sm:h-60 lg:h-80 mb-5 sm:mb-8.5 relative overflow-hidden backface-hidden">
@@ -78,6 +90,6 @@ export default function SingleZatzelGraduate(props: ChildProps) {
           <span>שנת פטירה:</span> {hebrewDateStr || `כ"ו בסיוון ה'תשע"א `}
         </p>
       </div>
-    </div>
+    </button>
   );
 }

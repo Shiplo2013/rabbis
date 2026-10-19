@@ -217,7 +217,6 @@ export default function CyclePicturesScriptProvider({
   // Page Section Animation
   useGSAP(() => {
     if (!panel.current && !wrapper.current) return;
-    setPageContentAnimation();
     if (
       typeof window !== "undefined" &&
       panel.current &&
@@ -467,62 +466,62 @@ export default function CyclePicturesScriptProvider({
   }, [pathname]);
 
   // Set Page Content Animation
-  const setPageContentAnimation = () => {
+  useGSAP(() => {
     // Page Content Animation
     const sidebar = document.getElementById(
       "cycle-sidebar",
     ) as HTMLDivElement | null;
+    // Sidebar Animation
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const windowWidth = window.innerWidth * 1.8;
+      const pageHeight = main?.current?.offsetHeight;
+
+      if (scrollTop > windowWidth) {
+        gsap.to(sidebar, {
+          x: 0,
+          duration: 0.5,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.to(sidebar, {
+          x: 340,
+          duration: 0.5,
+          ease: "power2.out",
+        });
+      }
+      // Hide sidebar when reaching the end of the page
+      if (scrollTop > (pageHeight || 0) - window.innerHeight) {
+        gsap.to(sidebar, {
+          autoAlpha: 0,
+          duration: 0.5,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.to(sidebar, {
+          autoAlpha: 1,
+          duration: 0.5,
+          ease: "power2.out",
+        });
+      }
+    };
 
     // Animations
     if (sidebar && window.innerWidth > 1024) {
       gsap.set(sidebar, {
         x: 340,
       });
-      // Sidebar Animation
-      const handleScroll = () => {
-        const scrollTop = window.scrollY;
-        const windowWidth = window.innerWidth * 1.8;
-        const pageHeight = main?.current?.offsetHeight;
-
-        if (scrollTop > windowWidth) {
-          gsap.to(sidebar, {
-            x: 0,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        } else {
-          gsap.to(sidebar, {
-            x: 340,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        }
-        // Hide sidebar when reaching the end of the page
-        if (scrollTop > (pageHeight || 0) - window.innerHeight) {
-          gsap.to(sidebar, {
-            autoAlpha: 0,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        } else {
-          gsap.to(sidebar, {
-            autoAlpha: 1,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        }
-      };
       window.addEventListener("scroll", handleScroll);
-
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-      };
     } else {
       gsap.set(sidebar, {
         autoAlpha: 0,
       });
     }
-  };
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [pathname, pageDataFetched, containerWidth]);
 
   // Set Body Overflow Hidden
   useEffect(() => {
@@ -705,6 +704,7 @@ export default function CyclePicturesScriptProvider({
                 className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
               >
                 <button
+                  type="button"
                   className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
                   disabled={isLoadingMore}
                 >

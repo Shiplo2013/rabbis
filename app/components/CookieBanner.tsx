@@ -76,7 +76,7 @@ export default function CookieBanner() {
   ) => {
     e.preventDefault();
     if (pathname !== e.currentTarget.pathname) {
-      window.open(e.currentTarget.href, "_blank");
+      window.open(e.currentTarget.href, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -97,21 +97,17 @@ export default function CookieBanner() {
       <div className="cookies-text text-[14px] leading-[1em] bg-black text-white py-2 px-5 h-10 flex items-center">
         <p>האתר הזה משתמש בעוגיות</p>
       </div>
-      <div
+      <button
         onClick={() => {
           acceptCookies();
-          console.log(
-            "Cookies accepted",
-            hasCookie("localConsent"),
-            showBanner,
-          );
         }}
+        onKeyDown={(e) => e.key === "Enter" && acceptCookies()}
         aria-label="Accept Cookies"
-        role="button"
+        type="button"
         className="cookies-text text-[17px] leading-[1em] bg-(--theme-color) hover:bg-[#DBBD5C80] text-[#010101] py-2 px-5 h-10 flex items-center cursor-pointer"
       >
         <p>אישור</p>
-      </div>
+      </button>
     </div>
   );
 }

@@ -50,6 +50,7 @@ export default function ArrowSlider() {
     <>
       <div
         onClick={handleNextSlide}
+        onKeyDown={(e) => e.key === "Enter" && handleNextSlide()}
         onMouseMove={moveCircle}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

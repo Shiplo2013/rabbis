@@ -180,12 +180,19 @@ export default function VideoItem(props: ChildProps) {
       <div className="video-wrapper w-full h-full relative">
         <div ref={videoWrap} className="video h-full w-full relative z-10">
           <VideoPlayer extraClass="w-full h-full" data={videoData} />
-          <div
+          <button
             onClick={() =>
               props.setSingleVideoPlaying(!props.singleVideoPlaying)
             }
+            onKeyDown={(e) =>
+              e.key === "Enter" &&
+              props.setSingleVideoPlaying(!props.singleVideoPlaying)
+            }
+            type="button"
+            aria-label={props.singleVideoPlaying ? "Pause Video" : "Play Video"}
+            tabIndex={0}
             className="video-overlay absolute top-0 left-0 w-full h-full bg-black z-40 opacity-40 cursor-pointer"
-          ></div>
+          ></button>
         </div>
         <div
           ref={videoButton}

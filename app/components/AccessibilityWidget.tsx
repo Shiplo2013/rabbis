@@ -139,6 +139,7 @@ export default function AccessibilityWidget() {
               Accessibility Tools
             </h2>
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close settings"
               className="text-zinc-500 hover:text-zinc-700 cursor-pointer"
@@ -155,6 +156,7 @@ export default function AccessibilityWidget() {
               </span>
               <div className="mt-2 flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={() => changeTextSize(-1)}
                   aria-label="Decrease text size"
                   className="rounded border bg-zinc-100 p-1.5 text-zinc-700 dark:bg-zinc-700 dark:text-[#dddddd]"
@@ -167,6 +169,7 @@ export default function AccessibilityWidget() {
                 </span>
 
                 <button
+                  type="button"
                   onClick={() => changeTextSize(1)}
                   aria-label="Increase text size"
                   className="rounded border bg-zinc-100 p-1.5 text-zinc-700 dark:bg-zinc-700 dark:text-[#dddddd]"
@@ -178,6 +181,7 @@ export default function AccessibilityWidget() {
               <div className="mt-2 flex gap-1">
                 {TEXT_SIZES.map((size) => (
                   <button
+                    type="button"
                     key={size}
                     onClick={() =>
                       applySettings({ ...settings, textSize: size })
@@ -196,6 +200,7 @@ export default function AccessibilityWidget() {
 
             {/* High Contrast */}
             <button
+              type="button"
               onClick={() =>
                 applySettings({
                   ...settings,
@@ -218,6 +223,7 @@ export default function AccessibilityWidget() {
 
             {/* Reduce Motion */}
             <button
+              type="button"
               onClick={() =>
                 applySettings({
                   ...settings,
@@ -240,6 +246,7 @@ export default function AccessibilityWidget() {
 
             {/* Underline Links */}
             <button
+              type="button"
               onClick={() =>
                 applySettings({
                   ...settings,
@@ -262,6 +269,7 @@ export default function AccessibilityWidget() {
 
             {/* Readable Font */}
             <button
+              type="button"
               onClick={() =>
                 applySettings({
                   ...settings,
@@ -284,6 +292,7 @@ export default function AccessibilityWidget() {
 
             {/* Grayscale */}
             <button
+              type="button"
               onClick={() =>
                 applySettings({
                   ...settings,
@@ -306,6 +315,7 @@ export default function AccessibilityWidget() {
 
             {/* Reset */}
             <button
+              type="button"
               onClick={handleReset}
               className="w-full rounded bg-zinc-200 py-1.5 text-xs text-zinc-800 hover:bg-zinc-300 dark:bg-zinc-600 dark:text-[#dddddd] dark:hover:bg-zinc-500"
             >
@@ -316,6 +326,7 @@ export default function AccessibilityWidget() {
       )}
       {/* Toggle Button */}
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Accessibility Settings"
         className="rounded-full bg-[#ac832e] p-3 text-white shadow-lg transition-transform hover:scale-105 cursor-pointer"

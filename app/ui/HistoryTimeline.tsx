@@ -19,7 +19,7 @@ export default function HistoryTimeline(props: ChildProps) {
     return offsetTop;
   }
 
-  const handleStepClick = (e: MouseEvent<HTMLDivElement>) => {
+  const handleStepClick = (e: MouseEvent<HTMLButtonElement>) => {
     const target = e.currentTarget;
     const id = target.getAttribute("data-id");
 
@@ -43,11 +43,17 @@ export default function HistoryTimeline(props: ChildProps) {
           {props?.timelineData?.map((item, index) => {
             const isLastChild = index === props?.timelineData?.length - 1;
             return (
-              <div
+              <button
                 onClick={handleStepClick}
+                onKeyDown={(e) =>
+                  e.key === "Enter" && handleStepClick(e as any)
+                }
                 className={`flex flex-row lg:flex-col gap-x-5 gap-y-5 items-center relative lg:w-36 pb-2 lg:pb-10 pt-2 cursor-pointer timeline-step intro-${index + 1}`}
                 key={index}
                 data-id={item.id}
+                type="button"
+                aria-label={`Go to ${item.title}`}
+                tabIndex={0}
               >
                 {!isLastChild && (
                   <div className="progress-line absolute top-4.25 right-1/2 mr-2.5 w-[calc(150%-10px)] z-0 origin-right">
@@ -58,7 +64,7 @@ export default function HistoryTimeline(props: ChildProps) {
                 <span className="text-[18px] sm:text-[20px] lg:text-[25px] leading-[1em] text-[#000000] lg:text-[#FBF4E6] relative lg:absolute lg:bottom-0 lg:left-1/2 lg:-translate-x-1/2 lg:min-w-[120%] text-center">
                   {item.title}
                 </span>
-              </div>
+              </button>
             );
           })}
         </div>
@@ -68,6 +74,8 @@ export default function HistoryTimeline(props: ChildProps) {
         ></div>
       </div>
       <button
+        type="button"
+        aria-label={"History Button"}
         id="history-button"
         onClick={() => setActiveTimeline(!activeTimeline)}
         className="w-12 h-12 block lg:hidden cursor-pointer"

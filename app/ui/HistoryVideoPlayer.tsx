@@ -37,6 +37,7 @@ export default function HistoryVideoPlayer(props: ChildProps) {
         Your browser does not support the video tag.
       </video>
       <button
+        type="button"
         onClick={() => setIsPlaying(!isPlaying)}
         className={`absolute top-1/2 left-1/2 w-12.5 h-12.5 p-2 flex items-center justify-center bg-[rgba(0,0,0,0.5)] hover:bg-black rounded-full ${isPlaying && "opacity-0 invisible group-hover:opacity-100 group-hover:visible"} cursor-pointer -translate-1/2 transition-all`}
       >

@@ -16,7 +16,7 @@ export default function ContentSection(props: ChildProps) {
   // Selector
   const contentData = props.data;
   const wrapper = useRef<HTMLDivElement>(null);
-  const cardFolderRef = useRef<HTMLDivElement>(null);
+  const cardFolderRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
 
   // Animation
@@ -87,9 +87,14 @@ export default function ContentSection(props: ChildProps) {
                 <h2 className="opacity-0 invisible hidden">
                   {parse(contentData?.title)}
                 </h2>
-                <div
+                <button
                   ref={cardFolderRef}
                   onClick={() => props.setActiveCardPopup?.(true)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && props.setActiveCardPopup?.(true)
+                  }
+                  type="button"
+                  aria-label="Open Card Folder"
                   className="card-folder w-35 sm:w-50 lg:w-76 h-auto cursor-pointer"
                 >
                   <CardFolder />
@@ -99,7 +104,7 @@ export default function ContentSection(props: ChildProps) {
                   <div className="absolute text-[14px] sm:text-[20px] lg:text-[32px] leading-[1em] left-0 right-0 bottom-0 py-2 italic text-[#000000] text-center font-bold">
                     לקריאה
                   </div>
-                </div>
+                </button>
               </div>
             )}
           </div>

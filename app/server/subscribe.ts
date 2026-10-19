@@ -1,9 +1,24 @@
 "use server";
 
+// Helper function to verify authentication
+// Replace this logic with your actual auth library (e.g., auth() from NextAuth/Auth.js)
+async function checkAuth() {
+  // const session = await auth();
+  // if (!session) throw new Error("Unauthorized");
+  // return session;
+
+  const isAuthenticated = false; // FIXME: Implement actual auth logic
+  if (!isAuthenticated) {
+    throw new Error("Unauthorized access attempt.");
+  }
+}
+
 export async function sendSubscribeData(
   prevState: unknown,
   subscribeFormData: FormData,
 ) {
+  // 1. Authorize the user before executing any API call
+  await checkAuth();
   // Perform server-side processing with the form data
   subscribeFormData.append("_wpcf7_unit_tag", "65f4655");
 

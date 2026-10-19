@@ -477,13 +477,24 @@ export default function LambOfferingSection(props: ChildProps) {
               />
             </div>
           </Draggable>
-          <div
+          <button
             onClick={() => {
               setNotificationData(
                 props?.data?.notification?.notification_popup,
               );
               setOpenNotificationPopup(true);
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setNotificationData(
+                  props?.data?.notification?.notification_popup,
+                );
+                setOpenNotificationPopup(true);
+              }
+            }}
+            type="button"
+            aria-label="Open Notification Popup"
+            tabIndex={0}
             className="notifiaction notification-button py-5 p-5 lg:px-8 w-full sm:w-108 bg-[#5A7C4E] absolute pl-15 lg:pl-19 mx-auto bottom-0 lg:bottom-[6.38vh] right-0 lg:right-[21vw] z-40 cursor-pointer select-none"
           >
             <div className="notify-icon w-20 sm:w-30 h-auto lg:w-50.5 lg:h-33.75 absolute top-4 sm:top-0 left-0 -translate-x-1/2">
@@ -501,7 +512,7 @@ export default function LambOfferingSection(props: ChildProps) {
             <p className="text-[16px] sm:text-[18px] lg:text-[20px] leading-[1.25em]">
               {parse(sectionData[0].notificationText)}
             </p>
-          </div>
+          </button>
         </div>
         <div
           dir="ltr"

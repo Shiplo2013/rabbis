@@ -12,9 +12,11 @@ export default function SidebarForm() {
           name="email-subscibe"
           className="w-full h-full focus:outline-0 rounded-full p-2.5 pl-15"
           defaultValue={state?.payload?.get("email-subscibe") || ""}
+          aria-label="Email Subscription Input"
         />
         <button
           type="submit"
+          aria-label="Submit Subscription"
           disabled={isPending}
           className="bg-[#C3A13F] w-14.5 h-full flex items-center justify-center rounded-full absolute top-0 left-0 cursor-pointer hover:bg-[#ce9d09]"
         >

@@ -77,6 +77,7 @@ export default function ConferenceContentSection(props: ChildProps) {
               />
             )}
             <button
+              type="button"
               onClick={() => setToggler(!toggler)}
               className="video-popup cursor-pointer w-25 min-w-25 h-auto flex items-center justify-center flex-col group text-[18px]"
             >

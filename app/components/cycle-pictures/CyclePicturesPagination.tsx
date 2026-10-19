@@ -15,6 +15,7 @@ export default function CyclePicturesPagination() {
       className="cycle-pictures-pagination fixed bottom-5 right-20 flex justify-center items-center gap-x-[1vw] z-500 opacity-0 invisible text-[18px]"
     >
       <button
+        type="button"
         onClick={() => {
           if (
             cyclePostNavigation?.currentPage &&
@@ -43,6 +44,7 @@ export default function CyclePicturesPagination() {
         עמוד קודם
       </button>
       <button
+        type="button"
         onClick={() => {
           if (
             cyclePostNavigation?.nextPage &&

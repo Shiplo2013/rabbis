@@ -181,6 +181,7 @@ export default function RabbisSlider(props: ChildProps) {
           className="custom-pagination flex items-center justify-center gap-5"
         ></div>
         <button
+          type="button"
           style={{
             backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
           }}
@@ -196,6 +197,7 @@ export default function RabbisSlider(props: ChildProps) {
           </div>
         </button>
         <button
+          type="button"
           style={{
             backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
           }}

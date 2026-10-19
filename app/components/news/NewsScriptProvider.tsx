@@ -170,7 +170,6 @@ export default function NewsScriptProvider({
       wrapper.current &&
       window.innerWidth > 1024
     ) {
-      setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -409,10 +408,12 @@ export default function NewsScriptProvider({
     const xSetter = gsap.quickSetter(viewRef, "x", "px");
     const ySetter = gsap.quickSetter(viewRef, "y", "px");
 
-    window.addEventListener("mousemove", (e) => {
+    const getMousePosition = (e: any) => {
       xSetter(e.clientX);
       ySetter(e.clientY);
-    });
+    };
+
+    window.addEventListener("mousemove", getMousePosition);
     // Show view on mouse hover
     const imageItems = main.current?.querySelectorAll(".news-image");
     imageItems?.forEach((item) => {
@@ -425,10 +426,7 @@ export default function NewsScriptProvider({
     });
 
     return () => {
-      window.removeEventListener("mousemove", (e) => {
-        xSetter(e.clientX);
-        ySetter(e.clientY);
-      });
+      window.removeEventListener("mousemove", getMousePosition);
       imageItems?.forEach((item) => {
         item.removeEventListener("mouseenter", () => {
           gsap.to(viewRef, { opacity: 1, scale: 1, duration: 0.3 });
@@ -441,7 +439,8 @@ export default function NewsScriptProvider({
   }, [pathname, pageDataFetched]);
 
   // Set Page Content Animation
-  const setPageContentAnimation = () => {
+  useGSAP(() => {
+    if (!panel.current && !wrapper.current) return;
     const animations: gsap.core.Animation[] = [];
     // Page Content Animation
     const sidebar = main.current?.querySelector(
@@ -637,11 +636,12 @@ export default function NewsScriptProvider({
     });
     // Other Animation
     var mouse = { x: 0, y: 0, moved: false };
-    window.addEventListener("mousemove", function (e) {
+    const getMousePosition = (e: any) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
       mouse.moved = true;
-    });
+    };
+    window.addEventListener("mousemove", getMousePosition);
     function parallaxIt(target: any, movement: number) {
       gsap.to(target, {
         x: ((mouse.x - window.innerWidth / 2) / window.innerWidth) * movement,
@@ -650,7 +650,7 @@ export default function NewsScriptProvider({
       });
     }
     // Animate on mouse move
-    window.addEventListener("mousemove", function () {
+    const animateNewsImage = () => {
       if (mouse.moved) {
         postImages?.forEach((postImage) => {
           postImage.querySelectorAll(".news-image").forEach((image, index) => {
@@ -667,13 +667,16 @@ export default function NewsScriptProvider({
         });
       }
       mouse.moved = false;
-    });
+    };
+    window.addEventListener("mousemove", animateNewsImage);
 
     // Return
     return () => {
       animations.forEach((animation) => animation.kill());
+      window.removeEventListener("mousemove", animateNewsImage);
+      window.removeEventListener("mousemove", getMousePosition);
     };
-  };
+  }, [pathname, pageDataFetched]);
 
   // Set Body Overflow Hidden
   useGSAP(() => {

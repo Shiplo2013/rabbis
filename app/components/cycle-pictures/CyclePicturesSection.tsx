@@ -53,6 +53,7 @@ export default function CyclePicturesSection(props: ChildProps) {
               >
                 <div className="year-month-categories pl-2.5 lg:pl-10 pr-2.5">
                   <button
+                    type="button"
                     disabled={cycleActiveCategory === -1 || isLoading}
                     onClick={(e) => {
                       e.preventDefault();
@@ -65,7 +66,8 @@ export default function CyclePicturesSection(props: ChildProps) {
                   {years.map((item: any, index: number) => {
                     return (
                       <button
-                        key={index}
+                        type="button"
+                        key={item.id}
                         disabled={
                           Number(cycleActiveCategory) === item.id || isLoading
                         }

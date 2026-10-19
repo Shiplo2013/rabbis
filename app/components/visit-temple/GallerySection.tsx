@@ -224,12 +224,20 @@ export default function GallerySection(props: GallerySectionProps) {
         <div className="tab-head-wrapper flex flex-col gap-y-5 relative z-30">
           {props.tabDataHead &&
             props.tabDataHead.map((tab: any, index: number) => (
-              <div
+              <button
                 key={index}
                 className={`tab-head-item group flex text-[24px] leading-[1.2em] relative cursor-pointer ${props.activeTab === index ? "active" : ""}`}
                 onClick={() => {
                   setActiveTab(index);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setActiveTab(index);
+                  }
+                }}
+                type="button"
+                aria-label={`Select tab ${index + 1}`}
+                tabIndex={0}
               >
                 <span className="relative">
                   {tab.tab_title}
@@ -237,7 +245,7 @@ export default function GallerySection(props: GallerySectionProps) {
                     className={`w-full h-0.5  bg-[#FBF4E6] ${props.activeTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-all duration-300`}
                   ></div>
                 </span>
-              </div>
+              </button>
             ))}
         </div>
       </div>

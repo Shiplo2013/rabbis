@@ -82,7 +82,11 @@ export default function SheetContentItem(props: { data?: any }) {
             svgIconClass={""}
             onClick={() => {
               if (itemData?.acf?.magazine) {
-                window.open(itemData?.acf?.magazine?.url, "_blank");
+                window.open(
+                  itemData?.acf?.magazine?.url,
+                  "_blank",
+                  "noopener,noreferrer",
+                );
               }
             }}
           />
