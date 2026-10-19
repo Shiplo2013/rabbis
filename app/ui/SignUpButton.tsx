@@ -18,7 +18,11 @@ export default function SignUpButton(props: ChildProps) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    window.open("https://hevron.friman.app/join", "_blank");
+    window.open(
+      "https://hevron.friman.app/join",
+      "_blank",
+      "noopener,noreferrer",
+    );
   };
   return (
     <button
