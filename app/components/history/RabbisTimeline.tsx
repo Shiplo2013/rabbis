@@ -157,7 +157,7 @@ export default function RabbisTimeline(props: ChildProps) {
           {props?.data &&
             props?.data?.map((item: any, index: number) => (
               <div
-                key={index}
+                key={"Current-Rabbis-" + index}
                 className="current-rubbis w-full sm:w-[calc((100%-5vw)/2)] lg:w-64.5 flex flex-col gap-y-6 sm:gap-y-10 lg:gap-y-[5.5vh]"
               >
                 <div className="image w-full h-[84vw] sm:w-64.5 sm:h-76.25">

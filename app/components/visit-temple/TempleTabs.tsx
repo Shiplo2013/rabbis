@@ -49,7 +49,7 @@ export default function TempleTabs(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const swiperRef = useRef<SwiperRef>(null);
-  const [loadedSlides, setLoadedSlides] = useState<number[]>([0]);
+  const [loadedSlides, setLoadedSlides] = useState(() => new Set([0]));
   const paginationRef = useRef(null);
 
   // Lightbox State
@@ -150,7 +150,7 @@ export default function TempleTabs(props: ChildProps) {
             {tabsData.map((tab: any, index: number) => (
               <Link
                 href={`/visit-temple/${index}`}
-                key={index}
+                key={tab.tab_title}
                 onClick={handleLinkClick}
                 className={`group flex text-[24px] leading-[1.2em] relative cursor-pointer ${templeActiveTab === index ? "active" : ""}`}
               >
@@ -249,14 +249,13 @@ export default function TempleTabs(props: ChildProps) {
                       Object.values(
                         tabsData[templeActiveTab]?.gallery || [],
                       ).map((item: any, index: number) => {
-                        console.log(item);
                         const orientation =
                           props.tabGalleryData?.[templeActiveTab]?.images[index]
                             ?.orientation;
                         if (orientation === "landscape") {
                           return (
                             <div
-                              key={index}
+                              key={item?.id}
                               className="single-gallery will-change-transform w-75 h-45 sm:w-140 sm:h-85 lg:w-[32vw] lg:h-[40vh] overflow-hidden"
                             >
                               <div
@@ -281,7 +280,7 @@ export default function TempleTabs(props: ChildProps) {
                         } else {
                           return (
                             <div
-                              key={index}
+                              key={item?.id}
                               className="single-gallery will-change-transform w-50 h-70 sm:w-100 sm:h-140 lg:w-[22vw] lg:h-[70vh] overflow-hidden"
                             >
                               <div
@@ -312,9 +311,12 @@ export default function TempleTabs(props: ChildProps) {
                           autoHeight={true}
                           onSlideChange={(swiper) => {
                             const nextIndex = swiper.activeIndex;
-                            if (!loadedSlides.includes(nextIndex)) {
-                              setLoadedSlides((prev) => [...prev, nextIndex]);
-                            }
+                            setLoadedSlides((previous) => {
+                              if (previous.has(nextIndex)) return previous;
+                              const next = new Set(previous);
+                              next.add(nextIndex);
+                              return next;
+                            });
                           }}
                         >
                           {props.tabGalleryData?.[templeActiveTab]?.images
@@ -323,13 +325,13 @@ export default function TempleTabs(props: ChildProps) {
                               tabsData[templeActiveTab]?.gallery || [],
                             ).map((item: any, index: number) => (
                               <SwiperSlide
-                                key={index}
+                                key={item?.id}
                                 className="single-gallery will-change-transform w-full h-auto overflow-hidden"
                               >
                                 <div
                                   className={`single-gallery-image w-full h-auto relative`}
                                 >
-                                  {loadedSlides.includes(index) ? (
+                                  {loadedSlides.has(index) ? (
                                     <Image
                                       className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
                                       src={

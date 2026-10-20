@@ -763,9 +763,9 @@ export default function KnessetScriptProvider({
             >
               {normalPosts?.map((post: any, index: number) => {
                 return (
-                  <Fragment key={`knesset-entry-${index}`}>
+                  <Fragment key={`knesset-entry-${post.id}`}>
                     <CustomContentItem
-                      key={index}
+                      key={post.id}
                       data={post}
                       postLoading={postLoading}
                     />

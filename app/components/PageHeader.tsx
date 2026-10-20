@@ -246,7 +246,7 @@ function PageHeader() {
                     const haveSubmenu = item.subMenu && item.subMenu.length > 0;
                     return (
                       <div
-                        key={index}
+                        key={item?.title}
                         className="menu-item group/parent flex items-center justify-center relative"
                       >
                         {haveSubmenu ? (
@@ -254,7 +254,7 @@ function PageHeader() {
                             className={`text-[#E2D7C3] w-full h-full flex items-center justify-center submenu-parent`}
                           >
                             <span
-                              className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-all duration-300`}
+                              className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-[height] duration-300`}
                             ></span>
                             <span
                               className={`flex justify-center items-center w-full h-full  transition-all origin-center border border-[#000000B2] ${haveSubmenu ? "submenu" : "group-hover/parent:border-[#DBBD5C80] group-hover/parent:bg-[#000000B2] group-hover/parent:rotate-90 group-hover/parent:-mt-[50%]"}`}
@@ -293,7 +293,7 @@ function PageHeader() {
                                   (subItem: any, subIndex: number) => {
                                     return (
                                       <div
-                                        key={subIndex}
+                                        key={subItem?.title}
                                         className="relative px-3 py-5 bg-[#000000B2] border border-[#DBBD5C80] w-full"
                                       >
                                         <Link
@@ -324,7 +324,7 @@ function PageHeader() {
                                 if (subIndex === 0) {
                                   return (
                                     <div
-                                      key={subIndex}
+                                      key={subItem.title}
                                       className="menu-head bg-[#000000B2] border border-[#DBBD5C80] px-4 py-3 mb-1.5 text-[#E2D7C3] text-[15.55px] leading-[70%]"
                                     >
                                       <Link
@@ -350,7 +350,7 @@ function PageHeader() {
                                     if (subIndex > 0 && subIndex < 7) {
                                       return (
                                         <Link
-                                          key={subIndex}
+                                          key={subItem.title}
                                           href={subItem.link}
                                           onClick={(e) => {
                                             handleLinkClick(e);
@@ -431,7 +431,7 @@ function PageHeader() {
                     link.submenus && link.submenus.menu1.length > 0;
                   return (
                     <div
-                      key={index}
+                      key={link.name}
                       className="menu-item group/parent flex items-center justify-center relative"
                     >
                       <Link

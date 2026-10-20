@@ -91,7 +91,7 @@ export default async function Page() {
     : [];
 
   const mappedSections = await Promise.all(
-    sections.map(async (section: any) => {
+    sections.map(async (section: any, index: number) => {
       const sectionPostIds = (section?.section_posts || [])
         .map((post: any) => post?.ID || post?.id || post)
         .filter(Boolean);
@@ -100,6 +100,7 @@ export default async function Page() {
         return {
           sectionTitle: section?.section_title || "",
           sectionContent: [],
+          id: index + 1,
         };
       }
 
@@ -114,6 +115,7 @@ export default async function Page() {
         return {
           sectionTitle: section?.section_title || "",
           sectionContent: [],
+          id: index + 1,
         };
       }
 
@@ -135,6 +137,7 @@ export default async function Page() {
       return {
         sectionTitle: section?.section_title || "",
         sectionContent,
+        id: index + 1,
       };
     }),
   );

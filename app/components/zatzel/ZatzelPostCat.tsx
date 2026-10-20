@@ -35,7 +35,7 @@ export default function ZatzelPostCat(props: ChildProps) {
         {zatzelCatData?.sectionContent?.map(
           (item: ZatzelPost, index: number) => (
             <SingleZatzelGraduate
-              key={index}
+              key={item?.id}
               dataIndex={item?.id}
               data={item}
               catIndex={props.dataIndex}

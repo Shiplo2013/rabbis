@@ -588,7 +588,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                     type="button"
                     tabIndex={0}
                     aria-label={`Select music folder ${item.album_title}`}
-                    key={index}
+                    key={item.album_title}
                     className={`text-[#F4EDDD] text-[18px] leading-[100%] ${props.activeMusicFolder === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.10)] rounded-2xl text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300`}
                   >
                     {item.album_title}
@@ -643,9 +643,9 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                 >
                   {musicPageData?.album?.music_category?.map(
                     (item: any, index: number) => (
-                      <SwiperSlide key={index} className="w-auto!">
+                      <SwiperSlide key={item.album_title} className="w-auto!">
                         <button
-                          data-key={index}
+                          data-key={"Tab-" + index}
                           onClick={() => props.setActiveTab(index)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
@@ -732,7 +732,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                               activeMusic.tabIndex === props.activeTab;
                             return (
                               <button
-                                key={index}
+                                key={item?.title}
                                 onClick={() => {
                                   if (isActive && isPlaying) return;
                                   shouldAutoPlayRef.current = true;

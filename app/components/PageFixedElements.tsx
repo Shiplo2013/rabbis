@@ -401,8 +401,8 @@ export default function PageFixedElements() {
           <div className="equalizer flex items-end justify-center gap-0.5 h-4">
             {[0.2, 0.4, 0.6, 0.8, 1.0].map((delay, index) => (
               <div
-                key={index}
-                className={`w-0.5 h-full bg-[#000000] rounded-full transition-all ${
+                key={"Animated-Bar-" + index}
+                className={`w-0.5 h-full bg-[#000000] rounded-full transition-transform ${
                   isPlaying ? `equalizer-animation` : "scale-30"
                 }`}
               />
@@ -425,8 +425,7 @@ export default function PageFixedElements() {
         pathname.startsWith("/the-circle-of-the-year/") ||
         pathname === "/testimonials" ||
         pathname === "/past-rabbis" ||
-        (pathname.startsWith("/past-rabbis/") &&
-          pathname !== "/past-rabbis/v2") ||
+        pathname.startsWith("/past-rabbis/") ||
         pathname === "/news" ||
         pathname === "/donation" ||
         pathname === "/communities" ||
@@ -515,7 +514,7 @@ export default function PageFixedElements() {
                           alt="Popup Thumbnail"
                           width={196}
                           height={205}
-                          className={`w-full h-full object-cover object-center transition-all duration-300 ${loadingImage ? "opacity-0" : "opacity-100"}`}
+                          className={`w-full h-full object-cover object-center transition-opacity duration-300 ${loadingImage ? "opacity-0" : "opacity-100"}`}
                           onLoad={() => setLoadingImage(false)}
                           onChange={() => setLoadingImage(true)}
                           blurDataURL={CreateShimmerDataUrl(196, 205)}
@@ -542,7 +541,7 @@ export default function PageFixedElements() {
                   e.key === "Enter" && setZatzelActivePopup(false)
                 }
                 aria-label="Close Zatzel Popup"
-                className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all"
+                className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-[width]"
               >
                 <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
               </button>
@@ -588,7 +587,7 @@ export default function PageFixedElements() {
             {musicPageData?.holidayPosts?.map((item: any, index: number) => {
               return (
                 <div
-                  key={index}
+                  key={item?.id}
                   data-index={item?.id}
                   className={`image-wrapper hover-image-${index} w-29 h-43.25 absolute top-0 left-0`}
                 >
@@ -683,7 +682,7 @@ export default function PageFixedElements() {
                 <button
                   type="button"
                   aria-label="Close Popup"
-                  className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-all"
+                  className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-[width]"
                 >
                   <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
                 </button>
@@ -810,7 +809,7 @@ export default function PageFixedElements() {
                 <button
                   type="button"
                   aria-label="Close Popup"
-                  className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-1/2 cursor-e-resize hover:w-8 duration-300 transition-all"
+                  className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-1/2 cursor-e-resize hover:w-8 duration-300 transition-[width]"
                 >
                   <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
                 </button>
@@ -820,7 +819,7 @@ export default function PageFixedElements() {
           )}
         </>
       )}
-      {(pathname === "/past-rabbis" || pathname === "/past-rabbis/v2") && (
+      {pathname === "/past-rabbis" && (
         <div
           id="pastrabbis-sidebar"
           className="pastrabbis-sidebar fixed top-0 right-15 w-70 h-full bg-[#000000] flex flex-col justify-center z-50 border-l border-[#D1CECE]"
@@ -857,7 +856,7 @@ export default function PageFixedElements() {
                 <button
                   type="button"
                   aria-label="Reset Filter"
-                  className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-all duration-300"
+                  className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-colors duration-300"
                   onClick={() => {
                     nameRef.current && (nameRef.current.value = "");
                     setPastRabbisSearchQuery("");
@@ -997,7 +996,7 @@ export default function PageFixedElements() {
                   ) => {
                     return (
                       <GetHebrewYear
-                        key={index}
+                        key={item?.id}
                         index={index}
                         year={item}
                         activeCategory={sheetsOnSelectCategoryChildId}
@@ -1079,7 +1078,7 @@ export default function PageFixedElements() {
                             <button
                               type="button"
                               aria-label={`Select Category ${item.name}`}
-                              key={index}
+                              key={item?.id}
                               disabled={
                                 Number(cycleActiveCategory) === item.id ||
                                 isLoading
@@ -1088,7 +1087,7 @@ export default function PageFixedElements() {
                                 e.preventDefault();
                                 setCycleActiveCategory(item.id);
                               }}
-                              className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-all duration-300 ${Number(cycleActiveCategory) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
+                              className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-colors duration-300 ${Number(cycleActiveCategory) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
                             >
                               {parse(item.name || "")}
                             </button>
@@ -1125,7 +1124,7 @@ export default function PageFixedElements() {
                 {cycleAllPosts?.length > 0 &&
                   cycleAllPosts?.map((item: any, index: number) => {
                     return (
-                      <SwiperSlide data-id={item?.id} key={index}>
+                      <SwiperSlide data-id={item?.id} key={item?.id}>
                         <div className="flex flex-col items-center h-full justify-center gap-y-5 px-[5vw]">
                           <div className="cycle-image w-full max-w-5xl h-auto flex items-center justify-center [&>figure]:w-full [&>figure>div>img]:w-full">
                             <InnerImageZoom

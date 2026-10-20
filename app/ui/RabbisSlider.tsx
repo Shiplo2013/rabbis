@@ -117,7 +117,7 @@ export default function RabbisSlider(props: ChildProps) {
       >
         {props?.data?.map((item: RabbiPost, index: number) => {
           return (
-            <SwiperSlide key={index} id={`past-rabbis-${item.post_id}`}>
+            <SwiperSlide key={item.post_id} id={`past-rabbis-${item.post_id}`}>
               <div className="rabbis-wrapper relative w-full sm:min-w-140 flex flex-col items-center justify-center group">
                 <div className="rabbis-thumb w-80 h-87.5 relative z-10">
                   <Image

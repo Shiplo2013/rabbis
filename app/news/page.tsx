@@ -65,23 +65,26 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function page() {
-  const pageRes = wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=news&_fields=id,acf`,
-    {
-      next: { revalidate: 60 },
-    },
-  );
-  const postsRes = wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/posts?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,slug,acf&per_page=20`,
-    {
-      next: { revalidate: 60 },
-    },
-  );
+  let pageDataRes: Response | null = null;
+  let postsDataRes: Response | null = null;
 
-  const [pageDataRes, postsDataRes] = await Promise.all([pageRes, postsRes]);
-
-  if (!pageDataRes.ok || !postsDataRes.ok) {
-    throw new Error("Failed to load data.");
+  try {
+    [pageDataRes, postsDataRes] = await Promise.all([
+      wpFetch(
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=news&_fields=id,acf`,
+        {
+          next: { revalidate: 60 }, // Cache data for 1 minute
+        },
+      ),
+      wpFetch(
+        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/posts?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,slug,acf&per_page=100`,
+        {
+          next: { revalidate: 60 }, // Cache data for 1 minute
+        },
+      ),
+    ]);
+  } catch (error) {
+    console.error("Failed to fetch past-rabbis data:", error);
   }
 
   let pageData = [
@@ -97,19 +100,27 @@ export default async function page() {
   ];
   let postsData: any[] = [];
 
-  const parsedPageData = await parseJsonResponse<any[]>(
-    pageDataRes,
-    pageData,
-    "news-page",
-  );
-  pageData = Array.isArray(parsedPageData) ? parsedPageData : [parsedPageData];
+  if (pageDataRes?.ok) {
+    const parsed = await parseJsonResponse<any[]>(
+      pageDataRes,
+      pageData,
+      "news-page",
+    );
+    pageData = Array.isArray(parsed) ? parsed : [parsed];
+  } else if (pageDataRes) {
+    console.error("Failed to load news page data:", pageDataRes.status);
+  }
 
-  const parsedPostsData = await parseJsonResponse<any[]>(
-    postsDataRes,
-    postsData,
-    "news-posts",
-  );
-  postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
+  if (postsDataRes?.ok) {
+    const parsed = await parseJsonResponse<any[]>(
+      postsDataRes,
+      postsData,
+      "news-posts",
+    );
+    postsData = Array.isArray(parsed) ? parsed : [];
+  } else if (postsDataRes) {
+    console.error("Failed to load news posts:", postsDataRes.status);
+  }
 
   if (!pageData[0]) {
     return notFound();

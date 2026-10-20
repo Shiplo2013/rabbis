@@ -215,7 +215,7 @@ export default function MirrorsSection(props: ChildProps) {
               {pageData.images.length !== 0 &&
                 pageData.images?.map((item: any, index: number) => {
                   return (
-                    <SwiperSlide key={index}>
+                    <SwiperSlide key={item.id}>
                       <div className="w-full h-120 lg:h-[50vh]">
                         <Image
                           className="w-full h-full object-cover object-center"
@@ -243,7 +243,7 @@ export default function MirrorsSection(props: ChildProps) {
                 pageData.images?.map((item: any, index: number) => {
                   return (
                     <button
-                      key={index}
+                      key={item?.id}
                       onClick={() => {
                         swiperRef.current?.swiper.slideTo(index);
                       }}
@@ -276,7 +276,7 @@ export default function MirrorsSection(props: ChildProps) {
             {pageData.images?.map((item: any, index: number) => {
               return (
                 <div
-                  key={index}
+                  key={item.id}
                   style={{
                     clipPath: `${index === 0 ? "inset(0%)" : "inset(50%)"}`,
                     zIndex: `1${index}`,
@@ -342,7 +342,7 @@ export default function MirrorsSection(props: ChildProps) {
             {pageData.images?.map((item: any, index: number) => {
               return (
                 <button
-                  key={index}
+                  key={item.id}
                   onClick={() => handleThumbClick(index)}
                   onKeyDown={(e) =>
                     e.key === "Enter" && handleThumbClick(index)

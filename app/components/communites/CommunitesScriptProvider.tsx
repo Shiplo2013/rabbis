@@ -397,7 +397,7 @@ export default function CommunitiesScriptProvider({
                     communityPageData?.postsData?.map(
                       (categoryData: any, index: number) => (
                         <CommunitesPostCat
-                          key={index}
+                          key={categoryData?.categoryId}
                           postsContent={categoryData}
                           className={`will-change-transform rabbis-section-${index}`}
                         />

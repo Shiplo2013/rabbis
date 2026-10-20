@@ -318,7 +318,7 @@ function RabbisTimeline2(props: ChildProps) {
             if (item.type === "notification") {
               return (
                 <button
-                  key={index}
+                  key={"Rabbis-Timeline-Notification-" + index}
                   onClick={() => {
                     setNotificationData(
                       item?.notification_popup || { title: "", content: "" },
@@ -358,7 +358,7 @@ function RabbisTimeline2(props: ChildProps) {
             } else {
               return (
                 <div
-                  key={index}
+                  key={"Rabbis-Timeline-" + index}
                   className={`timeline-content ${item.size === "portrait" ? "w-full 2xl:w-[13.4vw] lg:w-[16vw]" : "w-full lg:w-[23.2vw]"} flex flex-col 2xl:gap-y-10 lg:gap-y-[10vh] sm:gap-y-[5.5vh]`}
                 >
                   {item.size === "portrait" ? (

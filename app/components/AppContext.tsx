@@ -1,7 +1,14 @@
 // app/context/AppContext.tsx
 "use client"; // Required for useState and createContext
 
-import { createContext, ReactNode, useContext, useRef, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 type ContextType = {
   // Default States
@@ -178,50 +185,50 @@ type ContextType = {
 
 const AppContext = createContext<ContextType | undefined>(undefined);
 
-export function AppProvider({
-  appData,
-  children,
-}: {
-  appData: any;
-  children: ReactNode;
-}) {
-  // Default States
-  const smoother = useRef(null);
-  const [animationPlayed, setAnimationPlayed] = useState<boolean>(false);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+function useCoreState() {
+  const smoother = useRef<ScrollSmoother | null>(null);
+  const [animationPlayed, setAnimationPlayed] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [audioFile, setAudioFile] = useState<string | null>(
     "https://dovp7.sg-host.com/wp-content/uploads/2026/02/music.mp3",
   );
-  // Hamburger Menu States
   const [activeHamburgerMenu, setActiveHamburgerMenu] = useState(false);
 
-  // Zatzel Posts States
-  const [zatzelPosts, setZatzelPosts] = useState<{
-    sections: {
-      sectionTitle: string;
-      sectionContent: {
-        title: string;
-        yearOfDeath: string;
-        image: {
-          sizes: {
-            thumbnail: string;
-          };
-        };
-        popup: {
-          title: string;
-          content: string;
-        };
-      }[];
-    }[];
-  }>({ sections: [] });
+  return useMemo(
+    () => ({
+      smoother,
+      animationPlayed,
+      setAnimationPlayed,
+      isPlaying,
+      setIsPlaying,
+      isLoading,
+      setIsLoading,
+      audioFile,
+      setAudioFile,
+      activeHamburgerMenu,
+      setActiveHamburgerMenu,
+    }),
+    [
+      smoother,
+      animationPlayed,
+      isPlaying,
+      isLoading,
+      audioFile,
+      activeHamburgerMenu,
+    ],
+  );
+}
+
+function useZatzelState() {
+  const [zatzelPosts, setZatzelPosts] = useState<ContextType["zatzelPosts"]>({
+    sections: [],
+  });
   const [zatzelPopupIndex, setZatzelPopupIndex] = useState({
     catIndex: 0,
     postIndex: 0,
   });
-  const [zatzelActivePopup, setZatzelActivePopup] = useState<boolean>(false);
-
-  // Zatzel States
+  const [zatzelActivePopup, setZatzelActivePopup] = useState(false);
   const [zatzelSelectedDate, setZatzelSelectedDate] = useState<Date | null>(
     null,
   );
@@ -229,7 +236,30 @@ export function AppProvider({
     null,
   );
 
-  // Cycle Of Pictures States
+  return useMemo(
+    () => ({
+      zatzelPosts,
+      setZatzelPosts,
+      zatzelPopupIndex,
+      setZatzelPopupIndex,
+      zatzelActivePopup,
+      setZatzelActivePopup,
+      zatzelSelectedDate,
+      setZatzelSelectedDate,
+      zatzelSearchedData,
+      setZatzelSearchedData,
+    }),
+    [
+      zatzelPosts,
+      zatzelPopupIndex,
+      zatzelActivePopup,
+      zatzelSelectedDate,
+      zatzelSearchedData,
+    ],
+  );
+}
+
+function useCycleState() {
   const [cycleActiveCategory, setCycleActiveCategory] = useState<number | null>(
     -1,
   );
@@ -238,24 +268,88 @@ export function AppProvider({
   const [activeCyclePopup, setActiveCyclePopup] = useState(false);
   const [cyclePopupIndex, setCyclePopupIndex] = useState(0);
 
-  // Temple States
-  const [templeTabData, setTempleTabData] = useState<{ tab_title?: string }[]>(
-    [],
+  return useMemo(
+    () => ({
+      cycleActiveCategory,
+      setCycleActiveCategory,
+      cycleCategories,
+      setCycleCategories,
+      cycleAllPosts,
+      setCycleAllPosts,
+      activeCyclePopup,
+      setActiveCyclePopup,
+      cyclePopupIndex,
+      setCyclePopupIndex,
+    }),
+    [
+      cycleActiveCategory,
+      cycleCategories,
+      cycleAllPosts,
+      activeCyclePopup,
+      cyclePopupIndex,
+    ],
   );
-  const [templeActiveTab, setTempleActiveTab] = useState<number>(0);
-  // Music Page States
-  const [musicPageData, setMusicPageData] = useState<any>(null);
-  const [audioPopup, setAudioPopup] = useState<boolean>(false);
-  const [activeMusicItem, setActiveMusicItem] = useState<number>(0);
-  const [activeMusicFolder, setActiveMusicFolder] = useState<number>(0);
-  const [activeMusicTab, setActiveMusicTab] = useState<number>(0);
+}
 
-  // Past Rabbis States
+function useTempleMusicState() {
+  const [templeTabData, setTempleTabData] = useState<
+    ContextType["templeTabData"]
+  >([]);
+  const [templeActiveTab, setTempleActiveTab] = useState(0);
+  const [musicPageData, setMusicPageData] = useState<any>(null);
+  const [audioPopup, setAudioPopup] = useState(false);
+  const [activeMusicItem, setActiveMusicItem] = useState(0);
+  const [activeMusicFolder, setActiveMusicFolder] = useState(0);
+  const [activeMusicTab, setActiveMusicTab] = useState(0);
+
+  return useMemo(
+    () => ({
+      templeTabData,
+      setTempleTabData,
+      templeActiveTab,
+      setTempleActiveTab,
+      musicPageData,
+      setMusicPageData,
+      audioPopup,
+      setAudioPopup,
+      activeMusicItem,
+      setActiveMusicItem,
+      activeMusicFolder,
+      setActiveMusicFolder,
+      activeMusicTab,
+      setActiveMusicTab,
+    }),
+    [
+      templeTabData,
+      templeActiveTab,
+      musicPageData,
+      audioPopup,
+      activeMusicItem,
+      activeMusicFolder,
+      activeMusicTab,
+    ],
+  );
+}
+
+function useRabbiState() {
   const [currentRabbisPost, setCurrentRabbisPost] = useState<any>(null);
   const [allRabbisPosts, setAllRabbisPosts] = useState<any>(null);
   const [pastRabbisSearchQuery, setPastRabbisSearchQuery] = useState<any>();
 
-  // Communites States
+  return useMemo(
+    () => ({
+      currentRabbisPost,
+      setCurrentRabbisPost,
+      allRabbisPosts,
+      setAllRabbisPosts,
+      pastRabbisSearchQuery,
+      setPastRabbisSearchQuery,
+    }),
+    [currentRabbisPost, allRabbisPosts, pastRabbisSearchQuery],
+  );
+}
+
+function useCommunityState() {
   const [currentCommunitiesPost, setCurrentCommunitiesPost] =
     useState<any>(null);
   const [communityHeaderData, setCommunityHeaderData] = useState<any>(null);
@@ -267,7 +361,30 @@ export function AppProvider({
   const [sheetsOnSelectCategoryChildId, setSheetsOnSelectCategoryChildId] =
     useState<number | null>(0);
 
-  // Knesset States
+  return useMemo(
+    () => ({
+      currentCommunitiesPost,
+      setCurrentCommunitiesPost,
+      communityHeaderData,
+      setCommunityHeaderData,
+      communitySheetsCategoryData,
+      setCommunitySheetsCategoryData,
+      sheetsOnSelectCategoryId,
+      setSheetsOnSelectCategoryId,
+      sheetsOnSelectCategoryChildId,
+      setSheetsOnSelectCategoryChildId,
+    }),
+    [
+      currentCommunitiesPost,
+      communityHeaderData,
+      communitySheetsCategoryData,
+      sheetsOnSelectCategoryId,
+      sheetsOnSelectCategoryChildId,
+    ],
+  );
+}
+
+function useSiteState() {
   const [knessetCategoryData, setKnessetCategoryData] = useState<any>(null);
   const [knessetActiveCategory, setKnessetActiveCategory] = useState<
     string | null
@@ -275,26 +392,52 @@ export function AppProvider({
   const [knessetSearchQuery, setKnessetSearchQuery] = useState<string | null>(
     null,
   );
-
-  // History Page
   const [historyTimelineData, setHistoryTimelineData] = useState<any>(null);
-  const [activeRabbisMenu, setActiveRabbisMenu] = useState<boolean>(false);
+  const [activeRabbisMenu, setActiveRabbisMenu] = useState(false);
   const [listOfRabbis, setListOfRabbis] = useState<any>(null);
-  const [isVideoPopupOpen, setIsVideoPopupOpen] = useState<boolean>(false);
+  const [isVideoPopupOpen, setIsVideoPopupOpen] = useState(false);
   const [openNotificationPopup, setOpenNotificationPopup] = useState(false);
   const [notificationData, setNotificationData] = useState<any>(null);
 
-  // Cycle Pictures States
-  const [cyclePostNavigation, setCyclePostNavigation] = useState<{
-    nextPage: number | null;
-    prevPage: number | null;
-    currentPage: number | null;
-    currentCategory: string | null;
-    maxPages: number | null;
-    postsPerPage: number | null;
-    postsData: any[] | null;
-    categoryData: any[] | null;
-  }>({
+  return useMemo(
+    () => ({
+      knessetCategoryData,
+      setKnessetCategoryData,
+      knessetActiveCategory,
+      setKnessetActiveCategory,
+      knessetSearchQuery,
+      setKnessetSearchQuery,
+      historyTimelineData,
+      setHistoryTimelineData,
+      activeRabbisMenu,
+      setActiveRabbisMenu,
+      listOfRabbis,
+      setListOfRabbis,
+      isVideoPopupOpen,
+      setIsVideoPopupOpen,
+      openNotificationPopup,
+      setOpenNotificationPopup,
+      notificationData,
+      setNotificationData,
+    }),
+    [
+      knessetCategoryData,
+      knessetActiveCategory,
+      knessetSearchQuery,
+      historyTimelineData,
+      activeRabbisMenu,
+      listOfRabbis,
+      isVideoPopupOpen,
+      openNotificationPopup,
+      notificationData,
+    ],
+  );
+}
+
+function useCycleNavigationState() {
+  const [cyclePostNavigation, setCyclePostNavigation] = useState<
+    ContextType["cyclePostNavigation"]
+  >({
     nextPage: 0,
     prevPage: 0,
     currentPage: 0,
@@ -305,104 +448,59 @@ export function AppProvider({
     categoryData: null,
   });
 
+  return useMemo(
+    () => ({ cyclePostNavigation, setCyclePostNavigation }),
+    [cyclePostNavigation],
+  );
+}
+
+function useAppContextValue(appData: any) {
+  const coreState = useCoreState();
+  const zatzelState = useZatzelState();
+  const cycleState = useCycleState();
+  const templeMusicState = useTempleMusicState();
+  const rabbiState = useRabbiState();
+  const communityState = useCommunityState();
+  const siteState = useSiteState();
+  const cycleNavigationState = useCycleNavigationState();
+
+  return useMemo<ContextType>(
+    () => ({
+      ...coreState,
+      ...zatzelState,
+      ...cycleState,
+      ...templeMusicState,
+      ...rabbiState,
+      ...communityState,
+      ...siteState,
+      ...cycleNavigationState,
+      appData,
+    }),
+    [
+      appData,
+      coreState,
+      zatzelState,
+      cycleState,
+      templeMusicState,
+      rabbiState,
+      communityState,
+      siteState,
+      cycleNavigationState,
+    ],
+  );
+}
+
+export function AppProvider({
+  appData,
+  children,
+}: {
+  appData: any;
+  children: ReactNode;
+}) {
+  const contextValue = useAppContextValue(appData);
+
   return (
-    <AppContext.Provider
-      value={{
-        animationPlayed,
-        setAnimationPlayed,
-        isPlaying,
-        setIsPlaying,
-        isLoading,
-        setIsLoading,
-        audioFile,
-        setAudioFile,
-        activeHamburgerMenu,
-        setActiveHamburgerMenu,
-        // Zatzel States
-        zatzelPosts,
-        setZatzelPosts,
-        zatzelPopupIndex,
-        setZatzelPopupIndex,
-        zatzelActivePopup,
-        setZatzelActivePopup,
-        zatzelSelectedDate,
-        setZatzelSelectedDate,
-        zatzelSearchedData,
-        setZatzelSearchedData,
-
-        // Cycle States
-        cycleActiveCategory,
-        setCycleActiveCategory,
-        cycleCategories,
-        setCycleCategories,
-        cycleAllPosts,
-        setCycleAllPosts,
-
-        // Temple States
-        templeTabData,
-        setTempleTabData,
-        templeActiveTab,
-        setTempleActiveTab,
-        musicPageData,
-        setMusicPageData,
-        audioPopup,
-        setAudioPopup,
-        activeMusicItem,
-        setActiveMusicItem,
-        activeMusicFolder,
-        setActiveMusicFolder,
-        activeMusicTab,
-        setActiveMusicTab,
-        currentRabbisPost,
-        setCurrentRabbisPost,
-        allRabbisPosts,
-        setAllRabbisPosts,
-        pastRabbisSearchQuery,
-        setPastRabbisSearchQuery,
-        // Communites
-        currentCommunitiesPost,
-        setCurrentCommunitiesPost,
-        communityHeaderData,
-        setCommunityHeaderData,
-        communitySheetsCategoryData,
-        setCommunitySheetsCategoryData,
-        sheetsOnSelectCategoryId,
-        setSheetsOnSelectCategoryId,
-        sheetsOnSelectCategoryChildId,
-        setSheetsOnSelectCategoryChildId,
-
-        historyTimelineData,
-        setHistoryTimelineData,
-        activeRabbisMenu,
-        setActiveRabbisMenu,
-        listOfRabbis,
-        setListOfRabbis,
-        isVideoPopupOpen,
-        setIsVideoPopupOpen,
-        openNotificationPopup,
-        setOpenNotificationPopup,
-        notificationData,
-        setNotificationData,
-        smoother,
-        appData,
-        // Cycle Pictures States
-        cyclePostNavigation,
-        setCyclePostNavigation,
-        activeCyclePopup,
-        setActiveCyclePopup,
-        cyclePopupIndex,
-        setCyclePopupIndex,
-        // Knesset States
-        knessetCategoryData,
-        setKnessetCategoryData,
-        knessetActiveCategory,
-        setKnessetActiveCategory,
-        knessetSearchQuery,
-        setKnessetSearchQuery,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
   );
 }
 

@@ -36,7 +36,7 @@ export default function CommunitiesPostCat(props: ChildProps) {
       <div className="posts-wrapper h-auto flex gap-[5vh] lg:gap-[5vw] flex-col lg:flex-row">
         {postData?.posts &&
           postData?.posts?.map((item: any, index: number) => (
-            <SingleCommunityPost key={index} data={item} />
+            <SingleCommunityPost key={"Community-Post-" + index} data={item} />
           ))}
       </div>
     </div>

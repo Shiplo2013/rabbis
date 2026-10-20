@@ -201,6 +201,7 @@ export default function ZatzelSidebar({
               <div className="flex items-stretch gap-x-1">
                 <div className="years relative h-full">
                   <select
+                    aria-label="Select Year"
                     className="appearance-none bg-[#ffffff] rounded-md px-3 pl-1 pr-4 text-[18px] leading-[1em] font-bold text-black focus:outline-none cursor-pointer shadow-[0_1px_1px_rgba(0,0,0,0.05)] h-full"
                     value={viewYear}
                     onChange={(e) => {
@@ -222,6 +223,7 @@ export default function ZatzelSidebar({
                 </div>
                 <div className="months relative h-full">
                   <select
+                    aria-label="Select Month"
                     className="appearance-none bg-[#ffffff] border-2 border-[#1D5DFF] rounded-md px-3 pl-1 pr-4 text-[18px] leading-[1em] font-bold text-black focus:outline-none cursor-pointer shadow-[0_1px_1px_rgba(0,0,0,0.05)] h-full"
                     value={viewMonth}
                     onChange={(e) => {
@@ -266,37 +268,39 @@ export default function ZatzelSidebar({
             </div>
 
             <div className="date-grid grid grid-cols-7 gap-1.5">
-              {dayGrid.map((day, index) => (
-                <button
-                  key={`${day ?? "empty"}-${index}`}
-                  type="button"
-                  aria-label={
-                    day !== null
-                      ? `Select ${gematriya(day)} ${hebrewMonths[viewMonth - 1]} ${gematriya(viewYear)}`
-                      : "Empty Day"
-                  }
-                  disabled={day === null}
-                  className={`h-10 rounded-md text-[16px] leading-none font-medium transition-all duration-200 shadow-[0_1px_1px_rgba(0,0,0,0.05)] ${
-                    day === null
-                      ? "bg-[#FBF4E6CF] text-transparent cursor-default"
-                      : selectedYear === viewYear &&
-                          selectedMonth === viewMonth &&
-                          selectedDay === day
-                        ? "bg-[#D1A941] text-black"
-                        : "bg-[#ffffff] text-black hover:bg-[#D1A941] cursor-pointer"
-                  }`}
-                  onClick={() => {
-                    if (day !== null) {
-                      setSelectedYear(viewYear);
-                      setSelectedMonth(viewMonth);
-                      setSelectedDay(day);
-                      setIsDatePickerOpen(false);
+              {dayGrid.map((day, index) => {
+                return (
+                  <button
+                    key={"Day-" + index}
+                    type="button"
+                    aria-label={
+                      day !== null
+                        ? `Select ${gematriya(day)} ${hebrewMonths[viewMonth - 1]} ${gematriya(viewYear)}`
+                        : "Empty Day"
                     }
-                  }}
-                >
-                  {day !== null ? gematriya(day) : ""}
-                </button>
-              ))}
+                    disabled={day === null}
+                    className={`h-10 rounded-md text-[16px] leading-none font-medium transition-all duration-200 shadow-[0_1px_1px_rgba(0,0,0,0.05)] ${
+                      day === null
+                        ? "bg-[#FBF4E6CF] text-transparent cursor-default"
+                        : selectedYear === viewYear &&
+                            selectedMonth === viewMonth &&
+                            selectedDay === day
+                          ? "bg-[#D1A941] text-black"
+                          : "bg-[#ffffff] text-black hover:bg-[#D1A941] cursor-pointer"
+                    }`}
+                    onClick={() => {
+                      if (day !== null) {
+                        setSelectedYear(viewYear);
+                        setSelectedMonth(viewMonth);
+                        setSelectedDay(day);
+                        setIsDatePickerOpen(false);
+                      }
+                    }}
+                  >
+                    {day !== null ? gematriya(day) : ""}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}

@@ -15,10 +15,7 @@ export default function ConferenceGalleryImage2({
   );
   const [loading, setLoading] = useState(true);
   return (
-    <div
-      key={index}
-      className="single-gallery will-change-transform w-[60vw] h-[85vh] lg:w-[26.56vw] lg:h-[81.48vh] overflow-hidden"
-    >
+    <div className="single-gallery will-change-transform w-[60vw] h-[85vh] lg:w-[26.56vw] lg:h-[81.48vh] overflow-hidden">
       {loading && (
         <div className="animate-pulse w-full h-full bg-gray-600"></div>
       )}

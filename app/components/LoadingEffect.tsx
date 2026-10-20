@@ -29,7 +29,8 @@ function LoadingEffect(props: { animated: (value: boolean) => void }) {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [pathname]);
+  }, [pathname, setAnimationPlayed]);
+
   // Set localStorage variable
   useEffect(() => {
     // Set localStorage variable
@@ -45,7 +46,8 @@ function LoadingEffect(props: { animated: (value: boolean) => void }) {
       setAnimationPlayed(true);
       localStorage.setItem("hasVisited", "true");
     }
-  }, [pathname]);
+  }, [pathname, setAnimationPlayed]);
+
   // loadin is true
   if (isFirstVisit) {
     return <Loading animated={props.animated} />;

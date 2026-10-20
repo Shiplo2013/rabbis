@@ -113,7 +113,7 @@ export default function MusicCategoryList(props: ChildProps) {
               <div className="music-cat-list border-b border-[#F4EDDD]">
                 {catList?.map((item: any, index: number) => (
                   <button
-                    key={index}
+                    key={item?.acf?.introduction?.album_title}
                     data-index={index}
                     onClick={() => handleClick(index)}
                     onKeyDown={(e) => e.key === "Enter" && handleClick(index)}
@@ -139,7 +139,7 @@ export default function MusicCategoryList(props: ChildProps) {
             <div className="music-cat-list border-b border-[#F4EDDD]">
               {catList?.map((item: any, index: number) => (
                 <button
-                  key={index}
+                  key={item?.acf?.introduction?.album_title}
                   data-index={index}
                   onClick={() => handleClick(index)}
                   onKeyDown={(e) => e.key === "Enter" && handleClick(index)}

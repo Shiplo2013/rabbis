@@ -35,7 +35,7 @@ export default function SingleNews(props: ChildProps) {
         {props.data?.gallery?.map((item: any, index: number) => {
           return (
             <div
-              key={index}
+              key={item?.image?.id}
               className={`news-image news-image-${index} ${index === 0 ? "w-70 h-100 sm:w-100 sm:h-140 lg:w-[22vw] lg:h-[63vh] z-50" : "w-80 h-60 sm:w-130 sm:h-90 lg:w-[30vw] lg:h-[40vh]"} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-none ${index === 1 ? "ml-[10vw]" : ""} ${index === 2 ? "ml-[-10vw]" : ""} lg:ml-0`}
             >
               <Link

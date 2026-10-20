@@ -18,10 +18,11 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
         <div className="form group 2xl:text-[22px] xl:text-[18px] sm:text-[16px] leading-[0.8em] mt-[4vh] flex justify-between items-end gap-x-2">
           <div className="flex flex-col gap-y-1.25 w-full">
             <div className="flex items-center gap-x-1 ">
-              <label>שם</label>
+              <label htmlFor="name">שם</label>
               <input
                 className="w-full border-b border-white p-0 text-[14px] leading-[0.7em] focus:outline-0"
                 name="news-name"
+                id="name"
                 type="text"
                 defaultValue={
                   (state.status !== "mail_sent" &&
@@ -42,10 +43,11 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
           </div>
           <div className="flex flex-col gap-y-1.25 relative w-full">
             <div className="flex items-center gap-x-1">
-              <label>דוא״ל</label>
+              <label htmlFor="email">דוא״ל</label>
               <input
                 className="w-full border-b border-white p-0 text-[14px] leading-[0.7em] focus:outline-0"
                 name="news-email"
+                id="email"
                 type="email"
                 defaultValue={
                   (state.status !== "mail_sent" &&

@@ -41,7 +41,7 @@ export default function FooterProject(props: ChilProps) {
           {props.images &&
             props.images.map((image: any, index: number) => (
               <div
-                key={index}
+                key={image?.id}
                 className="hover-image w-25 h-18 lg:w-51 lg:h-29.5"
               >
                 <Image

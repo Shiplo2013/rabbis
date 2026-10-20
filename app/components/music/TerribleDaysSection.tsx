@@ -295,7 +295,7 @@ export default function TerribleDaysSection(props: ChildProps) {
             {pageData?.acf?.music_albums?.albums?.map(
               (item: any, index: number) => (
                 <button
-                  key={index}
+                  key={item.album_title}
                   onClick={() => handleAlbumClick(index)}
                   onKeyDown={(e) =>
                     e.key === "Enter" && handleAlbumClick(index)

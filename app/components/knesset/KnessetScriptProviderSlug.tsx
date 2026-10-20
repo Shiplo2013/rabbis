@@ -1,6 +1,7 @@
 "use client";
 import ArrowLeft3 from "@/app/assets/icons/ArrowLeft3";
 import ArrowLeftBottom from "@/app/assets/icons/ArrowLeftBottom";
+import { SafeUriDecoder } from "@/app/ui/SafeUriDecoder";
 import ThemeButton from "@/app/ui/ThemeButton";
 import parse from "html-react-parser";
 import Link from "next/dist/client/link";
@@ -292,14 +293,12 @@ export default function KnessetScriptProviderSlug({
             <div className="knesset-left-sidebar w-full lg:w-[26%]">
               <div className="related-posts flex flex-col gap-y-[5vh] lg:pr-7.5 lg:border-r border-[#000000]">
                 {allPosts?.map((item: any, index: number) => {
-                  if (
-                    decodeURIComponent(item.slug) === decodeURIComponent(slug)
-                  ) {
+                  if (SafeUriDecoder(item.slug) === SafeUriDecoder(slug)) {
                     return null;
                   }
                   return (
                     <div
-                      key={index}
+                      key={item.id}
                       className="singel-related flex items-end gap-x-3 justify-between"
                     >
                       <Link

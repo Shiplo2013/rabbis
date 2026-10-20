@@ -801,7 +801,7 @@ export default function ZatzelScriptProvider({
               {normalPosts?.map((post: any, index: number) => {
                 return (
                   <SingleZatzelGraduate
-                    key={index}
+                    key={post?.id}
                     dataIndex={post?.id}
                     data={post}
                     catIndex={0}

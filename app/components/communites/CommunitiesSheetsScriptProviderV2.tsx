@@ -472,6 +472,7 @@ export default function CommunitiesSheetsScriptProviderV2({
               <iframe
                 id="sheet-frame"
                 src="https://fliphtml5.com/bookcase/emhfq/"
+                sandbox="allow-forms allow-scripts allow-popups"
                 className="w-full h-auto min-h-screen"
                 width={`100%`}
                 height={`100%`}

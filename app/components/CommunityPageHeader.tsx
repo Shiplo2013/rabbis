@@ -21,36 +21,44 @@ export default function CommunityPageHeader() {
       {
         title: `כנסת הבוגרים`,
         link: `/`,
+        id: 1,
       },
       {
         title: `תמונות מחזור`,
         link: `/`,
+        id: 2,
       },
       {
         title: `בוגרים זצ״ל`,
         link: `/`,
+        id: 3,
       },
       {
         title: `ראיונות`,
         link: `/`,
+        id: 4,
       },
     ],
     rightMenu: [
       {
         title: `כל הקהילות`,
         link: `/`,
+        id: 5,
       },
       {
         title: `עד שבחברון`,
         link: `/`,
+        id: 6,
       },
       {
         title: `ביטאון`,
         link: `/`,
+        id: 7,
       },
       {
         title: `כנסת המנהגים`,
         link: `/`,
+        id: 8,
       },
     ],
   };
@@ -74,7 +82,7 @@ export default function CommunityPageHeader() {
                 appData?.headerCommunity?.acf?.header_right.map(
                   (item: any, index: number) => (
                     <Link
-                      key={index}
+                      key={item.link}
                       href={item.link}
                       className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
                     >
@@ -105,7 +113,7 @@ export default function CommunityPageHeader() {
                 appData?.headerCommunity?.acf?.header_left.map(
                   (item: any, index: number) => (
                     <Link
-                      key={index}
+                      key={item.link}
                       href={item.link}
                       className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
                     >

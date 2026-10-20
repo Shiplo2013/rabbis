@@ -177,6 +177,7 @@ export default function SidebarSearch() {
               <div className="flex items-stretch gap-x-1">
                 <div className="years relative h-full">
                   <select
+                    aria-label="Select Year"
                     className="appearance-none bg-[#ffffff] rounded-md px-3 pl-1 pr-4 text-[18px] leading-[1em] font-bold text-black focus:outline-none cursor-pointer shadow-[0_1px_1px_rgba(0,0,0,0.05)] h-full"
                     value={viewYear}
                     onChange={(e) => {
@@ -198,6 +199,7 @@ export default function SidebarSearch() {
                 </div>
                 <div className="months relative h-full">
                   <select
+                    aria-label="Select Month"
                     className="appearance-none bg-[#ffffff] border-2 border-[#1D5DFF] rounded-md px-3 pl-1 pr-4 text-[18px] leading-[1em] font-bold text-black focus:outline-none cursor-pointer shadow-[0_1px_1px_rgba(0,0,0,0.05)] h-full"
                     value={viewMonth}
                     onChange={(e) => {
@@ -244,7 +246,7 @@ export default function SidebarSearch() {
             <div className="date-grid grid grid-cols-7 gap-1.5">
               {dayGrid.map((day, index) => (
                 <button
-                  key={`${day ?? "empty"}-${index}`}
+                  key={"Day-" + index}
                   type="button"
                   aria-label={
                     day !== null

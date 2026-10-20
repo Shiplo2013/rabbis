@@ -40,7 +40,7 @@ export default function CustomsContentSection(props: ChildProps) {
         {rabbisPosts.map((item: any, index: number) => {
           return (
             <div
-              key={index}
+              key={item.id}
               data-id={item.id}
               className={`rabbis-item w-full lg:w-[58.4vw] lg:min-w-[58.4vw] h-full flex items-center justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] will-change-transform flex-col lg:flex-row`}
             >

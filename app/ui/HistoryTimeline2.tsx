@@ -21,7 +21,7 @@ export default function HistoryTimeline2(props: ChildProps) {
               <Link
                 href={item.link}
                 className={`flex flex-col gap-y-5 items-center relative w-36 pb-10 pt-2 cursor-pointer timeline-step intro-${index + 1}`}
-                key={index}
+                key={item.id}
                 data-id={item.id}
               >
                 {!isLastChild && (

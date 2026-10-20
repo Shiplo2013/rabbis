@@ -21,9 +21,9 @@ export default function NewsContentSection(props: ChildProps) {
           </div>
         </div> */}
         <div className="news-content flex items-center gap-y-[10vh] gap-x-[10vw] md:gap-x-[30vw] lg:gap-x-[25vw] xl:gap-x-[20vw] 2xl:gap-x-[15vw] will-change-transform flex-col lg:flex-row">
-          {props.data?.map((item: any, index: number) => (
-            <SingleNews key={index} data={item} />
-          ))}
+          {props.data?.map((item: any, index: number) => {
+            return <SingleNews key={item.id} data={item} />;
+          })}
         </div>
       </div>
     </section>

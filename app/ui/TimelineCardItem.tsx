@@ -500,7 +500,7 @@ export default function TimelineCardItem(props: ChildProps) {
               if (item.type === "image" && item.image) {
                 return (
                   <div
-                    key={index}
+                    key={"TimelineCard-" + index}
                     className={`image w-full h-auto ${index === 0 ? "lg:w-[28.8vw] lg:h-[38.1vh]" : "lg:w-[12vw] lg:h-[39vh]"}`}
                   >
                     <Image
@@ -525,7 +525,7 @@ export default function TimelineCardItem(props: ChildProps) {
               } else {
                 return (
                   <div
-                    key={index}
+                    key={"TimelineCard-" + index}
                     className={`video w-full h-auto ${index === 0 ? "lg:w-[28.8vw] lg:h-[38.1vh]" : "lg:w-[12vw] lg:h-[39vh]"} relative group`}
                   >
                     {item.video.url && (

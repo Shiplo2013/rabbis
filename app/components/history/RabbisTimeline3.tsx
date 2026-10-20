@@ -189,32 +189,34 @@ export default function RabbisTimeline3(props: ChildProps) {
           </h2>
         </div>
         <div className="rabbis-timeline w-full flex gap-y-[7vh] gap-x-[20vw] relative flex-col lg:flex-row">
-          {RabbisData.map((item: any, index: number) => (
-            <div
-              key={index}
-              className="current-rubbis w-full lg:w-64.5 flex flex-col gap-y-10"
-            >
-              <div className="image w-full h-auto lg:w-[13.44vw] lg:h-[32.83vh] relative overflow-hidden">
-                <Image
-                  className="w-full object-cover object-center h-full relative z-10"
-                  src={item?.image?.sizes?.thumbnail || item?.image?.src}
-                  width="258"
-                  height="305"
-                  blurDataURL={
-                    CreateShimmerDataUrl(258, 305) || item?.image?.blurDataURL
-                  }
-                  placeholder={"blur"}
-                  loading="lazy"
-                  alt="Rabbis Image"
-                />
+          {RabbisData.map((item: any, index: number) => {
+            return (
+              <div
+                key={item.title}
+                className="current-rubbis w-full lg:w-64.5 flex flex-col gap-y-10"
+              >
+                <div className="image w-full h-auto lg:w-[13.44vw] lg:h-[32.83vh] relative overflow-hidden">
+                  <Image
+                    className="w-full object-cover object-center h-full relative z-10"
+                    src={item?.image?.sizes?.thumbnail || item?.image?.src}
+                    width="258"
+                    height="305"
+                    blurDataURL={
+                      CreateShimmerDataUrl(258, 305) || item?.image?.blurDataURL
+                    }
+                    placeholder={"blur"}
+                    loading="lazy"
+                    alt="Rabbis Image"
+                  />
+                </div>
+                <div dir="ltr" className="title mt-auto">
+                  <h4 className="text-[20px] sm:text-[30px] lg:text-[40px] leading-[0.9em] lg:leading-[0.7em] text-[#FBF4E6] text-right pt-2">
+                    {parse(item.title || "")}
+                  </h4>
+                </div>
               </div>
-              <div dir="ltr" className="title mt-auto">
-                <h4 className="text-[20px] sm:text-[30px] lg:text-[40px] leading-[0.9em] lg:leading-[0.7em] text-[#FBF4E6] text-right pt-2">
-                  {parse(item.title || "")}
-                </h4>
-              </div>
-            </div>
-          ))}
+            );
+          })}
           <div className="timeline h-2.25 w-full bg-[#C3A13F] absolute top-[36.5vh] right-0"></div>
         </div>
       </div>

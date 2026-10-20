@@ -101,13 +101,13 @@ export default function GraduatesListSection(props: ChildProps) {
       <div className="graduates-wrapper w-full h-auto flex items-center gap-x-[9.16vw] gap-y-20 flex-col lg:flex-row relative z-20">
         <div className="sheet-content w-full lg:w-auto flex items-stretch gap-x-[3.3vw] gap-y-5 will-change-transform flex-col sm:flex-row flex-wrap lg:flex-nowrap">
           {props.GraduateData?.map((item: any, index) => (
-            <SingleGraduates key={index} data={item} />
+            <SingleGraduates key={item?.title} data={item} />
           ))}
         </div>
         <div className="graduate-readmore w-full lg:w-[38vw] flex flex-col gap-y-10 sm:gap-y-[9.36vh] relative">
           {PageLinks.map((item, index) => (
             <div
-              key={index}
+              key={item.page_title}
               className="readmore-link group border-t border-b border-[#D1A941] relative overflow-hidden"
             >
               <Link
@@ -130,7 +130,7 @@ export default function GraduatesListSection(props: ChildProps) {
             <div className="page-images-wrapper w-full h-full relative">
               {PageLinks.map((item, index) => (
                 <div
-                  key={index}
+                  key={item.page_title}
                   data-index={index}
                   className={`page-${index} w-full absolute h-auto -translate-y-1/2 px-[3vw] py-[5vh] opacity-0 mt-[100vh]`}
                 >

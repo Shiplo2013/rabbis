@@ -343,7 +343,7 @@ function Footer(props: ChildProps) {
             <div className="footer-projects border-b-2 border-[#000000]">
               {footerData?.acf?.big_menu?.map((project, index) => (
                 <FooterProject
-                  key={index}
+                  key={project.link}
                   title={project.title}
                   link={project.link}
                   images={project.images}
@@ -354,7 +354,7 @@ function Footer(props: ChildProps) {
               <div className="footer-widget3 w-full lg:w-1/4">
                 <ul className="flex flex-col text-[20px] sm:text-2xl leading-[2em]">
                   {footerData?.acf?.widget_3?.menu_items?.map((item, index) => (
-                    <li key={index}>
+                    <li key={item.link}>
                       <Link
                         href={item.link}
                         onClick={handleLinkClick}
@@ -407,7 +407,7 @@ function Footer(props: ChildProps) {
               <div className="privacy-policy text-[20px] sm:text-2xl leading-[1.2em]">
                 <p>
                   {footerData?.acf?.footer_menu?.map((item, index) => (
-                    <span key={index}>
+                    <span key={item.link}>
                       <Link
                         href={item.link}
                         onClick={handleLinkClick}
