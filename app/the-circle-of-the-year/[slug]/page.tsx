@@ -81,24 +81,14 @@ export default async function Page() {
 
   const [pageDataRes, postsDataRes] = await Promise.all([pageRes, postsRes]);
 
-  if (!postsDataRes.ok) {
+  if (!pageDataRes.ok || !postsDataRes.ok) {
     throw new Error("Failed to load data.");
   }
 
-  if (!pageDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
-  const pageData = await parseJsonResponse<any[]>(
-    pageDataRes,
-    [{}],
-    "circle-of-year-page",
-  );
-  const postsData = await parseJsonResponse<any[]>(
-    postsDataRes,
-    [],
-    "circle-of-year-posts",
-  );
+  const [pageData, postsData] = await Promise.all([
+    parseJsonResponse<any[]>(pageDataRes, [], `circle-of-year-page`),
+    parseJsonResponse<any[]>(postsDataRes, [], "circle-of-year-posts"),
+  ]);
 
   if (!pageData[0]) {
     return notFound();

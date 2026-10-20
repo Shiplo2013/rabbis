@@ -88,24 +88,14 @@ export default async function Page({ params }: PageProps) {
     allPostsRes,
   ]);
 
-  if (!postsDataRes.ok) {
+  if (!postsDataRes.ok || !allPostsDataRes.ok) {
     throw new Error("Failed to load data.");
   }
 
-  if (!allPostsDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
-  const postsData = await parseJsonResponse<any[]>(
-    postsDataRes,
-    [],
-    `knesset-post-${slug}`,
-  );
-  const allPostsData = await parseJsonResponse<any[]>(
-    allPostsDataRes,
-    [],
-    "knesset-posts",
-  );
+  const [postsData, allPostsData] = await Promise.all([
+    parseJsonResponse<any[]>(postsDataRes, [], `circle-of-year-page`),
+    parseJsonResponse<any[]>(allPostsDataRes, [], "circle-of-year-posts"),
+  ]);
 
   if (!postsData || postsData.length === 0) {
     notFound();
