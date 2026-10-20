@@ -23,6 +23,7 @@ export default function MusicCategoryList(props: ChildProps) {
   const wrapper = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const catList = props.data as any[];
+
   const { isLoading, setIsLoading, activeMusicItem, setActiveMusicItem } =
     useAppState();
   // Item Click Handler
@@ -110,36 +111,42 @@ export default function MusicCategoryList(props: ChildProps) {
               }}
               autoHide={false}
             >
-              <div className="music-cat-list border-b border-[#F4EDDD]">
-                {catList?.map((item: any, index: number) => (
-                  <button
-                    key={item?.acf?.introduction?.album_title}
-                    data-index={index}
-                    onClick={() => handleClick(index)}
-                    onKeyDown={(e) => e.key === "Enter" && handleClick(index)}
-                    type="button"
-                    aria-label={`Select music category ${index + 1}`}
-                    tabIndex={0}
-                    className={`music-cat border-t border-[#F4EDDD] py-[3vh] cursor-pointer text-center ${
-                      props.activeMusicItem === index ? "active" : ""
-                    }`}
-                    data-image={
-                      item?.acf?.introduction?.album_image_1?.url ||
-                      item?.acf?.introduction?.album_image_1?.src
-                    }
-                  >
-                    <h3 className="text-[40px] sm:text-[77px] font-light leading-[100%]">
-                      {parse(item?.acf?.introduction?.album_title || "")}
-                    </h3>
-                  </button>
-                ))}
+              <div className="music-cat-list border-b border-[#F4EDDD] flex flex-col">
+                {catList?.map((item: any, index: number) => {
+                  return (
+                    <button
+                      key={item?.id}
+                      data-index={index}
+                      onClick={() => handleClick(index)}
+                      onKeyDown={(e) => e.key === "Enter" && handleClick(index)}
+                      type="button"
+                      aria-label={`Select music category ${index + 1}`}
+                      tabIndex={0}
+                      className={`music-cat border-t border-[#F4EDDD] py-[3vh] cursor-pointer text-center w-full ${
+                        props.activeMusicItem === index ? "active" : ""
+                      }`}
+                      data-image={
+                        item?.acf?.introduction?.album_image_1?.url ||
+                        item?.acf?.introduction?.album_image_1?.src
+                      }
+                    >
+                      <h3 className="text-[40px] sm:text-[77px] font-light leading-[100%]">
+                        {parse(
+                          item?.title?.rendered ||
+                            item?.acf?.introduction?.album_title ||
+                            "",
+                        )}
+                      </h3>
+                    </button>
+                  );
+                })}
               </div>
             </SimpleBar>
           ) : (
             <div className="music-cat-list border-b border-[#F4EDDD]">
               {catList?.map((item: any, index: number) => (
                 <button
-                  key={item?.acf?.introduction?.album_title}
+                  key={item?.id}
                   data-index={index}
                   onClick={() => handleClick(index)}
                   onKeyDown={(e) => e.key === "Enter" && handleClick(index)}
@@ -155,7 +162,11 @@ export default function MusicCategoryList(props: ChildProps) {
                   }
                 >
                   <h3 className="text-[40px] sm:text-[77px] font-light leading-[100%]">
-                    {parse(item?.acf?.introduction?.album_title || "")}
+                    {parse(
+                      item?.title?.rendered ||
+                        item?.acf?.introduction?.album_title ||
+                        "",
+                    )}
                   </h3>
                 </button>
               ))}
