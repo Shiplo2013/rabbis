@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAppState } from "./components/AppContext";
@@ -109,14 +110,14 @@ export default function NotFound() {
           The page you are looking for does not exist.
         </p>
         <div className="mt-10 flex items-center justify-center">
-          <a
+          <Link
             href="/"
             onClick={handleLinkClick}
             aria-label="Go back to Home"
-            className="bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-all w-full h-full flex items-center justify-center py-3 px-4 rounded-md text-[16px] leading-[1em] font-bold max-w-xs"
+            className="bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-colors w-full h-full flex items-center justify-center py-3 px-4 rounded-md text-[16px] leading-[1em] font-bold max-w-xs"
           >
             Go back to Home
-          </a>
+          </Link>
         </div>
       </div>
     </section>

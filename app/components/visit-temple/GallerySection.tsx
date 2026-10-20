@@ -154,7 +154,7 @@ export default function GallerySection(props: GallerySectionProps) {
               if (orientation === "landscape") {
                 return (
                   <div
-                    key={index}
+                    key={item?.id}
                     className={`single-gallery will-change-transform w-[32vw] h-[40vh] overflow-hidden ${orientation}`}
                   >
                     <div
@@ -179,7 +179,7 @@ export default function GallerySection(props: GallerySectionProps) {
               } else {
                 return (
                   <div
-                    key={index}
+                    key={item?.id}
                     className={`single-gallery will-change-transform w-[22vw] h-[50vh] overflow-hidden ${orientation}`}
                   >
                     <div
@@ -225,7 +225,7 @@ export default function GallerySection(props: GallerySectionProps) {
           {props.tabDataHead &&
             props.tabDataHead.map((tab: any, index: number) => (
               <button
-                key={index}
+                key={tab.tab_title}
                 className={`tab-head-item group flex text-[24px] leading-[1.2em] relative cursor-pointer ${props.activeTab === index ? "active" : ""}`}
                 onClick={() => {
                   setActiveTab(index);

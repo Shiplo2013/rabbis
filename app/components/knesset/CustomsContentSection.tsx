@@ -56,13 +56,15 @@ export default function CustomsContentSection(props: ChildProps) {
         </div>
         <div className="sheet-content flex items-stretch gap-x-10 gap-y-10 will-change-transform flex-col lg:flex-row w-full h-full overflow-hidden">
           {sectionData?.length > 0 &&
-            sectionData?.map((item: any, index: number) => (
-              <CustomContentItem
-                key={index}
-                data={item}
-                postLoading={props.postLoading}
-              />
-            ))}
+            sectionData?.map((item: any, index: number) => {
+              return (
+                <CustomContentItem
+                  key={item.id}
+                  data={item}
+                  postLoading={props.postLoading}
+                />
+              );
+            })}
           {sectionData?.length === 0 && (
             <div className="no-post-found w-full flex items-center justify-center py-20 gap-x-[3.2vw]">
               <div className="text-black text-[35px] leading-[1em] w-[26.35vw] text-center">

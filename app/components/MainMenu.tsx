@@ -186,7 +186,7 @@ export default function MainMenu() {
         aria-label="Close Menu"
         className="menu-close group absolute top-5 right-5 sm:top-8 sm:right-7 lg:right-12.5 w-12 lg:w-18 h-12 lg:h-18 flex justify-center items-center cursor-pointer border border-[#C3A13F] rounded-full bg-[#0000007f] z-50"
       >
-        <CloseIcon className="group-hover:rotate-180 transition-all duration-300 w-4 h-auto lg:w-auto" />
+        <CloseIcon className="group-hover:rotate-180 transition-transform duration-300 w-4 h-auto lg:w-auto" />
       </button>
       <div className="menu-wrapper w-full lg:w-[80%] h-auto max-h-screen overflow-auto text-[#E2D7C3] text-[20px] sm:text-[24px] py-[10vh] px-[5vw] sm:px-0">
         <div className="main-menu-top pr-4 flex overflow-hidden gap-10 sm:gap-[2vw] flex-col sm:flex-row">
@@ -219,7 +219,7 @@ export default function MainMenu() {
                   const haveSubmenu =
                     item.have_sub_menu && item.sub_menu.length > 0;
                   return (
-                    <li className="group relative" key={index}>
+                    <li className="group relative" key={item.title}>
                       {haveSubmenu ? (
                         <SubMenuItem
                           itemText={item.title}
@@ -228,14 +228,18 @@ export default function MainMenu() {
                           hideMenu={setActiveHamburgerMenu}
                         />
                       ) : (
-                        <Link
-                          href={item.link}
-                          onClick={handleLinkClick}
-                          prefetch={false}
-                          className="hover:text-[#C3A13F] transition-colors duration-500"
-                        >
-                          {item.title}
-                        </Link>
+                        <>
+                          <Link
+                            href={item.link}
+                            onClick={handleLinkClick}
+                            prefetch={false}
+                            className="hover:text-[#C3A13F] transition-colors duration-500"
+                          >
+                            {item.title}
+                          </Link>
+
+                          <span className="bg-[#C3A13F] w-1.75 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 rotate-y-90 origin-right group-hover:rotate-y-0 transition-transform duration-300"></span>
+                        </>
                       )}
                     </li>
                   );
@@ -243,7 +247,7 @@ export default function MainMenu() {
               </ul>
               <ul className="bottom-menu mt-10">
                 {data?.right_menu?.menu_2?.map((item: any, index: number) => (
-                  <li className="group relative" key={index}>
+                  <li className="group relative" key={item.link}>
                     <Link
                       href={item.link}
                       onClick={handleLinkClick}
@@ -252,6 +256,8 @@ export default function MainMenu() {
                     >
                       {item.title}
                     </Link>
+
+                    <span className="bg-[#C3A13F] w-1.75 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 rotate-y-90 origin-right group-hover:rotate-y-0 transition-transform duration-300"></span>
                   </li>
                 ))}
               </ul>
@@ -286,7 +292,7 @@ export default function MainMenu() {
                   const haveSubmenu =
                     item.have_sub_menu && item.sub_menu.length > 0;
                   return (
-                    <li className="group relative" key={index}>
+                    <li className="group relative" key={item.title}>
                       {haveSubmenu ? (
                         <SubMenuItem
                           itemText={item.title}
@@ -304,7 +310,8 @@ export default function MainMenu() {
                           >
                             {item.title}
                           </Link>
-                          <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
+
+                          <span className="bg-[#C3A13F] w-1.75 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 rotate-y-90 origin-right group-hover:rotate-y-0 transition-transform duration-300"></span>
                         </>
                       )}
                     </li>
@@ -313,7 +320,7 @@ export default function MainMenu() {
               </ul>
               <ul className="bottom-menu mt-10">
                 {data?.left_menu?.menu_2?.map((item: any, index: number) => (
-                  <li className="group relative" key={index}>
+                  <li className="group relative" key={item.link}>
                     <Link
                       href={item.link}
                       onClick={handleLinkClick}
@@ -322,7 +329,7 @@ export default function MainMenu() {
                     >
                       {item.title}
                     </Link>
-                    <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
+                    <span className="bg-[#C3A13F] w-1.75 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 rotate-y-90 origin-right group-hover:rotate-y-0 transition-transform duration-300"></span>
                   </li>
                 ))}
               </ul>
@@ -333,7 +340,7 @@ export default function MainMenu() {
           <div className="bottom-menu w-full sm:w-1/2 lg:w-1/4">
             <ul className="menu-list">
               {data?.right_menu?.menu_3?.map((item: any, index: number) => (
-                <li className="group relative" key={index}>
+                <li className="group relative" key={item.link}>
                   <Link
                     href={item.link}
                     onClick={handleLinkClick}
@@ -342,7 +349,7 @@ export default function MainMenu() {
                   >
                     {item.title}
                   </Link>
-                  <span className="bg-[#C3A13F] group-hover:w-1.75 w-0 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 transition-all duration-300"></span>
+                  <span className="bg-[#C3A13F] w-1.75 h-3.25 block absolute top-1/2 right-0 -translate-y-1/2 -mr-4 rotate-y-90 origin-right group-hover:rotate-y-0 transition-transform duration-300"></span>
                 </li>
               ))}
             </ul>
@@ -386,7 +393,7 @@ export default function MainMenu() {
                         href={getLinkUrl(result.url, result.subtype)}
                         onClick={handleLinkClick}
                         prefetch={false}
-                        className="block py-3 px-3 text-[16px] leading-[1em] text-black hover:bg-gray-200 transition-all duration-300 not-last:border-b not-last:border-b-[#C3A13F]"
+                        className="block py-3 px-3 text-[16px] leading-[1em] text-black hover:bg-gray-200 transition-colors duration-300 not-last:border-b not-last:border-b-[#C3A13F]"
                         aria-label={result.title}
                       >
                         {parse(result.title)}

@@ -94,7 +94,7 @@ export default function TempleTabs2(props: ChildProps) {
           <div className="tab-head-wrapper flex flex-col gap-y-5 relative z-30">
             {tabsData.map((tab: any, index: number) => (
               <button
-                key={index}
+                key={tab.tab_title}
                 className={`tab-head-item group flex text-[24px] leading-[1.2em] relative cursor-pointer ${activeTab === index ? "active" : ""}`}
                 onClick={() => setActiveTab(index)}
                 onKeyDown={(e) => {
@@ -154,7 +154,7 @@ export default function TempleTabs2(props: ChildProps) {
                       if (item.size === "landescape") {
                         return (
                           <div
-                            key={index}
+                            key={item?.image?.id}
                             className="single-gallery will-change-transform w-[32vw] h-[40vh] overflow-hidden"
                           >
                             <div
@@ -179,7 +179,7 @@ export default function TempleTabs2(props: ChildProps) {
                       } else {
                         return (
                           <div
-                            key={index}
+                            key={item?.image?.id}
                             className="single-gallery will-change-transform w-[22vw] h-[70vh] overflow-hidden"
                           >
                             <div

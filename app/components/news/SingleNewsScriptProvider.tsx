@@ -129,7 +129,6 @@ export default function SingleNewsScriptProvider({
     }
     setPost(data.post);
     setNavigationData(data.navigationData);
-    console.log(data.post);
   }, [data]);
 
   // Page Data Loade
@@ -446,7 +445,11 @@ export default function SingleNewsScriptProvider({
                 loop={true}
               >
                 {post?.acf?.gallery?.map((item, index) => (
-                  <SwiperSlide key={index}>
+                  <SwiperSlide
+                    key={
+                      item.type === "image" ? item?.image?.id : item?.video?.id
+                    }
+                  >
                     {item.type === "image" ? (
                       <div className="post-image w-full h-full relative">
                         <SinglePostImage image={item.image} />

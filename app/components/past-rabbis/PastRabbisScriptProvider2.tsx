@@ -633,7 +633,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
               {normalPosts?.map((item: any, index: number) => {
                 return (
                   <div
-                    key={index}
+                    key={item.id}
                     data-id={item.id}
                     className={`rabbis-item w-full h-full flex items-end justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] will-change-transform flex-col lg:flex-row-reverse`}
                   >

@@ -78,7 +78,7 @@ export default function SheetContentSection(props: ChildProps) {
                   ) => {
                     return (
                       <GetHebrewYear
-                        key={index}
+                        key={item?.id}
                         index={index}
                         year={item}
                         activeCategory={sheetsOnSelectCategoryChildId}
@@ -106,11 +106,13 @@ export default function SheetContentSection(props: ChildProps) {
             </div>
           ) : (
             Array.isArray(sectionData?.posts) &&
-            sectionData.posts.map((item: any, index: number) => (
-              <Fragment key={`sheet-entry-${index}`}>
-                <SheetContentItem data={item} />
-              </Fragment>
-            ))
+            sectionData.posts.map((item: any, index: number) => {
+              return (
+                <Fragment key={item?.id}>
+                  <SheetContentItem data={item} />
+                </Fragment>
+              );
+            })
           )}
 
           <div

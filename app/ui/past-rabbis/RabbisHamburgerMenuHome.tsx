@@ -287,7 +287,7 @@ export default function RabbisHamburgerMenuHome(
                 return (
                   <Link
                     href={item.slug ? `/past-rabbis/${item.slug}` : "#"}
-                    key={index}
+                    key={item.id}
                     onClick={handleLinkClick}
                     className="burger-menu-item group flex gap-x-2.5"
                   >

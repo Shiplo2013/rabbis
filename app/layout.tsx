@@ -3,6 +3,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 import AccessibilityWidget from "./components/AccessibilityWidget";
 import { AppProvider } from "./components/AppContext";
 import Footer from "./components/Footer";
@@ -289,7 +290,7 @@ export default async function RootLayout({
         className={`${customFont.className} antialiased bg-black text-white overflow-hidden`}
       >
         {process.env.NODE_ENV === "development" && (
-          <script
+          <Script
             src="https://cdn.jsdelivr.net/npm/react-scan@0.5.7/dist/auto.global.min.js"
             crossOrigin="anonymous"
             defer

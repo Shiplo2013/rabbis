@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useMultiPageCache } from "../../hooks/usePageCache";
 import ConferenceScriptProvider from "./ConferenceScriptProvider";
 
@@ -23,7 +23,7 @@ interface AlumniConferencePageWithCacheProps {
 export function AlumniConferenceWithCache({
   data,
 }: AlumniConferencePageWithCacheProps) {
-  const [serverData] = useState(data);
+  const serverData = data;
 
   // Initialize cache with default data structure
   const defaultCacheData = {
@@ -35,16 +35,15 @@ export function AlumniConferenceWithCache({
     defaultCacheData,
   );
 
-  // Compare server data with cache on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Compare server data with cache whenever it changes
   useEffect(() => {
-    const changes = compareAndUpdate(serverData);
+    const changes = compareAndUpdate({ pageData: serverData });
 
     // Log changes for debugging
     if (changes.pageData) {
       console.log("[Cache] Alumni conference page data updated from server");
     }
-  }, []); // Empty dependency - runs only once on mount
+  }, [compareAndUpdate, serverData]);
 
   return <ConferenceScriptProvider data={cachedData.pageData} />;
 }

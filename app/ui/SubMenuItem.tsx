@@ -61,7 +61,7 @@ export default function SubMenuItem(props: ChildProps) {
         </span>
       </button>
       <span
-        className={`bg-[#C3A13F] ${menuActive ? "w-1.75" : ""} h-3.25 block absolute top-3 right-0 -mr-4 transition-all duration-300`}
+        className={`bg-[#C3A13F] w-1.75 h-3.25 block absolute top-3 right-0 -mr-4 ${menuActive ? "rotate-y-0" : "rotate-y-90"} origin-right group-hover:rotate-y-0 transition-transform duration-300`}
       ></span>
       <ul
         id={dropdownId}
@@ -73,7 +73,7 @@ export default function SubMenuItem(props: ChildProps) {
         className="child-menu overflow-hidden transition-[max-height,opacity] duration-500 ease-in-out"
       >
         {props.subItem.map((item, index) => (
-          <li key={index} className="relative pr-5">
+          <li key={item.link} className="relative pr-5">
             <span className="w-1.75 h-1.75 bg-[#D1A941] block rounded-full absolute top-1/2 right-0 -mt-1"></span>
             <Link
               href={item.link}

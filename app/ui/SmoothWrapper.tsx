@@ -27,7 +27,7 @@ export default function SmoothWrapper({
 
       // Keep a single smoother instance per mounted wrapper.
       smoother.current = ScrollSmoother.get() || null;
-      if (!smoother.current) {
+      if (!smoother.current && window.innerWidth > 1024) {
         smoother.current = ScrollSmoother.create({
           wrapper,
           content,

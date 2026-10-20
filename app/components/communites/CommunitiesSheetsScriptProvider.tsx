@@ -135,8 +135,9 @@ export default function CommunitiesSheetsScriptProvider({
       );
 
       const filteredIds = categoriesFilterdIds?.map((item: any) => item.id);
+      const filteredIdSet = new Set(filteredIds);
       const filteredPosts = data?.postsData?.posts?.filter((post: any) =>
-        filteredIds.includes(post?.magazines_cat?.[0] || 0),
+        filteredIdSet.has(post?.magazines_cat?.[0] || 0),
       );
       if (filteredPosts?.length === 0) {
         setNoPostsFound(true);
@@ -693,11 +694,8 @@ export default function CommunitiesSheetsScriptProvider({
             >
               {normalPosts?.map((post: any, index: number) => {
                 return (
-                  <Fragment key={`sheet-entry-${index}`}>
-                    <SheetContentItem
-                      key={`normal-post-${index}`}
-                      data={post}
-                    />
+                  <Fragment key={post?.id}>
+                    <SheetContentItem key={post?.id} data={post} />
                   </Fragment>
                 );
               })}

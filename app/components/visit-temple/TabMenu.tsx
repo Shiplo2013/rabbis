@@ -90,7 +90,7 @@ export default function TabMenu(props: ChildProps) {
         {tabsData.map((tab: any, index: number) => (
           <Link
             href={`/visit-temple/${index}`}
-            key={index}
+            key={tab.tab_title}
             className={`group flex text-[24px] leading-[1.2em] relative cursor-pointer ${activeTab === index ? "active" : ""}`}
           >
             <span className="relative">

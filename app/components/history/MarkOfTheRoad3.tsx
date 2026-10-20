@@ -275,7 +275,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
         </div>
         {sectionData?.map((item: any, index: number) => (
           <div
-            key={index}
+            key={"History-" + index}
             className="group section-content flex flex-col items-start gap-y-6 sm:gap-y-10 lg:gap-y-[10vh] w-full lg:w-[39vw] self-end lg:-mb-[9vh] lg:px-[2.7vw] lg:pt-[9vh] relative cursor-pointer"
           >
             {item?.notification !== "" && (

@@ -431,7 +431,7 @@ export default function YeshivaRabbisScriptProvider({
             >
               {rabbisPageData?.map((section: any, index: number) => (
                 <RabbisSection
-                  key={index}
+                  key={section?.id}
                   rabbisContent={[section]}
                   className={`will-change-transform rabbis-section-${index + 1}`}
                 />

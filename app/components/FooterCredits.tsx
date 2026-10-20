@@ -21,7 +21,7 @@ export default function FooterCredits() {
       <button
         type="button"
         onClick={handleCopy}
-        className="text-[16px] lg:text-[18px] cursor-pointer transition-all flex gap-x-1 hover:text-[#555555]"
+        className="text-[16px] lg:text-[18px] cursor-pointer transition-colors flex gap-x-1 hover:text-[#555555]"
       >
         <span
           className={`text-green-700 transition-all ${copied ? "opacity-100 visible" : "opacity-0 invisible"}`}

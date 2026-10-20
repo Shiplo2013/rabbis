@@ -49,7 +49,7 @@ export default function HistoryTimeline(props: ChildProps) {
                   e.key === "Enter" && handleStepClick(e as any)
                 }
                 className={`flex flex-row lg:flex-col gap-x-5 gap-y-5 items-center relative lg:w-36 pb-2 lg:pb-10 pt-2 cursor-pointer timeline-step intro-${index + 1}`}
-                key={index}
+                key={item.id}
                 data-id={item.id}
                 type="button"
                 aria-label={`Go to ${item.title}`}

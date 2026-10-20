@@ -415,7 +415,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                   testimonialsPageData?.acf?.testimonials?.map(
                     (testimonial: any, index: number) => (
                       <div
-                        key={index}
+                        key={"Testimonials-" + index}
                         className="testimonial-item w-full lg:w-[65vw] lg:h-screen flex items-center justify-start gap-x-[2.8vw] will-change-transform flex-col lg:flex-row gap-y-10"
                       >
                         <div className="testimonial-image w-full lg:w-[40vw] min-w-[40vw] lg:h-[50vh] relative">

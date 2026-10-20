@@ -145,7 +145,7 @@ export default function MarkOfTheRoad2(props: ChildProps) {
       <div className="section-row w-full h-full flex px-[8vw] lg:px-[6.3vw] py-[10vh] lg:py-[4.5vw] gap-x-[10vw] lg:gap-x-[6.3vw] flex-col lg:flex-row gap-y-[7vh] lg:gap-y-0">
         {sectionData?.map((item, index) => (
           <div
-            key={index}
+            key={"History-" + index}
             className="section-content flex items-center gap-x-6 lg:gap-x-[2.6vw] w-full lg:w-[60vw] flex-col lg:flex-row gap-y-[4vh] lg:gap-y-0"
           >
             <div className="image w-full h-auto lg:w-[33.33vw] lg:h-103.25">

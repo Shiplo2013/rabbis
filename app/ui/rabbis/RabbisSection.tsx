@@ -4,7 +4,7 @@ interface ChildProps {
   className: string;
   rabbisContent: {
     sectionTitle: string;
-    sectionContent: { title: string; image: any }[];
+    sectionContent: { title: string; image: any; id: number }[];
   }[];
 }
 
@@ -21,7 +21,7 @@ export default function RabbisSection(props: ChildProps) {
       </div>
       <div className="rabbis-wrapper h-auto flex gap-10 sm:gap-[5vw] flex-col sm:flex-row flex-wrap lg:flex-nowrap">
         {props?.rabbisContent?.[0]?.sectionContent.map((item, index) => (
-          <SingleRabbis key={index} title={item.title} image={item.image} />
+          <SingleRabbis key={item?.id} title={item.title} image={item.image} />
         ))}
       </div>
     </div>

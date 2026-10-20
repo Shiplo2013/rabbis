@@ -449,12 +449,14 @@ export default function CommunitiesSlugScriptProvider({
                       (item: any, index: number) => {
                         if (item?.type === "image") {
                           return (
-                            <SwiperSlide key={index}>
+                            <SwiperSlide
+                              key={item.image?.id}
+                              data-key={item.image?.id}
+                            >
                               <div className="w-full h-[70vh]">
                                 <Image
                                   className="w-full h-full object-cover object-center"
                                   src={
-                                    item?.sizes?.medium_large ||
                                     item.image?.sizes?.large ||
                                     item.image?.sizes?.medium ||
                                     item.image?.url ||
@@ -477,7 +479,7 @@ export default function CommunitiesSlugScriptProvider({
                           );
                         } else {
                           return (
-                            <SwiperSlide key={index}>
+                            <SwiperSlide key={item.video?.id}>
                               <div className="w-full h-[50vh]">
                                 <video
                                   controls
@@ -585,7 +587,7 @@ export default function CommunitiesSlugScriptProvider({
                 {communityTabs.map((tab, index) => (
                   <button
                     type="button"
-                    key={index}
+                    key={tab.title}
                     className={`tab-head-item w-full text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] p-4 sm:p-6 cursor-pointer ${activeTab === index ? "bg-[#091B24] text-white" : "text-[#091B24]"} transition-colors duration-300 ${index !== 0 && "border-r border-black"}`}
                     onClick={() => setActiveTab(index)}
                     onKeyDown={(e) => e.key === "Enter" && setActiveTab(index)}
@@ -606,7 +608,7 @@ export default function CommunitiesSlugScriptProvider({
                             if (item.field_type === "title") {
                               return (
                                 <h2
-                                  key={index}
+                                  key={item?.content?.title}
                                   className="title text-[22px] sm:text-[26px] lg:text-[33px] leading-[90%] font-bold [:not(:first-child)]:mt-8.5"
                                 >
                                   {parse(item?.content?.title || "")}
@@ -616,7 +618,10 @@ export default function CommunitiesSlugScriptProvider({
                             // Section Text
                             if (item.field_type === "text") {
                               return (
-                                <div key={index} className="text1 mt-8.5">
+                                <div
+                                  key={item?.content?.text}
+                                  className="text1 mt-8.5"
+                                >
                                   {parse(item?.content?.text)}
                                 </div>
                               );
@@ -625,7 +630,7 @@ export default function CommunitiesSlugScriptProvider({
                             if (item.field_type === "image") {
                               return (
                                 <div
-                                  key={index}
+                                  key={item?.content?.image?.id}
                                   className="image1 mt-9 w-xl max-w-full max-h-[66vh] relative"
                                 >
                                   <CommunityImage item={item} />
@@ -641,7 +646,7 @@ export default function CommunitiesSlugScriptProvider({
                             if (item.field_type === "video") {
                               return (
                                 <div
-                                  key={index}
+                                  key={item?.content?.video?.id}
                                   className="video1 mt-9 w-xl max-w-full"
                                 >
                                   <div className="video w-xl max-w-full h-auto">
@@ -671,8 +676,8 @@ export default function CommunitiesSlugScriptProvider({
                             if (item.field_type === "content1") {
                               return (
                                 <div
-                                  key={index}
-                                  data-index={index}
+                                  key={item?.news_content?.title}
+                                  data-index={item?.news_content?.title}
                                   className="content1 w-full not-first:mt-8.5"
                                 >
                                   <h2 className="text-[22px] sm:text-[26px] lg:text-[33px] leading-[90%] font-bold">
@@ -712,7 +717,10 @@ export default function CommunitiesSlugScriptProvider({
                             if (item.field_type === "content2") {
                               return (
                                 <div
-                                  key={index}
+                                  key={
+                                    item?.news_content?.image?.id ||
+                                    item?.news_content?.text
+                                  }
                                   className="highlight not-first:mt-12 not-last:mb-12 p-10 bg-[#BBA588]"
                                 >
                                   {item?.news_content?.text && (
@@ -752,7 +760,7 @@ export default function CommunitiesSlugScriptProvider({
                             if (item.field_type === "gallery") {
                               return (
                                 <GallerySlider
-                                  key={index}
+                                  key={"Gallery-Slider-" + index}
                                   index={index}
                                   data={item?.gallery}
                                 />
@@ -773,7 +781,7 @@ export default function CommunitiesSlugScriptProvider({
                                 ]?.content?.updates_1?.map(
                                   (item: any, index: number) => (
                                     <div
-                                      key={index}
+                                      key={"Tab-Content2-" + index}
                                       style={{
                                         backgroundImage: `url(${NewsBG.src})`,
                                       }}
@@ -805,7 +813,7 @@ export default function CommunitiesSlugScriptProvider({
                                 {communityTabs[activeTab].content.updates_2.map(
                                   (item: any, index: number) => (
                                     <div
-                                      key={index}
+                                      key={"Tab-Content-" + index}
                                       className="news-item bg-white flex flex-col gap-y-2 py-8 px-13 w-full sm:w-[calc((100%-3vw)/2)] max-w-110"
                                     >
                                       {item.title && (
@@ -869,7 +877,7 @@ export default function CommunitiesSlugScriptProvider({
                         if (index % 2 === 0) {
                           return (
                             <PostItem2
-                              key={index}
+                              key={"Related-Post-" + index}
                               title={item.title}
                               content={item.text}
                               subtitle={item.date}
@@ -881,7 +889,7 @@ export default function CommunitiesSlugScriptProvider({
                         } else {
                           return (
                             <PostItem2
-                              key={index}
+                              key={"Related-Post-" + index}
                               title={item.title}
                               content={item.text}
                               subtitle={item.date}
@@ -904,7 +912,7 @@ export default function CommunitiesSlugScriptProvider({
                       (item: any, index: number) => {
                         return (
                           <EventItem
-                            key={index}
+                            key={"Event" + index}
                             title={item.title}
                             content={item.text}
                             subtitle={item.date}

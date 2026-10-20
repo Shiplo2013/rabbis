@@ -114,7 +114,7 @@ export default function ConferenceContentSection(props: ChildProps) {
               if (dimensions === "landscape") {
                 return (
                   <ConferenceGalleryImage
-                    key={index}
+                    key={item?.id}
                     item={item}
                     index={index}
                   />
@@ -122,7 +122,7 @@ export default function ConferenceContentSection(props: ChildProps) {
               } else {
                 return (
                   <ConferenceGalleryImage2
-                    key={index}
+                    key={item?.id}
                     item={item}
                     index={index}
                   />

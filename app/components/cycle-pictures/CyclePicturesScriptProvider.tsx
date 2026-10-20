@@ -692,8 +692,12 @@ export default function CyclePicturesScriptProvider({
             >
               {normalPosts?.map((post: any, index: number) => {
                 return (
-                  <Fragment key={`sheet-entry-${index}`}>
-                    <SingleCyclePicture key={index} data={post} index={index} />
+                  <Fragment key={post?.id}>
+                    <SingleCyclePicture
+                      key={post?.id}
+                      data={post}
+                      index={index}
+                    />
                   </Fragment>
                 );
               })}

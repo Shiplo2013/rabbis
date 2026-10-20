@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useMultiPageCache } from "../../hooks/usePageCache";
 import HistoryScriptProvider from "./HistoryScriptProvider";
 
@@ -23,7 +23,7 @@ interface ChronclesPageDataProps {
  * and pass the same data prop
  */
 export function ChroniclesPageWithCache({ data }: ChronclesPageDataProps) {
-  const [serverData] = useState(data);
+  const serverData = data;
 
   // Initialize cache with default data structure
   const defaultCacheData = {

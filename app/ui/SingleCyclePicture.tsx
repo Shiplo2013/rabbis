@@ -8,7 +8,6 @@ import { useAppState } from "../components/AppContext";
 import CreateShimmerDataUrl from "./CreateShimmerDataUrl";
 
 interface ChildProps {
-  key: number;
   index: number;
   data: any;
 }
