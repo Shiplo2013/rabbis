@@ -104,7 +104,7 @@ export default function KnessetScriptProvider({
       ) || [],
     );
     setIsLoadingMore(false);
-  }, [knessetPostsData, postLoadCount]);
+  }, [knessetPostsData, postLoadCount.current]);
 
   // Search and Category Filter
   useEffect(() => {
@@ -271,6 +271,8 @@ export default function KnessetScriptProvider({
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
+      console.log(postLoadCount.current);
+      console.log(postLoadLimit);
       setIsLoadingMore(true);
       postLoadCount.current += 1;
 

@@ -67,7 +67,7 @@ export default function ZatzelScriptProvider({
   // Post States
   //const [postPerPage, setPostPerPage] = useState(100);
   const [postsPerLoad, setPostsPerLoad] = useState(12);
-  const [postLoadCount, setPostLoadCount] = useState(1);
+  const postLoadCount = useRef(1);
   const [postLoadLimit, setPostLoadLimit] = useState(0);
   // const [isPostLoaded, setIsPostLoaded] = useState(false);
   // const [noPostsFound, setNoPostsFound] = useState(false);
@@ -75,9 +75,9 @@ export default function ZatzelScriptProvider({
   // const [hasMorePosts, setHasMorePosts] = useState(
   //   Number(postData?.[0]?.totalPages ?? 1) > 1,
   // );
-  const [totalPages, setTotalPages] = useState(
-    Number(postData?.[0]?.totalPages ?? 1),
-  );
+  // const [totalPages, setTotalPages] = useState(
+  //   Number(postData?.[0]?.totalPages ?? 1),
+  // );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [verticalPosts, setVerticalPosts] = useState<{
     sectionTitle: string;
@@ -142,11 +142,11 @@ export default function ZatzelScriptProvider({
     setNormalPosts(
       allPosts?.sections?.[0]?.sectionContent?.slice(
         4,
-        postsPerLoad * postLoadCount,
+        postsPerLoad * postLoadCount.current,
       ) || [],
     );
     setIsLoadingMore(false);
-  }, [allPosts, postLoadCount]);
+  }, [allPosts, postLoadCount.current]);
 
   // Set Page Data Fetched
   useEffect(() => {
@@ -465,7 +465,7 @@ export default function ZatzelScriptProvider({
   useEffect(() => {
     if (isReadMoreInView) {
       setIsLoadingMore(true);
-      setPostLoadCount((prevCount) => prevCount + 1);
+      postLoadCount.current += 1;
     }
   }, [isReadMoreInView]);
 
@@ -807,7 +807,7 @@ export default function ZatzelScriptProvider({
                 );
               })}
             </div>
-            {postLoadCount! < postLoadLimit! && (
+            {postLoadCount.current! < postLoadLimit! && (
               <div
                 ref={readMoreRef}
                 className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}

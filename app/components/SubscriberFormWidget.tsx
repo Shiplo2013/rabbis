@@ -116,6 +116,9 @@ export default function SubscriberFormWidget() {
         <form action={action}>
           <div className="contact-row mb-5">
             <div className="flex items-center gap-x-3.25">
+              <label htmlFor="form-name" className="hidden">
+                שם
+              </label>
               <input
                 dir="rtl"
                 className="border-b border-b-[#C3A13F] focus:outline-0 w-full text-[16px] lg:text-[22px] leading-[1em] py-1 placeholder:text-[#C3A13F] text-[#C3A13F]"
@@ -138,6 +141,9 @@ export default function SubscriberFormWidget() {
           </div>
           <div className="contact-row mb-5">
             <div className="flex items-center gap-x-3.25">
+              <label htmlFor="form-email" className="hidden">
+                דוא״ל
+              </label>
               <input
                 dir="rtl"
                 className="border-b border-b-[#C3A13F] focus:outline-0 w-full text-[16px] lg:text-[22px] leading-[1em] py-1 placeholder:text-[#C3A13F] text-[#C3A13F]"
@@ -160,6 +166,9 @@ export default function SubscriberFormWidget() {
           </div>
           <div className="contact-row mb-5">
             <div className="flex flex-col gap-y-1.25">
+              <label htmlFor="form-message" className="hidden">
+                נושא הפניה
+              </label>
               <textarea
                 dir="rtl"
                 className="border-b border-b-[#C3A13F] focus:outline-0 w-full text-[16px] lg:text-[22px] leading-[1em] py-1 placeholder:text-[#C3A13F] text-[#C3A13F]"

@@ -851,6 +851,7 @@ export default function PageFixedElements() {
                   setPastRabbisSearchQuery?.(searchValue || null);
                 }}
                 className="search-group relative"
+                action={"/"}
               >
                 <input
                   ref={nameRef}
