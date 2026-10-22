@@ -275,13 +275,13 @@ export default function TempleTabs(props: ChildProps) {
                           return (
                             <div
                               key={item?.id}
-                              className="single-gallery will-change-transform w-75 h-45 sm:w-140 sm:h-85 lg:w-[32vw] lg:h-[40vh] overflow-hidden"
+                              className="single-gallery w-75 h-45 sm:w-140 sm:h-85 lg:w-[32vw] lg:h-[40vh] overflow-hidden"
                             >
                               <div
                                 className={`single-gallery-image w-[120%] h-[120%] lg:w-[40vw] lg:h-[60vh] absolute top-1/2 left-1/2 -translate-[50%] cursor-none pointer-events-none`}
                               >
                                 <Image
-                                  className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+                                  className="w-full object-cover object-center h-full relative z-30 cursor-none pointer-events-none"
                                   src={item?.sizes?.large || item?.image?.src}
                                   width={1200}
                                   height={1200}
@@ -300,13 +300,13 @@ export default function TempleTabs(props: ChildProps) {
                           return (
                             <div
                               key={item?.id}
-                              className="single-gallery will-change-transform w-50 h-70 sm:w-100 sm:h-140 lg:w-[22vw] lg:h-[70vh] overflow-hidden"
+                              className="single-gallery w-50 h-70 sm:w-100 sm:h-140 lg:w-[22vw] lg:h-[70vh] overflow-hidden"
                             >
                               <div
                                 className={`single-gallery-image w-[120%] h-[120%] lg:w-[30vw] lg:h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
                               >
                                 <Image
-                                  className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+                                  className="w-full object-cover object-center h-full relative z-30 cursor-none pointer-events-none"
                                   src={item?.sizes?.large || item?.image?.src}
                                   width={1200}
                                   height={1200}
@@ -345,14 +345,14 @@ export default function TempleTabs(props: ChildProps) {
                             ).map((item: any, index: number) => (
                               <SwiperSlide
                                 key={item?.id}
-                                className="single-gallery will-change-transform w-full h-auto overflow-hidden"
+                                className="single-gallery w-full h-auto overflow-hidden"
                               >
                                 <div
                                   className={`single-gallery-image w-full h-auto relative`}
                                 >
                                   {loadedSlides.has(index) ? (
                                     <Image
-                                      className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+                                      className="w-full object-cover object-center h-full relative z-30 cursor-none pointer-events-none"
                                       src={
                                         isDesktopViewport
                                           ? item?.sizes?.medium_large ||

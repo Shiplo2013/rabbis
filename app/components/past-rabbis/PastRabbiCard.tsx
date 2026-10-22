@@ -13,10 +13,7 @@ interface PastRabbiCardProps {
   layout: "carousel" | "list";
 }
 
-export default function PastRabbiCard({
-  data,
-  layout,
-}: PastRabbiCardProps) {
+export default function PastRabbiCard({ data, layout }: PastRabbiCardProps) {
   const router = useRouter();
   const { setIsLoading } = useAppState();
   const link = data?.slug ? `/past-rabbis/${data.slug}` : "#";
@@ -36,8 +33,8 @@ export default function PastRabbiCard({
       data-id={data.id}
       className={
         layout === "carousel"
-          ? "rabbis-item w-full lg:w-[58.4vw] lg:min-w-[58.4vw] h-full flex items-center justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] will-change-transform flex-col lg:flex-row"
-          : "rabbis-item w-full h-auto flex items-end justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] will-change-transform flex-col lg:flex-row"
+          ? "rabbis-item w-full lg:w-[58.4vw] lg:min-w-[58.4vw] h-full flex items-center justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] flex-col lg:flex-row"
+          : "rabbis-item w-full h-auto flex items-end justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] flex-col lg:flex-row"
       }
     >
       <div className="rabbis-image w-full lg:w-[27.1vw] relative">

@@ -411,19 +411,17 @@ export default function MusicScriptProvider({ data }: { data: any }) {
               animated={isAllAnimationComplete}
               animationStatus={isAllAnimationComplete}
               data={musicPageData?.musicPage?.acf?.introduction}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-[75vw] w-[75vw]"
-              }
+              extraClass={"first-intro panel-section min-w-[75vw] w-[75vw]"}
             />
             <MusicCategoryList
-              extraClass="music-categories panel-section will-change-transform min-w-[70vw] w-[70vw]"
+              extraClass="music-categories panel-section min-w-[70vw] w-[70vw]"
               animWidthText={0}
               data={musicPageData?.holidayPosts}
               activeMusicItem={activeMusicItem}
               setActiveMusicItem={setActiveMusicItem}
             />
             <TerribleDaysSection
-              extraClass="terrieble-content panel-section will-change-transform min-w-[222vw] w-[222vw]"
+              extraClass="terrieble-content panel-section min-w-[222vw] w-[222vw]"
               animWidthText={0.5}
               data={musicPageData?.holidayPosts[activeMusicItem]}
               setAudioPopup={setAudioPopup}
@@ -435,7 +433,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
               setActiveTab={setActiveMusicTab}
             />
             <MirrorsSection
-              extraClass="mirrors-content panel-section will-change-transform min-w-[85vw] w-[85vw]"
+              extraClass="mirrors-content panel-section min-w-[85vw] w-[85vw]"
               animWidthText={3.8}
               data={
                 musicPageData?.holidayPosts[activeMusicItem]?.acf

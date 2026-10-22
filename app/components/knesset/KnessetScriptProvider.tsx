@@ -699,9 +699,9 @@ export default function KnessetScriptProvider({
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <h1 className="text-2xl font-bold">Knesset Page Not Found</h1>
           <p className="text-gray-600">
-            The requested rabbi post could not be found.
+            The requested knesset page could not be found.
           </p>
         </div>
       </div>
@@ -737,9 +737,7 @@ export default function KnessetScriptProvider({
               bgImage={IntroBG}
               bgOverlay={""}
               data={knessetPageData}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -754,7 +752,7 @@ export default function KnessetScriptProvider({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-12 px-[10vw] sm:py-[5vw] sm:px-[10vw] sm:px-[6.25vw] lg:px-14.5`}
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section py-12 px-[10vw] sm:py-[5vw] sm:px-[10vw] sm:px-[6.25vw] lg:px-14.5`}
               animWidthText={1}
               data={verticalPosts}
               categories={knessetPageData?.categoriesData || []}

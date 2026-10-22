@@ -439,7 +439,7 @@ export default function CommunitiesSheetsScriptProviderV2({
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -450,9 +450,7 @@ export default function CommunitiesSheetsScriptProviderV2({
                 title: sheetPageData?.pageData?.acf?.title || "",
                 content: sheetPageData?.pageData?.acf?.content || "",
               }}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -467,7 +465,7 @@ export default function CommunitiesSheetsScriptProviderV2({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              className="sheets-iframe w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform min-h-screen bg-black"
+              className="sheets-iframe w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section min-h-screen bg-black"
             >
               <iframe
                 id="sheet-frame"

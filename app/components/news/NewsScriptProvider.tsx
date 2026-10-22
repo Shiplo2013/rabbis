@@ -750,9 +750,7 @@ export default function NewsScriptProvider({
                   ? pageData?.acf?.introduction
                   : staticData?.acf?.introduction
               }
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -767,7 +765,7 @@ export default function NewsScriptProvider({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[10vh] px-[8vw] lg:px-[10vw]`}
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section py-[10vh] px-[8vw] lg:px-[10vw]`}
               animWidthText={1}
               data={pagePosts}
             />

@@ -648,7 +648,7 @@ export default function CommunitiesSheetsScriptProvider({
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -659,9 +659,7 @@ export default function CommunitiesSheetsScriptProvider({
                 title: sheetPageData?.pageData?.acf?.title || "",
                 content: sheetPageData?.pageData?.acf?.content || "",
               }}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -676,7 +674,7 @@ export default function CommunitiesSheetsScriptProvider({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[6vh] sm:py-[10vh] lg:py-[5vw] px-[8vw] lg:px-14.5`}
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section py-[6vh] sm:py-[10vh] lg:py-[5vw] px-[8vw] lg:px-14.5`}
               animWidthText={1}
               activeCategory={activeCategory}
               setActiveCategory={setActiveCategory}
@@ -696,7 +694,7 @@ export default function CommunitiesSheetsScriptProvider({
             />
           </div>
         </div>
-        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-black px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-black px-[8vw] lg:px-14.5 pb-[10vh]">
           <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
             <div
               className={`normal-posts flex flex-row flex-wrap max-w-300 gap-x-10 gap-y-12 justify-end`}

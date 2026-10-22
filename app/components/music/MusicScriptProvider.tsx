@@ -447,18 +447,18 @@ export default function MusicScriptProvider({ data }: { data: any }) {
               animationStatus={isAllAnimationComplete}
               data={musicPageData?.musicPage?.acf?.introduction}
               extraClass={
-                "first-intro panel-section will-change-transform w-full lg:min-w-[75vw] lg:w-[75vw]"
+                "first-intro panel-section w-full lg:min-w-[75vw] lg:w-[75vw]"
               }
             />
             <MusicCategoryList
-              extraClass="music-categories panel-section will-change-transform w-full lg:min-w-[70vw] lg:w-[70vw]"
+              extraClass="music-categories panel-section w-full lg:min-w-[70vw] lg:w-[70vw]"
               animWidthText={0}
               data={musicPageData?.holidayPosts}
               activeMusicItem={activeMusicItem}
               setActiveMusicItem={setActiveMusicItem}
             />
             <TerribleDaysSection
-              extraClass="terrieble-content panel-section will-change-transform w-full lg:min-w-[222vw] lg:w-[222vw]"
+              extraClass="terrieble-content panel-section w-full lg:min-w-[222vw] lg:w-[222vw]"
               animWidthText={0.5}
               data={musicPageData?.holidayPosts[activeMusicItem]}
               setAudioPopup={setAudioPopup}
@@ -470,7 +470,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
               setActiveTab={setActiveMusicTab}
             />
             <MirrorsSection
-              extraClass="mirrors-content panel-section will-change-transform w-full lg:min-w-[85vw] lg:w-[85vw]"
+              extraClass="mirrors-content panel-section w-full lg:min-w-[85vw] lg:w-[85vw]"
               animWidthText={3.8}
               data={
                 musicPageData?.holidayPosts[activeMusicItem]?.acf

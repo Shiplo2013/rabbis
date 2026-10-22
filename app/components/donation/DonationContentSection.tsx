@@ -48,8 +48,8 @@ export default function DonationContentSection(props: ChildProps) {
         />
       </div>
       <div className="donation-content-wrapper w-full h-auto flex items-center gap-x-[10vw] relative z-30 flex-col lg:flex-row gap-y-15">
-        <div className="donation-content flex items-center gap-x-[10vw] will-change-transform flex-col lg:flex-row gap-y-15">
-          <div className="donation-video1 will-change-transform w-full lg:w-[46.8vw] lg:h-[60vh]">
+        <div className="donation-content flex items-center gap-x-[10vw] flex-col lg:flex-row gap-y-15">
+          <div className="donation-video1 w-full lg:w-[46.8vw] lg:h-[60vh]">
             <DonationVideo
               extraClass={"donation-video w-full h-full will-change-transform"}
               data={SectionData.video1}
@@ -79,7 +79,7 @@ export default function DonationContentSection(props: ChildProps) {
           >
             {parse(SectionData.content2)}
           </div>
-          <div className="donation-video2 will-change-transform w-full lg:w-[23.33vw] lg:h-[72.33vh]">
+          <div className="donation-video2 w-full lg:w-[23.33vw] lg:h-[72.33vh]">
             <DonationVideo
               extraClass={"donation-video w-full h-full will-change-transform"}
               data={SectionData.video2}

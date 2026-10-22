@@ -768,7 +768,7 @@ export default function HomeScriptProvider({
               <HomeBanner
                 animated={isAllAnimationComplete}
                 extraClass={
-                  "panel-section will-change-transform w-full lg:min-w-screen lg:w-screen min-h-screen lg:h-screen cursor-pointer"
+                  "panel-section w-full lg:min-w-screen lg:w-screen min-h-screen lg:h-screen cursor-pointer"
                 }
                 panel={panel}
                 bannerData={homePageData?.acf?.banner_section}
@@ -781,9 +781,7 @@ export default function HomeScriptProvider({
             >
               <IntroSection
                 animWidthText={0.4}
-                extraClass={
-                  "panel-section will-change-transform w-full lg:min-w-[50vw] lg:w-[50vw]"
-                }
+                extraClass={"panel-section w-full lg:min-w-[50vw] lg:w-[50vw]"}
                 introData={homePageData?.acf?.intro_section}
               />
             </Suspense>
@@ -795,9 +793,7 @@ export default function HomeScriptProvider({
               <HomeSection1
                 animWidthPost={1}
                 animWidthSlider={1.4}
-                extraClass={
-                  "panel-section will-change-transform w-full lg:min-w-[70vw] lg:w-[70vw]"
-                }
+                extraClass={"panel-section w-full lg:min-w-[70vw] lg:w-[70vw]"}
                 panel={panel}
                 sectionData={homePageData?.acf?.home_section_1}
                 postsData={postsData}
@@ -811,9 +807,7 @@ export default function HomeScriptProvider({
               <HomeSection2
                 animWidthImage={2.2}
                 animWidthText={2.7}
-                extraClass={
-                  "panel-section will-change-transform min-w-screen w-screen bg-black"
-                }
+                extraClass={"panel-section min-w-screen w-screen bg-black"}
                 sectionData={homePageData?.acf?.home_section_2}
               />
             </Suspense>
@@ -825,9 +819,7 @@ export default function HomeScriptProvider({
               <HomeSection3
                 animWidthImage={3.6}
                 animWidthText={3.9}
-                extraClass={
-                  "panel-section will-change-transform w-full lg:min-w-[90vw] lg:w-[90vw]"
-                }
+                extraClass={"panel-section w-full lg:min-w-[90vw] lg:w-[90vw]"}
                 sectionData={homePageData?.acf?.home_section_3}
               />
             </Suspense>
@@ -838,9 +830,7 @@ export default function HomeScriptProvider({
             >
               <HomeSection4
                 animWidth={5}
-                extraClass={
-                  "panel-section will-change-transform min-w-screen w-screen"
-                }
+                extraClass={"panel-section min-w-screen w-screen"}
                 sectionData={homePageData?.acf?.home_section_4}
               />
             </Suspense>

@@ -26,7 +26,7 @@ export default function SheetContentItem(props: { data?: any }) {
     itemData && (
       <div
         data-id={itemData?.id}
-        className="sheet-item will-change-transform overflow-hidden w-full sm:w-[calc((100%-5vw)/2)] lg:w-[calc((100%-120px)/4)]"
+        className="sheet-item overflow-hidden w-full sm:w-[calc((100%-5vw)/2)] lg:w-[calc((100%-120px)/4)]"
       >
         {itemData?.acf?.thumbnail && (
           <FsLightbox

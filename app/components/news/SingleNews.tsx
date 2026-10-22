@@ -29,7 +29,7 @@ export default function SingleNews(props: ChildProps) {
   };
 
   return (
-    <div className="single-news w-full lg:w-[53vw] h-full flex items-center gap-x-[5.9vw] will-change-transform flex-col lg:flex-row gap-y-10 sm:gap-y-15">
+    <div className="single-news w-full lg:w-[53vw] h-full flex items-center gap-x-[5.9vw] flex-col lg:flex-row gap-y-10 sm:gap-y-15">
       <div className="single-news-image w-full lg:w-[32vw] min-w-[32vw] h-100 sm:h-150 lg:h-[80vh] relative z-40">
         {props.data?.gallery?.map((item: any, index: number) => {
           return (

@@ -67,7 +67,7 @@ export default function PageFixedElements() {
 
   // Use Refs
   const pathname = usePathname();
-  const audio = useRef<HTMLAudioElement>(null);
+  //const audio = useRef<HTMLAudioElement>(null);
   const wishButton = useRef<HTMLDivElement>(null);
   const moveButton = useRef<HTMLDivElement>(null);
   const audioButton = useRef<HTMLButtonElement>(null);
@@ -224,31 +224,31 @@ export default function PageFixedElements() {
   }, [isPlaying]);
 
   // On Video End
-  useEffect(() => {
-    const audioElement = document.getElementById(
-      "audio-player",
-    ) as HTMLAudioElement | null;
+  // useEffect(() => {
+  //   const audioElement = document.getElementById(
+  //     "audio-player",
+  //   ) as HTMLAudioElement | null;
 
-    // 1. Define the handler function reference
-    const handleAudioEnded = () => {
-      if (audioElement) {
-        audioElement.currentTime = 0;
-        audioElement.play();
-      }
-    };
+  //   // 1. Define the handler function reference
+  //   const handleAudioEnded = () => {
+  //     if (audioElement) {
+  //       audioElement.currentTime = 0;
+  //       audioElement.play();
+  //     }
+  //   };
 
-    if (audioElement) {
-      // 2. Pass the reference to add
-      audioElement.addEventListener("ended", handleAudioEnded, false);
-    }
+  //   if (audioElement) {
+  //     // 2. Pass the reference to add
+  //     audioElement.addEventListener("ended", handleAudioEnded, false);
+  //   }
 
-    return () => {
-      if (audioElement) {
-        // 3. Pass the EXACT SAME reference to remove
-        audioElement.removeEventListener("ended", handleAudioEnded, false);
-      }
-    };
-  }, [audio.current]);
+  //   return () => {
+  //     if (audioElement) {
+  //       // 3. Pass the EXACT SAME reference to remove
+  //       audioElement.removeEventListener("ended", handleAudioEnded, false);
+  //     }
+  //   };
+  // }, [audio.current]);
 
   // Handle Scroll Position
   const handleScrollPosition = () => {
@@ -580,7 +580,7 @@ export default function PageFixedElements() {
             id="zatzel-sidebar"
             className="zatzel-sidebar fixed top-0 right-15 w-70 h-full bg-[#000000] flex flex-col justify-center z-50 border-l border-[#D1CECE]"
           >
-            <div className="sheet-sidebar p-6 w-full lg:w-70 lg:min-w-70 h-full will-change-transform relative z-20 flex items-center">
+            <div className="sheet-sidebar p-6 w-full lg:w-70 lg:min-w-70 h-full relative z-20 flex items-center">
               <div className="sheet-sidebar-wrapper">
                 <ZatzelSidebar
                   setSearchedData={setZatzelSearchedData}
@@ -841,7 +841,7 @@ export default function PageFixedElements() {
           id="pastrabbis-sidebar"
           className="pastrabbis-sidebar fixed top-0 right-15 w-70 h-full bg-[#000000] flex flex-col justify-center z-50 border-l border-[#D1CECE]"
         >
-          <div className="sheet-sidebar p-6 w-full lg:w-70 lg:min-w-70 h-full will-change-transform relative z-20 flex items-center">
+          <div className="sheet-sidebar p-6 w-full lg:w-70 lg:min-w-70 h-full relative z-20 flex items-center">
             <div className="sheet-sidebar-wrapper">
               <form
                 onSubmit={(e) => {
@@ -1066,7 +1066,7 @@ export default function PageFixedElements() {
             id="cycle-sidebar"
             className="cycle-sidebar fixed top-0 right-15 w-70 h-full bg-[#1A1A1A] flex flex-col items-center justify-center z-50 border-l border-[#D1CECE]"
           >
-            <div className="sheet-sidebar min-w-50 w-50 h-full will-change-transform overflow-hidden flex flex-col justify-center">
+            <div className="sheet-sidebar min-w-50 w-50 h-full overflow-hidden flex flex-col justify-center">
               <div className="sheet-sidebar-wrapper flex items-center">
                 <div
                   ref={scrollbarRef}

@@ -33,7 +33,7 @@ export default function CustomContentItem({
   return (
     <div
       dir="rtl"
-      className={`custom-content-item bg-[#FBF4E6] border border-[#D1CECE] relative will-change-transform w-full lg:w-[calc((100%-80px)/3)] py-[8.8vh] pr-7 pl-[4.5vw] text-[#000000]`}
+      className={`custom-content-item bg-[#FBF4E6] border border-[#D1CECE] relative w-full lg:w-[calc((100%-80px)/3)] py-[8.8vh] pr-7 pl-[4.5vw] text-[#000000]`}
     >
       <div className="custom-content-wrapper">
         <Link

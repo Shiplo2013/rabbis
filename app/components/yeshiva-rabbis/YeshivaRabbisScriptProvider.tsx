@@ -427,13 +427,13 @@ export default function YeshivaRabbisScriptProvider({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              className="rabbis-sections w-full lg:w-(--section-width) lg:min-w-(--section-width) will-change-transform flex lg:justify-baseline flex-col lg:flex-row-reverse items-center gap-15 sm:gap-[10vw] px-[10vw] pt-30 pb-15 sm:pb-25 lg:py-0 lg:px-[12vw] lg:h-full"
+              className="rabbis-sections w-full lg:w-(--section-width) lg:min-w-(--section-width) flex lg:justify-baseline flex-col lg:flex-row-reverse items-center gap-15 sm:gap-[10vw] px-[10vw] pt-30 pb-15 sm:pb-25 lg:py-0 lg:px-[12vw] lg:h-full"
             >
               {rabbisPageData?.map((section: any, index: number) => (
                 <RabbisSection
                   key={section?.id}
                   rabbisContent={[section]}
-                  className={`will-change-transform rabbis-section-${index + 1}`}
+                  className={`rabbis-section-${index + 1}`}
                 />
               ))}
             </section>

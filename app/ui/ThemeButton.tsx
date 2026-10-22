@@ -66,7 +66,7 @@ export default function ThemeButton(props: ChildProps) {
           )
         )}
         <span
-          className={`btn-bg absolute z-10 left-0 top-0 w-full h-full will-change-transform ${props?.hoverBgColor}`}
+          className={`btn-bg absolute z-10 left-0 top-0 w-full h-full ${props?.hoverBgColor}`}
         ></span>
       </Link>
     </div>

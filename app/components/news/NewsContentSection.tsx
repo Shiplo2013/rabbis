@@ -15,12 +15,12 @@ export default function NewsContentSection(props: ChildProps) {
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
       <div className="sheet-wrapper w-full h-full flex items-center gap-x-[10vw]">
-        {/* <div className="sheet-sidebar w-70 min-w-70 h-full will-change-transform py-[10vh]">
+        {/* <div className="sheet-sidebar w-70 min-w-70 h-full py-[10vh]">
           <div className="sheet-sidebar-wrapper">
             <SidebarSearch />
           </div>
         </div> */}
-        <div className="news-content flex items-center gap-y-[10vh] gap-x-[10vw] md:gap-x-[30vw] lg:gap-x-[25vw] xl:gap-x-[20vw] 2xl:gap-x-[15vw] will-change-transform flex-col lg:flex-row">
+        <div className="news-content flex items-center gap-y-[10vh] gap-x-[10vw] md:gap-x-[30vw] lg:gap-x-[25vw] xl:gap-x-[20vw] 2xl:gap-x-[15vw] flex-col lg:flex-row">
           {props.data?.map((item: any, index: number) => {
             return <SingleNews key={item.id} data={item} />;
           })}

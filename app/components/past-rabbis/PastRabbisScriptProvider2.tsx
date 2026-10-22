@@ -346,42 +346,30 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
       });
       // Sidebar Animation
       const handleScroll = () => {
+        if (!sidebar) return;
+
         const scrollTop = window.scrollY;
         const windowWidth = window.innerWidth * 1.8;
         const pageHeight = main?.current?.offsetHeight;
 
-        if (scrollTop > windowWidth) {
-          gsap.to(sidebar, {
-            x: 0,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        } else {
-          gsap.to(sidebar, {
-            x: 340,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        }
-        // Hide sidebar when reaching the end of the page
-        if (scrollTop > (pageHeight || 0) - window.innerHeight) {
-          gsap.to(sidebar, {
-            autoAlpha: 0,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        } else {
-          gsap.to(sidebar, {
-            autoAlpha: 1,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        }
+        sidebar.style.willChange = "transform, opacity";
+        gsap.to(sidebar, {
+          x: scrollTop > windowWidth ? 0 : 340,
+          autoAlpha: scrollTop > (pageHeight || 0) - window.innerHeight ? 0 : 1,
+          duration: 0.5,
+          ease: "power2.out",
+          overwrite: "auto",
+          onComplete: () => {
+            sidebar.style.willChange = "";
+          },
+        });
       };
       window.addEventListener("scroll", handleScroll);
 
       return () => {
         window.removeEventListener("scroll", handleScroll);
+        gsap.killTweensOf(sidebar);
+        sidebar.style.willChange = "";
       };
     } else {
       gsap.set(sidebar, {
@@ -590,7 +578,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center will-change-transform flex-col`}
+            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center flex-col`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -602,9 +590,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
                   ? [rabbisPageData?.pageData?.acf?.introduction]
                   : []
               }
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -619,7 +605,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform pt-[5vh] pb-[8vh] lg:pt-[5vw] lg:pb-[10vh] px-[8vw] lg:px-[6.25vw]`}
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section pt-[5vh] pb-[8vh] lg:pt-[5vw] lg:pb-[10vh] px-[8vw] lg:px-[6.25vw]`}
               animWidthText={1}
               data={verticalPosts || []}
             />
@@ -635,7 +621,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
                   <div
                     key={item.id}
                     data-id={item.id}
-                    className={`rabbis-item w-full h-full flex items-end justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] will-change-transform flex-col lg:flex-row-reverse`}
+                    className={`rabbis-item w-full h-full flex items-end justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] flex-col lg:flex-row-reverse`}
                   >
                     <div className="rabbis-image w-full lg:w-[27.1vw] relative">
                       <div className="image w-full h-auto lg:h-[57.2vh] relative">

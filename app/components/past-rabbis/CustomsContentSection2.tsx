@@ -21,7 +21,7 @@ export default function CustomsContentSection2(props: ChildProps) {
       style={props.style}
       className={`${props.extraClass} rabbis-section bg-black flex items-start relative z-20 flex-col lg:flex-row`}
     >
-      <div className="sheet-sidebar w-full lg:w-70 lg:min-w-70 h-auto will-change-transform z-20 mb-10 lg:mb-0 lg:py-[10vh] opacity-100 visible lg:opacity-0 lg:invisible">
+      <div className="sheet-sidebar w-full lg:w-70 lg:min-w-70 h-auto z-20 mb-10 lg:mb-0 lg:py-[10vh] opacity-100 visible lg:opacity-0 lg:invisible">
         <div className="sheet-sidebar-wrapper">
           <form
             onSubmit={(e) => {

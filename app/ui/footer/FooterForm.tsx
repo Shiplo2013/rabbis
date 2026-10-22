@@ -11,6 +11,12 @@ export default function FooterForm() {
       className="form w-full flex flex-col text-[20px] leading-[1em]"
     >
       <div className="text xl:text-[16px] sm:text-[14px] leading-[1em] mb-3 text-center flex gap-x-2 items-center">
+        <input
+          type="checkbox"
+          id="footer-privacy"
+          name="privacy-consent"
+          className="w-4 h-4"
+        />
         <label htmlFor="footer-privacy">
           קראתי ואני מסכים/ה ל
           <Link
@@ -22,15 +28,12 @@ export default function FooterForm() {
             מדיניות הפרטיות
           </Link>
         </label>
-        <input
-          type="checkbox"
-          id="footer-privacy"
-          name="privacy-consent"
-          className="w-4 h-4"
-        />
       </div>
       <div className="form-col flex items-stretch h-10">
         <div className="input-field w-3/4 flex items-center justify-center">
+          <label htmlFor="email-subscibe" className="hidden">
+            מייל
+          </label>
           <input
             dir="rtl"
             className="bg-[#000000] text-white focus:outline-0 w-full h-full px-4 py-2 placeholder:text-white"

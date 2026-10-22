@@ -15,7 +15,7 @@ export default function ConferenceGalleryImage({
   );
   const [loading, setLoading] = useState(true);
   return (
-    <div className="single-gallery will-change-transform w-[80vw] h-[50vw] lg:w-[39.4vw] lg:h-[47.25vh] overflow-hidden">
+    <div className="single-gallery w-[80vw] h-[50vw] lg:w-[39.4vw] lg:h-[47.25vh] overflow-hidden">
       {loading && (
         <div className="animate-pulse w-full h-full bg-gray-600"></div>
       )}
@@ -23,7 +23,7 @@ export default function ConferenceGalleryImage({
         className={`single-gallery-image w-screen h-[100vw] lg:w-[50vw] lg:h-[70vh] absolute top-1/2 left-1/2 -translate-[50%] ${loading ? "opacity-0" : "opacity-100"}`}
       >
         <Image
-          className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+          className="w-full object-cover object-center h-full relative z-30 cursor-none pointer-events-none"
           src={item?.sizes?.large || item?.image?.src}
           width={item?.sizes?.large?.width || item?.image?.width || 1920}
           height={item?.sizes?.large?.height || item?.image?.height || 1080}

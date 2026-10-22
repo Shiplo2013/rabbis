@@ -8,7 +8,7 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
   return (
     <form
       action={action}
-      className={`subscribe-form px-[2.5vw] py-[3.7vh] w-full lg:w-[26.35vw] will-change-transform flex flex-col justify-center ${mode === "dark" ? "bg-[#000000] text-white" : "bg-[#C3A13F] text-white"}`}
+      className={`subscribe-form px-[2.5vw] py-[3.7vh] w-full lg:w-[26.35vw] flex flex-col justify-center ${mode === "dark" ? "bg-[#000000] text-white" : "bg-[#C3A13F] text-white"}`}
     >
       <div className="subscribe-form-wrapper">
         <h2 className="2xl:text-[38px] xl:text-[30px] sm:text-[24px] leading-[0.8em]">

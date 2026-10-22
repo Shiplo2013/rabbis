@@ -595,9 +595,7 @@ export default function YeshivaGraduatesScriptProvider({
               bgImage={pageData?.acf?.introduction?.background || IntroBG}
               bgOverlay={""}
               data={IntroData1}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -613,7 +611,7 @@ export default function YeshivaGraduatesScriptProvider({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass="w-full lg:min-w-(--section-width) lg:w-(--section-width) h-auto lg:h-screen panel-section will-change-transform py-[5vh] lg:py-[5vw] px-10 sm:px-[5vw] lg:pl-0 lg:pr-[6.25vw]"
+              extraClass="w-full lg:min-w-(--section-width) lg:w-(--section-width) h-auto lg:h-screen panel-section py-[5vh] lg:py-[5vw] px-10 sm:px-[5vw] lg:pl-0 lg:pr-[6.25vw]"
               GraduateData={GraduateData}
               animWidthText={1}
               pageLinks={pageData?.acf?.page_links || []}

@@ -42,7 +42,7 @@ export default function CustomsContentSection(props: ChildProps) {
       className={`${props.extraClass} bg-[#F5F0EB] flex items-center justify-start relative z-20`}
     >
       <div className="sheet-wrapper w-full h-auto flex items-center gap-x-[5.8vw] flex-col lg:flex-row gap-y-[5vh] lg:pr-85">
-        <div className="sheet-sidebar w-full flex flex-col gap-y-10 lg:hidden lg:w-54.5 min-w-[11.35vw] h-full will-change-transform overflow-hidden">
+        <div className="sheet-sidebar w-full flex flex-col gap-y-10 lg:hidden lg:w-54.5 min-w-[11.35vw] h-full overflow-hidden">
           <Sidebar
             activeCategory={knessetActiveCategory || null}
             categories={knessetCategoryData || []}
@@ -54,7 +54,7 @@ export default function CustomsContentSection(props: ChildProps) {
             onSearchSubmit={setKnessetSearchQuery}
           />
         </div>
-        <div className="sheet-content flex items-stretch gap-x-10 gap-y-10 will-change-transform flex-col lg:flex-row w-full h-full overflow-hidden">
+        <div className="sheet-content flex items-stretch gap-x-10 gap-y-10 flex-col lg:flex-row w-full h-full overflow-hidden">
           {sectionData?.length > 0 &&
             sectionData?.map((item: any, index: number) => {
               return (
