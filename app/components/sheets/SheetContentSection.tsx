@@ -97,7 +97,7 @@ export default function SheetContentSection(props: ChildProps) {
           </div>
           <SubscribeForm />
         </div>
-        <div className="sheet-content max-w-300 w-full flex items-center gap-y-[5vh] gap-x-10 will-change-transform relative flex-col sm:flex-row flex-wrap lg:flex-nowrap">
+        <div className="sheet-content max-w-300 w-full flex items-center gap-y-[5vh] gap-x-10 relative flex-col sm:flex-row flex-wrap lg:flex-nowrap">
           {sectionData?.noPostsFound ? (
             <div className="no-post-found w-full flex items-center justify-center py-20 gap-x-[3.2vw]">
               <div className="text-white text-[35px] leading-[1em] w-[26.35vw] text-center">

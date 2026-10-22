@@ -460,9 +460,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
                   ? [rabbisPageData?.pageData?.acf?.introduction]
                   : []
               }
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen lg:w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen lg:w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -477,7 +475,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[5vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]`}
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section py-[5vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]`}
               animWidthText={1}
               data={rabbisPageData?.posts}
             />

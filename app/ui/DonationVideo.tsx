@@ -156,7 +156,7 @@ export default function DonationVideo(props: ChildProps) {
         ref={videoRef}
         width="100%"
         poster={posterUrl}
-        className="w-full h-full object-cover object-center will-change-transform backface-hidden"
+        className="w-full h-full object-cover object-center backface-hidden"
         autoPlay={shouldLoadVideo}
         playsInline
         muted
@@ -169,7 +169,7 @@ export default function DonationVideo(props: ChildProps) {
         ) : null}
         Your browser does not support the video tag.
       </video>
-      <div className="video-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform opacity-40 group-hover:opacity-20 transition-opacity duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)] backface-hidden pointer-events-none"></div>
+      <div className="video-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 opacity-40 group-hover:opacity-20 transition-opacity duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)] backface-hidden pointer-events-none"></div>
       <div className="video-pixel-border absolute top-0 left-0 w-full h-full z-40 pointer-events-none">
         <div className="pixel-border-1 absolute top-4 right-4 group-hover:top-2 group-hover:right-2 transition-[top,right] duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)]">
           <PixelIcon1 />

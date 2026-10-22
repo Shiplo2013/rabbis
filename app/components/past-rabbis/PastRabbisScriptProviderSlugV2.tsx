@@ -654,9 +654,7 @@ export default function PastRabbisScriptProviderSlugV2({
                 time: post?.acf?.time,
                 thumbnail: post?.acf?.thumbnail,
               }}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -666,7 +664,7 @@ export default function PastRabbisScriptProviderSlugV2({
               }}
             />
             <ContentSection2
-              extraClass="rabbis-content w-full panel-section will-change-transform pt-[5vw] px-[8vw] lg:px-[6.25vw]"
+              extraClass="rabbis-content w-full panel-section pt-[5vw] px-[8vw] lg:px-[6.25vw]"
               animWidthText={1}
               data={{
                 title: post?.acf?.title,

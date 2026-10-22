@@ -201,7 +201,7 @@ export default function SingleVideoSection(props: ChildProps) {
             }
           />
         </div>
-        <div className="section-overlay absolute top-0 left-0 w-full h-full bg-black z-40 will-change-transform hidden lg:block"></div>
+        <div className="section-overlay absolute top-0 left-0 w-full h-full bg-black z-40 hidden lg:block"></div>
       </div>
     </section>
   );

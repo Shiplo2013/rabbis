@@ -633,9 +633,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
                   link: donationPageData?.acf?.donation_button_link,
                 },
               }}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -645,7 +643,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
               }}
             />
             <DonationContentSection
-              extraClass="lg:min-w-[280vw] w-full lg:w-[280vw] lg:h-screen panel-section will-change-transform py-[10vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]"
+              extraClass="lg:min-w-[280vw] w-full lg:w-[280vw] lg:h-screen panel-section py-[10vh] lg:py-[5vw] px-[8vw] lg:px-[6.25vw]"
               animWidthText={1}
               sectionData={{
                 video1: {

@@ -507,9 +507,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
               bgImage={visitTempleData?.acf?.introduction?.background}
               bgOverlay={""}
               data={visitTempleData?.acf?.introduction}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"

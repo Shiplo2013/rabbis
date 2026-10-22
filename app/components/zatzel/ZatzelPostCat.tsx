@@ -24,7 +24,7 @@ export default function ZatzelPostCat(props: ChildProps) {
     <section
       dir="rtl"
       data-index={props.dataIndex}
-      className={`zatzel-cat-section ${props.className} will-change-transform w-full`}
+      className={`zatzel-cat-section ${props.className} w-full`}
     >
       <div className="zatzel-cat-title mb-10.5">
         <h2 className="text-[32px] sm:text-[55px] leading-[0.7em] text-(--theme-color)">

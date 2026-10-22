@@ -145,7 +145,7 @@ export default function GallerySection(props: GallerySectionProps) {
         <div
           ref={galleryRef}
           id="gallery"
-          className="gallery-wrapper w-full h-auto flex items-center flex-col will-change-transform justify-center relative"
+          className="gallery-wrapper w-full h-auto flex items-center flex-col justify-center relative"
         >
           {props.tabData &&
             props.tabData?.gallery?.map((item: any, index: number) => {
@@ -156,13 +156,13 @@ export default function GallerySection(props: GallerySectionProps) {
                 return (
                   <div
                     key={item?.id}
-                    className={`single-gallery will-change-transform w-[32vw] h-[40vh] overflow-hidden ${orientation}`}
+                    className={`single-gallery w-[32vw] h-[40vh] overflow-hidden ${orientation}`}
                   >
                     <div
                       className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
                     >
                       <Image
-                        className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+                        className="w-full object-cover object-center h-full relative z-30 cursor-none pointer-events-none"
                         src={item?.sizes?.large || item?.url}
                         width={item?.sizes?.large?.width || 650}
                         height={item?.sizes?.large?.height || 400}
@@ -181,13 +181,13 @@ export default function GallerySection(props: GallerySectionProps) {
                 return (
                   <div
                     key={item?.id}
-                    className={`single-gallery will-change-transform w-[22vw] h-[50vh] overflow-hidden ${orientation}`}
+                    className={`single-gallery w-[22vw] h-[50vh] overflow-hidden ${orientation}`}
                   >
                     <div
                       className={`single-gallery-image w-[60vw] h-[80vh] absolute top-1/2 left-1/2 -translate-[50%]`}
                     >
                       <Image
-                        className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+                        className="w-full object-cover object-center h-full relative z-30 cursor-none pointer-events-none"
                         src={item?.sizes?.large || item?.url}
                         width={item?.sizes?.large?.width || 650}
                         height={item?.sizes?.large?.height || 650}

@@ -31,7 +31,7 @@ export default function ContactSection(props: ChildProps) {
             bgClass={""}
             animatePosition={0.1}
           />
-          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform"></div>
+          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30"></div>
         </div>
       )}
       <div className="contact-wrapper w-full h-full relative z-30 pt-[14vh] sm:pt-[12vh] pb-[8vh] lg:py-[15vh] px-[8vw] lg:px-[10vw]">

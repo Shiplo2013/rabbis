@@ -574,7 +574,7 @@ export default function ConferenceScriptProvider({
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -585,9 +585,7 @@ export default function ConferenceScriptProvider({
                 title: alumniConferenceData?.acf?.intro_title,
                 content: "",
               }}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -602,7 +600,7 @@ export default function ConferenceScriptProvider({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`lg:min-w-(--section-width) w-full lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[10vh] lg:py-[5vw] px-[8vw] lg:px-[9.25vw]`}
+              extraClass={`lg:min-w-(--section-width) w-full lg:w-(--section-width) lg:h-screen panel-section py-[10vh] lg:py-[5vw] px-[8vw] lg:px-[9.25vw]`}
               animWidthText={1}
               sectionData={{
                 gallery: alumniConferenceData?.acf?.gallery,

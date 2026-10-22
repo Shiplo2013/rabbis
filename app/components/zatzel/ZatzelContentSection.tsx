@@ -33,8 +33,8 @@ export default function ZatzelContentSection(props: ChildProps) {
       dir="rtl"
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
-      <div className="sheet-wrapper w-full min-w-full h-auto flex items-center gap-[10vw] flex-col lg:flex-row will-change-transform lg:pr-85 max-w-full lg:w-7xl">
-        <div className="sheet-sidebar block lg:hidden w-full lg:w-70 lg:min-w-70 h-full will-change-transform relative z-20">
+      <div className="sheet-wrapper w-full min-w-full h-auto flex items-center gap-[10vw] flex-col lg:flex-row lg:pr-85 max-w-full lg:w-7xl">
+        <div className="sheet-sidebar block lg:hidden w-full lg:w-70 lg:min-w-70 h-full relative z-20">
           <div className="sheet-sidebar-wrapper">
             <ZatzelSidebar
               setSearchedData={props.setSearchedData}
@@ -43,7 +43,7 @@ export default function ZatzelContentSection(props: ChildProps) {
             />
           </div>
         </div>
-        <div className="sheet-content w-full flex items-center gap-x-[10vw] will-change-transform flex-col lg:flex-row">
+        <div className="sheet-content w-full flex items-center gap-x-[10vw] flex-col lg:flex-row">
           {SectionData?.sectionContent?.length > 0 ? (
             <ZatzelPostCat
               key={0}

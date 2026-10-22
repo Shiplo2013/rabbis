@@ -476,37 +476,23 @@ export default function CyclePicturesScriptProvider({
     ) as HTMLDivElement | null;
     // Sidebar Animation
     const handleScroll = () => {
+      if (!sidebar) return;
+
       const scrollTop = window.scrollY;
       const windowWidth = window.innerWidth * 1.8;
       const pageHeight = main?.current?.offsetHeight;
 
-      if (scrollTop > windowWidth) {
-        gsap.to(sidebar, {
-          x: 0,
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      } else {
-        gsap.to(sidebar, {
-          x: 340,
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      }
-      // Hide sidebar when reaching the end of the page
-      if (scrollTop > (pageHeight || 0) - window.innerHeight) {
-        gsap.to(sidebar, {
-          autoAlpha: 0,
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      } else {
-        gsap.to(sidebar, {
-          autoAlpha: 1,
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      }
+      sidebar.style.willChange = "transform, opacity";
+      gsap.to(sidebar, {
+        x: scrollTop > windowWidth ? 0 : 340,
+        autoAlpha: scrollTop > (pageHeight || 0) - window.innerHeight ? 0 : 1,
+        duration: 0.5,
+        ease: "power2.out",
+        overwrite: "auto",
+        onComplete: () => {
+          sidebar.style.willChange = "";
+        },
+      });
     };
 
     // Animations
@@ -523,6 +509,10 @@ export default function CyclePicturesScriptProvider({
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      if (sidebar) {
+        gsap.killTweensOf(sidebar);
+        sidebar.style.willChange = "";
+      }
     };
   }, [pathname, pageDataFetched, containerWidth]);
 
@@ -661,9 +651,7 @@ export default function CyclePicturesScriptProvider({
               bgImage={IntroBG}
               bgOverlay={""}
               data={picturesPageData.introduction}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -678,7 +666,7 @@ export default function CyclePicturesScriptProvider({
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[10vh] lg:py-[5vw] px-[8vw] lg:px-15`}
+              extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section py-[10vh] lg:py-[5vw] px-[8vw] lg:px-15`}
               animWidthText={1}
               sectionData={verticalPosts}
               parentCategories={cycleCategories}

@@ -386,7 +386,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
               dir="rtl"
               className={`testimonials-content w-full h-full py-[10vh] px-[8vw] lg:px-[10vw] flex items-center gap-x-[6.3vw] flex-col lg:flex-row`}
             >
-              <div className="introduction w-full min-h-[60vh] lg:w-[33.4vw] min-w-[33.4vw] will-change-transform flex items-center">
+              <div className="introduction w-full min-h-[60vh] lg:w-[33.4vw] min-w-[33.4vw] flex items-center">
                 <h1
                   dir="ltr"
                   className="intro-title text-[15vw] lg:text-[8vw] leading-[40%] sm:leading-[50%] lg:leading-[70%] text-[#C3A13F] text-right"
@@ -400,9 +400,9 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                     "--section-width": `${sectionWidth}vw`,
                   } as React.CSSProperties
                 }
-                className={`testimonials flex w-full lg:h-screen items-center justify-center gap-x-[10vw] lg:w-(--section-width) will-change-transform lg:pl-[10vw] flex-col lg:flex-row gap-y-15 sm:gap-y-[10vh]`}
+                className={`testimonials flex w-full lg:h-screen items-center justify-center gap-x-[10vw] lg:w-(--section-width) lg:pl-[10vw] flex-col lg:flex-row gap-y-15 sm:gap-y-[10vh]`}
               >
-                <div className="testimonial-item w-full lg:w-[65vw] lg:h-screen flex items-center justify-start gap-x-[2.8vw] will-change-transform flex-col lg:flex-row gap-y-10">
+                <div className="testimonial-item w-full lg:w-[65vw] lg:h-screen flex items-center justify-start gap-x-[2.8vw] flex-col lg:flex-row gap-y-10">
                   <div className="testimonial-image w-full lg:w-[40vw] min-w-[40vw] lg:h-[50vh] relative">
                     <div className="w-full h-50 lg:h-full bg-[#111111] flex items-center justify-center">
                       <h4 className="text-[18px] lg:text-[26px] leading-[1em]">
@@ -416,7 +416,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                     (testimonial: any, index: number) => (
                       <div
                         key={"Testimonials-" + index}
-                        className="testimonial-item w-full lg:w-[65vw] lg:h-screen flex items-center justify-start gap-x-[2.8vw] will-change-transform flex-col lg:flex-row gap-y-10"
+                        className="testimonial-item w-full lg:w-[65vw] lg:h-screen flex items-center justify-start gap-x-[2.8vw] flex-col lg:flex-row gap-y-10"
                       >
                         <div className="testimonial-image w-full lg:w-[40vw] min-w-[40vw] lg:h-[50vh] relative">
                           {testimonial?.media_type === "video" && (

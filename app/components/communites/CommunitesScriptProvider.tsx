@@ -355,7 +355,7 @@ export default function CommunitiesScriptProvider({
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -363,9 +363,7 @@ export default function CommunitiesScriptProvider({
               bgImage={IntroBG}
               bgOverlay={""}
               data={communityPageData?.pageData}
-              extraClass={
-                "first-intro panel-section will-change-transform min-w-screen w-screen"
-              }
+              extraClass={"first-intro panel-section min-w-screen w-screen"}
               panel={panel}
               bgPosition=""
               overlayClass="bg-[#000000] opacity-0"
@@ -390,7 +388,7 @@ export default function CommunitiesScriptProvider({
                   } as React.CSSProperties
                 }
                 id="communities-section"
-                className={`panel-section will-change-transform min-w-screen w-full lg:w-(--section-width) py-[10vh] px-[8vw] lg:px-[15vw] box-border`}
+                className={`panel-section min-w-screen w-full lg:w-(--section-width) py-[10vh] px-[8vw] lg:px-[15vw] box-border`}
               >
                 <div className="w-full flex justify-end gap-x-[15vw] gap-y-[10vh] flex-col lg:flex-row">
                   {communityPageData?.postsData &&
@@ -399,7 +397,7 @@ export default function CommunitiesScriptProvider({
                         <CommunitesPostCat
                           key={categoryData?.categoryId}
                           postsContent={categoryData}
-                          className={`will-change-transform rabbis-section-${index}`}
+                          className={`rabbis-section-${index}`}
                         />
                       ),
                     )}

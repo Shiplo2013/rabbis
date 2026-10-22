@@ -45,7 +45,7 @@ export default function SingleCyclePicture(props: ChildProps) {
       <div className="cycle-frame relative">
         <div className="group relative z-40 w-full h-full max-w-full">
           <Image
-            className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
+            className="w-full object-cover object-center h-full relative z-30 cursor-none pointer-events-none"
             src={Frame?.src}
             width="702"
             height="450"

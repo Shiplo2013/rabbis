@@ -43,7 +43,7 @@ export default function CyclePicturesSection(props: ChildProps) {
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
       <div className="sheet-wrapper w-full min-w-[80vw] h-auto flex items-center gap-x-[10vw] flex-col lg:flex-row lg:pr-85">
-        <div className="sheet-sidebar block lg:hidden min-w-50 w-full h-full will-change-transform overflow-hidden mb-10">
+        <div className="sheet-sidebar block lg:hidden min-w-50 w-full h-full overflow-hidden mb-10">
           <div className="sheet-sidebar-wrapper">
             <div ref={scrollbarRef} className="sheet-scrollbar-wrapper">
               <SimpleBar
@@ -86,7 +86,7 @@ export default function CyclePicturesSection(props: ChildProps) {
             </div>
           </div>
         </div>
-        <div className="sheet-content flex items-center gap-x-15 w-full will-change-transform flex-col lg:flex-row gap-y-10 sm:gap-y-15">
+        <div className="sheet-content flex items-center gap-x-15 w-full flex-col lg:flex-row gap-y-10 sm:gap-y-15">
           {SectionData?.length > 0 ? (
             SectionData?.map((item: any, index: number) => (
               <SingleCyclePicture key={item?.id} data={item} index={index} />

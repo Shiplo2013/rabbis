@@ -98,7 +98,7 @@ export default function GraduatesListSection(props: ChildProps) {
       className={`${props.extraClass} bg-[#1A1A1A] flex items-center justify-start relative z-20`}
     >
       <div className="graduates-wrapper w-full h-auto flex items-center gap-x-[9.16vw] gap-y-20 flex-col lg:flex-row relative z-20">
-        <div className="sheet-content w-full lg:w-auto flex items-stretch gap-x-[3.3vw] gap-y-5 will-change-transform flex-col sm:flex-row flex-wrap lg:flex-nowrap">
+        <div className="sheet-content w-full lg:w-auto flex items-stretch gap-x-[3.3vw] gap-y-5 flex-col sm:flex-row flex-wrap lg:flex-nowrap">
           {props.GraduateData?.map((item: any, index) => (
             <SingleGraduates key={item?.title} data={item} />
           ))}
