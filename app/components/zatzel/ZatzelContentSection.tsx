@@ -18,7 +18,6 @@ interface ChildProps {
   extraClass: string;
   animWidthText: number;
   sectionData: ZatzelContentSectionData;
-  setSelectedDate?: (date: Date | null) => void;
   setSearchedData?: (data: string | null) => void;
   setZatzelPosts?: (posts: any) => void;
   allPosts?: any;
@@ -38,7 +37,6 @@ export default function ZatzelContentSection(props: ChildProps) {
         <div className="sheet-sidebar block lg:hidden w-full lg:w-70 lg:min-w-70 h-full will-change-transform relative z-20">
           <div className="sheet-sidebar-wrapper">
             <ZatzelSidebar
-              setSelectedDate={props.setSelectedDate}
               setSearchedData={props.setSearchedData}
               setZatzelPosts={props.setZatzelPosts}
               allPosts={props.allPosts}

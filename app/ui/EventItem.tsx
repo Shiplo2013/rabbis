@@ -31,7 +31,7 @@ export default function EventItem(props: {
           svgIcon={
             <ArrowLeftBottom
               extraClass={
-                "group-hover:fill-white transition-all duration-300 ease-in-out"
+                "group-hover:fill-white transition-colors duration-300 ease-in-out"
               }
             />
           }

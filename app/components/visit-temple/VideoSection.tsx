@@ -144,7 +144,7 @@ export default function VideoSection(props: ChildProps) {
       className={`${props.extraClass} bg-black flex items-center lg:h-screen relative z-20`}
       data-scroll-section={props.animWidthText}
     >
-      <div className="video-wrapper w-full h-full relative">
+      <div className="video-wrapper w-full h-full relative overflow-hidden sm:overflow-auto">
         <div ref={videoWrap} className="video h-full w-full relative z-10">
           <VideoPlayer extraClass="w-full h-full" data={videoData} />
           <button
@@ -158,16 +158,16 @@ export default function VideoSection(props: ChildProps) {
         </div>
         <div
           ref={videoButton}
-          onClick={handleButtonClick}
           className="absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
         >
           <ThemeButton2
-            extraClass="w-20 h-20 p-5 sm:p-0 sm:w-29.25 sm:h-29.25 flex items-center justify-center border-2 border-[#C3A13F] group"
+            onClick={handleButtonClick}
+            extraClass="w-15 h-15 p-4 sm:p-0 sm:w-29.25 sm:h-29.25 flex items-center justify-center border-2 border-[#C3A13F] group"
             bgColor="bg-[#0F0F0F85]"
             hoverBgColor="bg-[#000000]"
             svgIcon={<PlusIcon />}
             svgIconClass={
-              "group-hover:skew-0 transition-all duration-500 group-hover:rotate-180"
+              "group-hover:skew-0 transition-transform duration-500 group-hover:rotate-180"
             }
           />
         </div>

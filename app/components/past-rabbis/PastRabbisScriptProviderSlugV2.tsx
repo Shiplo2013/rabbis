@@ -193,18 +193,8 @@ export default function PastRabbisScriptProviderSlugV2({
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);
   const [activeBookPopup, setActiveBookPopup] = useState(false);
-  const [cardPopupTimeline] = useState(
-    gsap.timeline({
-      paused: true,
-      timeScale: 3,
-    }),
-  );
-  const [bookPopupTimeline] = useState(
-    gsap.timeline({
-      paused: true,
-      timeScale: 3,
-    }),
-  );
+  const cardPopupTimeline = useRef<gsap.core.Timeline | null>(null);
+  const bookPopupTimeline = useRef<gsap.core.Timeline | null>(null);
 
   // Page Refs
   const main = useRef<HTMLDivElement>(null);
@@ -382,6 +372,17 @@ export default function PastRabbisScriptProviderSlugV2({
   }, [isAllAnimationComplete]);
 
   useGSAP(() => {
+    // Set Timeline
+    cardPopupTimeline.current = gsap.timeline({
+      paused: true,
+      timeScale: 3,
+    });
+    // Set Timeline
+    bookPopupTimeline.current = gsap.timeline({
+      paused: true,
+      timeScale: 3,
+    });
+
     // Popup Animation
     const cardButton = main.current?.querySelectorAll(
       ".rabbis-menu-item.card-button",
@@ -417,8 +418,8 @@ export default function PastRabbisScriptProviderSlugV2({
     ) as HTMLButtonElement | null;
 
     // Card Popup Animation
-    if (popupCardRef) {
-      cardPopupTimeline.to(
+    if (popupCardRef && cardPopupTimeline.current) {
+      cardPopupTimeline.current.to(
         popupCardRef,
         {
           opacity: 1,
@@ -431,8 +432,8 @@ export default function PastRabbisScriptProviderSlugV2({
       );
     }
     // Overlay
-    if (popupOverlay) {
-      cardPopupTimeline.to(
+    if (popupOverlay && cardPopupTimeline.current) {
+      cardPopupTimeline.current.to(
         popupOverlay,
         {
           opacity: 1,
@@ -445,11 +446,11 @@ export default function PastRabbisScriptProviderSlugV2({
       );
     }
     // Animate Popup Content
-    if (popupWrapper) {
+    if (popupWrapper && cardPopupTimeline.current) {
       gsap.set(popupWrapper, {
         x: () => popupWrapper.clientWidth + 50,
       });
-      cardPopupTimeline.to(
+      cardPopupTimeline.current.to(
         popupWrapper,
         {
           x: 0,
@@ -461,8 +462,8 @@ export default function PastRabbisScriptProviderSlugV2({
       );
     }
     // Book Popup Animation
-    if (popupBookRef) {
-      bookPopupTimeline.to(
+    if (popupBookRef && bookPopupTimeline.current) {
+      bookPopupTimeline.current.to(
         popupBookRef,
         {
           opacity: 1,
@@ -475,8 +476,8 @@ export default function PastRabbisScriptProviderSlugV2({
       );
     }
     // Overlay
-    if (popupBookOverlay) {
-      bookPopupTimeline.to(
+    if (popupBookOverlay && bookPopupTimeline.current) {
+      bookPopupTimeline.current.to(
         popupBookOverlay,
         {
           opacity: 1,
@@ -489,11 +490,11 @@ export default function PastRabbisScriptProviderSlugV2({
       );
     }
     // Animate Popup Content
-    if (popupBookWrapper) {
+    if (popupBookWrapper && bookPopupTimeline.current) {
       gsap.set(popupBookWrapper, {
         x: () => popupBookWrapper.clientWidth + 50,
       });
-      bookPopupTimeline.to(
+      bookPopupTimeline.current.to(
         popupBookWrapper,
         {
           x: 0,
@@ -556,17 +557,27 @@ export default function PastRabbisScriptProviderSlugV2({
     }
     // Clear all animations and timelines on unmount
     return () => {
-      cardPopupTimeline.kill();
-      bookPopupTimeline.kill();
+      if (cardPopupTimeline.current && bookPopupTimeline.current) {
+        cardPopupTimeline.current.kill();
+        bookPopupTimeline.current.kill();
+      }
     };
   }, [pathname, pageDataFetched]);
   // Play Card Popup Animation
   useGSAP(() => {
-    activeCardPopup ? cardPopupTimeline.play() : cardPopupTimeline.reverse();
+    if (cardPopupTimeline.current) {
+      activeCardPopup
+        ? cardPopupTimeline.current.play()
+        : cardPopupTimeline.current.reverse();
+    }
   }, [activeCardPopup]);
   // Play Book Popup Animation
   useGSAP(() => {
-    activeBookPopup ? bookPopupTimeline.play() : bookPopupTimeline.reverse();
+    if (bookPopupTimeline.current) {
+      activeBookPopup
+        ? bookPopupTimeline.current.play()
+        : bookPopupTimeline.current.reverse();
+    }
   }, [activeBookPopup]);
 
   // On Pathname Change

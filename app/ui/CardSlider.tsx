@@ -1,15 +1,34 @@
 "use client";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useSyncExternalStore } from "react";
 import CycleArrow from "../assets/icons/CycleArrow";
 import { gsap, useGSAP } from "../ui/plugins";
 
 interface ChildProps {
   SlideData: { text1: string; text2: string }[];
 }
+// Viewport detection functions
+const subscribeToDesktopViewport = (callback: () => void) => {
+  const mediaQuery = window.matchMedia("(min-width: 768px)");
+  mediaQuery.addEventListener("change", callback);
+  return () => mediaQuery.removeEventListener("change", callback);
+};
+
+const getDesktopViewportSnapshot = () =>
+  window.matchMedia("(min-width: 768px)").matches;
+
+const getServerDesktopViewportSnapshot = () => false;
 
 export default function CardSlider(props: ChildProps) {
+  // Viewport Detection
+  const isDesktopViewport = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    getDesktopViewportSnapshot,
+    getServerDesktopViewportSnapshot,
+  );
+
+  // Section Refs
   const cardSlider = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
@@ -145,9 +164,13 @@ export default function CardSlider(props: ChildProps) {
     <div
       ref={cardSlider}
       onClick={handleNextSlide}
-      onMouseMove={window.innerWidth > 1024 ? moveCircle : undefined}
-      onMouseEnter={window.innerWidth > 1024 ? handleMouseEnter : undefined}
-      onMouseLeave={window.innerWidth > 1024 ? handleMouseLeave : undefined}
+      onKeyDown={handleNextSlide}
+      onMouseMove={isDesktopViewport ? moveCircle : undefined}
+      onMouseEnter={isDesktopViewport ? handleMouseEnter : undefined}
+      onMouseLeave={isDesktopViewport ? handleMouseLeave : undefined}
+      role="button"
+      aria-label="Card Slider"
+      tabIndex={0}
       className="arrow-slider w-full sm:w-117 relative z-10 cursor-none pr-0 lg:pr-[10%]"
     >
       <div className="arrow-button fixed left-0 top-0 z-30 -ml-13 -mt-13 cursor-none opacity-0 pointer-events-none scale-0" />
@@ -171,13 +194,12 @@ export default function CardSlider(props: ChildProps) {
       </div>
 
       <div className="preview-button block lg:hidden w-20 h-20 absolute top-full left-0 z-50">
-        <button
-          type="button"
-          aria-label="Next Slide Button"
+        <span
+          aria-hidden="true"
           className="w-full h-full rounded-full bg-[#C3A13F] flex items-center justify-center hover:bg-[#c59811] transition-colors cursor-none"
         >
           <CycleArrow />
-        </button>
+        </span>
       </div>
     </div>
   );

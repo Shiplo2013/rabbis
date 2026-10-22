@@ -157,7 +157,8 @@ export default function CommunitiesSheetsScriptProvider({
   const LoadMorePosts = () => {
     if (isLoadingMore || !hasMorePosts || currentPage >= totalPages) return;
     setIsLoadingMore(true);
-    let isMounted = true;
+    let isActive = true;
+    const controller = new AbortController();
 
     const getPostsData = async () => {
       try {
@@ -165,6 +166,7 @@ export default function CommunitiesSheetsScriptProvider({
 
         const response = await wpFetch(postsUrl, {
           cache: "no-store",
+          signal: controller.signal,
         });
 
         if (!response.ok) {
@@ -172,7 +174,7 @@ export default function CommunitiesSheetsScriptProvider({
         }
         const data = await response.json();
 
-        if (isMounted) {
+        if (isActive) {
           if (data?.posts?.length < postPerPage) {
             setHasMorePosts(false);
           }
@@ -183,9 +185,11 @@ export default function CommunitiesSheetsScriptProvider({
           ]);
         }
       } catch (error) {
-        console.error(error);
+        if (isActive && !controller.signal.aborted) {
+          console.error(error);
+        }
       } finally {
-        if (isMounted) {
+        if (isActive) {
           setIsLoadingMore(false);
           setCurrentPage((prevPage) => prevPage + 1);
         }
@@ -193,6 +197,11 @@ export default function CommunitiesSheetsScriptProvider({
     };
 
     getPostsData();
+
+    return () => {
+      isActive = false;
+      controller.abort();
+    };
   };
 
   // Load More Posts when inView is true
@@ -202,7 +211,7 @@ export default function CommunitiesSheetsScriptProvider({
       setPostLoadCount((prevCount) => prevCount + 1);
 
       if (postLoadCount! === postLoadLimit! && hasMorePosts) {
-        LoadMorePosts();
+        return LoadMorePosts();
       }
     }
   }, [isReadMoreInView]);
@@ -707,7 +716,7 @@ export default function CommunitiesSheetsScriptProvider({
               >
                 <button
                   type="button"
-                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
+                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-colors duration-500 disabled:cursor-not-allowed"
                   disabled={isLoadingMore}
                 >
                   {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}

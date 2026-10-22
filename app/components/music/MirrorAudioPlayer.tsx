@@ -14,7 +14,13 @@ import AudioPlayer2 from "@/app/ui/AudioPlayer2";
 import parse from "html-react-parser";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import SimpleBar from "simplebar-react";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -87,11 +93,29 @@ function loadAudioDuration(src: string): Promise<string> {
   });
 }
 
+// Viewport detection functions
+const subscribeToDesktopViewport = (callback: () => void) => {
+  const mediaQuery = window.matchMedia("(min-width: 768px)");
+  mediaQuery.addEventListener("change", callback);
+  return () => mediaQuery.removeEventListener("change", callback);
+};
+
+const getDesktopViewportSnapshot = () =>
+  window.matchMedia("(min-width: 768px)").matches;
+
+const getServerDesktopViewportSnapshot = () => false;
+
 export default function MirrorAudioPlayer(props: ChildProps) {
+  // Viewport Detection
+  const isDesktopViewport = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    getDesktopViewportSnapshot,
+    getServerDesktopViewportSnapshot,
+  );
   // Refs
   const wrapper = useRef<HTMLDivElement>(null);
   const audio = useRef<HTMLAudioElement>(null);
-  const timelineRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<HTMLButtonElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const animationCleanupRef = useRef<(() => void) | null>(null);
   const isDraggingRef = useRef(false);
@@ -261,7 +285,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
     updateProgressBar(clamped * 100);
   };
 
-  const handleTimelineMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleTimelineMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
     isDraggingRef.current = true;
     seekTo(e.clientX);
   };
@@ -589,7 +613,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                     tabIndex={0}
                     aria-label={`Select music folder ${item.album_title}`}
                     key={item.album_title}
-                    className={`text-[#F4EDDD] text-[18px] leading-[100%] ${props.activeMusicFolder === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.10)] rounded-2xl text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300`}
+                    className={`text-[#F4EDDD] text-[18px] leading-[100%] ${props.activeMusicFolder === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.10)] rounded-2xl text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-colors duration-300`}
                   >
                     {item.album_title}
                   </button>
@@ -599,7 +623,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
               {/* Search */}
               <div className="album-search mt-7.5 flex items-center gap-x-2">
                 <input
-                  className="w-full text-[#F4EDDD] text-[18px] leading-[100%] bg-[rgba(255,255,255,0.40)] border border-[rgba(255,255,255,0.10)] rounded-full text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] focus:outline-0 transition-all duration-300"
+                  className="w-full text-[#F4EDDD] text-[18px] leading-[100%] bg-[rgba(255,255,255,0.40)] border border-[rgba(255,255,255,0.10)] rounded-full text-right py-3 px-4 hover:bg-[rgba(0,0,0,0.60)] focus:outline-0 transition-colors duration-300"
                   type="text"
                   id="search"
                   name="search"
@@ -608,7 +632,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                 <button
                   type="button"
                   aria-label="Search Music"
-                  className="fill-[#F4EDDD] min-w-11 w-11 h-11 text-[#ffffff] text-[10px] leading-[100%] bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.12)] p-3 flex items-center justify-center rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer focus:outline-0 transition-all duration-300"
+                  className="fill-[#F4EDDD] min-w-11 w-11 h-11 text-[#ffffff] text-[10px] leading-[100%] bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.12)] p-3 flex items-center justify-center rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer focus:outline-0 transition-colors duration-300"
                 >
                   <SearchIcon2 />
                 </button>
@@ -655,7 +679,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                           type="button"
                           tabIndex={0}
                           aria-label={`Select music category ${item.album_title}`}
-                          className={`single-tab-head min-w-40 sm:min-w-60 w-auto text-[#ffffff] text-[18px] sm:text-[24px] leading-[100%] ${props.activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-all duration-300 ${props.activeTab === index && "active-tab"}`}
+                          className={`single-tab-head min-w-40 sm:min-w-60 w-auto text-[#ffffff] text-[18px] sm:text-[24px] leading-[100%] ${props.activeTab === index ? "bg-[rgba(0,0,0,0.60)]" : "bg-[rgba(255,255,255,0.04)]"} border border-[rgba(255,255,255,0.12)] py-3 px-5 flex items-center justify-between rounded-full hover:bg-[rgba(0,0,0,0.60)] cursor-pointer transition-colors duration-300 ${props.activeTab === index && "active-tab"}`}
                         >
                           <p>{parse(item.album_title || "")}</p>
                           <span className="icon w-3">
@@ -716,7 +740,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                     <div className="tab-music-list mt-7.5">
                       <SimpleBar
                         style={{
-                          maxHeight: window.innerWidth > 1024 ? "34vh" : "auto",
+                          maxHeight: isDesktopViewport ? "34vh" : "auto",
                           paddingLeft: 20,
                           paddingRight: 0,
                           marginLeft: -20,
@@ -760,7 +784,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                                 type="button"
                                 tabIndex={0}
                                 aria-label={`Play music ${item?.title}`}
-                                className={`single-music flex items-center justify-between gap-4 ${isActive ? "bg-[rgba(0,0,0,0.8)] active-music" : "bg-[rgba(0,0,0,0.4)]"} py-4 px-5 rounded-full relative cursor-pointer hover:bg-[rgba(0,0,0,0.8)] transition-all duration-300`}
+                                className={`single-music flex items-center justify-between gap-4 ${isActive ? "bg-[rgba(0,0,0,0.8)] active-music" : "bg-[rgba(0,0,0,0.4)]"} py-4 px-5 rounded-full relative cursor-pointer hover:bg-[rgba(0,0,0,0.8)] transition-colors duration-300`}
                               >
                                 <div className="title flex items-center gap-x-8">
                                   <div className="icon min-w-8">
@@ -829,9 +853,11 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                 </div>
 
                 {/* ── Timeline ── */}
-                <div
+                <button
                   ref={timelineRef}
                   onMouseDown={handleTimelineMouseDown}
+                  type="button"
+                  aria-label="Player Timeline"
                   className="player-timeline w-[25vw] lg:w-[38.4vw] h-2 border border-[#FFFFFF14] rounded-full relative cursor-pointer group select-none"
                 >
                   {/* Filled progress */}
@@ -848,7 +874,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                         : "-7px",
                     }}
                   />
-                </div>
+                </button>
 
                 {/* Current time */}
                 <div className="current-time text-[16px] text-[rgba(255,255,255,0.62)] min-w-10 text-center tabular-nums">
@@ -867,7 +893,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                     type="button"
                     tabIndex={0}
                     aria-label="Skip backward 10 seconds"
-                    className="backward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300"
+                    className="backward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-colors duration-300"
                   >
                     <BackwardIcon />
                   </button>
@@ -895,7 +921,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                     type="button"
                     tabIndex={0}
                     aria-label="Skip forward 10 seconds"
-                    className="forward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300"
+                    className="forward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-colors duration-300"
                   >
                     <ForwardIcon />
                   </button>
@@ -914,7 +940,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                         : "Enable infinity mode"
                     }
                     aria-pressed={isInfinityActive}
-                    className={`infinity cursor-pointer border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-all duration-300 ${isInfinityActive ? "bg-[#C3A13F]" : "bg-[#FFFFFF0A]"}`}
+                    className={`infinity cursor-pointer border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-colors duration-300 ${isInfinityActive ? "bg-[#C3A13F]" : "bg-[#FFFFFF0A]"}`}
                   >
                     <ReplayIcon />
                   </button>

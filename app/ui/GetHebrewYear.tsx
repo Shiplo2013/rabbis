@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface GetOptions {
   index: number;
   year: any;
@@ -12,7 +10,7 @@ interface GetOptions {
 
 export default function GetHebrewYear(props: GetOptions) {
   // Selector
-  const [activeMonth, setActiveMonth] = useState(0);
+  //const [activeMonth, setActiveMonth] = useState(0);
   const yearData = props.year || {};
 
   const handleYearClick = () => {
@@ -22,7 +20,7 @@ export default function GetHebrewYear(props: GetOptions) {
     if (props.setActiveCategory) {
       props.setActiveCategory(0);
     }
-    setActiveMonth(0);
+    //setActiveMonth(0);
   };
 
   return (
@@ -72,7 +70,7 @@ export default function GetHebrewYear(props: GetOptions) {
               >
                 {item?.name || ""}
                 <span
-                  className={`indicator absolute top-1/2 -mt-0.5 left-full ml-1.25 w-1 h-1 rounded-full bg-[#CD5E41] transition-all duration-500 ${props.activeCategory === item.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                  className={`indicator absolute top-1/2 -mt-0.5 left-full ml-1.25 w-1 h-1 rounded-full bg-[#CD5E41] transition-opacity duration-500 ${props.activeCategory === item.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
                 ></span>
               </button>
             );

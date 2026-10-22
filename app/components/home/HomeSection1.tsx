@@ -233,12 +233,9 @@ export default function HomeSection1(props: ChildProps) {
               </SimpleBar>
             </div>
           </div>
-          <div
-            ref={CTAbutton}
-            onClick={() => setIsSlideOut(!isSlideOut)}
-            className="wish-icon py-5 cursor-pointer"
-          >
+          <div ref={CTAbutton} className="wish-icon py-5 cursor-pointer">
             <ThemeButton2
+              onClick={() => setIsSlideOut(!isSlideOut)}
               extraClass="w-13 h-13 flex item-center justify-center"
               bgColor="bg-[#ffffff]"
               textColor="text-[#000000]"

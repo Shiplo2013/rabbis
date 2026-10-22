@@ -70,7 +70,7 @@ export default function SubscribeForm({ mode }: { mode?: "dark" | "light" }) {
             type="submit"
             aria-label="Submit Subscription"
             disabled={isPending}
-            className="2xl:text-[28px] xl:text-[24px] sm:text-[20px] leading-[0.8em] text-[#000000] bg-[#E7D45E] px-2.5 pb-2 pt-2.5 hover:bg-black hover:text-[#E7D45E] transition-all duration-300 cursor-pointer"
+            className="2xl:text-[28px] xl:text-[24px] sm:text-[20px] leading-[0.8em] text-[#000000] bg-[#E7D45E] px-2.5 pb-2 pt-2.5 hover:bg-black hover:text-[#E7D45E] transition-colors duration-300 cursor-pointer"
           >
             שלח
           </button>

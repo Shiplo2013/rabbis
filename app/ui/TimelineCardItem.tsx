@@ -1,6 +1,6 @@
 import parse from "html-react-parser";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import MinusIcon2 from "../assets/icons/MinusIcon2";
 import PlusIcon from "../assets/icons/PlusIcon";
 import { gsap, useGSAP } from "../ui/plugins";
@@ -17,7 +17,25 @@ interface ChildProps {
   singleVideoPlaying: boolean;
 }
 
+// Viewport detection functions
+const subscribeToDesktopViewport = (callback: () => void) => {
+  const mediaQuery = window.matchMedia("(min-width: 768px)");
+  mediaQuery.addEventListener("change", callback);
+  return () => mediaQuery.removeEventListener("change", callback);
+};
+
+const getDesktopViewportSnapshot = () =>
+  window.matchMedia("(min-width: 768px)").matches;
+
+const getServerDesktopViewportSnapshot = () => false;
+
 export default function TimelineCardItem(props: ChildProps) {
+  // Viewport Detection
+  const isDesktopViewport = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    getDesktopViewportSnapshot,
+    getServerDesktopViewportSnapshot,
+  );
   // Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +51,7 @@ export default function TimelineCardItem(props: ChildProps) {
     const plusButton = item?.querySelector(".expand-button .plus-button");
     const minusButton = item?.querySelector(".expand-button .minus-button");
     !isOpen && setIsOpen(true);
-    if (window.innerWidth > 1024) {
+    if (isDesktopViewport) {
       if (button) {
         button.classList.remove("opacity-0");
       }
@@ -236,7 +254,7 @@ export default function TimelineCardItem(props: ChildProps) {
     const plusButton = item?.querySelector(".expand-button .plus-button");
     const minusButton = item?.querySelector(".expand-button .minus-button");
     isOpen && setIsOpen(false);
-    if (window.innerWidth > 1024) {
+    if (isDesktopViewport) {
       const tl = gsap.timeline({
         onComplete: () => {
           if (button) {
@@ -426,7 +444,7 @@ export default function TimelineCardItem(props: ChildProps) {
       if (
         typeof window === "undefined" ||
         !wrapper.current ||
-        window.innerWidth < 1024
+        !isDesktopViewport
       ) {
         return;
       }
@@ -463,7 +481,7 @@ export default function TimelineCardItem(props: ChildProps) {
           {parse(props.data?.text || "")}
         </div>
       </div>
-      <div className="expand-button bg-linear-to-t from-[#C3A13F] to-[#966814] w-12 h-12 sm:w-16.75 sm:h-16.75 rounded-full p-0.5 shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] cursor-pointer absolute bottom-0 lg:bottom-auto lg:top-1/2 left-1/2 -ml-8 lg:ml-0 lg:left-auto lg:right-full lg:-translate-y-1/2 lg:translate-x-1/2 transition-all duration-500 lg:opacity-0 group-hover:opacity-100 z-50">
+      <div className="expand-button bg-linear-to-t from-[#C3A13F] to-[#966814] w-12 h-12 sm:w-16.75 sm:h-16.75 rounded-full p-0.5 shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] cursor-pointer absolute bottom-0 lg:bottom-auto lg:top-1/2 left-1/2 -ml-8 lg:ml-0 lg:left-auto lg:right-full lg:-translate-y-1/2 lg:translate-x-1/2 transition-opacity duration-500 lg:opacity-0 group-hover:opacity-100 z-50">
         <div className="button-wrapper overflow-hidden w-full h-full rounded-full relative">
           <button
             onClick={handlePlusButtonClick}
@@ -529,7 +547,11 @@ export default function TimelineCardItem(props: ChildProps) {
                     className={`video w-full h-auto ${index === 0 ? "lg:w-[28.8vw] lg:h-[38.1vh]" : "lg:w-[12vw] lg:h-[39vh]"} relative group`}
                   >
                     {item.video.url && (
-                      <HistoryVideoPlayer data={item} isOpen={isOpen} />
+                      <HistoryVideoPlayer
+                        key={String(isOpen)}
+                        data={item}
+                        isOpen={isOpen}
+                      />
                     )}
                   </div>
                 );

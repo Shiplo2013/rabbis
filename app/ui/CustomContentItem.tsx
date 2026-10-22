@@ -1,6 +1,6 @@
 import parse from "html-react-parser";
 import Link from "next/dist/client/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import ArrowLeftBottom from "../assets/icons/ArrowLeftBottom";
 import { useAppState } from "../components/AppContext";
 import ThemeButton from "./ThemeButton";
@@ -15,7 +15,6 @@ export default function CustomContentItem({
   postLoading,
 }: CustomContentItemProps) {
   const parsedData = data || {};
-  const pathname = usePathname();
   const router = useRouter();
   const { setIsLoading } = useAppState();
 
@@ -24,7 +23,7 @@ export default function CustomContentItem({
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);
@@ -70,7 +69,7 @@ export default function CustomContentItem({
           svgIcon={
             <ArrowLeftBottom
               extraClass={
-                "group-hover:fill-white transition-all duration-300 ease-in-out"
+                "group-hover:fill-white transition-colors duration-300 ease-in-out"
               }
             />
           }

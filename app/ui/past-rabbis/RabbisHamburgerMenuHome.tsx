@@ -4,7 +4,7 @@ import { useGSAP } from "@gsap/react";
 import parse from "html-react-parser";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { gsap } from "../../ui/plugins";
 import TextSplitLines from "../TextSplitLines";
 import PastRabbisThumbnail from "./PastRabbisThumbnail";
@@ -77,14 +77,14 @@ export default function RabbisHamburgerMenuHome(
   } = useAppState();
 
   // Menu State
-  const [menuTimeline] = useState(
-    gsap.timeline({
-      paused: true,
-    }),
-  );
+  const menuTimeline = useRef<gsap.core.Timeline | null>(null);
 
   // Handle Menu Close
   useGSAP(() => {
+    // Timeline
+    menuTimeline.current = gsap.timeline({
+      paused: true,
+    });
     //console.log(allPosts);
     const animations: gsap.core.Animation[] = [];
     // Set Animations
@@ -134,12 +134,12 @@ export default function RabbisHamburgerMenuHome(
     }
 
     // Menu Animation
-    if (hamurgerMenu.current && menuOverlay.current) {
+    if (hamurgerMenu.current && menuOverlay.current && menuTimeline.current) {
       gsap.set(menuOverlay.current, {
         opacity: 0,
         visibility: "hidden",
       });
-      menuTimeline.to(menuOverlay.current, {
+      menuTimeline.current.to(menuOverlay.current, {
         opacity: 1,
         visibility: "visible",
         ease: "none",
@@ -148,23 +148,23 @@ export default function RabbisHamburgerMenuHome(
       });
     }
     // Hamburger Menu
-    if (hamurgerMenu.current) {
-      menuTimeline.to(hamurgerMenu.current, {
+    if (hamurgerMenu.current && menuTimeline.current) {
+      menuTimeline.current.to(hamurgerMenu.current, {
         opacity: 1,
         visibility: "visible",
         ease: "none",
         duration: 0,
         delay: 0,
       });
-      menuTimeline.to(hamurgerMenu.current, {
+      menuTimeline.current.to(hamurgerMenu.current, {
         clipPath: `inset(0% 0% 0% 0%)`,
         ease: "expo.inOut",
         duration: 1.5,
         delay: 0,
       });
     }
-    if (titleSplit) {
-      menuTimeline.to(
+    if (titleSplit && menuTimeline.current) {
+      menuTimeline.current.to(
         titleSplit,
         {
           yPercent: 0,
@@ -176,8 +176,8 @@ export default function RabbisHamburgerMenuHome(
         "-=1.3",
       );
     }
-    if (menuItemSplit) {
-      menuTimeline.to(
+    if (menuItemSplit && menuTimeline.current) {
+      menuTimeline.current.to(
         menuItemSplit,
         {
           yPercent: 0,
@@ -190,11 +190,11 @@ export default function RabbisHamburgerMenuHome(
         "-=2",
       );
     }
-    if (menuItemsImage?.length) {
-      menuTimeline.set(menuItemsImage, {
+    if (menuItemsImage?.length && menuTimeline.current) {
+      gsap.set(menuItemsImage, {
         clipPath: "inset(100% 0% 0% 0%)",
       });
-      menuTimeline.to(
+      menuTimeline.current.to(
         menuItemsImage,
         {
           clipPath: "inset(0% 0% 0% 0%)",
@@ -205,8 +205,8 @@ export default function RabbisHamburgerMenuHome(
         "-=1.9",
       );
     }
-    if (closeButton) {
-      menuTimeline.to(
+    if (closeButton && menuTimeline.current) {
+      menuTimeline.current.to(
         closeButton,
         {
           scale: 1,
@@ -218,7 +218,7 @@ export default function RabbisHamburgerMenuHome(
         "-=1.5",
       );
     }
-    animations.push(menuTimeline);
+    animations.push(menuTimeline.current);
 
     return () => {
       animations.forEach((animation) => animation.kill());
@@ -226,7 +226,11 @@ export default function RabbisHamburgerMenuHome(
   }, [pathname]);
 
   useGSAP(() => {
-    activeRabbisMenu ? menuTimeline.play() : menuTimeline.reverse();
+    if (menuTimeline.current) {
+      activeRabbisMenu
+        ? menuTimeline.current.play()
+        : menuTimeline.current.reverse();
+    }
 
     if (activeRabbisMenu) {
       document.body.classList.add("!overflow-hidden");
@@ -242,7 +246,7 @@ export default function RabbisHamburgerMenuHome(
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setActiveRabbisMenu(false);
       menuTimeline.current?.timeScale(10).reverse();
       setIsLoading(true);

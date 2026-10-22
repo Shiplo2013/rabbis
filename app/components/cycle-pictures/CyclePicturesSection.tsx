@@ -75,7 +75,7 @@ export default function CyclePicturesSection(props: ChildProps) {
                           e.preventDefault();
                           setCycleActiveCategory(item.id);
                         }}
-                        className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-all duration-300 ${Number(cycleActiveCategory) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
+                        className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-colors duration-300 ${Number(cycleActiveCategory) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
                       >
                         {parse(item.name || "")}
                       </button>

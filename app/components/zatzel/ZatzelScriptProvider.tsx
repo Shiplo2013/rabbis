@@ -36,14 +36,13 @@ export default function ZatzelScriptProvider({
     sections: [],
   });
   const { zatzelPosts, setZatzelPosts } = useAppState();
-  const { zatzelPopupIndex, setZatzelPopupIndex } = useAppState();
+  //const { zatzelPopupIndex, setZatzelPopupIndex } = useAppState();
   const {
     zatzelActivePopup,
     setZatzelActivePopup,
     zatzelSearchedData,
     setZatzelSearchedData,
     zatzelSelectedDate,
-    setZatzelSelectedDate,
   } = useAppState();
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState<number>(200);
@@ -66,16 +65,16 @@ export default function ZatzelScriptProvider({
   const wrapper = useRef<HTMLDivElement>(null);
 
   // Post States
-  const [postPerPage, setPostPerPage] = useState(100);
+  //const [postPerPage, setPostPerPage] = useState(100);
   const [postsPerLoad, setPostsPerLoad] = useState(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
   const [postLoadLimit, setPostLoadLimit] = useState(0);
-  const [isPostLoaded, setIsPostLoaded] = useState(false);
-  const [noPostsFound, setNoPostsFound] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMorePosts, setHasMorePosts] = useState(
-    Number(postData?.[0]?.totalPages ?? 1) > 1,
-  );
+  // const [isPostLoaded, setIsPostLoaded] = useState(false);
+  // const [noPostsFound, setNoPostsFound] = useState(false);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [hasMorePosts, setHasMorePosts] = useState(
+  //   Number(postData?.[0]?.totalPages ?? 1) > 1,
+  // );
   const [totalPages, setTotalPages] = useState(
     Number(postData?.[0]?.totalPages ?? 1),
   );
@@ -658,13 +657,13 @@ export default function ZatzelScriptProvider({
         ) {
           setAllPosts({ sections: filteredSections });
         } else {
-          setNoPostsFound(true);
+          //setNoPostsFound(true);
           setAllPosts({ sections: [] });
         }
       }
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     } else {
-      setNoPostsFound(false);
+      //setNoPostsFound(false);
       setAllPosts({
         sections: postData.length ? postData : defaultZatzelPageData.sections,
       });
@@ -696,13 +695,13 @@ export default function ZatzelScriptProvider({
         ) {
           setAllPosts({ sections: filteredSections });
         } else {
-          setNoPostsFound(true);
+          //setNoPostsFound(true);
           setAllPosts({ sections: [] });
         }
       }
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     } else {
-      setNoPostsFound(false);
+      //setNoPostsFound(false);
       setAllPosts({
         sections: postData.length ? postData : defaultZatzelPageData.sections,
       });
@@ -786,7 +785,6 @@ export default function ZatzelScriptProvider({
               extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section will-change-transform py-[10vw] lg:py-[5vw] px-[8vw] lg:px-14.5`}
               animWidthText={1}
               sectionData={verticalPosts || defaultZatzelPageData.sections[0]}
-              setSelectedDate={setZatzelSelectedDate}
               setSearchedData={setZatzelSearchedData}
               setZatzelPosts={setZatzelPosts}
               allPosts={allPosts}
@@ -816,7 +814,7 @@ export default function ZatzelScriptProvider({
               >
                 <button
                   type="button"
-                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
+                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-colors duration-500 disabled:cursor-not-allowed"
                   disabled={isLoadingMore}
                 >
                   {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}

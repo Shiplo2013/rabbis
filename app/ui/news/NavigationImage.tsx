@@ -18,7 +18,7 @@ export default function NavigationImage({ image }: { image: any }) {
         <div className="animate-pulse w-full h-full bg-gray-100"></div>
       )}
       <Image
-        className={`w-full h-full object-cover object-center transition-all duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
+        className={`w-full h-full object-cover object-center transition-opacity duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
         onLoad={() => setLoading(false)}
         src={imageSrc}
         width={230}

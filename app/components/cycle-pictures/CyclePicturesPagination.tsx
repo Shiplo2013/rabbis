@@ -37,7 +37,7 @@ export default function CyclePicturesPagination() {
             }`,
           );
         }}
-        className={`prev-button cursor-pointer border border-[#c3a13f] bg-black text-[#c3a13f] px-4 py-2 rounded-full hover:bg-[#c3a13f] hover:text-black transition-all duration-300 user-select-none ${
+        className={`prev-button cursor-pointer border border-[#c3a13f] bg-black text-[#c3a13f] px-4 py-2 rounded-full hover:bg-[#c3a13f] hover:text-black transition-colors duration-300 user-select-none ${
           cyclePostNavigation?.currentPage === 1 && "hidden"
         }`}
       >
@@ -60,7 +60,7 @@ export default function CyclePicturesPagination() {
           window.scrollTo(0, 0);
           router.push(`/cycle-pictures/${cyclePostNavigation?.nextPage}`);
         }}
-        className={`next-button cursor-pointer border border-[#c3a13f] bg-black text-[#c3a13f] px-4 py-2 rounded-full hover:bg-[#c3a13f] hover:text-black transition-all duration-300 user-select-none ${
+        className={`next-button cursor-pointer border border-[#c3a13f] bg-black text-[#c3a13f] px-4 py-2 rounded-full hover:bg-[#c3a13f] hover:text-black transition-colors duration-300 user-select-none ${
           cyclePostNavigation?.currentPage === cyclePostNavigation?.nextPage &&
           "hidden"
         }`}

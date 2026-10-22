@@ -2,8 +2,7 @@
 
 import { hasCookie, setCookie } from "cookies-next";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Cookies from "../assets/icons/Cookies";
 import { gsap, useGSAP } from "../ui/plugins";
 import { useAppState } from "./AppContext";
@@ -13,23 +12,12 @@ if (typeof window !== "undefined") {
 }
 
 export default function CookieBanner() {
-  const [showBanner, setShowBanner] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
-  const { animationPlayed, setAnimationPlayed, setIsLoading } = useAppState();
-  const pathname = usePathname();
-  const router = useRouter();
-
-  useEffect(() => {
-    // Check if the user has already made a choice
-    if (!hasCookie("localConsent")) {
-      setShowBanner(true);
-    }
-  }, []);
+  const { animationPlayed } = useAppState();
 
   const acceptCookies = () => {
     // Set cookie for 1 year
     setCookie("localConsent", "true", { maxAge: 60 * 60 * 24 * 365 });
-    setShowBanner(false);
     if (bannerRef.current) {
       gsap.to(bannerRef.current, {
         y: 100,
@@ -42,7 +30,6 @@ export default function CookieBanner() {
 
   const declineCookies = () => {
     setCookie("localConsent", "false", { maxAge: 60 * 60 * 24 * 365 });
-    setShowBanner(false);
     if (bannerRef.current) {
       gsap.to(bannerRef.current, {
         y: 100,
@@ -75,7 +62,7 @@ export default function CookieBanner() {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       window.open(e.currentTarget.href, "_blank", "noopener,noreferrer");
     }
   };

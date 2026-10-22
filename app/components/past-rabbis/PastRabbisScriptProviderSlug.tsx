@@ -189,18 +189,8 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);
   const [activeBookPopup, setActiveBookPopup] = useState(false);
-  const [cardPopupTimeline] = useState(
-    gsap.timeline({
-      paused: true,
-      timeScale: 3,
-    }),
-  );
-  const [bookPopupTimeline] = useState(
-    gsap.timeline({
-      paused: true,
-      timeScale: 3,
-    }),
-  );
+  const cardPopupTimeline = useRef<gsap.core.Timeline | null>(null);
+  const bookPopupTimeline = useRef<gsap.core.Timeline | null>(null);
 
   // Page Refs
   const main = useRef<HTMLDivElement>(null);
@@ -216,7 +206,6 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
       wrapper.current &&
       window.innerWidth > 1024
     ) {
-      setPageContentAnimation();
       // Overflow body
       const progress = document.getElementById(
         "progress",
@@ -437,11 +426,6 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     logoImage?.classList.add("white-image");
   }, [pathname]);
 
-  // Set Page Content Animation
-  const setPageContentAnimation = () => {
-    // Page Content Animation
-  };
-
   // Set Body Overflow Hidden
   useEffect(() => {
     if (isAllAnimationComplete) {
@@ -458,6 +442,16 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
   }, [isAllAnimationComplete]);
 
   useGSAP(() => {
+    // Set Timeline
+    cardPopupTimeline.current = gsap.timeline({
+      paused: true,
+      timeScale: 3,
+    });
+    // Set Timeline
+    bookPopupTimeline.current = gsap.timeline({
+      paused: true,
+      timeScale: 3,
+    });
     // Popup Animation
     const cardButton = main.current?.querySelectorAll(
       ".rabbis-menu-item.card-button",
@@ -493,8 +487,8 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     ) as HTMLButtonElement | null;
 
     // Card Popup Animation
-    if (popupCardRef) {
-      cardPopupTimeline.to(
+    if (popupCardRef && cardPopupTimeline.current) {
+      cardPopupTimeline.current.to(
         popupCardRef,
         {
           opacity: 1,
@@ -508,7 +502,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     }
     // Overlay
     if (popupOverlay) {
-      cardPopupTimeline.to(
+      cardPopupTimeline.current.to(
         popupOverlay,
         {
           opacity: 1,
@@ -525,7 +519,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
       gsap.set(popupWrapper, {
         x: () => popupWrapper.clientWidth + 50,
       });
-      cardPopupTimeline.to(
+      cardPopupTimeline.current.to(
         popupWrapper,
         {
           x: 0,
@@ -537,8 +531,8 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
       );
     }
     // Book Popup Animation
-    if (popupBookRef) {
-      bookPopupTimeline.to(
+    if (popupBookRef && bookPopupTimeline.current) {
+      bookPopupTimeline.current.to(
         popupBookRef,
         {
           opacity: 1,
@@ -551,8 +545,8 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
       );
     }
     // Overlay
-    if (popupBookOverlay) {
-      bookPopupTimeline.to(
+    if (popupBookOverlay && bookPopupTimeline.current) {
+      bookPopupTimeline.current.to(
         popupBookOverlay,
         {
           opacity: 1,
@@ -565,11 +559,11 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
       );
     }
     // Animate Popup Content
-    if (popupBookWrapper) {
+    if (popupBookWrapper && bookPopupTimeline.current) {
       gsap.set(popupBookWrapper, {
         x: () => popupBookWrapper.clientWidth + 50,
       });
-      bookPopupTimeline.to(
+      bookPopupTimeline.current.to(
         popupBookWrapper,
         {
           x: 0,
@@ -632,17 +626,27 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     }
     // Clear all animations and timelines on unmount
     return () => {
-      cardPopupTimeline.kill();
-      bookPopupTimeline.kill();
+      if (bookPopupTimeline.current && cardPopupTimeline.current) {
+        cardPopupTimeline.current.kill();
+        bookPopupTimeline.current.kill();
+      }
     };
   }, [pathname, pageDataFetched]);
   // Play Card Popup Animation
   useGSAP(() => {
-    activeCardPopup ? cardPopupTimeline.play() : cardPopupTimeline.reverse();
+    if (cardPopupTimeline.current) {
+      activeCardPopup
+        ? cardPopupTimeline.current.play()
+        : cardPopupTimeline.current.reverse();
+    }
   }, [activeCardPopup]);
   // Play Book Popup Animation
   useGSAP(() => {
-    activeBookPopup ? bookPopupTimeline.play() : bookPopupTimeline.reverse();
+    if (bookPopupTimeline.current) {
+      activeBookPopup
+        ? bookPopupTimeline.current.play()
+        : bookPopupTimeline.current.reverse();
+    }
   }, [activeBookPopup]);
 
   // On Pathname Change

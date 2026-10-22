@@ -317,12 +317,12 @@ export default function MarkOfTheRoad3(props: ChildProps) {
               </button>
             )}
             <div dir="ltr" className="title relative z-20">
-              <h4 className="text-[22px] sm:text-[36px] lg:text-[43px] text-(--theme-color) leading-[0.8em] lg:leading-[0.7em] transition-all duration-300 delay-100 group-hover:text-black group-hover text-right">
+              <h4 className="text-[22px] sm:text-[36px] lg:text-[43px] text-(--theme-color) leading-[0.8em] lg:leading-[0.7em] transition-colors duration-300 delay-100 group-hover:text-black text-right">
                 {parse(item?.title)}
               </h4>
             </div>
             <div className="image w-full lg:w-161 max-w-full lg:h-106.25 max-h-[40vh] relative z-20">
-              <div className="image-wrapper w-full h-full transition-all duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] group-hover:scale-105">
+              <div className="image-wrapper w-full h-full transition-transform duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] group-hover:scale-105">
                 <Image
                   className="w-full object-cover object-center h-full"
                   src={item?.image?.sizes?.large || item?.image?.src}
@@ -337,17 +337,17 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                 />
               </div>
             </div>
-            <div className="overlay absolute left-0 bottom-0 w-full h-full bg-white z-10 transition-all duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] opacity-0 translate-y-full group-hover:translate-y-0 group-hover:opacity-100"></div>
+            <div className="overlay absolute left-0 bottom-0 w-full h-full bg-white z-10 transition-[opacity,translate] duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] opacity-0 translate-y-full group-hover:translate-y-0 group-hover:opacity-100"></div>
           </div>
         ))}
         <div className="group section-content flex flex-col items-start gap-y-6 sm:gap-y-10 lg:gap-y-[10vh] w-full lg:w-[39vw] self-end lg:-mb-[9vh] lg:px-[2.7vw] lg:pt-[9vh] relative cursor-pointer">
           <div dir="ltr" className="title relative z-20">
-            <h4 className="text-[22px] sm:text-[36px] lg:text-[43px] text-(--theme-color) leading-[0.8em] lg:leading-[0.7em] transition-all duration-300 delay-100 group-hover:text-black group-hover text-right">
+            <h4 className="text-[22px] sm:text-[36px] lg:text-[43px] text-(--theme-color) leading-[0.8em] lg:leading-[0.7em] transition-colors duration-300 delay-100 group-hover:text-black text-right">
               {parse(secTitle5)}
             </h4>
           </div>
           <div className="image w-full lg:w-161 max-w-full lg:h-106.25 relative z-20">
-            <div className="image-wrapper w-full h-full transition-all duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] group-hover:scale-105">
+            <div className="image-wrapper w-full h-full transition-transform duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] group-hover:scale-105">
               <Image
                 className="w-full object-cover object-center h-full"
                 src={
@@ -364,7 +364,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
               />
             </div>
           </div>
-          <div className="overlay absolute left-0 bottom-0 w-full h-full bg-white z-10 transition-all duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] opacity-0 translate-y-full group-hover:translate-y-0 group-hover:opacity-100"></div>
+          <div className="overlay absolute left-0 bottom-0 w-full h-full bg-white z-10 transition-[opacity,translate] duration-500 ease-[cubic-bezier(.625, .05, 0, 1)] opacity-0 translate-y-full group-hover:translate-y-0 group-hover:opacity-100"></div>
         </div>
       </div>
     </section>

@@ -48,7 +48,9 @@ export default function ArrowSlider() {
   });
   return (
     <>
-      <div
+      <button
+        type="button"
+        aria-label="Text Slider"
         onClick={handleNextSlide}
         onKeyDown={(e) => e.key === "Enter" && handleNextSlide()}
         onMouseMove={moveCircle}
@@ -85,7 +87,7 @@ export default function ArrowSlider() {
             </div>
           </SwiperSlide>
         </Swiper>
-      </div>
+      </button>
     </>
   );
 }

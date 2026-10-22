@@ -1,12 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import ArrowRight from "../assets/icons/ArrowRight";
 import logo from "../assets/images/logo.png";
 import { useAppState } from "./AppContext";
 
 export default function SinglePageHeader({ link }: { link: string }) {
-  const pathname = usePathname();
   const router = useRouter();
   const { isLoading, setIsLoading } = useAppState();
   // Handle Link Click
@@ -14,7 +13,7 @@ export default function SinglePageHeader({ link }: { link: string }) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);
@@ -30,9 +29,9 @@ export default function SinglePageHeader({ link }: { link: string }) {
           <Link
             href={link}
             onClick={handleLinkClick}
-            className="group w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300"
+            className="group w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-colors duration-300"
           >
-            <div className="w-6 sm:w-8 h-auto transition-all duration-300 group-hover:translate-x-1">
+            <div className="w-6 sm:w-8 h-auto transition-transform duration-300 group-hover:translate-x-1">
               <ArrowRight />
             </div>
           </Link>

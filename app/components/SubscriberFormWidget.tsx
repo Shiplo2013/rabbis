@@ -86,7 +86,7 @@ export default function SubscriberFormWidget() {
           aria-label="Close Form"
           className="close-form w-10 h-10 absolute top-0 right-0 p-3 border-l border-b border-[#C3A13F] rounded-bl-2xl group cursor-pointer"
         >
-          <CloseIcon2 className="w-full h-auto transition-all group-hover:rotate-180" />
+          <CloseIcon2 className="w-full h-auto transition-transform group-hover:rotate-180" />
         </button>
 
         <div className="form-content flex flex-col gap-y-4 mb-5">

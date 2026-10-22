@@ -71,7 +71,7 @@ export default function Sidebar({
         <button
           type="button"
           aria-label="Reset Filter"
-          className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#000000] transition-all duration-300"
+          className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#000000] transition-colors duration-300"
           onClick={() => {
             if (onSearchSubmit) {
               onSearchSubmit("");
@@ -108,7 +108,7 @@ export default function Sidebar({
           </span>
         </button>
         <div
-          className="menu overflow-hidden transition-all duration-300 ease-in-out"
+          className="menu overflow-hidden transition-[height,opacity] duration-300 ease-in-out"
           style={{
             maxHeight: menuOpen ? "500px" : "0px",
             opacity: menuOpen ? 1 : 0,
@@ -152,7 +152,7 @@ export default function Sidebar({
                 }}
                 tabIndex={0}
                 aria-label="Select All Articles"
-                className={`text-[24px] leading-[1em] transition-all duration-300 cursor-pointer ${
+                className={`text-[24px] leading-[1em] transition-colors duration-300 cursor-pointer ${
                   activeCategory === "0"
                     ? "text-[#D1A941]"
                     : "hover:text-[#999999]"
@@ -194,7 +194,7 @@ export default function Sidebar({
                   }}
                   tabIndex={0}
                   aria-label={`Select category ${item.name}`}
-                  className={`transition-all duration-300 cursor-pointer ${
+                  className={`transition-colors duration-300 cursor-pointer ${
                     activeCategory === String(item.id)
                       ? "text-[#D1A941]"
                       : "hover:text-[#999999]"

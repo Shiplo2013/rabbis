@@ -109,7 +109,7 @@ export default function TempleTabs2(props: ChildProps) {
                 <span className="relative">
                   {tab.tab_title}
                   <div
-                    className={`w-full h-0.5  bg-[#FBF4E6] ${activeTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-all duration-300`}
+                    className={`w-full h-0.5  bg-[#FBF4E6] ${activeTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-opacity duration-300`}
                   ></div>
                 </span>
               </button>

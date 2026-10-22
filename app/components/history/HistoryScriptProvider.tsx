@@ -378,13 +378,11 @@ export default function HistoryScriptProvider({
     useState<gsap.core.Timeline | null>(null);
   const [timelinePeriod4, setTimelinePeriod4] =
     useState<gsap.core.Timeline | null>(null);
-  const [timeline4ContainerAnimation, setTimeline4ContainerAnimation] =
-    useState<gsap.core.Tween | null>(null);
   const [timelinePeriod5, setTimelinePeriod5] =
     useState<gsap.core.Timeline | null>(null);
   const [timelinePeriod6, setTimelinePeriod6] =
     useState<gsap.core.Timeline | null>(null);
-  const [timelineAdded, setTimelineAdded] = useState(false);
+  //const [timelineAdded, setTimelineAdded] = useState(false);
 
   const setProgressLineWidth = (target: Element | null, value: string) => {
     if (target instanceof HTMLElement) {
@@ -881,7 +879,7 @@ export default function HistoryScriptProvider({
       });
       setTimelinePeriod6(timeline6);
     }
-    setTimelineAdded(true);
+    //setTimelineAdded(true);
     // Return
     return () => {
       timelinePeriod1?.kill();

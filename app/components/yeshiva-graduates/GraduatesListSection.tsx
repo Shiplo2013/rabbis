@@ -2,7 +2,7 @@ import CreateShimmerDataUrl from "@/app/ui/CreateShimmerDataUrl";
 import SingleGraduates from "@/app/ui/SingleGraduates";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import image1 from "../../assets/images/graduates-banner-image1.png";
 import image2 from "../../assets/images/graduates-banner-image2.png";
@@ -23,7 +23,6 @@ interface ChildProps {
 
 export default function GraduatesListSection(props: ChildProps) {
   // state
-  const pathname = usePathname();
   const router = useRouter();
   const { isLoading, setIsLoading } = useAppState();
   // Data
@@ -84,7 +83,7 @@ export default function GraduatesListSection(props: ChildProps) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);

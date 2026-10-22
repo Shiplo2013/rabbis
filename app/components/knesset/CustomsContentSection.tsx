@@ -22,7 +22,7 @@ export default function CustomsContentSection(props: ChildProps) {
   // Selector
   const scrollbarRef = useRef<HTMLDivElement>(null);
   // Search query
-  const [searchQuery, setSearchQuery] = useState("");
+  //const [searchQuery, setSearchQuery] = useState("");
   const sectionData = props.data || [];
   const categoriesData = props.categories || [];
 

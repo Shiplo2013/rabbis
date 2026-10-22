@@ -169,18 +169,18 @@ export default function DonationVideo(props: ChildProps) {
         ) : null}
         Your browser does not support the video tag.
       </video>
-      <div className="video-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform opacity-40 group-hover:opacity-20 transition-all duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)] backface-hidden pointer-events-none"></div>
+      <div className="video-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform opacity-40 group-hover:opacity-20 transition-opacity duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)] backface-hidden pointer-events-none"></div>
       <div className="video-pixel-border absolute top-0 left-0 w-full h-full z-40 pointer-events-none">
-        <div className="pixel-border-1 absolute top-4 right-4 group-hover:top-2 group-hover:right-2 transition-all duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)]">
+        <div className="pixel-border-1 absolute top-4 right-4 group-hover:top-2 group-hover:right-2 transition-[top,right] duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)]">
           <PixelIcon1 />
         </div>
-        <div className="pixel-border-2 absolute right-4 bottom-4 group-hover:right-2 group-hover:bottom-2 transition-all duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)]">
+        <div className="pixel-border-2 absolute right-4 bottom-4 group-hover:right-2 group-hover:bottom-2 transition-[right,bottom] duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)]">
           <PixelIcon2 />
         </div>
-        <div className="pixel-border-3 absolute left-4 bottom-4 group-hover:left-2 group-hover:bottom-2 transition-all duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)]">
+        <div className="pixel-border-3 absolute left-4 bottom-4 group-hover:left-2 group-hover:bottom-2 transition-[left,bottom] duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)]">
           <PixelIcon3 />
         </div>
-        <div className="pixel-border-4 absolute left-4 top-4 group-hover:left-2 group-hover:top-2 transition-all duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)]">
+        <div className="pixel-border-4 absolute left-4 top-4 group-hover:left-2 group-hover:top-2 transition-[left,top] duration-500 ease-[cubic-bezier(0.75, 0, 0.25, 1)]">
           <PixelIcon4 />
         </div>
       </div>

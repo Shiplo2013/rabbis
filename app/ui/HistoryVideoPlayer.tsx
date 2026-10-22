@@ -21,7 +21,6 @@ export default function HistoryVideoPlayer(props: ChildProps) {
       }
     } else {
       videoRef.current.pause();
-      setIsPlaying(false);
     }
   }, [isPlaying, props.isOpen]);
 
@@ -39,7 +38,7 @@ export default function HistoryVideoPlayer(props: ChildProps) {
       <button
         type="button"
         onClick={() => setIsPlaying(!isPlaying)}
-        className={`absolute top-1/2 left-1/2 w-12.5 h-12.5 p-2 flex items-center justify-center bg-[rgba(0,0,0,0.5)] hover:bg-black rounded-full ${isPlaying && "opacity-0 invisible group-hover:opacity-100 group-hover:visible"} cursor-pointer -translate-1/2 transition-all`}
+        className={`absolute top-1/2 left-1/2 w-12.5 h-12.5 p-2 flex items-center justify-center bg-[rgba(0,0,0,0.5)] hover:bg-black rounded-full ${isPlaying && "opacity-0 invisible group-hover:opacity-100 group-hover:visible"} cursor-pointer -translate-1/2 transition-[background,opacity,visibility]`}
       >
         <span className="block w-1/2 h-auto">
           {isPlaying ? <PauseIconVisible /> : <PlayIconVisible />}

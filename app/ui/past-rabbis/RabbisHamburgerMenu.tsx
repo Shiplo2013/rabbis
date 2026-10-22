@@ -4,7 +4,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import parse from "html-react-parser";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { gsap } from "../../ui/plugins";
 import TextSplitLines from "../TextSplitLines";
@@ -36,7 +36,6 @@ export default function RabbisHamburgerMenu() {
   const hamurgerMenu = useRef<HTMLDivElement>(null);
   const menuOverlay = useRef<HTMLButtonElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
-  const pathname = usePathname();
   const router = useRouter();
   const {
     allRabbisPosts,
@@ -198,7 +197,7 @@ export default function RabbisHamburgerMenu() {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setActiveRabbisMenu(false);
       menuTimeline.current?.timeScale(10).reverse();
       setIsLoading(true);

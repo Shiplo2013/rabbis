@@ -1,7 +1,7 @@
 import ArrowLeft2 from "@/app/assets/icons/ArrowLeft2";
 import ArrowRight from "@/app/assets/icons/ArrowRight";
 import Link from "next/dist/client/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAppState } from "../components/AppContext";
 import NavigationImage from "./news/NavigationImage";
 
@@ -22,7 +22,6 @@ interface ChildProps {
 
 export default function PostNavigation(props: ChildProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const { isLoading, setIsLoading } = useAppState();
 
   const navigationData = props.posts;
@@ -32,7 +31,7 @@ export default function PostNavigation(props: ChildProps) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);
@@ -55,8 +54,8 @@ export default function PostNavigation(props: ChildProps) {
           <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-3 text-center text-[14px] lg:text-[15px] leading-[70%] min-w-32 max-w-full">
             {navigationData?.nextPost.title}
           </h4>
-          <div className="absolute top-1/2 -translate-y-1/2 right-full -mr-5 lg:-mr-8 w-15 h-15 lg:w-25 lg:h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:translate-x-3">
-            <div className="w-7 lg:w-12 h-auto transition-all duration-300 group-hover:translate-x-1">
+          <div className="absolute top-1/2 -translate-y-1/2 right-full -mr-5 lg:-mr-8 w-15 h-15 lg:w-25 lg:h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-[background,translate] duration-300 group-hover:translate-x-3">
+            <div className="w-7 lg:w-12 h-auto transition-transform duration-300 group-hover:translate-x-1">
               <ArrowRight />
             </div>
           </div>
@@ -74,8 +73,8 @@ export default function PostNavigation(props: ChildProps) {
           <h4 className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 bg-[#D1A941] text-black p-3 text-center text-[14px] lg:text-[15px] leading-[70%] min-w-32 max-w-full">
             {navigationData?.prevPost.title}
           </h4>
-          <div className="absolute top-1/2 -translate-y-1/2 left-full -ml-5 lg:-ml-8 w-15 h-15 lg:w-25 lg:h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-all duration-300 group-hover:-translate-x-3">
-            <div className="w-7 lg:w-12 h-auto transition-all duration-300 group-hover:-translate-x-1">
+          <div className="absolute top-1/2 -translate-y-1/2 left-full -ml-5 lg:-ml-8 w-15 h-15 lg:w-25 lg:h-25 rounded-full bg-[#121616] hover:bg-[#1a1a1a] flex items-center justify-center text-white transition-[background,translate] duration-300 group-hover:-translate-x-3">
+            <div className="w-7 lg:w-12 h-auto transition-transform duration-300 group-hover:-translate-x-1">
               <ArrowLeft2 />
             </div>
           </div>

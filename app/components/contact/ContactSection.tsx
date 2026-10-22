@@ -72,7 +72,7 @@ export default function ContactSection(props: ChildProps) {
                   <div className="text text-[20px] sm:text-[30px] leading-[1.2em]">
                     <Link
                       href={`mailto:${props.data?.contact_info?.email}`}
-                      className="hover:text-(--theme-color) transition-all duration-500"
+                      className="hover:text-(--theme-color) transition-colors duration-500"
                     >
                       {parse(
                         props.data?.contact_info?.email ||
@@ -90,7 +90,7 @@ export default function ContactSection(props: ChildProps) {
                   <div className="text text-[20px] sm:text-[30px] leading-[1.2em]">
                     <Link
                       href={`tel:${props.data?.contact_info?.phone}`}
-                      className="hover:text-(--theme-color) transition-all duration-500"
+                      className="hover:text-(--theme-color) transition-colors duration-500"
                     >
                       {parse(props.data?.contact_info?.phone || "02-6209331")}
                     </Link>
@@ -106,7 +106,7 @@ export default function ContactSection(props: ChildProps) {
                     <Link
                       href={props.data?.contact_info?.waze_link || "/"}
                       target="_blank"
-                      className="hover:text-(--theme-color) transition-all duration-500"
+                      className="hover:text-(--theme-color) transition-colors duration-500"
                     >
                       נווט בוויז
                     </Link>

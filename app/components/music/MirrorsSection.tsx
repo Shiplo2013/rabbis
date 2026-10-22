@@ -313,7 +313,7 @@ export default function MirrorsSection(props: ChildProps) {
                 className="video-popup cursor-pointer w-25 h-auto flex items-center justify-center flex-col group text-[16px] sm:text-[18px]"
               >
                 <div className="icon w-15 lg:w-full h-auto flex items-center justify-center relative">
-                  <div className="static duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-90">
+                  <div className="static transition-[opacity,scale] duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-90">
                     <Image
                       className="w-full h-full object-contain object-center"
                       src={Album2.src}
@@ -323,7 +323,7 @@ export default function MirrorsSection(props: ChildProps) {
                       alt="Album Icon"
                     />
                   </div>
-                  <div className="hover absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-110">
+                  <div className="hover absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 transition-[opacity,scale] duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-110">
                     <Image
                       className="w-full h-full object-contain object-center"
                       src={Album1.src}
@@ -375,7 +375,7 @@ export default function MirrorsSection(props: ChildProps) {
               href={"/the-circle-of-the-year/" + nextPost?.slug}
               onClick={handleLinkClick}
             >
-              <span className="icon w-5.25 transition-all duration-300 ease-in-out group-hover:-translate-x-6">
+              <span className="icon w-5.25 transition-transform duration-300 ease-in-out group-hover:-translate-x-6">
                 <ArrowLeftIcon />
               </span>
               <span className="title text-[24px] sm:text-[36px] text-[#F4EDDD] font-thin">

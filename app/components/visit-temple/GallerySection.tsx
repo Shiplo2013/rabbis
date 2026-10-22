@@ -17,6 +17,7 @@ interface GallerySectionProps {
 }
 
 export default function GallerySection(props: GallerySectionProps) {
+  // Section Refs
   const gallerySectionRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const galleryHead = useRef<HTMLDivElement>(null);
@@ -213,12 +214,13 @@ export default function GallerySection(props: GallerySectionProps) {
           <Image
             src={HeadBG?.src}
             width={210}
-            height={window.innerHeight}
-            blurDataURL={CreateShimmerDataUrl(210, window.innerHeight)}
+            height={1080}
+            blurDataURL={HeadBG.blurDataURL}
             placeholder={"blur"}
             loading="lazy"
             alt="Head Background"
             className="w-full h-full object-contain object-center"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
         <div className="tab-head-wrapper flex flex-col gap-y-5 relative z-30">
@@ -242,7 +244,7 @@ export default function GallerySection(props: GallerySectionProps) {
                 <span className="relative">
                   {tab.tab_title}
                   <div
-                    className={`w-full h-0.5  bg-[#FBF4E6] ${props.activeTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-all duration-300`}
+                    className={`w-full h-0.5  bg-[#FBF4E6] ${props.activeTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-opacity duration-300`}
                   ></div>
                 </span>
               </button>

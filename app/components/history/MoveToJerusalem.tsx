@@ -232,7 +232,7 @@ export default function MoveToJerusalem(props: ChildProps) {
               />
             </div>
             <div className="period-button absolute bottom-0 right-0 -mr-[10vw] -mb-11 group will-change-transform">
-              <div className="w-25 h-25 lg:w-38.25 lg:h-38.25 flex item-center justify-center border-2 lg:border-4 rounded-full bg-white text-black border-[#D1A941] text-[18px] sm:text-[22px] lg:text-[33px] leading-[0.8em] p-6 text-center font-bold -rotate-[9.97deg] group-hover:rotate-0 transition-all duration-500">
+              <div className="w-25 h-25 lg:w-38.25 lg:h-38.25 flex item-center justify-center border-2 lg:border-4 rounded-full bg-white text-black border-[#D1A941] text-[18px] sm:text-[22px] lg:text-[33px] leading-[0.8em] p-6 text-center font-bold -rotate-[9.97deg] group-hover:rotate-0 transition-transform duration-500">
                 <span className="block my-auto">{`המעבר לירושלים`}</span>
               </div>
             </div>

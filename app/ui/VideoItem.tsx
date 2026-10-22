@@ -196,16 +196,18 @@ export default function VideoItem(props: ChildProps) {
         </div>
         <div
           ref={videoButton}
-          onClick={() => props.setSingleVideoPlaying(!props.singleVideoPlaying)}
           className="absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
         >
           <ThemeButton2
+            onClick={() =>
+              props.setSingleVideoPlaying(!props.singleVideoPlaying)
+            }
             extraClass="w-20 h-20 p-5 sm:p-0 sm:w-25 sm:h-25 flex items-center justify-center border-2 border-[#C3A13F] group"
             bgColor="bg-[#0F0F0F85]"
             hoverBgColor="bg-[#000000]"
             svgIcon={<PlusIcon />}
             svgIconClass={
-              "group-hover:skew-0 transition-all duration-500 group-hover:rotate-180"
+              "group-hover:skew-0 transition-transform duration-500 group-hover:rotate-180"
             }
           />
         </div>

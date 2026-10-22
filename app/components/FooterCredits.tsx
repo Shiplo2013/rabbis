@@ -24,14 +24,14 @@ export default function FooterCredits() {
         className="text-[16px] lg:text-[18px] cursor-pointer transition-colors flex gap-x-1 hover:text-[#555555]"
       >
         <span
-          className={`text-green-700 transition-all ${copied ? "opacity-100 visible" : "opacity-0 invisible"}`}
+          className={`text-green-700 transition-[opacity,visibility] ${copied ? "opacity-100 visible" : "opacity-0 invisible"}`}
         >
           <CheckIcon />
         </span>
         <span>SiTO</span>
       </button>
       <div
-        className={`message transition-all text-[16px] flex gap-x-1 ${copied ? "opacity-100 visible" : "opacity-0 invisible"}`}
+        className={`message transition-[opacity,visibility] text-[16px] flex gap-x-1 ${copied ? "opacity-100 visible" : "opacity-0 invisible"}`}
       >
         <span className={`text-green-700 [&>svg]:w-5`}>
           <CheckIcon />

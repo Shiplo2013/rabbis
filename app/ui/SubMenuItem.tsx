@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Caret from "../assets/icons/Caret";
 import { useAppState } from "../components/AppContext";
@@ -17,7 +17,6 @@ export default function SubMenuItem(props: ChildProps) {
   const [menuHeight, setMenuHeight] = useState(0);
   const menuDropdown = useRef<HTMLUListElement>(null);
   const dropdownId = `submenu-${props.itemText}-${props.subItem.length}`;
-  const pathname = usePathname();
   const router = useRouter();
   const { isLoading, setIsLoading } = useAppState();
 
@@ -36,7 +35,7 @@ export default function SubMenuItem(props: ChildProps) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       props.active && props.hideMenu && props.hideMenu(false);
       setIsLoading(true);
       window.scrollTo(0, 0);

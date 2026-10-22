@@ -382,7 +382,7 @@ export default function SingleNewsScriptProvider({
                 type="button"
                 onClick={() => swiperRef.current?.slidePrev()}
                 aria-label="Previous slide"
-                className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-11 h-11 rounded-full bg-black/60 text-[#C3A13F] transition-all duration-300 cursor-pointer ${
+                className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-11 h-11 rounded-full bg-black/60 text-[#C3A13F] transition-[opacity,translate] duration-300 cursor-pointer ${
                   sliderHovered
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 translate-x-4 pointer-events-none"
@@ -408,7 +408,7 @@ export default function SingleNewsScriptProvider({
                 type="button"
                 onClick={() => swiperRef.current?.slideNext()}
                 aria-label="Next slide"
-                className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-11 h-11 rounded-full bg-black/60 text-[#C3A13F] transition-all duration-300 cursor-pointer ${
+                className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-11 h-11 rounded-full bg-black/60 text-[#C3A13F] transition-[opacity,translate] duration-300 cursor-pointer ${
                   sliderHovered
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 -translate-x-4 pointer-events-none"
