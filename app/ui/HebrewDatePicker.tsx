@@ -72,17 +72,21 @@ export default function HebrewDatePicker({
   const daysInViewMonth = HDate.daysInMonth(viewMonth, viewYear);
   const firstDayOfMonth = new HDate(1, viewMonth, viewYear).getDay();
   const dayGrid = useMemo(() => {
-    const cells: Array<number | null> = [
-      ...Array.from({ length: firstDayOfMonth }, () => null),
-      ...Array.from({ length: daysInViewMonth }, (_, index) => index + 1),
-    ];
+    const cells = Array.from({ length: 42 }, (_, index) => {
+      const day = index - firstDayOfMonth + 1;
+      const date = day > 0 && day <= daysInViewMonth ? day : null;
 
-    while (cells.length < 42) {
-      cells.push(null);
-    }
+      return {
+        day: date,
+        key:
+          date === null
+            ? `empty-${index}`
+            : `day-${viewYear}-${viewMonth}-${date}`,
+      };
+    });
 
     return cells;
-  }, [daysInViewMonth, firstDayOfMonth]);
+  }, [daysInViewMonth, firstDayOfMonth, viewMonth, viewYear]);
   const selectedDateLabel = selectedHebrewDate
     ? `${gematriya(selectedHebrewDate.getDate())} ${hebrewMonths[selectedHebrewDate.getMonth() - 1]} ${gematriya(selectedHebrewDate.getFullYear())}`
     : "";
@@ -235,9 +239,9 @@ export default function HebrewDatePicker({
           </div>
 
           <div className="date-grid grid grid-cols-7 gap-1.5">
-            {dayGrid.map((day, index) => (
+            {dayGrid.map(({ day, key }) => (
               <button
-                key={`Day-${index}`}
+                key={key}
                 type="button"
                 aria-label={
                   day !== null

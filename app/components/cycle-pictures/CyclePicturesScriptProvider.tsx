@@ -56,7 +56,7 @@ export default function CyclePicturesScriptProvider({
   const [allPosts, setAllPosts] = useState<any | []>([]);
   //const [postPerPage, setPostPerPage] = useState(100);
   const postsPerLoad = useRef(12);
-  const postLoadCount = useRef(1);
+  const [postLoadCount, setPostLoadCount] = useState(1);
   const [postLoadLimit] = useState(() =>
     Math.ceil(
       Number(data?.postsData?.posts?.length || 0) / postsPerLoad.current,
@@ -102,16 +102,16 @@ export default function CyclePicturesScriptProvider({
     setCycleAllPosts(allPosts);
     setVerticalPosts(allPosts?.slice(0, 2) || []);
     setNormalPosts(
-      allPosts?.slice(2, postsPerLoad.current * postLoadCount.current) || [],
+      allPosts?.slice(2, postsPerLoad.current * postLoadCount) || [],
     );
     setIsLoadingMore(false);
-  }, [allPosts, postLoadCount.current]);
+  }, [allPosts, postLoadCount]);
 
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
       setIsLoadingMore(true);
-      postLoadCount.current += 1;
+      setPostLoadCount((currentCount) => currentCount + 1);
     }
   }, [isReadMoreInView]);
 
@@ -705,7 +705,7 @@ export default function CyclePicturesScriptProvider({
                 );
               })}
             </div>
-            {postLoadCount.current! < postLoadLimit && (
+            {postLoadCount! < postLoadLimit && (
               <div
                 ref={readMoreRef}
                 className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}

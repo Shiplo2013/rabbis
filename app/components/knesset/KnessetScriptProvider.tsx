@@ -104,7 +104,7 @@ export default function KnessetScriptProvider({
       ) || [],
     );
     setIsLoadingMore(false);
-  }, [knessetPostsData, postLoadCount.current]);
+  }, [knessetPostsData, postLoadCount]);
 
   // Search and Category Filter
   useEffect(() => {
