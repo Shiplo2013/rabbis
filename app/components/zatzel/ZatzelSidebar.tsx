@@ -37,6 +37,7 @@ export default function ZatzelSidebar({
           setSearchedData?.(searchValue || null);
         }}
         className="search-group relative"
+        action={"/"}
       >
         <input
           ref={nameRef}

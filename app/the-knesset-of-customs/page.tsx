@@ -78,9 +78,17 @@ export default async function Page() {
     },
   );
 
-  const [pageDataRes, categoryDataRes] = await Promise.all([
+  const postsRes = wpFetch(
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,content,acf.subtitle,knesset_cat&per_page=100&page=1`,
+    {
+      next: { revalidate: 60 }, // Cache data for 1 minute
+    },
+  );
+
+  const [pageDataRes, categoryDataRes, postsDataRes] = await Promise.all([
     pageRes,
     categoryRes,
+    postsRes,
   ]);
 
   if (!pageDataRes.ok) {
@@ -88,6 +96,10 @@ export default async function Page() {
   }
 
   if (!categoryDataRes.ok) {
+    throw new Error("Failed to load data.");
+  }
+
+  if (!postsDataRes.ok) {
     throw new Error("Failed to load data.");
   }
 
@@ -114,26 +126,15 @@ export default async function Page() {
   );
   categoryData = Array.isArray(parsedCategoryData) ? parsedCategoryData : [];
 
-  const postsRes = await wpFetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,content,acf.subtitle,knesset_cat&per_page=100&page=1`,
-    {
-      next: { revalidate: 60 }, // Cache data for 1 minute
-    },
-  );
-
-  if (!postsRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let postsData: any[] = [];
 
   const parsedPostsData = await parseJsonResponse<any[]>(
-    postsRes,
+    postsDataRes,
     postsData,
     "knesset-posts",
   );
   postsData = Array.isArray(parsedPostsData) ? parsedPostsData : [];
-  const totalPages = postsRes.headers.get("X-WP-TotalPages");
+  const totalPages = postsDataRes.headers.get("X-WP-TotalPages");
 
   if (!pageData[0]) {
     return notFound();

@@ -66,18 +66,20 @@ export default function ZatzelScriptProvider({
 
   // Post States
   //const [postPerPage, setPostPerPage] = useState(100);
-  const [postsPerLoad, setPostsPerLoad] = useState(12);
+  const postsPerLoad = useRef(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(0);
+  const [postLoadLimit, setPostLoadLimit] = useState(() =>
+    Math.ceil(Number(postData?.length || 0) / postsPerLoad.current),
+  );
   // const [isPostLoaded, setIsPostLoaded] = useState(false);
   // const [noPostsFound, setNoPostsFound] = useState(false);
   // const [currentPage, setCurrentPage] = useState(1);
   // const [hasMorePosts, setHasMorePosts] = useState(
   //   Number(postData?.[0]?.totalPages ?? 1) > 1,
   // );
-  const [totalPages, setTotalPages] = useState(
-    Number(postData?.[0]?.totalPages ?? 1),
-  );
+  // const [totalPages, setTotalPages] = useState(
+  //   Number(postData?.[0]?.totalPages ?? 1),
+  // );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [verticalPosts, setVerticalPosts] = useState<{
     sectionTitle: string;
@@ -131,7 +133,7 @@ export default function ZatzelScriptProvider({
     setPostLoadLimit(
       Math.ceil(
         Number(allPosts?.sections?.[0]?.sectionContent?.length || 0) /
-          postsPerLoad,
+          postsPerLoad.current,
       ),
     );
     setVerticalPosts({
@@ -142,7 +144,7 @@ export default function ZatzelScriptProvider({
     setNormalPosts(
       allPosts?.sections?.[0]?.sectionContent?.slice(
         4,
-        postsPerLoad * postLoadCount,
+        postsPerLoad.current * postLoadCount,
       ) || [],
     );
     setIsLoadingMore(false);
@@ -465,7 +467,7 @@ export default function ZatzelScriptProvider({
   useEffect(() => {
     if (isReadMoreInView) {
       setIsLoadingMore(true);
-      setPostLoadCount((prevCount) => prevCount + 1);
+      setPostLoadCount((currenValue) => currenValue + 1);
     }
   }, [isReadMoreInView]);
 
@@ -724,9 +726,9 @@ export default function ZatzelScriptProvider({
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <h1 className="text-2xl font-bold">Zatzel Page Not Found</h1>
           <p className="text-gray-600">
-            The requested rabbi post could not be found.
+            The requested zatzel page could not be found.
           </p>
         </div>
       </div>
