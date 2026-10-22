@@ -61,7 +61,7 @@ export default function KnessetScriptProvider({
   // Posts Data
   const postPerPage = useRef(100);
   const postsPerLoad = useRef(12);
-  const postLoadCount = useRef(1);
+  const [postLoadCount, setPostLoadCount] = useState(1);
   const [postLoadLimit, setPostLoadLimit] = useState(() =>
     Math.ceil(
       Number(data?.postsData?.posts?.length || 0) / postsPerLoad.current,
@@ -98,13 +98,10 @@ export default function KnessetScriptProvider({
     }
     setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
     setNormalPosts(
-      knessetPostsData?.slice(
-        3,
-        postsPerLoad.current * postLoadCount.current,
-      ) || [],
+      knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) || [],
     );
     setIsLoadingMore(false);
-  }, [knessetPostsData, postLoadCount.current]);
+  }, [knessetPostsData, postLoadCount]);
 
   // Search and Category Filter
   useEffect(() => {
@@ -123,10 +120,8 @@ export default function KnessetScriptProvider({
         setKnessetPostsData(filteredPosts || []);
         setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
         setNormalPosts(
-          knessetPostsData?.slice(
-            3,
-            postsPerLoad.current * postLoadCount.current,
-          ) || [],
+          knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) ||
+            [],
         );
       }
       if (
@@ -150,10 +145,7 @@ export default function KnessetScriptProvider({
         setKnessetPostsData(filteredPosts);
         setVerticalPosts(filteredPosts?.slice(0, 3) || []);
         setNormalPosts(
-          filteredPosts?.slice(
-            3,
-            postsPerLoad.current * postLoadCount.current,
-          ) || [],
+          filteredPosts?.slice(3, postsPerLoad.current * postLoadCount) || [],
         );
       }
       if (
@@ -176,10 +168,7 @@ export default function KnessetScriptProvider({
         setKnessetPostsData(filteredPosts || []);
         setVerticalPosts(filteredPosts?.slice(0, 3) || []);
         setNormalPosts(
-          filteredPosts?.slice(
-            3,
-            postsPerLoad.current * postLoadCount.current,
-          ) || [],
+          filteredPosts?.slice(3, postsPerLoad.current * postLoadCount) || [],
         );
       }
       setPostLoadLimit(() =>
@@ -189,10 +178,7 @@ export default function KnessetScriptProvider({
       setKnessetPostsData(data?.postsData?.posts || []);
       setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
       setNormalPosts(
-        knessetPostsData?.slice(
-          3,
-          postsPerLoad.current * postLoadCount.current,
-        ) || [],
+        knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) || [],
       );
     }
 
@@ -271,12 +257,10 @@ export default function KnessetScriptProvider({
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
-      console.log(postLoadCount.current);
-      console.log(postLoadLimit);
       setIsLoadingMore(true);
-      postLoadCount.current += 1;
+      setPostLoadCount((currenValue) => currenValue + 1);
 
-      if (postLoadCount.current! === postLoadLimit! && hasMorePosts.current) {
+      if (postLoadCount! === postLoadLimit! && hasMorePosts.current) {
         return LoadMorePosts();
       }
     }
@@ -800,7 +784,7 @@ export default function KnessetScriptProvider({
                 );
               })}
             </div>
-            {postLoadCount.current! < postLoadLimit! && (
+            {postLoadCount! < postLoadLimit! && (
               <div
                 ref={readMoreRef}
                 className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
