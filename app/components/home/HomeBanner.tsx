@@ -76,7 +76,7 @@ export default function HomeBanner(props: ChildProps) {
       <button
         onClick={() => setIsPlaying(!isPlaying)}
         aria-label="Banner Video"
-        role="button"
+        type="button"
         className="absolute top-0 left-0 w-full h-full z-50"
       ></button>
       <div className="banner-background-wrapper absolute top-0 left-0 w-full h-full z-10">
