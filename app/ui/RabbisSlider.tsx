@@ -2,7 +2,7 @@
 import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -74,7 +74,6 @@ type RabbiPost = {
 
 export default function RabbisSlider(props: ChildProps) {
   const swiperRef = useRef<SwiperRef>(null);
-  const pathname = usePathname();
   const router = useRouter();
   const { isLoading, setIsLoading } = useAppState();
   const paginationRef = useRef(null);
@@ -91,7 +90,7 @@ export default function RabbisSlider(props: ChildProps) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);

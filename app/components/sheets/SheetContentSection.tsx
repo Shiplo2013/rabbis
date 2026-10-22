@@ -1,6 +1,6 @@
 import GetHebrewYear from "@/app/ui/GetHebrewYear";
 import SheetContentItem from "@/app/ui/SheetContentItem";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef } from "react";
 import SimpleBar from "simplebar-react";
 import { useAppState } from "../AppContext";
 import SubscribeForm from "./SubscribeForm";
@@ -26,7 +26,7 @@ export default function SheetContentSection(props: ChildProps) {
   const scrollbarRef = useRef<HTMLDivElement>(null);
   // Section Data
   const sectionData = props.data || [];
-  const [activeCategory, setActiveCategory] = useState(0);
+  //const [activeCategory, setActiveCategory] = useState(0);
 
   // Animation State
   const {
@@ -54,12 +54,12 @@ export default function SheetContentSection(props: ChildProps) {
                 <div className="all-sheets year-month text-[24px] leading-[1.2em]">
                   <button
                     onClick={() => {
-                      setActiveCategory(0);
+                      //setActiveCategory(0);
                       setSheetsOnSelectCategoryId(0);
                     }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        setActiveCategory(0);
+                        //setActiveCategory(0);
                         setSheetsOnSelectCategoryId(0);
                       }
                     }}
@@ -116,7 +116,7 @@ export default function SheetContentSection(props: ChildProps) {
           )}
 
           <div
-            className={`absolute top-0 left-0 w-full h-full bg-black z-30 flex items-center justify-center transition-all ${props.filteredPostsLoading ? "opacity-100 visible" : "opacity-0 invisible"}`}
+            className={`absolute top-0 left-0 w-full h-full bg-black z-30 flex items-center justify-center transition-[opacity,visibility] ${props.filteredPostsLoading ? "opacity-100 visible" : "opacity-0 invisible"}`}
           >
             <div role="status">
               <div className="flex items-center justify-center">

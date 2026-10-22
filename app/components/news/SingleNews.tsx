@@ -3,7 +3,7 @@ import ArrowLeftIcon2 from "@/app/assets/icons/ArrowLeftIcon2";
 import NewsImage from "@/app/ui/news/NewsImage";
 import parse from "html-react-parser";
 import Link from "next/dist/client/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAppState } from "../AppContext";
 
 interface ChildProps {
@@ -14,7 +14,6 @@ interface ChildProps {
 export default function SingleNews(props: ChildProps) {
   // Access the router and pathname
   const router = useRouter();
-  const pathname = usePathname();
   const { isLoading, setIsLoading } = useAppState();
 
   // Handle Link Click
@@ -22,7 +21,7 @@ export default function SingleNews(props: ChildProps) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);

@@ -214,13 +214,13 @@ export default function RabbisPeriodSection(props: ChildProps) {
       <div className="period-content-wrapper flex items-center justify-center w-full h-full relative z-20 px-[8vw] pt-[8vh] pb-[6vh] lg:pb-0 lg:pr-[10vw] lg:pl-[10vw] lg:pt-[6vh] flex-col lg:flex-row gap-y-[7vh]">
         <div
           ref={button}
-          onClick={() => {
-            setActiveRabbisMenu(!activeRabbisMenu);
-            setAllRabbisPosts(props.rabbisPosts);
-          }}
           className="period-button absolute left-6 top-6 lg:top-[7.8vh] lg:left-[12.7vw] cursor-pointer"
         >
           <ThemeButton2
+            onClick={() => {
+              setActiveRabbisMenu(!activeRabbisMenu);
+              setAllRabbisPosts(props.rabbisPosts);
+            }}
             extraClass="w-18 h-18 sm:w-24 sm:h-24 lg:w-32 lg:h-32 flex items-center justify-center border-2 lg:border-4 border-[#D1A941] leading-[0.8em] p-4 lg:p-6 text-center font-bold"
             bgColor="bg-[#ffffff]"
             fontSize="text-[16px] sm:text-[22px] lg:text-[28px]"

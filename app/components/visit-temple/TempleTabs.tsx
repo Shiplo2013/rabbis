@@ -9,8 +9,8 @@ import FsLightbox from "fslightbox-react";
 import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import SimpleBar from "simplebar-react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -44,7 +44,27 @@ interface ChildProps {
   tabGalleryData?: any;
 }
 
+// Viewport detection functions
+const subscribeToDesktopViewport = (callback: () => void) => {
+  const mediaQuery = window.matchMedia("(min-width: 768px)");
+  mediaQuery.addEventListener("change", callback);
+  return () => mediaQuery.removeEventListener("change", callback);
+};
+
+const getDesktopViewportSnapshot = () =>
+  window.matchMedia("(min-width: 768px)").matches;
+
+const getServerDesktopViewportSnapshot = () => false;
+
 export default function TempleTabs(props: ChildProps) {
+  // Viewport Detection
+  const isDesktopViewport = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    getDesktopViewportSnapshot,
+    getServerDesktopViewportSnapshot,
+  );
+
+  // Section Refs
   const tabsData = props.data as TabsData[];
   const wrapper = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -55,7 +75,6 @@ export default function TempleTabs(props: ChildProps) {
   // Lightbox State
   const [toggler, setToggler] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
   const { isLoading, setIsLoading, templeActiveTab, setTempleActiveTab } =
     useAppState();
 
@@ -127,7 +146,7 @@ export default function TempleTabs(props: ChildProps) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);
@@ -157,7 +176,7 @@ export default function TempleTabs(props: ChildProps) {
                 <span className="relative">
                   {tab.tab_title}
                   <div
-                    className={`w-full h-0.5  bg-[#FBF4E6] ${templeActiveTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-all duration-300`}
+                    className={`w-full h-0.5  bg-[#FBF4E6] ${templeActiveTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-opacity duration-300`}
                   ></div>
                 </span>
               </Link>
@@ -215,7 +234,7 @@ export default function TempleTabs(props: ChildProps) {
                       className="video-popup cursor-pointer w-25 h-auto flex items-center justify-center flex-col group text-[18px]"
                     >
                       <div className="icon w-full h-auto flex items-center justify-center relative">
-                        <div className="static duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-90">
+                        <div className="static transition-[opacity,scale] duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-90">
                           <Image
                             className="w-full h-full object-contain object-center"
                             src={Album2.src}
@@ -225,7 +244,7 @@ export default function TempleTabs(props: ChildProps) {
                             loading="lazy"
                           />
                         </div>
-                        <div className="hover absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-110">
+                        <div className="hover absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 transition-[opacity,scale] duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-110">
                           <Image
                             className="w-full h-full object-contain object-center"
                             src={Album1.src}
@@ -245,7 +264,7 @@ export default function TempleTabs(props: ChildProps) {
                     ref={galleryRef}
                     className="gallery-wrapper w-full h-full flex items-center flex-col lg:flex-row will-change-transform"
                   >
-                    {window.innerWidth > 1024 ? (
+                    {isDesktopViewport ? (
                       Object.values(
                         tabsData[templeActiveTab]?.gallery || [],
                       ).map((item: any, index: number) => {
@@ -335,34 +354,17 @@ export default function TempleTabs(props: ChildProps) {
                                     <Image
                                       className="w-full object-cover object-center h-full relative z-30 will-change-transform cursor-none pointer-events-none"
                                       src={
-                                        window.innerWidth < 1024 &&
-                                        window.innerWidth > 500
+                                        isDesktopViewport
                                           ? item?.sizes?.medium_large ||
                                             item?.image?.src
                                           : item?.sizes?.medium ||
                                             item?.image?.src
                                       }
-                                      width={
-                                        window.innerWidth < 1024 &&
-                                        window.innerWidth > 500
-                                          ? 637
-                                          : 400
-                                      }
-                                      height={
-                                        window.innerWidth < 1024 &&
-                                        window.innerWidth > 500
-                                          ? 637
-                                          : 400
-                                      }
+                                      width={isDesktopViewport ? 637 : 400}
+                                      height={isDesktopViewport ? 637 : 400}
                                       blurDataURL={CreateShimmerDataUrl(
-                                        window.innerWidth < 1024 &&
-                                          window.innerWidth > 500
-                                          ? 637
-                                          : 400,
-                                        window.innerWidth < 1024 &&
-                                          window.innerWidth > 500
-                                          ? 637
-                                          : 400,
+                                        isDesktopViewport ? 637 : 400,
+                                        isDesktopViewport ? 637 : 400,
                                       )}
                                       placeholder={"blur"}
                                       loading="lazy"

@@ -48,28 +48,29 @@ export default function CyclePicturesScriptProvider({
   // Vertical Section
   const [verticalSection, setVerticalSection] =
     useState<gsap.core.Timeline | null>(null);
-  const verticalSectionRef = useRef<gsap.core.Timeline | null>(null);
 
   // Page Refs
   const main = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
   const [allPosts, setAllPosts] = useState<any | []>([]);
-  const [postPerPage, setPostPerPage] = useState(100);
-  const [postsPerLoad, setPostsPerLoad] = useState(12);
-  const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(
-    Math.ceil(Number(data?.postsData?.posts?.length || 0) / postsPerLoad),
+  //const [postPerPage, setPostPerPage] = useState(100);
+  const postsPerLoad = useRef(12);
+  const postLoadCount = useRef(1);
+  const [postLoadLimit] = useState(() =>
+    Math.ceil(
+      Number(data?.postsData?.posts?.length || 0) / postsPerLoad.current,
+    ),
   );
-  const [isPostLoaded, setIsPostLoaded] = useState(false);
-  const [noPostsFound, setNoPostsFound] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMorePosts, setHasMorePosts] = useState(
-    Number(data?.postsData?.totalPage ?? 1) > 1,
-  );
-  const [totalPages, setTotalPages] = useState(
-    Number(data?.postsData?.totalPage ?? 1),
-  );
+  // const [isPostLoaded, setIsPostLoaded] = useState(false);
+  // const [noPostsFound, setNoPostsFound] = useState(false);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [hasMorePosts, setHasMorePosts] = useState(
+  //   Number(data?.postsData?.totalPage ?? 1) > 1,
+  // );
+  // const [totalPages, setTotalPages] = useState(
+  //   Number(data?.postsData?.totalPage ?? 1),
+  // );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
   const [normalPosts, setNormalPosts] = useState<any[]>([]);
@@ -100,15 +101,17 @@ export default function CyclePicturesScriptProvider({
     }
     setCycleAllPosts(allPosts);
     setVerticalPosts(allPosts?.slice(0, 2) || []);
-    setNormalPosts(allPosts?.slice(2, postsPerLoad * postLoadCount) || []);
+    setNormalPosts(
+      allPosts?.slice(2, postsPerLoad.current * postLoadCount.current) || [],
+    );
     setIsLoadingMore(false);
-  }, [allPosts, postLoadCount]);
+  }, [allPosts, postLoadCount.current]);
 
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
       setIsLoadingMore(true);
-      setPostLoadCount((prevCount) => prevCount + 1);
+      postLoadCount.current += 1;
     }
   }, [isReadMoreInView]);
 
@@ -122,10 +125,10 @@ export default function CyclePicturesScriptProvider({
         return postCategoryId === cycleActiveCategory;
       });
       if (filteredPosts?.length === 0) {
-        setNoPostsFound(true);
+        //setNoPostsFound(true);
         setAllPosts([]);
       } else {
-        setNoPostsFound(false);
+        //setNoPostsFound(false);
         setAllPosts(filteredPosts);
       }
     }
@@ -702,14 +705,14 @@ export default function CyclePicturesScriptProvider({
                 );
               })}
             </div>
-            {postLoadCount! < postLoadLimit! && (
+            {postLoadCount.current! < postLoadLimit && (
               <div
                 ref={readMoreRef}
                 className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
               >
                 <button
                   type="button"
-                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-all duration-500 disabled:cursor-not-allowed"
+                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-colors duration-500 disabled:cursor-not-allowed"
                   disabled={isLoadingMore}
                 >
                   {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}

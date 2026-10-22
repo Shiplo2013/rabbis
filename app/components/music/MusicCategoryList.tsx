@@ -1,7 +1,7 @@
 "use client";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useSyncExternalStore } from "react";
 import SimpleBar from "simplebar-react";
 import { gsap, useGSAP } from "../../ui/plugins";
 import { useAppState } from "../AppContext";
@@ -18,7 +18,25 @@ interface ChildProps {
   setActiveMusicItem: (item: any) => void;
 }
 
+// Viewport detection functions
+const subscribeToDesktopViewport = (callback: () => void) => {
+  const mediaQuery = window.matchMedia("(min-width: 768px)");
+  mediaQuery.addEventListener("change", callback);
+  return () => mediaQuery.removeEventListener("change", callback);
+};
+
+const getDesktopViewportSnapshot = () =>
+  window.matchMedia("(min-width: 768px)").matches;
+
+const getServerDesktopViewportSnapshot = () => false;
+
 export default function MusicCategoryList(props: ChildProps) {
+  // Viewport Detection
+  const isDesktopViewport = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    getDesktopViewportSnapshot,
+    getServerDesktopViewportSnapshot,
+  );
   // Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -102,7 +120,7 @@ export default function MusicCategoryList(props: ChildProps) {
         className={`${props.extraClass} lg:h-screen flex items-center relative z-20`}
       >
         <div className="music-cat-wrapper w-full h-full px-[8vw] lg:px-[4.16vw] py-[8vh] sm:py-[10vh] lg:pt-[15vh] lg:pb-[8vh]">
-          {window.innerWidth > 1024 ? (
+          {isDesktopViewport ? (
             <SimpleBar
               style={{
                 maxHeight: "75vh",

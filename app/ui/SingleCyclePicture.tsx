@@ -2,6 +2,7 @@
 import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
+import { useSyncExternalStore } from "react";
 import ViewIcon2 from "../assets/icons/ViewIcon2";
 import Frame from "../assets/images/pictures-frame.png";
 import { useAppState } from "../components/AppContext";
@@ -12,7 +13,25 @@ interface ChildProps {
   data: any;
 }
 
+// Viewport detection functions
+const subscribeToDesktopViewport = (callback: () => void) => {
+  const mediaQuery = window.matchMedia("(min-width: 768px)");
+  mediaQuery.addEventListener("change", callback);
+  return () => mediaQuery.removeEventListener("change", callback);
+};
+
+const getDesktopViewportSnapshot = () =>
+  window.matchMedia("(min-width: 768px)").matches;
+
+const getServerDesktopViewportSnapshot = () => false;
+
 export default function SingleCyclePicture(props: ChildProps) {
+  // Viewport Detection
+  const isDesktopViewport = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    getDesktopViewportSnapshot,
+    getServerDesktopViewportSnapshot,
+  );
   // Section Data
   const SingleData = props.data || {};
 
@@ -41,13 +60,13 @@ export default function SingleCyclePicture(props: ChildProps) {
                 <Image
                   className="w-full object-cover object-center h-full relative z-10 will-change-transform"
                   src={
-                    window.innerWidth > 767
+                    isDesktopViewport
                       ? SingleData?.acf?.image?.sizes?.medium_large
                       : SingleData?.acf?.image?.sizes?.medium ||
                         SingleData?.acf?.image?.url
                   }
-                  width={window.innerWidth > 767 ? "660" : "308"}
-                  height={window.innerWidth > 767 ? "408" : "190"}
+                  width={isDesktopViewport ? "660" : "308"}
+                  height={isDesktopViewport ? "408" : "190"}
                   blurDataURL={
                     CreateShimmerDataUrl(660, 408) ||
                     SingleData?.acf?.image?.blurDataURL
@@ -68,7 +87,7 @@ export default function SingleCyclePicture(props: ChildProps) {
                 </p>
                 <Link
                   href={"/contact"}
-                  className="border-b border-[#D1A941] hover:border-[#ffffff] hover:text-white transition-all duration-300"
+                  className="border-b border-[#D1A941] hover:border-[#ffffff] hover:text-white transition-colors duration-300"
                 >
                   לחץ כאן
                 </Link>
@@ -78,16 +97,23 @@ export default function SingleCyclePicture(props: ChildProps) {
 
           {SingleData?.acf?.image && (
             <div
-              className={`picture-view absolute top-0 left-0 w-full h-full flex items-center justify-center z-40 bg-[#00000080] transition-all duration-500 lg:opacity-0 lg:invisible group-hover:opacity-100 group-hover:visible`}
-              onClick={() => {
-                if (SingleData?.acf?.image) {
-                  setActiveCyclePopup(true);
-                  setCyclePopupIndex(SingleData?.id);
-                }
-              }}
+              className={`picture-view absolute top-0 left-0 w-full h-full flex items-center justify-center z-40 bg-[#00000080] transition-[opacity,visibility] duration-500 lg:opacity-0 lg:invisible group-hover:opacity-100 group-hover:visible`}
             >
               <button
                 type="button"
+                onClick={() => {
+                  if (SingleData?.acf?.image) {
+                    setActiveCyclePopup(true);
+                    setCyclePopupIndex(SingleData?.id);
+                  }
+                }}
+                onKeyDown={() => {
+                  if (SingleData?.acf?.image) {
+                    setActiveCyclePopup(true);
+                    setCyclePopupIndex(SingleData?.id);
+                  }
+                }}
+                aria-label="View Image"
                 className="w-12 h-12 sm:w-15 sm:h-15 lg:w-20 lg:h-20 p-3 sm:p-4 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
               >
                 <ViewIcon2 />

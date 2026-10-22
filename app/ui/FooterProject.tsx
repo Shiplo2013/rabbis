@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import hoverImage1 from "../assets/images/hover-image1.jpg";
 import { useAppState } from "../components/AppContext";
 
@@ -12,7 +12,6 @@ interface ChilProps {
 
 export default function FooterProject(props: ChilProps) {
   // Route
-  const pathname = usePathname();
   const router = useRouter();
   const { isLoading, setIsLoading } = useAppState();
   // Handle Link Click
@@ -20,7 +19,7 @@ export default function FooterProject(props: ChilProps) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);

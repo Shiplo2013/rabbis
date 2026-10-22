@@ -43,7 +43,6 @@ export default function CommunitiesSlugScriptProvider({
   const params = useParams();
   const slug = params?.slug as string;
   const [post, setPost] = useState<CommunityPost | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const {
     isLoading,
@@ -69,7 +68,6 @@ export default function CommunitiesSlugScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data available.");
       return;
     }
     setPost(data);

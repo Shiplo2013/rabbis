@@ -17,7 +17,7 @@ interface ChildProps {
 export default function ThemeButton2(props: ChildProps) {
   return (
     <button
-      className="theme-button overflow-hidden"
+      className="theme-button overflow-hidden cursor-pointer"
       onClick={props?.onClick}
       onKeyDown={(e) => e.key === "Enter" && props?.onClick}
       type="button"

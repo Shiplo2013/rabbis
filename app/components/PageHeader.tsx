@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRef } from "react";
 import ButtonBorder from "../assets/icons/ButtonBorder";
 import ButtonText from "../assets/icons/ButtonText";
 import HambergerIcon from "../assets/icons/HambergerIcon";
@@ -116,14 +116,12 @@ function PageHeader() {
   ];
 
   // Menu Activation
-  const [isMounted, setIsMounted] = useState(false);
-  const [menuTimeline] = useState(
-    gsap.timeline({
-      paused: true,
-    }),
-  );
+  const menuTimeline = useRef<gsap.core.Timeline | null>(null);
   // Animate on active
   useGSAP(() => {
+    // Timeline
+    menuTimeline.current = gsap.timeline({ paused: true });
+    // Selectors
     const mainMenu = document.getElementById("main-menu") as HTMLElement | null;
     const menuCloseButton = mainMenu?.querySelector(
       ".menu-close",
@@ -158,13 +156,13 @@ function PageHeader() {
     }
     // Animate on active
     if (mainMenu && menuBackground) {
-      menuTimeline.to(mainMenu, {
+      menuTimeline?.current.to(mainMenu, {
         opacity: 1,
         visibility: "visible",
         duration: 0,
         delay: 0,
       });
-      menuTimeline.to(menuBackground, {
+      menuTimeline?.current.to(menuBackground, {
         clipPath: "circle(150% at 100% 0%)",
         ease: "expo.inOut",
         duration: 2,
@@ -172,7 +170,7 @@ function PageHeader() {
       });
     }
     if (menuRight && menuLeft && bottomMenu && bottomSearch) {
-      menuTimeline.to(
+      menuTimeline?.current.to(
         [menuRight, menuLeft, bottomMenu, bottomSearch],
         {
           yPercent: 0,
@@ -185,7 +183,7 @@ function PageHeader() {
       );
     }
     if (menuCloseButton) {
-      menuTimeline.to(
+      menuTimeline?.current.to(
         menuCloseButton,
         {
           scale: 1,
@@ -200,19 +198,19 @@ function PageHeader() {
   }, []);
 
   useGSAP(() => {
-    activeHamburgerMenu ? menuTimeline.play() : menuTimeline.reverse();
+    if (menuTimeline?.current) {
+      activeHamburgerMenu
+        ? menuTimeline?.current.play()
+        : menuTimeline?.current.reverse();
+    }
   }, [activeHamburgerMenu]);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // Handle Link Click
   const handleLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);
@@ -242,7 +240,7 @@ function PageHeader() {
               {data?.acf?.header_right &&
                 data?.acf?.header_right?.menu.map(
                   (item: any, index: number) => {
-                    const isActive = isMounted && pathname === item.link;
+                    const isActive = pathname === item.link;
                     const haveSubmenu = item.subMenu && item.subMenu.length > 0;
                     return (
                       <div
@@ -272,7 +270,7 @@ function PageHeader() {
                             prefetch={false}
                           >
                             <span
-                              className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-all duration-300`}
+                              className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-[height] duration-300`}
                             ></span>
                             <span
                               className={`flex justify-center items-center w-full h-full  transition-all origin-center border border-[#000000B2] ${haveSubmenu ? "submenu" : "group-hover/parent:border-[#DBBD5C80] group-hover/parent:bg-[#000000B2] group-hover/parent:rotate-90 group-hover/parent:-mt-[50%]"}`}
@@ -283,7 +281,7 @@ function PageHeader() {
                         )}
                         {haveSubmenu && index === 0 && (
                           <div
-                            className={`submenu-content absolute bottom-full pr-10 transition-all duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0`}
+                            className={`submenu-content absolute bottom-full pr-10 transition-[translate,opacity,visibility] duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0`}
                           >
                             <div
                               className={`submenu-items flex flex-col -mb-2`}
@@ -302,10 +300,10 @@ function PageHeader() {
                                           }}
                                           prefetch={false}
                                           href={subItem.link}
-                                          className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-all duration-300 block`}
+                                          className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-colors duration-300 block`}
                                         >
                                           <span>{subItem.title}</span>
-                                          <span className="bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5"></span>
+                                          <span className="bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-[opacity,width] duration-300 group-hover:opacity-100 group-hover:w-1.5"></span>
                                         </Link>
                                       </div>
                                     );
@@ -317,7 +315,7 @@ function PageHeader() {
                         )}
                         {haveSubmenu && index !== 0 && (
                           <div
-                            className={`submenu-content absolute bottom-full pr-10 transition-all duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0 -mb-8`}
+                            className={`submenu-content absolute bottom-full pr-10 transition-[translate,opacity,visibility] duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0 -mb-8`}
                           >
                             {item.subMenu.map(
                               (subItem: any, subIndex: number) => {
@@ -356,10 +354,10 @@ function PageHeader() {
                                             handleLinkClick(e);
                                           }}
                                           prefetch={false}
-                                          className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-all duration-300`}
+                                          className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-colors duration-300`}
                                         >
                                           <span>{subItem.title}</span>
-                                          <span className="bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5"></span>
+                                          <span className="bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-[opacity,width] duration-300 group-hover:opacity-100 group-hover:w-1.5"></span>
                                         </Link>
                                       );
                                     }
@@ -378,10 +376,10 @@ function PageHeader() {
                                             handleLinkClick(e);
                                           }}
                                           prefetch={false}
-                                          className="submenu-item group/child text-[#E2D7C3] leading-[70%] text-[15px] hover:text-[#C3A13F] relative transition-all duration-300"
+                                          className="submenu-item group/child text-[#E2D7C3] leading-[70%] text-[15px] hover:text-[#C3A13F] relative transition-colors duration-300"
                                         >
                                           <span>{subItem.title}</span>
-                                          <span className="bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover/child:opacity-100 group-hover/child:w-1.5"></span>
+                                          <span className="bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-[opacity,width] duration-300 group-hover/child:opacity-100 group-hover/child:w-1.5"></span>
                                         </Link>
                                       );
                                     }
@@ -399,7 +397,7 @@ function PageHeader() {
                 <div className="menu-item group/parent flex items-center justify-center relative">
                   <Link
                     key={data?.acf?.header_right?.donation_button?.text}
-                    className={`gap-4 bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-all w-full h-full flex items-center justify-center`}
+                    className={`gap-4 bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-colors w-full h-full flex items-center justify-center`}
                     href={
                       data?.acf?.header_right?.donation_button?.link ||
                       "/donation"
@@ -426,7 +424,7 @@ function PageHeader() {
               )}
               {!data?.acf?.header_right &&
                 links.map((link, index) => {
-                  const isActive = isMounted && pathname === link.href;
+                  const isActive = pathname === link.href;
                   const haveSubmenu =
                     link.submenus && link.submenus.menu1.length > 0;
                   return (
@@ -442,14 +440,14 @@ function PageHeader() {
                         prefetch={false}
                         className={`${
                           link.icon
-                            ? "gap-4 bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-all"
+                            ? "gap-4 bg-[#D4AF37] hover:bg-[#bc9924] text-[#000000] transition-colors"
                             : "text-[#E2D7C3]"
                         } w-full h-full flex items-center justify-center`}
                         href={link.href}
                       >
                         {!link.icon && (
                           <span
-                            className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-all duration-300`}
+                            className={`indicator bg-[#C3A13F] w-full ${isActive ? "h-2" : "h-0"} absolute left-0 bottom-full transition-[height] duration-300`}
                           ></span>
                         )}
                         {link.icon ? (
@@ -475,7 +473,7 @@ function PageHeader() {
                       </Link>
                       {haveSubmenu && (
                         <div
-                          className={`submenu-content absolute bottom-full pr-10 transition-all duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0 ${link.submenus.class}`}
+                          className={`submenu-content absolute bottom-full pr-10 transition-[opacity,visibility,translate] duration-500 w-48 rotate-90 opacity-0 -translate-x-full invisible group-hover/parent:opacity-100 group-hover/parent:visible group-hover/parent:translate-x-0 ${link.submenus.class}`}
                         >
                           {link.submenus.head && (
                             <div className="menu-head bg-[#000000B2] border border-[#DBBD5C80] px-4 py-3 mb-1.5 text-[#E2D7C3] text-[15.55px] leading-[70%]">
@@ -501,7 +499,7 @@ function PageHeader() {
                                   ? link.submenus.menu1.map((item) => (
                                       <Link
                                         key={item.id}
-                                        className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-all duration-300`}
+                                        className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-colors duration-300`}
                                         href={item.link}
                                         onClick={(e) => {
                                           handleLinkClick(e);
@@ -510,7 +508,7 @@ function PageHeader() {
                                       >
                                         <span>{item.name}</span>
                                         <span
-                                          className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5`}
+                                          className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-[opacity,width] duration-300 group-hover:opacity-100 group-hover:w-1.5`}
                                         ></span>
                                       </Link>
                                     ))
@@ -520,7 +518,7 @@ function PageHeader() {
                                         className="relative px-3 py-5 bg-[#000000B2] border border-[#DBBD5C80] w-full"
                                       >
                                         <Link
-                                          className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-all duration-300 block`}
+                                          className={`submenu-item group text-[#E2D7C3] text-[15px] leading-[70%] hover:text-[#C3A13F] relative transition-colors duration-300 block`}
                                           href={item.link}
                                           onClick={(e) => {
                                             handleLinkClick(e);
@@ -529,10 +527,10 @@ function PageHeader() {
                                         >
                                           <span>{item.name}</span>
                                           <span
-                                            className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:w-1.5`}
+                                            className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-[opacity,width] duration-300 group-hover:opacity-100 group-hover:w-1.5`}
                                           ></span>
                                           {item.comingsoon && (
-                                            <div className="comingsoon absolute top-0 right-full flex items-center justify-center text-[#D4AF37] text-[16px] mr-7 font-bold opacity-0 transition-all duration-300 group-hover:opacity-100">
+                                            <div className="comingsoon absolute top-0 right-full flex items-center justify-center text-[#D4AF37] text-[16px] mr-7 font-bold opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                               בקרוב
                                             </div>
                                           )}
@@ -546,7 +544,7 @@ function PageHeader() {
                                 {link.submenus.menu2.map((item) => (
                                   <Link
                                     key={item.id}
-                                    className="submenu-item group/child text-[#E2D7C3] leading-[70%] text-[15px] hover:text-[#C3A13F] relative transition-all duration-300"
+                                    className="submenu-item group/child text-[#E2D7C3] leading-[70%] text-[15px] hover:text-[#C3A13F] relative transition-colors duration-300"
                                     href={item.link}
                                     onClick={(e) => {
                                       handleLinkClick(e);
@@ -555,7 +553,7 @@ function PageHeader() {
                                   >
                                     <span>{item.name}</span>
                                     <span
-                                      className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-all duration-300 group-hover/child:opacity-100 group-hover/child:w-1.5`}
+                                      className={`bg-[#C3A13F] w-0 h-full absolute top-0 right-0 -mr-3.25 opacity-0 transition-[opacity,width] duration-300 group-hover/child:opacity-100 group-hover/child:w-1.5`}
                                     ></span>
                                   </Link>
                                 ))}
@@ -614,7 +612,7 @@ function PageHeader() {
             <ThemeButton
               extraClass="py-2 px-5 hidden lg:flex"
               bgColor="bg-[#5a7c4e]"
-              textColor="text-[#ffffff]"
+              textColor="text-[#000000]"
               hoverBgColor="bg-[#ac832e]"
               hoverTextColor="group-hover:text-[#000000]"
               icon={buttonIcon2}
@@ -642,17 +640,17 @@ function PageHeader() {
               >
                 <div className="button-content w-19 h-19 rounded-full flex items-center justify-center relative p-2 text-[18px] leading-[1em]">
                   <div className="rounded-full w-full h-full flex items-center justify-center relative z-40">
-                    <div className="button-border absolute w-full h-full flex transition-all duration-500 [&>svg]:w-full [&>svg]:h-auto">
+                    <div className="button-border absolute w-full h-full flex [&>svg]:w-full [&>svg]:h-auto">
                       <ButtonBorder />
                     </div>
-                    <div className="button-text absolute w-full h-full flex p-2 transition-all duration-500">
+                    <div className="button-text absolute w-full h-full flex p-2">
                       <ButtonText />
                     </div>
                     <StartIcon />
                   </div>
                 </div>
-                <div className="button-bg absolute block top-0 left-0 w-full h-full rounded-full z-20 bg-[#E7D45E] transition-all duration-500"></div>
-                <div className="button-layer absolute block top-0 left-0 w-full h-full z-30 rounded-full bg-black transition-all duration-500"></div>
+                <div className="button-bg absolute block top-0 left-0 w-full h-full rounded-full z-20 bg-[#E7D45E]"></div>
+                <div className="button-layer absolute block top-0 left-0 w-full h-full z-30 rounded-full bg-black"></div>
               </Link>
             )}
           </div>

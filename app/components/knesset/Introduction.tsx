@@ -2,7 +2,7 @@ import ArrowLeft2 from "@/app/assets/icons/ArrowLeft2";
 import IntroductionBackground from "@/app/ui/IntroductionBackground";
 import parse from "html-react-parser";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { useAppState } from "../AppContext";
 
@@ -30,7 +30,6 @@ export default function Introduction(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
   const introData = (props.data as IntroData) || [];
-  const pathname = usePathname();
   const router = useRouter();
   const { isLoading, setIsLoading } = useAppState();
 
@@ -39,7 +38,7 @@ export default function Introduction(props: ChildProps) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);
@@ -96,10 +95,10 @@ export default function Introduction(props: ChildProps) {
                 onClick={handleLinkClick}
                 className="readmore-button text-[#AC832E] text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] flex items-center gap-x-2.5 relative z-30 flex-row-reverse hover:text-white group"
               >
-                <span className="text transition-all duration-300">
+                <span className="text transition-colors duration-300">
                   {introData.acf.read_more_button.text}
                 </span>
-                <span className="icon w-6 [&>svg>path]:fill-[#AC832E] [&>svg>path]:transition-all [&>svg>path]:duration-300 group-hover:[&>svg>path]:fill-white">
+                <span className="icon w-6 [&>svg>path]:fill-[#AC832E] [&>svg>path]:transition-colors [&>svg>path]:duration-300 group-hover:[&>svg>path]:fill-white">
                   <ArrowLeft2 />
                 </span>
               </a>

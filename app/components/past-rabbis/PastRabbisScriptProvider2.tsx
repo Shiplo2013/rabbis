@@ -49,11 +49,11 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   const panel = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
   // Combined Scrolling
-  const [postPerPage, setPostPerPage] = useState(100);
-  const [postsPerLoad, setPostsPerLoad] = useState(5);
-  const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(0);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  //const [postPerPage, setPostPerPage] = useState(100);
+  //const [postsPerLoad, setPostsPerLoad] = useState(5);
+  // const [postLoadCount, setPostLoadCount] = useState(1);
+  // const [postLoadLimit, setPostLoadLimit] = useState(0);
+  // const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [verticalPosts, setVerticalPosts] = useState<any | null>(null);
   const [normalPosts, setNormalPosts] = useState<any[]>([]);
 
@@ -70,12 +70,12 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   // Set post data
   useEffect(() => {
     if (!rabbisPosts) return;
-    setPostLoadLimit(
-      Math.ceil(Number(rabbisPosts?.length || 0) / postsPerLoad),
-    );
+    // setPostLoadLimit(
+    //   Math.ceil(Number(rabbisPosts?.length || 0) / postsPerLoad),
+    // );
     setVerticalPosts(rabbisPosts?.slice(0, 1) || []);
     setNormalPosts(rabbisPosts?.slice(1, rabbisPosts?.length) || []);
-    setIsLoadingMore(false);
+    //setIsLoadingMore(false);
   }, [rabbisPosts]);
 
   // Page Data Loaded

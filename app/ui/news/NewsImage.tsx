@@ -24,7 +24,7 @@ export default function NewsImage({
         <div className="animate-pulse w-full h-full bg-gray-600"></div>
       )}
       <Image
-        className={`w-full h-full object-cover object-center transition-all duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
+        className={`w-full h-full object-cover object-center transition-opacity duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
         onLoad={() => setLoading(false)}
         src={imageSrc}
         width={item.image?.width}

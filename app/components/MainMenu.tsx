@@ -2,7 +2,7 @@
 
 import parse from "html-react-parser";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import CloseIcon from "../assets/icons/CloseIcon";
 import Search from "../assets/icons/Search";
@@ -17,7 +17,6 @@ interface MainMenuProps {
 
 export default function MainMenu() {
   const router = useRouter();
-  const pathname = usePathname();
   const {
     isLoading,
     setIsLoading,
@@ -158,7 +157,7 @@ export default function MainMenu() {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       activeHamburgerMenu && setActiveHamburgerMenu(!activeHamburgerMenu);
       setIsLoading(true);
       window.scrollTo(0, 0);

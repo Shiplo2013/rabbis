@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CreateShimmerDataUrl from "../CreateShimmerDataUrl";
 
 export default function CommunityGalleryImage({ item }: { item: any }) {
   const [loading, setLoading] = useState(true);
-  const [retryCount, setRetryCount] = useState(0);
+  const retryCount = useRef(0);
   const maxRetries = 3;
   const baseImageSrc =
     item?.sizes?.medium_large ||
@@ -36,10 +36,10 @@ export default function CommunityGalleryImage({ item }: { item: any }) {
       }
     }
 
-    if (retryCount < maxRetries) {
+    if (retryCount.current < maxRetries) {
       // Delay slightly before retrying to give a flapping network time to recover
       setTimeout(() => {
-        setRetryCount((prev) => prev + 1);
+        retryCount.current += 1;
         if (typeof imageSrc === "string") {
           setImageSrc(addRetryQuery(imageSrc));
         }
@@ -56,7 +56,7 @@ export default function CommunityGalleryImage({ item }: { item: any }) {
         <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
       )}
       <Image
-        className={`w-full h-full object-cover object-center transition-all duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
+        className={`w-full h-full object-cover object-center transition-opacity duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
         onLoad={() => setLoading(false)}
         onError={handleError}
         src={imageSrc}

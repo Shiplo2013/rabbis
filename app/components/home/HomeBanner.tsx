@@ -72,6 +72,8 @@ export default function HomeBanner(props: ChildProps) {
       onClick={() => setIsPlaying(!isPlaying)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      aria-label="Banner Video"
+      role="button"
       className={`${props.extraClass} home-banner overflow-hidden relative`}
     >
       <div className="banner-background-wrapper absolute top-0 left-0 w-full h-full z-10">

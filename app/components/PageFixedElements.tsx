@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -47,13 +47,30 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
 }
 
+const subscribeToDesktopViewport = (callback: () => void) => {
+  const mediaQuery = window.matchMedia("(min-width: 768px)");
+  mediaQuery.addEventListener("change", callback);
+  return () => mediaQuery.removeEventListener("change", callback);
+};
+
+const getDesktopViewportSnapshot = () =>
+  window.matchMedia("(min-width: 768px)").matches;
+
+const getServerDesktopViewportSnapshot = () => false;
+
 export default function PageFixedElements() {
+  const isDesktopViewport = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    getDesktopViewportSnapshot,
+    getServerDesktopViewportSnapshot,
+  );
+
   // Use Refs
   const pathname = usePathname();
   const audio = useRef<HTMLAudioElement>(null);
   const wishButton = useRef<HTMLDivElement>(null);
   const moveButton = useRef<HTMLDivElement>(null);
-  const audioButton = useRef<HTMLDivElement>(null);
+  const audioButton = useRef<HTMLButtonElement>(null);
   const scrollbarRef = useRef<HTMLDivElement>(null);
   const [loadingImage, setLoadingImage] = useState(true);
   const [activeCategory, setActiveCategory] = useState(0);
@@ -80,7 +97,6 @@ export default function PageFixedElements() {
     zatzelPosts,
     setZatzelPosts,
     setZatzelSearchedData,
-    setZatzelSelectedDate,
     cycleActiveCategory,
     setCycleActiveCategory,
     cycleCategories,
@@ -388,7 +404,9 @@ export default function PageFixedElements() {
       {/* End of Wish Button */}
       {/* Audio Button */}
       {pathname === "/" && (
-        <div
+        <button
+          type="button"
+          aria-label="Play/Pause Video"
           id="audio-button"
           ref={audioButton}
           onClick={() => {
@@ -408,7 +426,7 @@ export default function PageFixedElements() {
               />
             ))}
           </div>
-        </div>
+        </button>
       )}
       {/* End of Audio Button */}
 
@@ -565,7 +583,6 @@ export default function PageFixedElements() {
             <div className="sheet-sidebar p-6 w-full lg:w-70 lg:min-w-70 h-full will-change-transform relative z-20 flex items-center">
               <div className="sheet-sidebar-wrapper">
                 <ZatzelSidebar
-                  setSelectedDate={setZatzelSelectedDate}
                   setSearchedData={setZatzelSearchedData}
                   setZatzelPosts={setZatzelPosts}
                   allPosts={zatzelPosts}
@@ -1126,10 +1143,17 @@ export default function PageFixedElements() {
                     return (
                       <SwiperSlide data-id={item?.id} key={item?.id}>
                         <div className="flex flex-col items-center h-full justify-center gap-y-5 px-[5vw]">
-                          <div className="cycle-image w-full max-w-5xl h-auto flex items-center justify-center [&>figure]:w-full [&>figure>div>img]:w-full">
+                          <div
+                            className="cycle-image w-full max-w-5xl h-auto flex items-center justify-center [&>figure]:w-full [&>figure>div>img]:w-full"
+                            data-size={
+                              isDesktopViewport
+                                ? item?.acf?.image?.sizes?.large
+                                : item?.acf?.image?.sizes?.medium
+                            }
+                          >
                             <InnerImageZoom
                               src={
-                                window.innerWidth > 767
+                                isDesktopViewport
                                   ? item?.acf?.image?.sizes?.large
                                   : item?.acf?.image?.sizes?.medium
                               }

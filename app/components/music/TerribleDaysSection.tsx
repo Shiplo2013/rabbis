@@ -306,7 +306,7 @@ export default function TerribleDaysSection(props: ChildProps) {
                   className="music-album group flex flex-col gap-y-5 lg:gap-y-3 cursor-pointer max-w-1/3 lg:max-w-[12.5vw] w-full items-center justify-top"
                 >
                   <div className="icon w-20 sm:w-30 lg:w-[12.5vw] h-auto relative">
-                    <div className="icon-default w-full h-full relative group-hover:opacity-0 group-hover:scale-90 transition-all duration-200 ease-in-out">
+                    <div className="icon-default w-full h-full relative group-hover:opacity-0 group-hover:scale-90 transition-[opacity,scale] duration-200 ease-in-out">
                       <Image
                         className="bg-image w-full object-cover object-center h-full"
                         src={AlbumIcon2.src || item?.album_icon?.url}
@@ -321,7 +321,7 @@ export default function TerribleDaysSection(props: ChildProps) {
                         alt="Turntable"
                       />
                     </div>
-                    <div className="icon-hover w-full h-full absolute top-0 left-0 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-200 ease-in-out">
+                    <div className="icon-hover w-full h-full absolute top-0 left-0 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-[opacity,scale] duration-200 ease-in-out">
                       <Image
                         className="bg-image w-full object-cover object-center h-full"
                         src={AlbumIcon1.src || item?.album_icon?.url}
