@@ -17,7 +17,10 @@ if (typeof window !== "undefined") {
 export default function PastRabbisScriptProvider({ data }: { data: any }) {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -40,7 +43,6 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setRabbisPageData(data);
