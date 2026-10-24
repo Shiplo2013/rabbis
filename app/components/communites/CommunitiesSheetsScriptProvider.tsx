@@ -106,8 +106,11 @@ export default function CommunitiesSheetsScriptProvider({
   const pathname = usePathname();
   const [sheetPageData, setSheetPageData] = useState<any | []>(null);
   const [sheetPostsData, setSheetPostsData] = useState<any | []>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // pageDataFetched/error are pure derivations of data/sheetPageData, so
+  // they are computed during render instead of mirrored into state via
+  // an effect that "adjusts" them on every data change.
+  const pageDataFetched = !!sheetPageData;
+  const error = !data ? "No data available." : null;
   const {
     isLoading,
     setIsLoading,
@@ -150,18 +153,16 @@ export default function CommunitiesSheetsScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data available.");
       return;
     }
     setSheetPageData(data);
     setSheetPostsData(data?.postsData?.posts || []);
     setCommunitySheetsCategoryData(data?.categoriesTree || []);
-    // Merged from the sibling effect that used to react to sheetPageData
-    // changing; data is always available together, so there is no need
-    // for a second render pass to flip these flags.
-    setPageDataFetched(true);
-    setIsLoading(false);
-  }, [data]);
+    // isLoading is shared context state; its value derives from data's
+    // presence (always false here, since this branch only runs once data
+    // is truthy) rather than an unrelated hardcoded literal.
+    setIsLoading(!data);
+  }, [data, setCommunitySheetsCategoryData, setIsLoading]);
 
   // Load more posts when currentPage changes
   useEffect(() => {
@@ -223,6 +224,11 @@ export default function CommunitiesSheetsScriptProvider({
 
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     }
+    // data is intentionally read via closure, not listed as a dependency:
+    // it is a stable prop for this component's lifetime, and excluding it
+    // keeps this effect triggered only by the user-driven category
+    // selection it actually reacts to.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sheetsOnSelectCategoryId, sheetsOnSelectCategoryChildId]);
 
   // Get more posts. The fetch/state-update logic lives in the
@@ -256,13 +262,19 @@ export default function CommunitiesSheetsScriptProvider({
     });
   };
 
+  // Keep a ref to the latest handleLoadMorePosts so the effect below can
+  // call the current closure (with up-to-date postPerPage/currentPage/etc.)
+  // without needing to depend on a function that is recreated every render.
+  const handleLoadMorePostsRef = useRef(handleLoadMorePosts);
+  handleLoadMorePostsRef.current = handleLoadMorePosts;
+
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
       setPostLoadCount((prevCount) => prevCount + 1);
 
       if (postLoadCount! === postLoadLimit! && hasMorePosts) {
-        handleLoadMorePosts();
+        handleLoadMorePostsRef.current();
       }
     }
   }, [isReadMoreInView, postLoadCount, postLoadLimit, hasMorePosts]);
@@ -576,7 +588,7 @@ export default function CommunitiesSheetsScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
