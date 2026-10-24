@@ -18,7 +18,10 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState(100);
   const [sectionWidth, setSectionWidth] = useState(50);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
   // Router Path
@@ -38,7 +41,6 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setTestimonialsPageData(data);
