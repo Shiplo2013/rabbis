@@ -69,7 +69,7 @@ export default function YeshivaRabbisScriptProvider({
     // this flag.
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [data, postsData]);
+  }, [data, postsData, setIsLoading]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -370,7 +370,7 @@ export default function YeshivaRabbisScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
