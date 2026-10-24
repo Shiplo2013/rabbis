@@ -43,7 +43,10 @@ export default function CommunitiesSlugScriptProvider({
   const params = useParams();
   const slug = params?.slug as string;
   const [post, setPost] = useState<CommunityPost | null>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  // pageDataFetched is a pure derivation of post's presence, so it is
+  // computed during render instead of mirrored into state via an effect
+  // that "adjusts" it on every data change.
+  const pageDataFetched = !!post;
   const {
     isLoading,
     setIsLoading,
@@ -74,7 +77,6 @@ export default function CommunitiesSlugScriptProvider({
     // Merged from the sibling effect that used to react to `post` changing;
     // post is always available together with data, so there is no need
     // for a second render pass to derive these from it.
-    setPageDataFetched(true);
     setCommunityTabs([
       {
         title: "תולדות הקהילה",
