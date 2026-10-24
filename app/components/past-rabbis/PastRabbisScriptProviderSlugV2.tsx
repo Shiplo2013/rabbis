@@ -177,7 +177,7 @@ export default function PastRabbisScriptProviderSlugV2({
     if (data.allPostsData && data.allPostsData.length > 0) {
       setAllRabbisPosts(data.allPostsData);
     }
-  }, [data]);
+  }, [data, setCurrentRabbisPost, setAllRabbisPosts]);
 
   // Page Data Loade
   useEffect(() => {
@@ -374,7 +374,7 @@ export default function PastRabbisScriptProviderSlugV2({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   useGSAP(() => {
     // Set Timeline
