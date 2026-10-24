@@ -582,7 +582,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
     return () => {
       //document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
