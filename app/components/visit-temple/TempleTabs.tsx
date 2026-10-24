@@ -78,9 +78,17 @@ export default function TempleTabs(props: ChildProps) {
   const { isLoading, setIsLoading, templeActiveTab, setTempleActiveTab } =
     useAppState();
 
-  const videos = Array.isArray(tabsData[templeActiveTab]?.videos)
-    ? tabsData[templeActiveTab].videos
-    : [];
+  // Memoized so videos keeps a stable reference across renders when the
+  // active tab's videos are unchanged, instead of a new [] fallback array
+  // being created every render (which would defeat the downstream
+  // useMemos below).
+  const videos = useMemo(
+    () =>
+      Array.isArray(tabsData[templeActiveTab]?.videos)
+        ? tabsData[templeActiveTab].videos
+        : [],
+    [tabsData, templeActiveTab],
+  );
   const videoSources = useMemo(
     () => videos.map((item: any) => item?.video).filter(Boolean),
     [videos],
