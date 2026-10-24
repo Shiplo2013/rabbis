@@ -25,7 +25,10 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
   // Container Ref
   const main = useRef<HTMLDivElement>(null);
   const [pageData, setPageData] = useState<PageData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const [pageDataFetched, setPageDataFetched] = useState(false);
   // Page Data
   const sectionData = {
@@ -53,7 +56,6 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setPageData(data);
