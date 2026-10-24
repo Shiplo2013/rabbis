@@ -198,7 +198,7 @@ export default function KnessetScriptProvider({
   }, [knessetPageData, animationPlayed]);
 
   // Get more posts
-  const LoadMorePosts = () => {
+  const LoadMorePosts = async () => {
     if (
       isLoadingMore ||
       !hasMorePosts.current ||
@@ -207,49 +207,45 @@ export default function KnessetScriptProvider({
       return;
     }
     setIsLoadingMore(true);
-    let isActive = true;
     const controller = new AbortController();
+    let isMounted = true;
 
-    const getPostsData = async () => {
-      try {
-        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=${postPerPage}&page=${currentPage.current + 1}`;
+    try {
+      const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=${postPerPage}&page=${currentPage.current + 1}`;
 
-        const response = await wpFetch(postsUrl, {
-          cache: "no-store",
-          signal: controller.signal,
-        });
+      const response = await wpFetch(postsUrl, {
+        cache: "no-store",
+        signal: controller.signal,
+      });
 
-        if (!response.ok) {
-          throw new Error("Failed to load knesset of customs page data.");
-        }
-        const data = await response.json();
-
-        if (isActive) {
-          if (data?.posts?.length < postPerPage) {
-            hasMorePosts.current = false;
-          }
-
-          setKnessetPostsData((prevPosts: any) => [
-            ...prevPosts,
-            ...(data?.posts || []),
-          ]);
-        }
-      } catch (error) {
-        if (isActive && !controller.signal.aborted) {
-          console.error(error);
-        }
-      } finally {
-        if (isActive) {
-          setIsLoadingMore(false);
-          currentPage.current += 1;
-        }
+      if (!response.ok) {
+        throw new Error("Failed to load knesset of customs page data.");
       }
-    };
+      const data = await response.json();
 
-    getPostsData();
+      if (isMounted) {
+        if (data?.posts?.length < postPerPage) {
+          hasMorePosts.current = false;
+        }
+
+        setKnessetPostsData((prevPosts: any) => [
+          ...prevPosts,
+          ...(data?.posts || []),
+        ]);
+        currentPage.current += 1;
+      }
+    } catch (error) {
+      if (isMounted && !controller.signal.aborted) {
+        console.error(error);
+      }
+    } finally {
+      if (isMounted) {
+        setIsLoadingMore(false);
+      }
+    }
 
     return () => {
-      isActive = false;
+      isMounted = false;
       controller.abort();
     };
   };
@@ -257,14 +253,13 @@ export default function KnessetScriptProvider({
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
-      setIsLoadingMore(true);
       setPostLoadCount((currenValue) => currenValue + 1);
 
       if (postLoadCount! === postLoadLimit! && hasMorePosts.current) {
-        return LoadMorePosts();
+        LoadMorePosts();
       }
     }
-  }, [isReadMoreInView]);
+  }, [isReadMoreInView, postLoadCount, postLoadLimit]);
 
   // Page Section Animation
   useGSAP(() => {
