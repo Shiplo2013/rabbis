@@ -184,7 +184,12 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [post, allPosts, animationPlayed]);
+    // post/allPosts have a single producer (the data effect above) and,
+    // once set, never revert, so they are read here via closure rather
+    // than listed as dependencies; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);
@@ -711,7 +716,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[330vw] lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[330vw] lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
