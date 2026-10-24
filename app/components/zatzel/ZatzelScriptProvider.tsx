@@ -64,7 +64,10 @@ export default function ZatzelScriptProvider({
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState<number>(200);
   const [sectionWidth, setSectionWidth] = useState<number>(100);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided to ZatzelScriptProvider." : null;
   // Router Path
   const pathname = usePathname();
 
@@ -127,7 +130,6 @@ export default function ZatzelScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided to ZatzelScriptProvider.");
       return;
     }
     setZatzelPageData({
@@ -141,9 +143,6 @@ export default function ZatzelScriptProvider({
     setAllPosts({
       sections: postData.length ? postData : defaultZatzelPageData.sections,
     });
-    // allPosts is replaced above; reset the load-more spinner here instead
-    // of via a sibling effect reacting to that state change.
-    setIsLoadingMore(false);
   }, [data, postData, setZatzelPosts]);
 
   // Set Page Data Fetched
@@ -630,11 +629,7 @@ export default function ZatzelScriptProvider({
 
   // Filter Posts by Selected Date
   useEffect(() => {
-    // allPosts is replaced below; reset the load-more spinner here instead
-    // of via a sibling effect reacting to that state change.
-    setIsLoadingMore(false);
     if (zatzelSelectedDate !== null) {
-      let isMounted = true;
       const filteredSections = postData.map((section: any) => {
         const filteredContent = section.sectionContent.filter(
           (post: { yearOfDeath: string }) => {
@@ -649,22 +644,14 @@ export default function ZatzelScriptProvider({
           sectionContent: filteredContent,
         };
       });
-      if (isMounted) {
-        if (
-          filteredSections.length > 0 &&
-          filteredSections.some(
-            (section: any) => section.sectionContent.length > 0,
-          )
-        ) {
-          setAllPosts({ sections: filteredSections });
-        } else {
-          //setNoPostsFound(true);
-          setAllPosts({ sections: [] });
-        }
-      }
+      const hasMatches =
+        filteredSections.length > 0 &&
+        filteredSections.some(
+          (section: any) => section.sectionContent.length > 0,
+        );
+      setAllPosts({ sections: hasMatches ? filteredSections : [] });
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     } else {
-      //setNoPostsFound(false);
       setAllPosts({
         sections: postData.length ? postData : defaultZatzelPageData.sections,
       });
@@ -672,13 +659,9 @@ export default function ZatzelScriptProvider({
     }
   }, [zatzelSelectedDate, postData]);
 
-  // Filter Posts by Selected Date
+  // Filter Posts by Searched Data
   useEffect(() => {
-    // allPosts is replaced below; reset the load-more spinner here instead
-    // of via a sibling effect reacting to that state change.
-    setIsLoadingMore(false);
     if (zatzelSearchedData !== null) {
-      let isMounted = true;
       const filteredSections = postData.map((section: any) => {
         const filteredContent = section.sectionContent.filter(
           (post: { title: string }) => {
@@ -690,22 +673,14 @@ export default function ZatzelScriptProvider({
           sectionContent: filteredContent,
         };
       });
-      if (isMounted) {
-        if (
-          filteredSections.length > 0 &&
-          filteredSections.some(
-            (section: any) => section.sectionContent.length > 0,
-          )
-        ) {
-          setAllPosts({ sections: filteredSections });
-        } else {
-          //setNoPostsFound(true);
-          setAllPosts({ sections: [] });
-        }
-      }
+      const hasMatches =
+        filteredSections.length > 0 &&
+        filteredSections.some(
+          (section: any) => section.sectionContent.length > 0,
+        );
+      setAllPosts({ sections: hasMatches ? filteredSections : [] });
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     } else {
-      //setNoPostsFound(false);
       setAllPosts({
         sections: postData.length ? postData : defaultZatzelPageData.sections,
       });
