@@ -68,9 +68,6 @@ export default function ZatzelScriptProvider({
   //const [postPerPage, setPostPerPage] = useState(100);
   const postsPerLoad = useRef(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(() =>
-    Math.ceil(Number(postData?.length || 0) / postsPerLoad.current),
-  );
   // const [isPostLoaded, setIsPostLoaded] = useState(false);
   // const [noPostsFound, setNoPostsFound] = useState(false);
   // const [currentPage, setCurrentPage] = useState(1);
@@ -81,11 +78,28 @@ export default function ZatzelScriptProvider({
   //   Number(postData?.[0]?.totalPages ?? 1),
   // );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [verticalPosts, setVerticalPosts] = useState<{
+  // postLoadLimit/verticalPosts/normalPosts are pure derivations of
+  // allPosts/postLoadCount; computed during render instead of mirrored
+  // into state via an effect (avoids an avoidable render chain every time
+  // allPosts changes).
+  const postLoadLimit = Math.ceil(
+    Number(allPosts?.sections?.[0]?.sectionContent?.length || 0) /
+      postsPerLoad.current,
+  );
+  const verticalPosts: {
     sectionTitle: string;
     sectionContent: ZatzelPost[];
-  } | null>(null);
-  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  } | null = allPosts?.sections?.[0]
+    ? {
+        sectionTitle: allPosts.sections[0].sectionTitle,
+        sectionContent: allPosts.sections[0].sectionContent?.slice(0, 4) || [],
+      }
+    : null;
+  const normalPosts =
+    allPosts?.sections?.[0]?.sectionContent?.slice(
+      4,
+      postsPerLoad.current * postLoadCount,
+    ) || [];
   const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
     threshold: 0,
     triggerOnce: false,
@@ -125,30 +139,10 @@ export default function ZatzelScriptProvider({
     setAllPosts({
       sections: postData.length ? postData : defaultZatzelPageData.sections,
     });
-  }, [data, postData]);
-
-  // Set Posts data when zatzelPosts changes
-  useEffect(() => {
-    if (!allPosts) return;
-    setPostLoadLimit(
-      Math.ceil(
-        Number(allPosts?.sections?.[0]?.sectionContent?.length || 0) /
-          postsPerLoad.current,
-      ),
-    );
-    setVerticalPosts({
-      sectionTitle: allPosts?.sections?.[0]?.sectionTitle,
-      sectionContent:
-        allPosts?.sections?.[0]?.sectionContent?.slice(0, 4) || [],
-    });
-    setNormalPosts(
-      allPosts?.sections?.[0]?.sectionContent?.slice(
-        4,
-        postsPerLoad.current * postLoadCount,
-      ) || [],
-    );
+    // allPosts is replaced above; reset the load-more spinner here instead
+    // of via a sibling effect reacting to that state change.
     setIsLoadingMore(false);
-  }, [allPosts, postLoadCount]);
+  }, [data, postData]);
 
   // Set Page Data Fetched
   useEffect(() => {
@@ -156,7 +150,12 @@ export default function ZatzelScriptProvider({
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [zatzelPageData, zatzelPosts, animationPlayed]);
+    // zatzelPageData/zatzelPosts have a single producer (the data effect
+    // above) and, once set, never revert, so this effect is not guarded on
+    // them; re-running it only when animationPlayed changes avoids an
+    // avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -456,8 +455,13 @@ export default function ZatzelScriptProvider({
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
-      setIsLoadingMore(true);
       setPostLoadCount((currenValue) => currenValue + 1);
+      // normalPosts is derived from allPosts/postLoadCount directly during
+      // render, so the next batch of posts is already visible in the same
+      // render pass; there is no actual async loading period here, so
+      // resolve the loading-more indicator immediately instead of relying
+      // on the removed mirror effect to flip it back on a later render.
+      setIsLoadingMore(false);
     }
   }, [isReadMoreInView]);
 
@@ -624,6 +628,9 @@ export default function ZatzelScriptProvider({
 
   // Filter Posts by Selected Date
   useEffect(() => {
+    // allPosts is replaced below; reset the load-more spinner here instead
+    // of via a sibling effect reacting to that state change.
+    setIsLoadingMore(false);
     if (zatzelSelectedDate !== null) {
       let isMounted = true;
       const filteredSections = postData.map((section: any) => {
@@ -665,6 +672,9 @@ export default function ZatzelScriptProvider({
 
   // Filter Posts by Selected Date
   useEffect(() => {
+    // allPosts is replaced below; reset the load-more spinner here instead
+    // of via a sibling effect reacting to that state change.
+    setIsLoadingMore(false);
     if (zatzelSearchedData !== null) {
       let isMounted = true;
       const filteredSections = postData.map((section: any) => {
