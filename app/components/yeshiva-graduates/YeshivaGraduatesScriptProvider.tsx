@@ -51,16 +51,12 @@ export default function YeshivaGraduatesScriptProvider({
       return;
     }
     setPageData(data);
-  }, [data]);
-
-  useEffect(() => {
-    if (!pageData?.acf) {
-      return;
-    }
-    // Set Page Data Fetched
+    // Merged from the sibling effect that used to react to pageData
+    // changing; data is always available together, so there is no need
+    // for a second render pass to flip this flag.
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [pageData]);
+  }, [data]);
 
   // // Adjust Section Widths based on window size
   useEffect(() => {
