@@ -146,7 +146,7 @@ export default function PageFixedElements() {
       (item: any) => item.id === zatzelPopupIndex?.postIndex,
     );
     setZatzelCurrentPost(currentPost[0]);
-  }, [zatzelPopupIndex]);
+  }, [zatzelPopupIndex, zatzelPosts]);
 
   // Cycle of Pictures
 
