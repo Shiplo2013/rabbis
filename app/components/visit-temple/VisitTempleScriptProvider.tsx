@@ -199,7 +199,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
     setContainerWidth(minSectionWidth + 100);
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [data]);
+  }, [data, templeTabData, setTempleTabData, activeTab, setIsLoading]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -466,7 +466,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
