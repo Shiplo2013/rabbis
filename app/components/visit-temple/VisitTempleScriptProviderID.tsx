@@ -182,7 +182,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
         })) || [],
       );
     setTempleActiveTab(id ? parseInt(id) : 0);
-  }, [data]);
+  }, [data, templeTabData, setTempleTabData, setTempleActiveTab, id]);
 
   useEffect(() => {
     if (!visitTempleData?.acf) {
@@ -417,7 +417,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
