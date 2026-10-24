@@ -71,28 +71,25 @@ export default function CommunitiesSlugScriptProvider({
       return;
     }
     setPost(data);
-  }, [data]);
-
-  useEffect(() => {
-    if (!post) {
-      return;
-    }
+    // Merged from the sibling effect that used to react to `post` changing;
+    // post is always available together with data, so there is no need
+    // for a second render pass to derive these from it.
     setPageDataFetched(true);
     setCommunityTabs([
       {
         title: "תולדות הקהילה",
-        content: post?.acf?.community_events,
+        content: data?.acf?.community_events,
       },
       {
         title: "אבני דרך",
-        content: post?.acf?.community_news,
+        content: data?.acf?.community_news,
       },
       {
         title: "עדכונים",
-        content: post?.acf?.community_updates,
+        content: data?.acf?.community_updates,
       },
     ]);
-  }, [post]);
+  }, [data]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
