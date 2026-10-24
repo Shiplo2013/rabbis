@@ -204,7 +204,7 @@ export default function HistoryScriptProvider({
     // there is no need for a second render pass to flip these flags.
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [data]);
+  }, [data, setIsLoading]);
 
   // Page Selectors
   const main = useRef<HTMLDivElement>(null);
@@ -920,7 +920,15 @@ export default function HistoryScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [
+    isAllAnimationComplete,
+    timelinePeriod1,
+    timelinePeriod2,
+    timelinePeriod3,
+    timelinePeriod4,
+    timelinePeriod5,
+    timelinePeriod6,
+  ]);
 
   // Header Left Toggle on Scroll
   useEffect(() => {
