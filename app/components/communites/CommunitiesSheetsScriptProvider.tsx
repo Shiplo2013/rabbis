@@ -120,7 +120,6 @@ export default function CommunitiesSheetsScriptProvider({
   const [postPerPage, setPostPerPage] = useState(100);
   const [postsPerLoad, setPostsPerLoad] = useState(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(0);
   const [containerWidth, setContainerWidth] = useState(200);
   const [sectionWidth, setSectionWidth] = useState(100);
   const [activeCategory, setActiveCategory] = useState(0);
@@ -134,8 +133,14 @@ export default function CommunitiesSheetsScriptProvider({
     Number(data?.postsData?.totalPage ?? 1),
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
-  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  // Derived from sheetPostsData/postLoadCount; computed during render
+  // instead of mirrored into state via an effect (avoids an avoidable
+  // render chain every time sheetPostsData changes).
+  const postLoadLimit = Math.ceil(
+    Number(sheetPostsData?.length || 0) / postsPerLoad,
+  );
+  const verticalPosts = sheetPostsData?.slice(0, 4) || [];
+  const normalPosts = sheetPostsData?.slice(4, postsPerLoad * postLoadCount) || [];
   const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
     threshold: 0,
     triggerOnce: false,
@@ -151,25 +156,18 @@ export default function CommunitiesSheetsScriptProvider({
     setSheetPageData(data);
     setSheetPostsData(data?.postsData?.posts || []);
     setCommunitySheetsCategoryData(data?.categoriesTree || []);
+    // Merged from the sibling effect that used to react to sheetPageData
+    // changing; data is always available together, so there is no need
+    // for a second render pass to flip these flags.
+    setPageDataFetched(true);
+    setIsLoading(false);
   }, [data]);
-
-  // Set Posts Data when sheetPostsData changes
-  useEffect(() => {
-    if (!sheetPostsData) {
-      return;
-    }
-    setPostLoadLimit(
-      Math.ceil(Number(sheetPostsData?.length || 0) / postsPerLoad),
-    );
-    setVerticalPosts(sheetPostsData?.slice(0, 4) || []);
-    setNormalPosts(
-      sheetPostsData?.slice(4, postsPerLoad * postLoadCount) || [],
-    );
-    setIsLoadingMore(false);
-  }, [sheetPostsData, postLoadCount]);
 
   // Load more posts when currentPage changes
   useEffect(() => {
+    // sheetPostsData is replaced below; reset the load-more spinner here
+    // instead of via a sibling effect reacting to that state change.
+    setIsLoadingMore(false);
     if (sheetsOnSelectCategoryId === 0 && sheetsOnSelectCategoryChildId === 0) {
       setSheetPostsData(data?.postsData?.posts || []);
     }
@@ -268,15 +266,6 @@ export default function CommunitiesSheetsScriptProvider({
       }
     }
   }, [isReadMoreInView, postLoadCount, postLoadLimit, hasMorePosts]);
-
-  // Update section width on window resize
-  useEffect(() => {
-    if (!sheetPageData) {
-      return;
-    }
-    setPageDataFetched(true);
-    setIsLoading(false);
-  }, [sheetPageData]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
