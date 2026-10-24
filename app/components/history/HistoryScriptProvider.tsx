@@ -70,8 +70,11 @@ export default function HistoryScriptProvider({
   // Router Path
   const pathname = usePathname();
   const [chroniclesPageData, setChroniclesPageData] = useState<any | []>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // pageDataFetched/error are pure derivations of data/chroniclesPageData,
+  // so they are computed during render instead of mirrored into state via
+  // an effect that "adjusts" them on every data change.
+  const pageDataFetched = !!chroniclesPageData;
+  const error = !data ? "No data provided to History." : null;
   const [rabbisPostsData1, setRabbisPostsData1] = useState<any | []>([]);
   const [rabbisPostsData2, setRabbisPostsData2] = useState<any | []>([]);
   const [rabbisPostsData3, setRabbisPostsData3] = useState<any | []>([]);
@@ -95,7 +98,6 @@ export default function HistoryScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided to History.");
       return;
     }
     // let isMounted = true;
@@ -199,11 +201,10 @@ export default function HistoryScriptProvider({
     setRabbisPostsData3(data.rabbisData[2]);
     setRabbisPostsData4(data.rabbisData[3]);
     setRabbisPostsData5(data.rabbisData[4]);
-    // Merged from the sibling effect that used to react to
-    // chroniclesPageData changing; data is always available together, so
-    // there is no need for a second render pass to flip these flags.
-    setPageDataFetched(true);
-    setIsLoading(false);
+    // isLoading is shared context state; its value derives from data's
+    // presence (always false here, since this branch only runs once data
+    // is truthy) rather than an unrelated hardcoded literal.
+    setIsLoading(!data);
   }, [data, setIsLoading]);
 
   // Page Selectors
