@@ -188,7 +188,12 @@ export default function PastRabbisScriptProviderSlugV2({
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [post, allPosts, animationPlayed]);
+    // post/allPosts have a single producer (the data effect above) and,
+    // once set, never revert, so they are read here via closure rather
+    // than listed as dependencies; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);
