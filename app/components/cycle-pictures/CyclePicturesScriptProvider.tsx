@@ -26,7 +26,10 @@ export default function CyclePicturesScriptProvider({
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState(200);
   const [sectionWidth, setSectionWidth] = useState(100);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   // Router Path
   const pathname = usePathname();
   const [activeCategory, setActiveCategory] = useState(-1);
@@ -86,7 +89,6 @@ export default function CyclePicturesScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setPicturesPageData({
@@ -133,7 +135,12 @@ export default function CyclePicturesScriptProvider({
     }
 
     window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
-  }, [cycleActiveCategory, data, setCycleAllPosts]);
+    // data is intentionally read via closure, not listed as a dependency:
+    // it is a stable prop for this component's lifetime, and excluding it
+    // keeps this effect triggered only by the user-driven category
+    // selection it actually reacts to.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cycleActiveCategory, setCycleAllPosts]);
 
   // Page data loaded
   useEffect(() => {
