@@ -434,7 +434,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
@@ -517,7 +517,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
       setRabbisPosts(rabbisPageData?.posts);
       window.scrollTo({ top: window.innerWidth * 1.8, behavior: "smooth" });
     }
-  }, [pastRabbisSearchQuery]);
+  }, [pastRabbisSearchQuery, rabbisPageData]);
 
   // Handle Link Click
   const handleLinkClick = (
