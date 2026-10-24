@@ -55,7 +55,12 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [rabbisPageData, animationPlayed]);
+    // rabbisPageData has a single producer (the data effect above) and,
+    // once set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   useEffect(() => {
     if (!rabbisPageData?.pageData || !rabbisPageData?.posts) {
@@ -448,7 +453,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
