@@ -63,7 +63,7 @@ export default function CommunitiesSlugScriptProvider({
       title: data?.title?.rendered,
       subtitle: data?.acf?.subtitle,
     });
-  }, [pathname]);
+  }, [pathname, data, setIsLoading, setCurrentCommunitiesPost]);
 
   // Get Page Data From backend
   useEffect(() => {
