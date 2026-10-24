@@ -56,7 +56,7 @@ export default function YeshivaGraduatesScriptProvider({
     // for a second render pass to flip this flag.
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [data]);
+  }, [data, setIsLoading]);
 
   // // Adjust Section Widths based on window size
   useEffect(() => {
@@ -549,7 +549,7 @@ export default function YeshivaGraduatesScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
