@@ -23,6 +23,23 @@ interface ZatzelPost {
   id: number;
 }
 
+// Default/fallback data: a static constant with no dependency on props or
+// state, so it is hoisted to module scope instead of being recreated (and
+// needing to be listed as an effect dependency) on every render.
+const defaultZatzelPageData = {
+  introduction: {
+    title: "זכרון להולכים",
+    content:
+      "במשך מאה וחמישים שנות ממלכת התורה, כנסת ישראל לדורותיה, הצמיחה הישיבה דורות של תלמידים אשר האירו את העולם בתורתם, בחכמתם ובמעשיהם הטובים. במדור זה נציב נר זיכרון לדמויות בוגרי הישיבה אשר הלכו לעולמם, למען תהיה דמותם חקוקה בליבנו. זכרם יעמוד לנגד עינינו כעמוד אש וענן, להאיר לנו את הדרך, להדריך את צעדינו ולהמשיך ולהנחיל את מורשת התורה לדורות הבאים.",
+  },
+  sections: [
+    {
+      sectionTitle: "זכרון להולכים",
+      sectionContent: [],
+    },
+  ],
+};
+
 export default function ZatzelScriptProvider({
   data,
   postData,
@@ -107,21 +124,6 @@ export default function ZatzelScriptProvider({
   // Popup Timeline
   const cardPopupTimeline = useRef<gsap.core.Timeline | null>(null);
 
-  // Default Data
-  const defaultZatzelPageData = {
-    introduction: {
-      title: "זכרון להולכים",
-      content:
-        "במשך מאה וחמישים שנות ממלכת התורה, כנסת ישראל לדורותיה, הצמיחה הישיבה דורות של תלמידים אשר האירו את העולם בתורתם, בחכמתם ובמעשיהם הטובים. במדור זה נציב נר זיכרון לדמויות בוגרי הישיבה אשר הלכו לעולמם, למען תהיה דמותם חקוקה בליבנו. זכרם יעמוד לנגד עינינו כעמוד אש וענן, להאיר לנו את הדרך, להדריך את צעדינו ולהמשיך ולהנחיל את מורשת התורה לדורות הבאים.",
-    },
-    sections: [
-      {
-        sectionTitle: "זכרון להולכים",
-        sectionContent: [],
-      },
-    ],
-  };
-
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
@@ -142,7 +144,7 @@ export default function ZatzelScriptProvider({
     // allPosts is replaced above; reset the load-more spinner here instead
     // of via a sibling effect reacting to that state change.
     setIsLoadingMore(false);
-  }, [data, postData]);
+  }, [data, postData, setZatzelPosts]);
 
   // Set Page Data Fetched
   useEffect(() => {
@@ -485,7 +487,7 @@ export default function ZatzelScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, zatzelVerticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
@@ -668,7 +670,7 @@ export default function ZatzelScriptProvider({
       });
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     }
-  }, [zatzelSelectedDate]);
+  }, [zatzelSelectedDate, postData]);
 
   // Filter Posts by Selected Date
   useEffect(() => {
@@ -709,7 +711,7 @@ export default function ZatzelScriptProvider({
       });
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     }
-  }, [zatzelSearchedData]);
+  }, [zatzelSearchedData, postData]);
 
   if (error) {
     return (
