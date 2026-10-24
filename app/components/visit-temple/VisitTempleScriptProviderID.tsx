@@ -134,10 +134,17 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
   const params = useParams();
   const id = params?.id as string;
   const [visitTempleData, setVisitTempleData] = useState<any>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  // pageDataFetched/error are pure derivations of data/visitTempleData, so
+  // they are computed during render instead of mirrored into state via
+  // an effect that "adjusts" them on every data change.
+  const pageDataFetched = !!visitTempleData;
   const [sectionWidth, setSectionWidth] = useState(200);
   const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
-  const [error, setError] = useState<string | null>(null);
+  const error = !data
+    ? "No data available."
+    : !data?.acf
+      ? "Invalid data format."
+      : null;
   const [tabGalleryData, setTabGalleryData] = useState<GalleryAnalysisByTab[]>(
     [],
   );
@@ -167,11 +174,9 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data available.");
       return;
     }
     if (!data?.acf) {
-      setError("Invalid data format.");
       return;
     }
     setVisitTempleData(data);
@@ -189,7 +194,6 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
       return;
     }
     if (animationPlayed) {
-      setPageDataFetched(true);
       setIsLoading(false);
     }
     // visitTempleData has a single producer (the data effect above) and,
