@@ -63,15 +63,13 @@ export default function YeshivaRabbisScriptProvider({
       return;
     }
     setRabbisPageData(postsData);
-  }, [data, postsData]);
-
-  useEffect(() => {
-    if (!rabbisPageData) {
-      return;
-    }
+    // Merged from the sibling effect that used to react to
+    // rabbisPageData changing; postsData/data are always available
+    // together, so there is no need for a second render pass to flip
+    // this flag.
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [rabbisPageData]);
+  }, [data, postsData]);
 
   // Page Section Animation
   useGSAP(() => {
