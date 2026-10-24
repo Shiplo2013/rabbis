@@ -154,52 +154,49 @@ export default function CommunitiesSheetsScriptProvider({
   }, [sheetsOnSelectCategoryId, sheetsOnSelectCategoryChildId]);
 
   // Get more posts
-  const LoadMorePosts = () => {
+  const LoadMorePosts = async () => {
     if (isLoadingMore || !hasMorePosts || currentPage >= totalPages) return;
+    
     setIsLoadingMore(true);
-    let isActive = true;
     const controller = new AbortController();
+    let isMounted = true;
 
-    const getPostsData = async () => {
-      try {
-        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf,magazines_cat&per_page=${postPerPage}&page=${currentPage + 1}`;
+    try {
+      const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf,magazines_cat&per_page=${postPerPage}&page=${currentPage + 1}`;
 
-        const response = await wpFetch(postsUrl, {
-          cache: "no-store",
-          signal: controller.signal,
-        });
+      const response = await wpFetch(postsUrl, {
+        cache: "no-store",
+        signal: controller.signal,
+      });
 
-        if (!response.ok) {
-          throw new Error("Failed to load community page data.");
-        }
-        const data = await response.json();
-
-        if (isActive) {
-          if (data?.posts?.length < postPerPage) {
-            setHasMorePosts(false);
-          }
-
-          setSheetPostsData((prevPosts: any) => [
-            ...prevPosts,
-            ...(data?.posts || []),
-          ]);
-        }
-      } catch (error) {
-        if (isActive && !controller.signal.aborted) {
-          console.error(error);
-        }
-      } finally {
-        if (isActive) {
-          setIsLoadingMore(false);
-          setCurrentPage((prevPage) => prevPage + 1);
-        }
+      if (!response.ok) {
+        throw new Error("Failed to load community page data.");
       }
-    };
+      const data = await response.json();
 
-    getPostsData();
+      if (isMounted) {
+        if (data?.posts?.length < postPerPage) {
+          setHasMorePosts(false);
+        }
+
+        setSheetPostsData((prevPosts: any) => [
+          ...prevPosts,
+          ...(data?.posts || []),
+        ]);
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
+    } catch (error) {
+      if (isMounted && !controller.signal.aborted) {
+        console.error(error);
+      }
+    } finally {
+      if (isMounted) {
+        setIsLoadingMore(false);
+      }
+    }
 
     return () => {
-      isActive = false;
+      isMounted = false;
       controller.abort();
     };
   };
@@ -207,14 +204,13 @@ export default function CommunitiesSheetsScriptProvider({
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
-      setIsLoadingMore(true);
       setPostLoadCount((prevCount) => prevCount + 1);
 
       if (postLoadCount! === postLoadLimit! && hasMorePosts) {
-        return LoadMorePosts();
+        LoadMorePosts();
       }
     }
-  }, [isReadMoreInView]);
+  }, [isReadMoreInView, postLoadCount, postLoadLimit, hasMorePosts]);
 
   // Update section width on window resize
   useEffect(() => {
