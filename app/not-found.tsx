@@ -68,7 +68,7 @@ export default function NotFound() {
         }
       });
     }
-  }, [pathname, animationPlayed]);
+  }, [pathname, animationPlayed, setIsLoading]);
 
   // Set Body Overflow Hidden
   useEffect(() => {
