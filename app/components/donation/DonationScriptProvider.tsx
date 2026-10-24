@@ -18,7 +18,10 @@ if (typeof window !== "undefined") {
 export default function DonationScriptProvider({ data }: { data: any }) {
   const [donationPageData, setDonationPageData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   // Router Path
   const pathname = usePathname();
 
@@ -38,7 +41,6 @@ export default function DonationScriptProvider({ data }: { data: any }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setDonationPageData(data);
@@ -624,7 +626,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[380vw] lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[380vw] lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
