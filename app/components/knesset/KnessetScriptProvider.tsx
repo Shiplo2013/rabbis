@@ -151,8 +151,12 @@ export default function KnessetScriptProvider({
   const hasMorePosts = useRef(Number(data?.postsData?.totalPage ?? 1) > 1);
   const totalPages = useRef(Number(data?.postsData?.totalPage ?? 1));
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
-  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  // Derived from knessetPostsData/postLoadCount; computed during render
+  // instead of mirrored into state via an effect (avoids an avoidable
+  // render chain every time knessetPostsData changes).
+  const verticalPosts = knessetPostsData?.slice(0, 3) || [];
+  const normalPosts =
+    knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) || [];
   const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
     threshold: 0,
     triggerOnce: false,
@@ -169,20 +173,11 @@ export default function KnessetScriptProvider({
     setKnessetPostsData(data.postsData?.posts || []);
   }, [data]);
 
-  // Set Posts Data when sheetPostsData changes
-  useEffect(() => {
-    if (!knessetPostsData) {
-      return;
-    }
-    setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
-    setNormalPosts(
-      knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) || [],
-    );
-    setIsLoadingMore(false);
-  }, [knessetPostsData, postLoadCount]);
-
   // Search and Category Filter
   useEffect(() => {
+    // knessetPostsData is replaced below; reset the load-more spinner
+    // here instead of via a sibling effect reacting to that state change.
+    setIsLoadingMore(false);
     if (
       (knessetActiveCategory !== null && knessetActiveCategory !== "0") ||
       (knessetSearchQuery !== "" && knessetSearchQuery !== null)
@@ -196,11 +191,6 @@ export default function KnessetScriptProvider({
           return post.knesset_cat?.[0] === Number(knessetActiveCategory);
         });
         setKnessetPostsData(filteredPosts || []);
-        setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
-        setNormalPosts(
-          knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) ||
-            [],
-        );
       }
       if (
         knessetSearchQuery !== "" &&
@@ -221,10 +211,6 @@ export default function KnessetScriptProvider({
           );
         });
         setKnessetPostsData(filteredPosts);
-        setVerticalPosts(filteredPosts?.slice(0, 3) || []);
-        setNormalPosts(
-          filteredPosts?.slice(3, postsPerLoad.current * postLoadCount) || [],
-        );
       }
       if (
         knessetActiveCategory !== null &&
@@ -244,20 +230,12 @@ export default function KnessetScriptProvider({
           );
         });
         setKnessetPostsData(filteredPosts || []);
-        setVerticalPosts(filteredPosts?.slice(0, 3) || []);
-        setNormalPosts(
-          filteredPosts?.slice(3, postsPerLoad.current * postLoadCount) || [],
-        );
       }
       setPostLoadLimit(() =>
         Math.ceil(Number(knessetPostsData?.length || 0) / postsPerLoad.current),
       );
     } else {
       setKnessetPostsData(data?.postsData?.posts || []);
-      setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
-      setNormalPosts(
-        knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) || [],
-      );
     }
 
     window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
@@ -273,7 +251,12 @@ export default function KnessetScriptProvider({
       setIsLoading(false);
       setPostLoading(false);
     }
-  }, [knessetPageData, animationPlayed]);
+    // knessetPageData has a single producer (the data effect above) and,
+    // once set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   // Get more posts. The fetch/state-update logic lives in the
   // module-scoped `fetchMoreKnessetPosts` above; this handler just supplies
