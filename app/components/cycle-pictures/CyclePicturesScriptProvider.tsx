@@ -72,8 +72,12 @@ export default function CyclePicturesScriptProvider({
   //   Number(data?.postsData?.totalPage ?? 1),
   // );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
-  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  // Derived from allPosts/postLoadCount; computed during render instead of
+  // mirrored into state via an effect (avoids an avoidable render chain
+  // every time allPosts changes).
+  const verticalPosts = allPosts?.slice(0, 2) || [];
+  const normalPosts =
+    allPosts?.slice(2, postsPerLoad.current * postLoadCount) || [];
   const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
     threshold: 0,
     triggerOnce: false,
@@ -91,21 +95,9 @@ export default function CyclePicturesScriptProvider({
       parentCategories: data.categoryData,
     });
     setAllPosts(data.postsData?.posts || []);
+    setCycleAllPosts(data.postsData?.posts || []);
     setCycleCategories(data.categoryData);
   }, [data]);
-
-  // All posts data loaded
-  useEffect(() => {
-    if (!allPosts) {
-      return;
-    }
-    setCycleAllPosts(allPosts);
-    setVerticalPosts(allPosts?.slice(0, 2) || []);
-    setNormalPosts(
-      allPosts?.slice(2, postsPerLoad.current * postLoadCount) || [],
-    );
-    setIsLoadingMore(false);
-  }, [allPosts, postLoadCount]);
 
   // Load More Posts when inView is true
   useEffect(() => {
@@ -117,8 +109,13 @@ export default function CyclePicturesScriptProvider({
 
   // On Category select
   useEffect(() => {
+    // allPosts is replaced below; reset the load-more spinner here instead
+    // of via a sibling effect reacting to that state change.
+    setIsLoadingMore(false);
     if (cycleActiveCategory === -1) {
-      setAllPosts(data.postsData?.posts || []);
+      const posts = data.postsData?.posts || [];
+      setAllPosts(posts);
+      setCycleAllPosts(posts);
     } else {
       const filteredPosts = data.postsData?.posts?.filter((post: any) => {
         const postCategoryId = post?.committee_cat?.[0] || 0;
@@ -127,9 +124,11 @@ export default function CyclePicturesScriptProvider({
       if (filteredPosts?.length === 0) {
         //setNoPostsFound(true);
         setAllPosts([]);
+        setCycleAllPosts([]);
       } else {
         //setNoPostsFound(false);
         setAllPosts(filteredPosts);
+        setCycleAllPosts(filteredPosts);
       }
     }
 
@@ -145,7 +144,12 @@ export default function CyclePicturesScriptProvider({
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [picturesPageData, animationPlayed]);
+    // picturesPageData has a single producer (the data effect above) and,
+    // once set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   useEffect(() => {
     const animations: gsap.core.Animation[] = [];
