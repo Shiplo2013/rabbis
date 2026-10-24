@@ -361,15 +361,12 @@ export default function HomeScriptProvider({
     if (data?.acf?.banner_section?.audio_music?.url) {
       setAudioFile(data.acf.banner_section.audio_music.url);
     }
+    // Merged from the sibling effect that used to react to homePageData
+    // changing; data is always available together, so there is no need
+    // for a second render pass to flip these flags.
+    setPageDataFetched(true);
+    setIsLoading(false);
   }, [data]);
-
-  // Check if have data
-  useEffect(() => {
-    if (homePageData) {
-      setPageDataFetched(true);
-      setIsLoading(false);
-    }
-  }, [homePageData]);
 
   // Load Page Animation
   useGSAP(() => {
