@@ -4,7 +4,14 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import SheetContentItem from "@/app/ui/SheetContentItem";
 import { usePathname } from "next/navigation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useInView } from "react-intersection-observer";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 import Introduction from "../../components/sheets/Introduction";
@@ -14,6 +21,73 @@ import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
+
+// Module-scoped so it isn't redefined (and its identity lost) on every
+// render of CommunitiesSheetsScriptProvider; all render-specific values are
+// passed in as arguments instead of being captured from component scope.
+type FetchMorePostsParams = {
+  postPerPage: number;
+  currentPage: number;
+  totalPages: number;
+  isLoadingMore: boolean;
+  hasMorePosts: boolean;
+  setIsLoadingMore: Dispatch<SetStateAction<boolean>>;
+  setHasMorePosts: Dispatch<SetStateAction<boolean>>;
+  setSheetPostsData: Dispatch<SetStateAction<any>>;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+  signal: AbortSignal;
+};
+
+async function fetchMorePosts({
+  postPerPage,
+  currentPage,
+  totalPages,
+  isLoadingMore,
+  hasMorePosts,
+  setIsLoadingMore,
+  setHasMorePosts,
+  setSheetPostsData,
+  setCurrentPage,
+  signal,
+}: FetchMorePostsParams) {
+  if (isLoadingMore || !hasMorePosts || currentPage >= totalPages) return;
+
+  setIsLoadingMore(true);
+
+  try {
+    const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf,magazines_cat&per_page=${postPerPage}&page=${currentPage + 1}`;
+
+    const response = await wpFetch(postsUrl, {
+      cache: "no-store",
+      signal,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to load community page data.");
+    }
+    const data = await response.json();
+
+    if (signal.aborted) return;
+
+    if (data?.posts?.length < postPerPage) {
+      setHasMorePosts(false);
+    }
+
+    setSheetPostsData((prevPosts: any) => [
+      ...prevPosts,
+      ...(data?.posts || []),
+    ]);
+    setCurrentPage((prevPage) => prevPage + 1);
+  } catch (error) {
+    if (!signal.aborted) {
+      console.error(error);
+    }
+  } finally {
+    if (!signal.aborted) {
+      setIsLoadingMore(false);
+    }
+  }
 }
 
 export default function CommunitiesSheetsScriptProvider({
@@ -153,52 +227,35 @@ export default function CommunitiesSheetsScriptProvider({
     }
   }, [sheetsOnSelectCategoryId, sheetsOnSelectCategoryChildId]);
 
-  // Get more posts
-  const LoadMorePosts = async () => {
-    if (isLoadingMore || !hasMorePosts || currentPage >= totalPages) return;
-    
-    setIsLoadingMore(true);
-    const controller = new AbortController();
-    let isMounted = true;
+  // Get more posts. The fetch/state-update logic lives in the
+  // module-scoped `fetchMorePosts` above; this handler just supplies the
+  // current render's values plus an AbortController tied to this component
+  // instance so in-flight requests are cancelled on unmount.
+  const loadMoreControllerRef = useRef<AbortController | null>(null);
 
-    try {
-      const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf,magazines_cat&per_page=${postPerPage}&page=${currentPage + 1}`;
-
-      const response = await wpFetch(postsUrl, {
-        cache: "no-store",
-        signal: controller.signal,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to load community page data.");
-      }
-      const data = await response.json();
-
-      if (isMounted) {
-        if (data?.posts?.length < postPerPage) {
-          setHasMorePosts(false);
-        }
-
-        setSheetPostsData((prevPosts: any) => [
-          ...prevPosts,
-          ...(data?.posts || []),
-        ]);
-        setCurrentPage((prevPage) => prevPage + 1);
-      }
-    } catch (error) {
-      if (isMounted && !controller.signal.aborted) {
-        console.error(error);
-      }
-    } finally {
-      if (isMounted) {
-        setIsLoadingMore(false);
-      }
-    }
-
+  useEffect(() => {
     return () => {
-      isMounted = false;
-      controller.abort();
+      loadMoreControllerRef.current?.abort();
     };
+  }, []);
+
+  const handleLoadMorePosts = () => {
+    loadMoreControllerRef.current?.abort();
+    const controller = new AbortController();
+    loadMoreControllerRef.current = controller;
+
+    fetchMorePosts({
+      postPerPage,
+      currentPage,
+      totalPages,
+      isLoadingMore,
+      hasMorePosts,
+      setIsLoadingMore,
+      setHasMorePosts,
+      setSheetPostsData,
+      setCurrentPage,
+      signal: controller.signal,
+    });
   };
 
   // Load More Posts when inView is true
@@ -207,7 +264,7 @@ export default function CommunitiesSheetsScriptProvider({
       setPostLoadCount((prevCount) => prevCount + 1);
 
       if (postLoadCount! === postLoadLimit! && hasMorePosts) {
-        LoadMorePosts();
+        handleLoadMorePosts();
       }
     }
   }, [isReadMoreInView, postLoadCount, postLoadLimit, hasMorePosts]);
@@ -682,7 +739,7 @@ export default function CommunitiesSheetsScriptProvider({
               }}
               hasMorePosts={hasMorePosts}
               isLoadingMore={isLoadingMore}
-              onLoadMore={LoadMorePosts}
+              onLoadMore={handleLoadMorePosts}
               setIsPostLoaded={setIsPostLoaded}
               currentPage={currentPage}
               totalPages={totalPages}
