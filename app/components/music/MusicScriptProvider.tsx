@@ -41,7 +41,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
         holidayPosts: data.postsData,
       });
     }
-  }, [data]);
+  }, [data, musicPageData, setMusicPageData]);
 
   useEffect(() => {
     if (!musicPageData?.musicPage?.acf) {
@@ -49,7 +49,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
     }
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [musicPageData]);
+  }, [musicPageData, setIsLoading]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] =
@@ -411,7 +411,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
     return () => {
       //document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
