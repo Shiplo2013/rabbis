@@ -97,7 +97,7 @@ export default function CyclePicturesScriptProvider({
     setAllPosts(data.postsData?.posts || []);
     setCycleAllPosts(data.postsData?.posts || []);
     setCycleCategories(data.categoryData);
-  }, [data]);
+  }, [data, setCycleAllPosts, setCycleCategories]);
 
   // Load More Posts when inView is true
   useEffect(() => {
@@ -133,7 +133,7 @@ export default function CyclePicturesScriptProvider({
     }
 
     window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
-  }, [cycleActiveCategory]);
+  }, [cycleActiveCategory, data, setCycleAllPosts]);
 
   // Page data loaded
   useEffect(() => {
@@ -533,7 +533,7 @@ export default function CyclePicturesScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
