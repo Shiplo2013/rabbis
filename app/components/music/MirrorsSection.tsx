@@ -51,7 +51,13 @@ export default function MirrorsSection(props: ChildProps) {
   // Lightbox State
   const [toggler, setToggler] = useState(false);
 
-  const videos = Array.isArray(pageData?.videos) ? pageData.videos : [];
+  // Memoized so videos keeps a stable reference across renders when
+  // pageData.videos is unchanged, instead of a new [] fallback array being
+  // created every render (which would defeat the downstream useMemos below).
+  const videos = useMemo(
+    () => (Array.isArray(pageData?.videos) ? pageData.videos : []),
+    [pageData?.videos],
+  );
   const videoSources = useMemo(
     () => videos.map((item: any) => item?.video?.url).filter(Boolean),
     [videos],
