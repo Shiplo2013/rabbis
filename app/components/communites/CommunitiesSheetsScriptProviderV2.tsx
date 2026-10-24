@@ -66,7 +66,7 @@ export default function CommunitiesSheetsScriptProviderV2({
     // for a second render pass to flip these flags.
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [data]);
+  }, [data, setIsLoading]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -321,7 +321,7 @@ export default function CommunitiesSheetsScriptProviderV2({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
