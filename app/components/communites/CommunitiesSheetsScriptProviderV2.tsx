@@ -61,16 +61,12 @@ export default function CommunitiesSheetsScriptProviderV2({
       return;
     }
     setSheetPageData(data);
-  }, [data]);
-
-  // Update section width on window resize
-  useEffect(() => {
-    if (!sheetPageData) {
-      return;
-    }
+    // Merged from the sibling effect that used to react to sheetPageData
+    // changing; data is always available together, so there is no need
+    // for a second render pass to flip these flags.
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [sheetPageData]);
+  }, [data]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
