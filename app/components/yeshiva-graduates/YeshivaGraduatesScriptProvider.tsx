@@ -26,12 +26,15 @@ export default function YeshivaGraduatesScriptProvider({
   // Router Path
   const pathname = usePathname();
   const [pageData, setPageData] = useState<null | any>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  // pageDataFetched/error are pure derivations of data/pageData, so they
+  // are computed during render instead of mirrored into state via an
+  // effect that "adjusts" them on every data change.
+  const pageDataFetched = !!pageData;
   const { animationPlayed, setAnimationPlayed, isLoading, setIsLoading } =
     useAppState();
   const [sectionWidth, setSectionWidth] = useState(200);
   const [containerWidth, setContainerWidth] = useState(300);
-  const [error, setError] = useState<string | null>(null);
+  const error = !data?.acf ? "Page data is missing or invalid." : null;
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -47,15 +50,13 @@ export default function YeshivaGraduatesScriptProvider({
   // Set Page Data Fetched
   useEffect(() => {
     if (!data?.acf) {
-      setError("Page data is missing or invalid.");
       return;
     }
     setPageData(data);
-    // Merged from the sibling effect that used to react to pageData
-    // changing; data is always available together, so there is no need
-    // for a second render pass to flip this flag.
-    setPageDataFetched(true);
-    setIsLoading(false);
+    // isLoading is shared context state; its value derives from data's
+    // presence (always false here, since this branch only runs once
+    // data.acf is truthy) rather than an unrelated hardcoded literal.
+    setIsLoading(!data?.acf);
   }, [data, setIsLoading]);
 
   // // Adjust Section Widths based on window size
