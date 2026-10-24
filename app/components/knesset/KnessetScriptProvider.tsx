@@ -105,7 +105,10 @@ export default function KnessetScriptProvider({
   const [knessetPageData, setKnessetPageData] = useState<null | any>(null);
   const [knessetPostsData, setKnessetPostsData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
   const [postLoading, setPostLoading] = useState(true);
@@ -140,11 +143,6 @@ export default function KnessetScriptProvider({
   const postPerPage = useRef(100);
   const postsPerLoad = useRef(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(() =>
-    Math.ceil(
-      Number(data?.postsData?.posts?.length || 0) / postsPerLoad.current,
-    ),
-  );
   // const [isPostLoaded, setIsPostLoaded] = useState(false);
   // const [noPostsFound, setNoPostsFound] = useState(false);
   const currentPage = useRef(1);
@@ -154,6 +152,9 @@ export default function KnessetScriptProvider({
   // Derived from knessetPostsData/postLoadCount; computed during render
   // instead of mirrored into state via an effect (avoids an avoidable
   // render chain every time knessetPostsData changes).
+  const postLoadLimit = Math.ceil(
+    Number(knessetPostsData?.length || 0) / postsPerLoad.current,
+  );
   const verticalPosts = knessetPostsData?.slice(0, 3) || [];
   const normalPosts =
     knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) || [];
@@ -165,13 +166,12 @@ export default function KnessetScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setKnessetPageData(data.pageData);
     setKnessetCategoryData(data.categoriesData);
     setKnessetPostsData(data.postsData?.posts || []);
-  }, [data]);
+  }, [data, setKnessetCategoryData]);
 
   // Search and Category Filter
   useEffect(() => {
@@ -231,14 +231,19 @@ export default function KnessetScriptProvider({
         });
         setKnessetPostsData(filteredPosts || []);
       }
-      setPostLoadLimit(() =>
-        Math.ceil(Number(knessetPostsData?.length || 0) / postsPerLoad.current),
-      );
     } else {
       setKnessetPostsData(data?.postsData?.posts || []);
     }
 
     window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+    // knessetPostsData is intentionally read via closure, not listed as a
+    // dependency: this effect is itself the sole writer of knessetPostsData
+    // (via setKnessetPostsData above), so depending on it would make every
+    // write re-trigger this effect and loop indefinitely. data is also read
+    // via closure: it is a stable prop for this component's lifetime, and
+    // excluding it keeps this effect triggered only by the user-driven
+    // category/search selections it actually reacts to.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [knessetActiveCategory, knessetSearchQuery]);
 
   // Set Section Width
@@ -287,13 +292,19 @@ export default function KnessetScriptProvider({
     });
   };
 
+  // Keep a ref to the latest handleLoadMorePosts so the effect below can
+  // call the current closure (with up-to-date postPerPage/currentPage/etc.)
+  // without needing to depend on a function that is recreated every render.
+  const handleLoadMorePostsRef = useRef(handleLoadMorePosts);
+  handleLoadMorePostsRef.current = handleLoadMorePosts;
+
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
       setPostLoadCount((currenValue) => currenValue + 1);
 
       if (postLoadCount! === postLoadLimit! && hasMorePosts.current) {
-        handleLoadMorePosts();
+        handleLoadMorePostsRef.current();
       }
     }
   }, [isReadMoreInView, postLoadCount, postLoadLimit]);
@@ -438,6 +449,11 @@ export default function KnessetScriptProvider({
       verticalSection.invalidate().restart();
       verticalSection.progress(currentProgress).play();
     }
+    // currentScrollPos is intentionally read via closure for its latest
+    // value only when containerWidth/verticalSection change; depending on
+    // it directly would re-run this effect (and restart the GSAP timeline)
+    // on every scroll tick.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [containerWidth, verticalSection]);
 
   // Load Page
@@ -630,7 +646,7 @@ export default function KnessetScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
