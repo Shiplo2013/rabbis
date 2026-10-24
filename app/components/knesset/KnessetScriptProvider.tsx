@@ -1,7 +1,15 @@
 "use client";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 
 import { wpFetch } from "@/app/lib/wpFetch";
@@ -16,6 +24,76 @@ import SubscribeForm from "../sheets/SubscribeForm";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
+
+// Module-scoped so it isn't redefined (and misread as a PascalCase async
+// client component) on every render of KnessetScriptProvider; all
+// render-specific values are passed in as arguments instead of being
+// captured from component scope.
+type FetchMoreKnessetPostsParams = {
+  postPerPage: MutableRefObject<number>;
+  currentPage: MutableRefObject<number>;
+  totalPages: MutableRefObject<number>;
+  hasMorePosts: MutableRefObject<boolean>;
+  isLoadingMore: boolean;
+  setIsLoadingMore: Dispatch<SetStateAction<boolean>>;
+  setKnessetPostsData: Dispatch<SetStateAction<any>>;
+  signal: AbortSignal;
+};
+
+async function fetchMoreKnessetPosts({
+  postPerPage,
+  currentPage,
+  totalPages,
+  hasMorePosts,
+  isLoadingMore,
+  setIsLoadingMore,
+  setKnessetPostsData,
+  signal,
+}: FetchMoreKnessetPostsParams) {
+  if (
+    isLoadingMore ||
+    !hasMorePosts.current ||
+    currentPage.current >= totalPages.current
+  ) {
+    return;
+  }
+
+  setIsLoadingMore(true);
+
+  try {
+    const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=${postPerPage}&page=${currentPage.current + 1}`;
+
+    const response = await wpFetch(postsUrl, {
+      cache: "no-store",
+      signal,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to load knesset of customs page data.");
+    }
+    const data = await response.json();
+
+    if (signal.aborted) return;
+
+    if (data?.posts?.length < postPerPage) {
+      hasMorePosts.current = false;
+    }
+
+    setKnessetPostsData((prevPosts: any) => [
+      ...prevPosts,
+      ...(data?.posts || []),
+    ]);
+    currentPage.current += 1;
+  } catch (error) {
+    if (!signal.aborted) {
+      console.error(error);
+    }
+  } finally {
+    if (!signal.aborted) {
+      setIsLoadingMore(false);
+    }
+  }
 }
 
 export default function KnessetScriptProvider({
@@ -197,57 +275,33 @@ export default function KnessetScriptProvider({
     }
   }, [knessetPageData, animationPlayed]);
 
-  // Get more posts
-  const LoadMorePosts = async () => {
-    if (
-      isLoadingMore ||
-      !hasMorePosts.current ||
-      currentPage.current >= totalPages.current
-    ) {
-      return;
-    }
-    setIsLoadingMore(true);
-    const controller = new AbortController();
-    let isMounted = true;
+  // Get more posts. The fetch/state-update logic lives in the
+  // module-scoped `fetchMoreKnessetPosts` above; this handler just supplies
+  // the current render's values plus an AbortController tied to this
+  // component instance so in-flight requests are cancelled on unmount.
+  const loadMoreControllerRef = useRef<AbortController | null>(null);
 
-    try {
-      const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=${postPerPage}&page=${currentPage.current + 1}`;
-
-      const response = await wpFetch(postsUrl, {
-        cache: "no-store",
-        signal: controller.signal,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to load knesset of customs page data.");
-      }
-      const data = await response.json();
-
-      if (isMounted) {
-        if (data?.posts?.length < postPerPage) {
-          hasMorePosts.current = false;
-        }
-
-        setKnessetPostsData((prevPosts: any) => [
-          ...prevPosts,
-          ...(data?.posts || []),
-        ]);
-        currentPage.current += 1;
-      }
-    } catch (error) {
-      if (isMounted && !controller.signal.aborted) {
-        console.error(error);
-      }
-    } finally {
-      if (isMounted) {
-        setIsLoadingMore(false);
-      }
-    }
-
+  useEffect(() => {
     return () => {
-      isMounted = false;
-      controller.abort();
+      loadMoreControllerRef.current?.abort();
     };
+  }, []);
+
+  const handleLoadMorePosts = () => {
+    loadMoreControllerRef.current?.abort();
+    const controller = new AbortController();
+    loadMoreControllerRef.current = controller;
+
+    fetchMoreKnessetPosts({
+      postPerPage,
+      currentPage,
+      totalPages,
+      hasMorePosts,
+      isLoadingMore,
+      setIsLoadingMore,
+      setKnessetPostsData,
+      signal: controller.signal,
+    });
   };
 
   // Load More Posts when inView is true
@@ -256,7 +310,7 @@ export default function KnessetScriptProvider({
       setPostLoadCount((currenValue) => currenValue + 1);
 
       if (postLoadCount! === postLoadLimit! && hasMorePosts.current) {
-        LoadMorePosts();
+        handleLoadMorePosts();
       }
     }
   }, [isReadMoreInView, postLoadCount, postLoadLimit]);
@@ -724,7 +778,7 @@ export default function KnessetScriptProvider({
                 "--section-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp w-full flex lg:flex-nowrap flex-col lg:flex-row-reverse lg:w-(--section-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp w-full flex lg:flex-nowrap flex-col lg:flex-row-reverse lg:w-(--section-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -760,7 +814,7 @@ export default function KnessetScriptProvider({
             />
           </div>
         </div>
-        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#F5F0EB] px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#F5F0EB] px-[8vw] lg:px-14.5 pb-[10vh]">
           <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
             <div
               className={`normal-posts flex flex-row flex-wrap gap-x-10 gap-y-12 justify-end`}
