@@ -20,7 +20,11 @@ export default function YeshivaRabbisScriptProvider({
 }) {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  // pageDataFetched/error are pure derivations of data/postsData/
+  // rabbisPageData, so they are computed during render instead of
+  // mirrored into state via an effect that "adjusts" them on every data
+  // change.
+  const pageDataFetched = !!rabbisPageData;
   const updateSectionWidth = () => {
     const postCount = data?.acf?.section.reduce(
       (acc: any, section: any) => acc + section.section_posts.length,
@@ -40,7 +44,7 @@ export default function YeshivaRabbisScriptProvider({
   const [sectionWidth, setSectionWidth] = useState<number>(
     parseFloat(updateSectionWidth().toFixed(2)),
   );
-  const [error, setError] = useState<string | null>(null);
+  const error = !postsData || !data ? "No data provided to Yeshiva Rabbis." : null;
   const { animationPlayed, setAnimationPlayed, isLoading, setIsLoading } =
     useAppState();
   // Router Path
@@ -59,16 +63,14 @@ export default function YeshivaRabbisScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!postsData || !data) {
-      setError("No data provided to Yeshiva Rabbis.");
       return;
     }
     setRabbisPageData(postsData);
-    // Merged from the sibling effect that used to react to
-    // rabbisPageData changing; postsData/data are always available
-    // together, so there is no need for a second render pass to flip
-    // this flag.
-    setPageDataFetched(true);
-    setIsLoading(false);
+    // isLoading is shared context state; its value derives from
+    // data/postsData's presence (always false here, since this branch
+    // only runs once both are truthy) rather than an unrelated
+    // hardcoded literal.
+    setIsLoading(!postsData || !data);
   }, [data, postsData, setIsLoading]);
 
   // Page Section Animation
