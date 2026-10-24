@@ -532,7 +532,7 @@ export default function ConferenceScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
