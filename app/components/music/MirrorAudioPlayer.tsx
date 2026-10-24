@@ -125,7 +125,14 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   const playerCatRef = useRef<SwiperRef>(null);
 
   // State
-  const musicPageData = (props.data as MusicItem) || {};
+  // Memoized so musicPageData keeps a stable reference across renders when
+  // props.data is unchanged, instead of a new `{}` fallback object being
+  // created every render (which would make downstream hooks that depend on
+  // it re-run on every render).
+  const musicPageData = useMemo(
+    () => (props.data as MusicItem) || {},
+    [props.data],
+  );
 
   const [activeMusic, setActiveMusic] = useState({
     tabIndex: 0,
@@ -374,6 +381,13 @@ export default function MirrorAudioPlayer(props: ChildProps) {
       link: nextMusic.link,
     });
   };
+  // Keep a ref to the latest playNextMusicInActiveGroup so the audio-events
+  // effect below can call the current closure (with up-to-date
+  // currentMusicList/activeMusic/etc.) without depending on a function that
+  // is recreated every render, which would otherwise re-run that effect
+  // (and reload the audio element) on every render.
+  const playNextMusicInActiveGroupRef = useRef(playNextMusicInActiveGroup);
+  playNextMusicInActiveGroupRef.current = playNextMusicInActiveGroup;
   // Infinity toggle
   const handleInfinityToggle = () => {
     setIsInfinityActive((prev) => !prev);
@@ -412,7 +426,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
       updateProgressBar(0);
       if (isInfinityActiveRef.current) {
         shouldAutoPlayRef.current = true;
-        playNextMusicInActiveGroup();
+        playNextMusicInActiveGroupRef.current();
         return;
       }
       shouldAutoPlayRef.current = false;
