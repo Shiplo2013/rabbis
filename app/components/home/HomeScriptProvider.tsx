@@ -366,7 +366,7 @@ export default function HomeScriptProvider({
     // for a second render pass to flip these flags.
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [data]);
+  }, [data, setAudioFile, setIsLoading]);
 
   // Load Page Animation
   useGSAP(() => {
