@@ -178,13 +178,14 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
           tab_title: tab.tab_title,
         })) || [],
       );
-  }, [data]);
-
-  useEffect(() => {
-    if (!visitTempleData?.acf) {
+    // Merged from the sibling effect that used to react to visitTempleData
+    // changing; data.acf is already available here (visitTempleData is
+    // just being set to data above), so there is no need for a second
+    // render pass to compute the gallery analysis / section width.
+    if (!data?.acf) {
       return;
     }
-    const galleryAnalysisByTab = buildGalleryAnalysisByTab(visitTempleData.acf);
+    const galleryAnalysisByTab = buildGalleryAnalysisByTab(data.acf);
     setTabGalleryData(galleryAnalysisByTab);
     let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10;
     galleryAnalysisByTab[activeTab]?.images.forEach((tab) => {
@@ -198,7 +199,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
     setContainerWidth(minSectionWidth + 100);
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [visitTempleData]);
+  }, [data]);
 
   // Page Section Animation
   useGSAP(() => {
