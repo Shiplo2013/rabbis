@@ -199,15 +199,12 @@ export default function HistoryScriptProvider({
     setRabbisPostsData3(data.rabbisData[2]);
     setRabbisPostsData4(data.rabbisData[3]);
     setRabbisPostsData5(data.rabbisData[4]);
-  }, [data]);
-
-  useEffect(() => {
-    if (!chroniclesPageData) {
-      return;
-    }
+    // Merged from the sibling effect that used to react to
+    // chroniclesPageData changing; data is always available together, so
+    // there is no need for a second render pass to flip these flags.
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [chroniclesPageData]);
+  }, [data]);
 
   // Page Selectors
   const main = useRef<HTMLDivElement>(null);
