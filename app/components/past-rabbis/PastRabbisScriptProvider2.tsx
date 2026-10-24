@@ -54,8 +54,12 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   // const [postLoadCount, setPostLoadCount] = useState(1);
   // const [postLoadLimit, setPostLoadLimit] = useState(0);
   // const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [verticalPosts, setVerticalPosts] = useState<any | null>(null);
-  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  // Derived from rabbisPosts (which has multiple producers: initial load
+  // and the search-filter effect below); computed during render instead
+  // of mirrored into state via an effect (avoids an avoidable render
+  // chain every time rabbisPosts changes).
+  const verticalPosts = rabbisPosts?.slice(0, 1) || [];
+  const normalPosts = rabbisPosts?.slice(1, rabbisPosts?.length) || [];
 
   // Get Page Data From backend
   useEffect(() => {
@@ -67,17 +71,6 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
     setRabbisPosts(data?.posts);
   }, [data]);
 
-  // Set post data
-  useEffect(() => {
-    if (!rabbisPosts) return;
-    // setPostLoadLimit(
-    //   Math.ceil(Number(rabbisPosts?.length || 0) / postsPerLoad),
-    // );
-    setVerticalPosts(rabbisPosts?.slice(0, 1) || []);
-    setNormalPosts(rabbisPosts?.slice(1, rabbisPosts?.length) || []);
-    //setIsLoadingMore(false);
-  }, [rabbisPosts]);
-
   // Page Data Loaded
   useEffect(() => {
     if (!rabbisPageData) {
@@ -87,7 +80,12 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [rabbisPageData, animationPlayed]);
+    // rabbisPageData has a single producer (the data effect above) and,
+    // once set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -611,7 +609,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
             />
           </div>
         </div>
-        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-black px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-black px-[8vw] lg:px-14.5 pb-[10vh]">
           <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[15vh] relative lg:pr-70">
             <div
               className={`normal-posts w-full flex flex-row flex-wrap gap-x-10 gap-y-10 lg:gap-y-[12vh] justify-end`}
