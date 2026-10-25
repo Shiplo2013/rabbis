@@ -3,6 +3,59 @@ import SubmitButton from "@/app/ui/SubmitButton";
 import Link from "next/link";
 import { useActionState } from "react";
 
+type ContactFormState = {
+  status?: string;
+  payload?: FormData;
+  invalid_fields_object?: Record<string, string>;
+  message?: string;
+};
+
+// Every text/tel/email field shares the same "read back the submitted value
+// unless the mail was already sent" rule, so it is centralized here instead
+// of being repeated inline for each field.
+function getFieldDefaultValue(state: ContactFormState, fieldName: string) {
+  return (state.status !== "mail_sent" && state?.payload?.get(fieldName)) || "";
+}
+
+function ContactFormField({
+  label,
+  id,
+  name,
+  type,
+  colClassName,
+  defaultValue,
+  error,
+}: {
+  label: string;
+  id: string;
+  name: string;
+  type: string;
+  colClassName: string;
+  defaultValue: FormDataEntryValue | "";
+  error?: string;
+}) {
+  return (
+    <div className={colClassName}>
+      <div className="flex items-center gap-x-3.25">
+        <label htmlFor={id}>{label}</label>
+        <input
+          dir="rtl"
+          className="border-b border-b-[#000000] focus:outline-0 w-full"
+          id={id}
+          name={name}
+          type={type}
+          defaultValue={defaultValue as string}
+        />
+      </div>
+      {error && (
+        <p dir="rtl" className="text-red-500 text-xs mt-1">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function ContactForm() {
   const [state, action, isPending] = useActionState(sendFormData, {});
   return (
@@ -11,96 +64,44 @@ export default function ContactForm() {
       className="contact-form-wrapper bg-white text-[#231F20] text-[18px] sm:text-[22px] leading-[100%] py-11.25 px-10 flex flex-col gap-y-[4vh]"
     >
       <div className="contact-row flex gap-x-[2vw] flex-col sm:flex-row gap-y-[4vh]">
-        <div className="contact-col sm:w-1/2 flex flex-col gap-y-1.25">
-          <div className="flex items-center gap-x-3.25">
-            <label htmlFor="form-name">שם</label>
-            <input
-              dir="rtl"
-              className="border-b border-b-[#000000] focus:outline-0 w-full"
-              id="form-name"
-              name="form-name"
-              type="text"
-              defaultValue={
-                (state.status !== "mail_sent" &&
-                  state?.payload?.get("form-name")) ||
-                ""
-              }
-            />
-          </div>
-          {state?.invalid_fields_object?.["form-name"] && (
-            <p dir="rtl" className="text-red-500 text-xs mt-1">
-              {state.invalid_fields_object["form-name"]}
-            </p>
-          )}
-        </div>
-        <div className="contact-col w-full sm:w-1/2 flex flex-col gap-y-1.25">
-          <div className="flex items-center gap-x-3.25">
-            <label htmlFor="form-family">משפחה</label>
-            <input
-              dir="rtl"
-              className="border-b border-b-[#000000] focus:outline-0 w-full"
-              id="form-family"
-              name="form-family"
-              type="text"
-              defaultValue={
-                (state.status !== "mail_sent" &&
-                  state?.payload?.get("form-family")) ||
-                ""
-              }
-            />
-          </div>
-          {state?.invalid_fields_object?.["form-family"] && (
-            <p dir="rtl" className="text-red-500 text-xs mt-1">
-              {state.invalid_fields_object["form-family"]}
-            </p>
-          )}
-        </div>
+        <ContactFormField
+          label="שם"
+          id="form-name"
+          name="form-name"
+          type="text"
+          colClassName="contact-col sm:w-1/2 flex flex-col gap-y-1.25"
+          defaultValue={getFieldDefaultValue(state, "form-name")}
+          error={state?.invalid_fields_object?.["form-name"]}
+        />
+        <ContactFormField
+          label="משפחה"
+          id="form-family"
+          name="form-family"
+          type="text"
+          colClassName="contact-col w-full sm:w-1/2 flex flex-col gap-y-1.25"
+          defaultValue={getFieldDefaultValue(state, "form-family")}
+          error={state?.invalid_fields_object?.["form-family"]}
+        />
       </div>
       <div className="contact-row flex gap-x-[2vw] flex-col lg:flex-row gap-y-[4vh]">
-        <div className="contact-col w-full sm:w-1/2 flex flex-col gap-y-1.25">
-          <div className="flex items-center gap-x-3.25">
-            <label htmlFor="form-phone">נייד</label>
-            <input
-              dir="rtl"
-              className="border-b border-b-[#000000] focus:outline-0 w-full"
-              id="form-phone"
-              name="form-phone"
-              type="tel"
-              defaultValue={
-                (state.status !== "mail_sent" &&
-                  state?.payload?.get("form-phone")) ||
-                ""
-              }
-            />
-          </div>
-          {state?.invalid_fields_object?.["form-phone"] && (
-            <p dir="rtl" className="text-red-500 text-xs mt-1">
-              {state.invalid_fields_object["form-phone"]}
-            </p>
-          )}
-        </div>
-        <div className="contact-col w-full sm:w-1/2 flex flex-col gap-y-1.25">
-          <div className="flex items-center gap-x-3.25">
-            <label htmlFor="form-email">דוא״ל</label>
-            <input
-              dir="rtl"
-              className="border-b border-b-[#000000] focus:outline-0 w-full"
-              id="form-email"
-              name="form-email"
-              type="email"
-              defaultValue={
-                (state.status !== "mail_sent" &&
-                  state?.payload?.get("form-email")) ||
-                ""
-              }
-            />
-          </div>
-          {state?.invalid_fields_object?.["form-email"] && (
-            <p dir="rtl" className="text-red-500 text-xs mt-1">
-              {state.invalid_fields_object["form-email"]}
-            </p>
-          )}
-        </div>
+        <ContactFormField
+          label="נייד"
+          id="form-phone"
+          name="form-phone"
+          type="tel"
+          colClassName="contact-col w-full sm:w-1/2 flex flex-col gap-y-1.25"
+          defaultValue={getFieldDefaultValue(state, "form-phone")}
+          error={state?.invalid_fields_object?.["form-phone"]}
+        />
+        <ContactFormField
+          label="דוא״ל"
+          id="form-email"
+          name="form-email"
+          type="email"
+          colClassName="contact-col w-full sm:w-1/2 flex flex-col gap-y-1.25"
+          defaultValue={getFieldDefaultValue(state, "form-email")}
+          error={state?.invalid_fields_object?.["form-email"]}
+        />
       </div>
       <div className="contact-row flex flex-col">
         <div className="flex flex-col gap-y-1.25">
@@ -112,11 +113,7 @@ export default function ContactForm() {
             name="form-message"
             cols={10}
             rows={3}
-            defaultValue={
-              (state.status !== "mail_sent" &&
-                state?.payload?.get("form-message")) ||
-              ""
-            }
+            defaultValue={getFieldDefaultValue(state, "form-message") as string}
           ></textarea>
         </div>
         {state?.invalid_fields_object?.["form-message"] && (
