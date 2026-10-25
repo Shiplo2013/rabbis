@@ -519,7 +519,13 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
       setRabbisPosts(rabbisPageData?.posts);
       window.scrollTo({ top: window.innerWidth * 1.8, behavior: "smooth" });
     }
-  }, [pastRabbisSearchQuery, rabbisPageData]);
+    // rabbisPageData has a single producer (the data effect above), which
+    // already initializes rabbisPosts directly; it is read here via
+    // closure rather than listed as a dependency so this effect only
+    // re-runs for the user-driven search query it actually reacts to,
+    // instead of chaining off the data effect's write.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pastRabbisSearchQuery]);
 
   // Handle Link Click
   const handleLinkClick = (
