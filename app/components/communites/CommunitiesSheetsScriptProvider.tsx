@@ -90,6 +90,94 @@ async function fetchMorePosts({
   }
 }
 
+type ApplyCategoryFilterParams = {
+  categoryId: number | null;
+  categoryChildId: number | null;
+  posts: any[] | undefined;
+  categoriesTree: any;
+  setSheetPostsData: Dispatch<SetStateAction<any>>;
+  setNoPostsFound: Dispatch<SetStateAction<boolean>>;
+  setFilteredPostsLoading: Dispatch<SetStateAction<boolean>>;
+};
+
+// Module-scoped for the same reason as fetchMorePosts above: keeps the
+// category/sub-category filtering branches (previously two near-duplicated
+// if-blocks in the component) out of the component body.
+function applyCategoryFilter({
+  categoryId,
+  categoryChildId,
+  posts,
+  categoriesTree,
+  setSheetPostsData,
+  setNoPostsFound,
+  setFilteredPostsLoading,
+}: ApplyCategoryFilterParams) {
+  if (categoryId === 0 && categoryChildId === 0) {
+    setSheetPostsData(posts || []);
+    return;
+  }
+
+  if (categoryId === null || categoryId === 0) {
+    return;
+  }
+
+  setFilteredPostsLoading(true);
+
+  let filteredPosts: any[] | undefined;
+  if (categoryChildId !== 0) {
+    filteredPosts = posts?.filter((post: any) => {
+      const postCategoryId = post?.magazines_cat?.[0] || 0;
+      return postCategoryId === categoryChildId;
+    });
+  } else {
+    const categoryEntry = categoriesTree?.[categoryId - 1];
+    const activeChildIds = categoryEntry?.children
+      ?.filter((item: any) => item.count !== 0)
+      .map((item: any) => item.id);
+    const activeChildIdSet = new Set(activeChildIds);
+    filteredPosts = posts?.filter((post: any) =>
+      activeChildIdSet.has(post?.magazines_cat?.[0] || 0),
+    );
+  }
+
+  if (filteredPosts?.length === 0) {
+    setNoPostsFound(true);
+    setSheetPostsData([]);
+  } else {
+    setNoPostsFound(false);
+    setSheetPostsData(filteredPosts);
+  }
+  setFilteredPostsLoading(false);
+
+  window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+}
+
+// Bundles the "load more" trigger div and its button, both of which key off
+// isLoadingMore (pulse vs. bounce className, loading vs. idle label); this
+// removes the gating `&&` and both of those ternaries from the parent.
+function SheetReadMoreButton({
+  readMoreRef,
+  isLoadingMore,
+}: {
+  readMoreRef: ReturnType<typeof useInView>["ref"];
+  isLoadingMore: boolean;
+}) {
+  return (
+    <div
+      ref={readMoreRef}
+      className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
+    >
+      <button
+        type="button"
+        className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-colors duration-500 disabled:cursor-not-allowed"
+        disabled={isLoadingMore}
+      >
+        {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}
+      </button>
+    </div>
+  );
+}
+
 export default function CommunitiesSheetsScriptProvider({
   data,
 }: {
@@ -169,61 +257,15 @@ export default function CommunitiesSheetsScriptProvider({
     // sheetPostsData is replaced below; reset the load-more spinner here
     // instead of via a sibling effect reacting to that state change.
     setIsLoadingMore(false);
-    if (sheetsOnSelectCategoryId === 0 && sheetsOnSelectCategoryChildId === 0) {
-      setSheetPostsData(data?.postsData?.posts || []);
-    }
-    if (
-      sheetsOnSelectCategoryId !== null &&
-      sheetsOnSelectCategoryId !== 0 &&
-      sheetsOnSelectCategoryChildId !== 0
-    ) {
-      setFilteredPostsLoading(true);
-      const filteredPosts = data?.postsData?.posts?.filter((post: any) => {
-        const postCategoryId = post?.magazines_cat?.[0] || 0;
-        return postCategoryId === sheetsOnSelectCategoryChildId;
-      });
-      if (filteredPosts?.length === 0) {
-        setNoPostsFound(true);
-        setSheetPostsData([]);
-        setFilteredPostsLoading(false);
-      } else {
-        setNoPostsFound(false);
-        setSheetPostsData(filteredPosts);
-        setFilteredPostsLoading(false);
-      }
-
-      window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
-    }
-    if (
-      sheetsOnSelectCategoryId !== null &&
-      sheetsOnSelectCategoryId !== 0 &&
-      sheetsOnSelectCategoryChildId === 0
-    ) {
-      setFilteredPostsLoading(true);
-      const categoriesIds = data?.categoriesTree[sheetsOnSelectCategoryId - 1];
-      const categoriesFilterdIds = categoriesIds?.children?.filter(
-        (item: any) => {
-          return item.count !== 0;
-        },
-      );
-
-      const filteredIds = categoriesFilterdIds?.map((item: any) => item.id);
-      const filteredIdSet = new Set(filteredIds);
-      const filteredPosts = data?.postsData?.posts?.filter((post: any) =>
-        filteredIdSet.has(post?.magazines_cat?.[0] || 0),
-      );
-      if (filteredPosts?.length === 0) {
-        setNoPostsFound(true);
-        setSheetPostsData([]);
-        setFilteredPostsLoading(false);
-      } else {
-        setNoPostsFound(false);
-        setSheetPostsData(filteredPosts);
-        setFilteredPostsLoading(false);
-      }
-
-      window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
-    }
+    applyCategoryFilter({
+      categoryId: sheetsOnSelectCategoryId,
+      categoryChildId: sheetsOnSelectCategoryChildId,
+      posts: data?.postsData?.posts,
+      categoriesTree: data?.categoriesTree,
+      setSheetPostsData,
+      setNoPostsFound,
+      setFilteredPostsLoading,
+    });
     // data is intentionally read via closure, not listed as a dependency:
     // it is a stable prop for this component's lifetime, and excluding it
     // keeps this effect triggered only by the user-driven category
@@ -762,18 +804,10 @@ export default function CommunitiesSheetsScriptProvider({
               })}
             </div>
             {postLoadCount! < postLoadLimit! && (
-              <div
-                ref={readMoreRef}
-                className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
-              >
-                <button
-                  type="button"
-                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-colors duration-500 disabled:cursor-not-allowed"
-                  disabled={isLoadingMore}
-                >
-                  {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}
-                </button>
-              </div>
+              <SheetReadMoreButton
+                readMoreRef={readMoreRef}
+                isLoadingMore={isLoadingMore}
+              />
             )}
           </div>
         </div>
