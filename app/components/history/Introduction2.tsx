@@ -27,6 +27,42 @@ interface ChildProps {
   offsetTopAdded: boolean;
 }
 
+// Shared by the overlay image's width/height/blurDataURL computation below:
+// use the provided dimension when it exceeds the minimum, otherwise fall
+// back to the minimum.
+function clampMin(value: number | undefined, min: number) {
+  return value && value > min ? value : min;
+}
+
+function IntroductionOverlayImage({
+  overlay,
+  bgOverlay,
+}: {
+  overlay: ChildProps["data"]["overlay"];
+  bgOverlay: ChildProps["bgOverlay"];
+}) {
+  const width = clampMin(overlay?.width, 1920);
+  const height = clampMin(overlay?.height, 1080);
+
+  return (
+    <div className="absolute top-0 left-0 w-full h-full z-20">
+      <Image
+        className={`w-full object-contain h-full relative`}
+        src={overlay?.src || overlay?.url || bgOverlay.src || ""}
+        width={`${width}`}
+        height={`${height}`}
+        blurDataURL={
+          overlay?.blurDataURL || CreateShimmerDataUrl(width, height)
+        }
+        placeholder={"blur"}
+        loading="lazy"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 70vw"
+        alt="Introduction Background Overlay"
+      />
+    </div>
+  );
+}
+
 export default function Introduction2(props: ChildProps) {
   // Section Selector
   const wrapper = useRef<HTMLDivElement>(null);
@@ -145,34 +181,10 @@ export default function Introduction2(props: ChildProps) {
         />
       )}
       {props.data && props.data?.overlay && (
-        <div className="absolute top-0 left-0 w-full h-full z-20">
-          <Image
-            className={`w-full object-contain h-full relative`}
-            src={
-              props?.data?.overlay?.src ||
-              props?.data?.overlay?.url ||
-              props?.bgOverlay.src ||
-              ""
-            }
-            width={`${props?.data?.overlay?.width > 1920 ? props?.data?.overlay?.width : "1920"}`}
-            height={`${props?.data?.overlay?.height > 1080 ? props?.data?.overlay?.height : "1080"}`}
-            blurDataURL={
-              props?.data?.overlay?.blurDataURL ||
-              CreateShimmerDataUrl(
-                props?.data?.overlay?.width > 1920
-                  ? props?.data?.overlay?.width
-                  : 1920,
-                props?.data?.overlay?.height > 1080
-                  ? props?.data?.overlay?.height
-                  : 1080,
-              )
-            }
-            placeholder={"blur"}
-            loading="lazy"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 70vw"
-            alt="Introduction Background Overlay"
-          />
-        </div>
+        <IntroductionOverlayImage
+          overlay={props.data.overlay}
+          bgOverlay={props.bgOverlay}
+        />
       )}
       <div dir="ltr" className="flex items-center w-full h-full relative z-30">
         <div className="section-wrapper text-center">
