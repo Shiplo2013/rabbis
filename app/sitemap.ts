@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { parseJsonResponse } from "./lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "./lib/parseJsonResponseWithBackup";
 import { wpFetch } from "./lib/wpFetch";
 
 // 1. Define your post type (if using TypeScript)
@@ -17,7 +17,7 @@ async function getPosts(): Promise<Post[]> {
     },
   );
 
-  return parseJsonResponse<Post[]>(newsRes, [], "sitemap-posts");
+  return parseJsonResponseWithBackup<Post[]>(newsRes, [], "sitemap-posts");
 }
 
 // Get Communites posts
@@ -29,7 +29,7 @@ async function getCommunityPosts(): Promise<Post[]> {
     },
   );
 
-  return parseJsonResponse<Post[]>(communitiesRes, [], "sitemap-communities");
+  return parseJsonResponseWithBackup<Post[]>(communitiesRes, [], "sitemap-communities");
 }
 
 // Get Past Rabbis posts
@@ -41,7 +41,7 @@ async function getPastRabbisPosts(): Promise<Post[]> {
     },
   );
 
-  return parseJsonResponse<Post[]>(pastRabbisRes, [], "sitemap-past-rabbis");
+  return parseJsonResponseWithBackup<Post[]>(pastRabbisRes, [], "sitemap-past-rabbis");
 }
 
 // Get The Knesset of Customs posts
@@ -53,7 +53,7 @@ async function getKnessetOfCustomsPosts(): Promise<Post[]> {
     },
   );
 
-  return parseJsonResponse<Post[]>(
+  return parseJsonResponseWithBackup<Post[]>(
     knessetRes,
     [],
     "sitemap-knesset-of-customs",

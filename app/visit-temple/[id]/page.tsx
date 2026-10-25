@@ -1,5 +1,5 @@
 import VisitTempleScriptProviderID from "@/app/components/visit-temple/VisitTempleScriptProviderID";
-import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "@/app/lib/parseJsonResponseWithBackup";
 import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     "visit-temple-id-page",
@@ -72,7 +72,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     },
   );
 
-  const pageData = await parseJsonResponse<any[]>(
+  const pageData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     [{}],
     "visit-temple-id-page",

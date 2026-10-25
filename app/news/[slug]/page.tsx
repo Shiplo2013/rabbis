@@ -1,5 +1,5 @@
 import SingleNewsScriptProvider from "@/app/components/news/SingleNewsScriptProvider";
-import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "@/app/lib/parseJsonResponseWithBackup";
 import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -35,7 +35,7 @@ export async function generateMetadata({
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     `news-slug-page-${slug}`,
@@ -89,8 +89,8 @@ export default async function page({ params }: PageProps) {
   const [pageDataRes, postsDataRes] = await Promise.all([pageRes, postsRes]);
 
   const [pageData, postsData] = await Promise.all([
-    parseJsonResponse<any[]>(pageDataRes, [], `news-slug-page-${slug}`),
-    parseJsonResponse<any[]>(postsDataRes, [], "news-posts"),
+    parseJsonResponseWithBackup<any[]>(pageDataRes, [], `news-slug-page-${slug}`),
+    parseJsonResponseWithBackup<any[]>(postsDataRes, [], "news-posts"),
   ]);
 
   // Find the index of the current post in the list of all posts

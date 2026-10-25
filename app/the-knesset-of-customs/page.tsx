@@ -2,7 +2,7 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import KnessetScriptProvider from "../components/knesset/KnessetScriptProvider";
-import { parseJsonResponse } from "../lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "../lib/parseJsonResponseWithBackup";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await wpFetch(
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     "knesset-page",
@@ -100,14 +100,14 @@ export default async function Page() {
   ];
   let categoryData: any[] = [];
 
-  const parsedPageData = await parseJsonResponse<any[]>(
+  const parsedPageData = await parseJsonResponseWithBackup<any[]>(
     pageDataRes,
     pageData,
     "knesset-page",
   );
   pageData = Array.isArray(parsedPageData) ? parsedPageData : [parsedPageData];
 
-  const parsedCategoryData = await parseJsonResponse<any[]>(
+  const parsedCategoryData = await parseJsonResponseWithBackup<any[]>(
     categoryDataRes,
     categoryData,
     "knesset-categories",
@@ -116,7 +116,7 @@ export default async function Page() {
 
   let postsData: any[] = [];
 
-  const parsedPostsData = await parseJsonResponse<any[]>(
+  const parsedPostsData = await parseJsonResponseWithBackup<any[]>(
     postsDataRes,
     postsData,
     "knesset-posts",

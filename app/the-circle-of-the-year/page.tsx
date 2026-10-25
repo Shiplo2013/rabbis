@@ -2,7 +2,7 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import MusicScriptProvider from "../components/music/MusicScriptProvider";
-import { parseJsonResponse } from "../lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "../lib/parseJsonResponseWithBackup";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await wpFetch(
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     "circle-of-year-page",
@@ -84,14 +84,14 @@ export default async function Page() {
   let pageData = [{ acf: {} }];
   let postsData: any[] = [];
 
-  const parsedPageData = await parseJsonResponse<any[]>(
+  const parsedPageData = await parseJsonResponseWithBackup<any[]>(
     pageDataRes,
     pageData,
     "circle-of-year-page",
   );
   pageData = Array.isArray(parsedPageData) ? parsedPageData : [parsedPageData];
 
-  const parsedPostsData = await parseJsonResponse<any[]>(
+  const parsedPostsData = await parseJsonResponseWithBackup<any[]>(
     postsDataRes,
     postsData,
     "circle-of-year-posts",

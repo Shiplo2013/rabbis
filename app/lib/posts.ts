@@ -1,4 +1,4 @@
-import { parseJsonResponse } from "./parseJsonResponse";
+import { parseJsonResponseWithBackup } from "./parseJsonResponseWithBackup";
 import { wpFetch } from "./wpFetch";
 
 export default async function getAllPosts() {
@@ -9,13 +9,9 @@ export default async function getAllPosts() {
     },
   );
 
-  if (!newsRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let newsData = [{ slug: "", modified: new Date().toISOString() }];
 
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     newsRes,
     newsData,
     "posts-sitemap",

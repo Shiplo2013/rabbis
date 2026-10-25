@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# WordPress last-known-good backup cache (server-local, regenerated on
+# every successful fetch; see app/lib/wpBackupCache.ts)
+/.data/

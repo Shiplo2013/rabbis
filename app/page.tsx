@@ -2,7 +2,7 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import HomeScriptProvider from "./components/home/HomeScriptProvider";
-import { parseJsonResponse } from "./lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "./lib/parseJsonResponseWithBackup";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await wpFetch(
@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     "home-page",
@@ -106,7 +106,7 @@ export default async function page() {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     "home-page",
@@ -144,7 +144,7 @@ export default async function page() {
     },
   ];
 
-  const parsedPostData = await parseJsonResponse<any[]>(
+  const parsedPostData = await parseJsonResponseWithBackup<any[]>(
     postsRes,
     postsData,
     "home-communities-posts",

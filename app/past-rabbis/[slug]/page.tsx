@@ -1,5 +1,5 @@
 import PastRabbisScriptProviderSlug from "@/app/components/past-rabbis/PastRabbisScriptProviderSlug";
-import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "@/app/lib/parseJsonResponseWithBackup";
 import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -35,7 +35,7 @@ export async function generateMetadata({
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     `past-rabbis-slug-${slug}`,
@@ -99,7 +99,7 @@ export default async function Page({ params }: PageProps) {
   let allPostsData: any[] = [];
 
   if (postsDataRes?.ok) {
-    const parsed = await parseJsonResponse<any[]>(
+    const parsed = await parseJsonResponseWithBackup<any[]>(
       postsDataRes,
       postsData,
       `past-rabbis-slug-${slug}`,
@@ -110,7 +110,7 @@ export default async function Page({ params }: PageProps) {
   }
 
   if (allPostsDataRes?.ok) {
-    const parsed = await parseJsonResponse<any[]>(
+    const parsed = await parseJsonResponseWithBackup<any[]>(
       allPostsDataRes,
       allPostsData,
       "past-rabbis-all-posts",

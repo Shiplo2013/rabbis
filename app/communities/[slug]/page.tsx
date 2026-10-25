@@ -1,5 +1,5 @@
 import CommunitiesSlugScriptProvider from "@/app/components/communites/CommunitesSlugScriptProvider";
-import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "@/app/lib/parseJsonResponseWithBackup";
 import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -35,7 +35,7 @@ export async function generateMetadata({
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     `communities-slug-${slug}`,
@@ -104,7 +104,7 @@ export default async function page({ params }: PageProps) {
     },
   ];
 
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     `communities-slug-${slug}`,
