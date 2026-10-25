@@ -88,10 +88,6 @@ export default async function Page({ params }: PageProps) {
     allPostsRes,
   ]);
 
-  if (!postsDataRes.ok || !allPostsDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   const [postsData, allPostsData] = await Promise.all([
     parseJsonResponse<any[]>(postsDataRes, [], `circle-of-year-page`),
     parseJsonResponse<any[]>(allPostsDataRes, [], "circle-of-year-posts"),

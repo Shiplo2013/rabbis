@@ -72,10 +72,6 @@ export default async function Page() {
     },
   );
 
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let pageData = [{ acf: { section: [] } }];
 
   const parsed = await parseJsonResponse<any[]>(

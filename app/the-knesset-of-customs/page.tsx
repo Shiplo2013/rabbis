@@ -91,18 +91,6 @@ export default async function Page() {
     postsRes,
   ]);
 
-  if (!pageDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
-  if (!categoryDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
-  if (!postsDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let pageData = [
     {
       title: { rendered: "" },

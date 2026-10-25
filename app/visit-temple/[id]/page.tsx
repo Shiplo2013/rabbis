@@ -72,10 +72,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     },
   );
 
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   const pageData = await parseJsonResponse<any[]>(
     pageRes,
     [{}],

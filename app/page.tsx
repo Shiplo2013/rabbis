@@ -58,10 +58,6 @@ export default async function page() {
     },
   );
 
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let pageData = [
     {
       id: 0,
@@ -131,10 +127,6 @@ export default async function page() {
       next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
-
-  if (!postsRes.ok) {
-    throw new Error("Failed to load data.");
-  }
 
   let postsData = [
     {

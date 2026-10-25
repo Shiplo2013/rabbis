@@ -80,10 +80,6 @@ export default async function page({ params }: PageProps) {
     },
   );
 
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let pageData = [
     {
       id: 0,

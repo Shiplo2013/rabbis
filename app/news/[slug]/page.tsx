@@ -88,10 +88,6 @@ export default async function page({ params }: PageProps) {
 
   const [pageDataRes, postsDataRes] = await Promise.all([pageRes, postsRes]);
 
-  if (!pageDataRes.ok || !postsDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   const [pageData, postsData] = await Promise.all([
     parseJsonResponse<any[]>(pageDataRes, [], `news-slug-page-${slug}`),
     parseJsonResponse<any[]>(postsDataRes, [], "news-posts"),

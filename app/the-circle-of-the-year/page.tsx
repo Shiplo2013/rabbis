@@ -81,14 +81,6 @@ export default async function Page() {
 
   const [pageDataRes, postsDataRes] = await Promise.all([pageRes, postsRes]);
 
-  if (!postsDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
-  if (!pageDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let pageData = [{ acf: {} }];
   let postsData: any[] = [];
 

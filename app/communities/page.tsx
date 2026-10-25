@@ -72,9 +72,6 @@ export default async function page() {
     },
   );
 
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
   const pageData = await parseJsonResponse<any[]>(
     pageRes,
     [{ acf: { select_categories: [] } }],
@@ -112,10 +109,6 @@ export default async function page() {
   });
 
   const validCategoryQueryResults = await Promise.all(validCategoryQuery);
-
-  if (!pageData || !validCategoryQueryResults) {
-    throw new Error("Failed to load data.");
-  }
 
   const successfulCategories = validCategoryQueryResults.filter(
     (item): item is { categoryId: any; categoryTitle: any; posts: any[] } =>

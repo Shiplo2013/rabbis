@@ -74,10 +74,6 @@ export default async function page() {
 
   const [pageResData] = await Promise.all([pageRes]);
 
-  if (!pageResData.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let pageData: any[] = [{}];
 
   const parsedPageData = await parseJsonResponse<any[]>(
