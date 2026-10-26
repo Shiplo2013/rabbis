@@ -17,7 +17,10 @@ if (typeof window !== "undefined") {
 export default function MusicScriptProvider({ data }: { data: any }) {
   // Selectors
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const {
     isLoading,
     setIsLoading,
@@ -32,7 +35,6 @@ export default function MusicScriptProvider({ data }: { data: any }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     if (!musicPageData?.musicPage?.acf) {
@@ -41,7 +43,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
         holidayPosts: data.postsData,
       });
     }
-  }, [data]);
+  }, [data, musicPageData, setMusicPageData]);
 
   useEffect(() => {
     if (!musicPageData?.musicPage?.acf) {
@@ -49,7 +51,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
     }
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [musicPageData]);
+  }, [musicPageData, setIsLoading]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] =
@@ -411,7 +413,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
     return () => {
       //document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
@@ -440,7 +442,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[452vw] lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[452vw] lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}

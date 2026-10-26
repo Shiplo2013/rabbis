@@ -31,7 +31,14 @@ export default function ConferenceContentSection(props: ChildProps) {
   // Lightbox State
   const [toggler, setToggler] = useState(false);
 
-  const videos = Array.isArray(SectionData?.videos) ? SectionData.videos : [];
+  // Memoized so videos keeps a stable reference across renders when
+  // SectionData.videos is unchanged, instead of a new [] fallback array
+  // being created every render (which would defeat the downstream
+  // useMemos below).
+  const videos = useMemo(
+    () => (Array.isArray(SectionData?.videos) ? SectionData.videos : []),
+    [SectionData?.videos],
+  );
   const videoSources = useMemo(
     () => videos.map((item: any) => item?.video?.url).filter(Boolean),
     [videos],

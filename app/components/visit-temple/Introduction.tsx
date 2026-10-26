@@ -42,7 +42,7 @@ export default function Introduction(props: ChildProps) {
             bgClass={props.bgClass}
             animatePosition={0.1}
           />
-          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform"></div>
+          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30"></div>
         </div>
       )}
       {props.bgOverlay !== "" && (
@@ -68,7 +68,7 @@ export default function Introduction(props: ChildProps) {
           >
             {parse(introData?.title || "")}
           </h1>
-          <div className="intro-image absolute right-[1vw] lg:right-[14.5vw] top-[35vh] sm:top-[30vh] lg:top-[16vh] w-40 sm:w-60 h-auto lg:w-[17.70vw] lg:h-[63.5vh] z-10 will-change-transform">
+          <div className="intro-image absolute right-[1vw] lg:right-[14.5vw] top-[35vh] sm:top-[30vh] lg:top-[16vh] w-40 sm:w-60 h-auto lg:w-[17.70vw] lg:h-[63.5vh] z-10">
             <Image
               className="w-full h-full object-cover"
               src={introData?.image?.src || introData?.image?.url}

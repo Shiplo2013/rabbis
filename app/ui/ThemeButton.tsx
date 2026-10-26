@@ -35,7 +35,7 @@ export default function ThemeButton(props: ChildProps) {
     }
   };
   return (
-    <div className="theme-button will-change-transform">
+    <div className="theme-button">
       <Link
         onClick={(e) => {
           handleLinkClick(e);

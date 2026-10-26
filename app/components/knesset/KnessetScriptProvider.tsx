@@ -1,7 +1,15 @@
 "use client";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import { usePathname } from "next/navigation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 
 import { wpFetch } from "@/app/lib/wpFetch";
@@ -18,6 +26,76 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
+// Module-scoped so it isn't redefined (and misread as a PascalCase async
+// client component) on every render of KnessetScriptProvider; all
+// render-specific values are passed in as arguments instead of being
+// captured from component scope.
+type FetchMoreKnessetPostsParams = {
+  postPerPage: MutableRefObject<number>;
+  currentPage: MutableRefObject<number>;
+  totalPages: MutableRefObject<number>;
+  hasMorePosts: MutableRefObject<boolean>;
+  isLoadingMore: boolean;
+  setIsLoadingMore: Dispatch<SetStateAction<boolean>>;
+  setKnessetPostsData: Dispatch<SetStateAction<any>>;
+  signal: AbortSignal;
+};
+
+async function fetchMoreKnessetPosts({
+  postPerPage,
+  currentPage,
+  totalPages,
+  hasMorePosts,
+  isLoadingMore,
+  setIsLoadingMore,
+  setKnessetPostsData,
+  signal,
+}: FetchMoreKnessetPostsParams) {
+  if (
+    isLoadingMore ||
+    !hasMorePosts.current ||
+    currentPage.current >= totalPages.current
+  ) {
+    return;
+  }
+
+  setIsLoadingMore(true);
+
+  try {
+    const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=${postPerPage}&page=${currentPage.current + 1}`;
+
+    const response = await wpFetch(postsUrl, {
+      cache: "no-store",
+      signal,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to load knesset of customs page data.");
+    }
+    const data = await response.json();
+
+    if (signal.aborted) return;
+
+    if (data?.posts?.length < postPerPage) {
+      hasMorePosts.current = false;
+    }
+
+    setKnessetPostsData((prevPosts: any) => [
+      ...prevPosts,
+      ...(data?.posts || []),
+    ]);
+    currentPage.current += 1;
+  } catch (error) {
+    if (!signal.aborted) {
+      console.error(error);
+    }
+  } finally {
+    if (!signal.aborted) {
+      setIsLoadingMore(false);
+    }
+  }
+}
+
 export default function KnessetScriptProvider({
   data,
 }: {
@@ -27,7 +105,10 @@ export default function KnessetScriptProvider({
   const [knessetPageData, setKnessetPageData] = useState<null | any>(null);
   const [knessetPostsData, setKnessetPostsData] = useState<null | any>(null);
   const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
   const [postLoading, setPostLoading] = useState(true);
@@ -62,19 +143,21 @@ export default function KnessetScriptProvider({
   const postPerPage = useRef(100);
   const postsPerLoad = useRef(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(() =>
-    Math.ceil(
-      Number(data?.postsData?.posts?.length || 0) / postsPerLoad.current,
-    ),
-  );
   // const [isPostLoaded, setIsPostLoaded] = useState(false);
   // const [noPostsFound, setNoPostsFound] = useState(false);
   const currentPage = useRef(1);
   const hasMorePosts = useRef(Number(data?.postsData?.totalPage ?? 1) > 1);
   const totalPages = useRef(Number(data?.postsData?.totalPage ?? 1));
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
-  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  // Derived from knessetPostsData/postLoadCount; computed during render
+  // instead of mirrored into state via an effect (avoids an avoidable
+  // render chain every time knessetPostsData changes).
+  const postLoadLimit = Math.ceil(
+    Number(knessetPostsData?.length || 0) / postsPerLoad.current,
+  );
+  const verticalPosts = knessetPostsData?.slice(0, 3) || [];
+  const normalPosts =
+    knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) || [];
   const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
     threshold: 0,
     triggerOnce: false,
@@ -83,28 +166,18 @@ export default function KnessetScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setKnessetPageData(data.pageData);
     setKnessetCategoryData(data.categoriesData);
     setKnessetPostsData(data.postsData?.posts || []);
-  }, [data]);
-
-  // Set Posts Data when sheetPostsData changes
-  useEffect(() => {
-    if (!knessetPostsData) {
-      return;
-    }
-    setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
-    setNormalPosts(
-      knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) || [],
-    );
-    setIsLoadingMore(false);
-  }, [knessetPostsData, postLoadCount]);
+  }, [data, setKnessetCategoryData]);
 
   // Search and Category Filter
   useEffect(() => {
+    // knessetPostsData is replaced below; reset the load-more spinner
+    // here instead of via a sibling effect reacting to that state change.
+    setIsLoadingMore(false);
     if (
       (knessetActiveCategory !== null && knessetActiveCategory !== "0") ||
       (knessetSearchQuery !== "" && knessetSearchQuery !== null)
@@ -118,11 +191,6 @@ export default function KnessetScriptProvider({
           return post.knesset_cat?.[0] === Number(knessetActiveCategory);
         });
         setKnessetPostsData(filteredPosts || []);
-        setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
-        setNormalPosts(
-          knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) ||
-            [],
-        );
       }
       if (
         knessetSearchQuery !== "" &&
@@ -143,10 +211,6 @@ export default function KnessetScriptProvider({
           );
         });
         setKnessetPostsData(filteredPosts);
-        setVerticalPosts(filteredPosts?.slice(0, 3) || []);
-        setNormalPosts(
-          filteredPosts?.slice(3, postsPerLoad.current * postLoadCount) || [],
-        );
       }
       if (
         knessetActiveCategory !== null &&
@@ -166,23 +230,20 @@ export default function KnessetScriptProvider({
           );
         });
         setKnessetPostsData(filteredPosts || []);
-        setVerticalPosts(filteredPosts?.slice(0, 3) || []);
-        setNormalPosts(
-          filteredPosts?.slice(3, postsPerLoad.current * postLoadCount) || [],
-        );
       }
-      setPostLoadLimit(() =>
-        Math.ceil(Number(knessetPostsData?.length || 0) / postsPerLoad.current),
-      );
     } else {
       setKnessetPostsData(data?.postsData?.posts || []);
-      setVerticalPosts(knessetPostsData?.slice(0, 3) || []);
-      setNormalPosts(
-        knessetPostsData?.slice(3, postsPerLoad.current * postLoadCount) || [],
-      );
     }
 
     window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+    // knessetPostsData is intentionally read via closure, not listed as a
+    // dependency: this effect is itself the sole writer of knessetPostsData
+    // (via setKnessetPostsData above), so depending on it would make every
+    // write re-trigger this effect and loop indefinitely. data is also read
+    // via closure: it is a stable prop for this component's lifetime, and
+    // excluding it keeps this effect triggered only by the user-driven
+    // category/search selections it actually reacts to.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [knessetActiveCategory, knessetSearchQuery]);
 
   // Set Section Width
@@ -195,76 +256,62 @@ export default function KnessetScriptProvider({
       setIsLoading(false);
       setPostLoading(false);
     }
-  }, [knessetPageData, animationPlayed]);
+    // knessetPageData has a single producer (the data effect above) and,
+    // once set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed, knessetPageData]);
 
-  // Get more posts
-  const LoadMorePosts = () => {
-    if (
-      isLoadingMore ||
-      !hasMorePosts.current ||
-      currentPage.current >= totalPages.current
-    ) {
-      return;
-    }
-    setIsLoadingMore(true);
-    let isActive = true;
-    const controller = new AbortController();
+  // Get more posts. The fetch/state-update logic lives in the
+  // module-scoped `fetchMoreKnessetPosts` above; this handler just supplies
+  // the current render's values plus an AbortController tied to this
+  // component instance so in-flight requests are cancelled on unmount.
+  const loadMoreControllerRef = useRef<AbortController | null>(null);
 
-    const getPostsData = async () => {
-      try {
-        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/knesset-of-customs?orderby=menu_order&order=asc&_fields=id,title,slug,excerpt,acf.subtitle&per_page=${postPerPage}&page=${currentPage.current + 1}`;
-
-        const response = await wpFetch(postsUrl, {
-          cache: "no-store",
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to load knesset of customs page data.");
-        }
-        const data = await response.json();
-
-        if (isActive) {
-          if (data?.posts?.length < postPerPage) {
-            hasMorePosts.current = false;
-          }
-
-          setKnessetPostsData((prevPosts: any) => [
-            ...prevPosts,
-            ...(data?.posts || []),
-          ]);
-        }
-      } catch (error) {
-        if (isActive && !controller.signal.aborted) {
-          console.error(error);
-        }
-      } finally {
-        if (isActive) {
-          setIsLoadingMore(false);
-          currentPage.current += 1;
-        }
-      }
-    };
-
-    getPostsData();
-
+  useEffect(() => {
     return () => {
-      isActive = false;
-      controller.abort();
+      loadMoreControllerRef.current?.abort();
     };
+  }, []);
+
+  const handleLoadMorePosts = () => {
+    loadMoreControllerRef.current?.abort();
+    const controller = new AbortController();
+    loadMoreControllerRef.current = controller;
+
+    fetchMoreKnessetPosts({
+      postPerPage,
+      currentPage,
+      totalPages,
+      hasMorePosts,
+      isLoadingMore,
+      setIsLoadingMore,
+      setKnessetPostsData,
+      signal: controller.signal,
+    });
   };
+
+  // Keep a ref to the latest handleLoadMorePosts so the effect below can
+  // call the current closure (with up-to-date postPerPage/currentPage/etc.)
+  // without needing to depend on a function that is recreated every render.
+  // The write happens in an effect (not during render) to keep rendering
+  // pure.
+  const handleLoadMorePostsRef = useRef(handleLoadMorePosts);
+  useEffect(() => {
+    handleLoadMorePostsRef.current = handleLoadMorePosts;
+  });
 
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
-      setIsLoadingMore(true);
       setPostLoadCount((currenValue) => currenValue + 1);
 
       if (postLoadCount! === postLoadLimit! && hasMorePosts.current) {
-        return LoadMorePosts();
+        handleLoadMorePostsRef.current();
       }
     }
-  }, [isReadMoreInView]);
+  }, [isReadMoreInView, postLoadCount, postLoadLimit]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -406,6 +453,11 @@ export default function KnessetScriptProvider({
       verticalSection.invalidate().restart();
       verticalSection.progress(currentProgress).play();
     }
+    // currentScrollPos is intentionally read via closure for its latest
+    // value only when containerWidth/verticalSection change; depending on
+    // it directly would re-run this effect (and restart the GSAP timeline)
+    // on every scroll tick.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [containerWidth, verticalSection]);
 
   // Load Page
@@ -598,7 +650,7 @@ export default function KnessetScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
@@ -729,7 +781,7 @@ export default function KnessetScriptProvider({
                 "--section-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp w-full flex lg:flex-nowrap flex-col lg:flex-row-reverse lg:w-(--section-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp w-full flex lg:flex-nowrap flex-col lg:flex-row-reverse lg:w-(--section-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -765,7 +817,7 @@ export default function KnessetScriptProvider({
             />
           </div>
         </div>
-        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#F5F0EB] px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#F5F0EB] px-[8vw] lg:px-14.5 pb-[10vh]">
           <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
             <div
               className={`normal-posts flex flex-row flex-wrap gap-x-10 gap-y-12 justify-end`}

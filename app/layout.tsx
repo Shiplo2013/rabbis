@@ -11,7 +11,7 @@ import Header from "./components/Header";
 import PageFixedElements from "./components/PageFixedElements";
 import SubscriberFormWidget from "./components/SubscriberFormWidget";
 import "./globals.css";
-import { parseJsonResponse } from "./lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "./lib/parseJsonResponseWithBackup";
 import SmoothWrapper from "./ui/SmoothWrapper";
 
 export const metadata: Metadata = {
@@ -82,10 +82,6 @@ async function getGlobalData() {
 
   const [headerDataRes, headerCommunityDataRes, footerDataRes] =
     await Promise.all([headerRes, headerCommunityRes, footerRes]);
-
-  if (!headerDataRes.ok || !headerCommunityDataRes.ok || !footerDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
 
   let headerData = [
     {
@@ -239,7 +235,7 @@ async function getGlobalData() {
     },
   ];
 
-  const parsedHeaderData = await parseJsonResponse<any[]>(
+  const parsedHeaderData = await parseJsonResponseWithBackup<any[]>(
     headerDataRes,
     headerData,
     "layout-header",
@@ -248,7 +244,7 @@ async function getGlobalData() {
     ? parsedHeaderData
     : [parsedHeaderData];
 
-  const parsedHeaderCommunityData = await parseJsonResponse<any[]>(
+  const parsedHeaderCommunityData = await parseJsonResponseWithBackup<any[]>(
     headerCommunityDataRes,
     headerCommunityData,
     "layout-header-community",
@@ -257,7 +253,7 @@ async function getGlobalData() {
     ? parsedHeaderCommunityData
     : [parsedHeaderCommunityData];
 
-  const parsedFooterData = await parseJsonResponse<any[]>(
+  const parsedFooterData = await parseJsonResponseWithBackup<any[]>(
     footerDataRes,
     footerData,
     "layout-footer",

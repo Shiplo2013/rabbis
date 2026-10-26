@@ -1,23 +1,7 @@
 "use server";
 
-// Helper function to verify authentication
-// Replace this logic with your actual auth library (e.g., auth() from NextAuth/Auth.js)
-async function checkAuth() {
-  // const session = await auth();
-  // if (!session) throw new Error("Unauthorized");
-  // return session;
-
-  const isAuthenticated = false; // FIXME: Implement actual auth logic
-  if (!isAuthenticated) {
-    throw new Error("Unauthorized access attempt.");
-  }
-}
-
 export async function sendFormData(prevState: unknown, formData: FormData) {
   try {
-    // 1. Authorize the user before executing any API call
-    await checkAuth();
-
     formData.append("_wpcf7_unit_tag", "b1eeb74");
 
     const response = await fetch(
@@ -47,10 +31,7 @@ export async function sendFormData(prevState: unknown, formData: FormData) {
     return {
       success: false,
       error: "Failed to send form data.",
-      message:
-        error.message === "Unauthorized access attempt."
-          ? "You must be logged in to perform this action."
-          : "An unexpected error occurred. Please try again later.",
+      message: "An unexpected error occurred. Please try again later.",
       payload: formData,
     };
   }
@@ -61,9 +42,6 @@ export async function sendSubscribeData(
   formData: FormData,
 ) {
   try {
-    // 1. Authorize the user before executing any API call
-    await checkAuth();
-
     formData.append("_wpcf7_unit_tag", "66876f8");
 
     const response = await fetch(
@@ -93,10 +71,7 @@ export async function sendSubscribeData(
     return {
       success: false,
       error: "Failed to send form data.",
-      message:
-        error.message === "Unauthorized access attempt."
-          ? "You must be logged in to perform this action."
-          : "An unexpected error occurred. Please try again later.",
+      message: "An unexpected error occurred. Please try again later.",
       payload: formData,
     };
   }

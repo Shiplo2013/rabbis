@@ -18,7 +18,10 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState(100);
   const [sectionWidth, setSectionWidth] = useState(50);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
   // Router Path
@@ -38,7 +41,6 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setTestimonialsPageData(data);
@@ -52,7 +54,12 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [testimonialsPageData, animationPlayed]);
+    // testimonialsPageData has a single producer (the data effect above)
+    // and, once set, never reverts, so it is read here via closure rather
+    // than listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   // useEffect(() => {
   //   if (!testimonialsPageData) {
@@ -333,7 +340,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
@@ -380,7 +387,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center`}
           >
             <div
               dir="rtl"
@@ -422,7 +429,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                           {testimonial?.media_type === "video" && (
                             <DonationVideo
                               extraClass={
-                                "donation-video w-full h-full will-change-transform"
+                                "donation-video w-full h-full"
                               }
                               data={testimonial?.video}
                             />
@@ -435,7 +442,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                                   testimonial?.image?.url
                                 }
                                 alt={testimonial?.title || "Testimonial Image"}
-                                className="w-full h-full object-cover object-center will-change-transform"
+                                className="w-full h-full object-cover object-center"
                                 width={768}
                                 height={464}
                                 blurDataURL={CreateShimmerDataUrl(768, 464)}

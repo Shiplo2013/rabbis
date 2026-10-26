@@ -1,5 +1,5 @@
 import CommunitiesSheetsScriptProviderV2 from "@/app/components/communites/CommunitiesSheetsScriptProviderV2";
-import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "@/app/lib/parseJsonResponseWithBackup";
 import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -28,10 +28,10 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
-    "communities-sheets-page",
+    "communities-sheets-page-meta",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
@@ -74,13 +74,9 @@ export default async function page() {
 
   const [pageResData] = await Promise.all([pageRes]);
 
-  if (!pageResData.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let pageData: any[] = [{}];
 
-  const parsedPageData = await parseJsonResponse<any[]>(
+  const parsedPageData = await parseJsonResponseWithBackup<any[]>(
     pageResData,
     pageData,
     "communities-sheets-page",

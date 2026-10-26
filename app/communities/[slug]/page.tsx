@@ -1,5 +1,5 @@
 import CommunitiesSlugScriptProvider from "@/app/components/communites/CommunitesSlugScriptProvider";
-import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "@/app/lib/parseJsonResponseWithBackup";
 import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -35,10 +35,10 @@ export async function generateMetadata({
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
-    `communities-slug-${slug}`,
+    `communities-slug-${slug}-meta`,
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
@@ -80,10 +80,6 @@ export default async function page({ params }: PageProps) {
     },
   );
 
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let pageData = [
     {
       id: 0,
@@ -108,7 +104,7 @@ export default async function page({ params }: PageProps) {
     },
   ];
 
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     `communities-slug-${slug}`,

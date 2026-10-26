@@ -147,7 +147,10 @@ export default function PastRabbisScriptProviderSlugV2({
   const slug = params?.slug as string;
   const [post, setPost] = useState<RabbiPost | null>(null);
   const [allPosts, setAllPosts] = useState<AllPosts | null | any>(null);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const {
     isLoading,
     setIsLoading,
@@ -168,7 +171,6 @@ export default function PastRabbisScriptProviderSlugV2({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setPost(data.postsData);
@@ -177,7 +179,7 @@ export default function PastRabbisScriptProviderSlugV2({
     if (data.allPostsData && data.allPostsData.length > 0) {
       setAllRabbisPosts(data.allPostsData);
     }
-  }, [data]);
+  }, [data, setCurrentRabbisPost, setAllRabbisPosts]);
 
   // Page Data Loade
   useEffect(() => {
@@ -188,7 +190,12 @@ export default function PastRabbisScriptProviderSlugV2({
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [post, allPosts, animationPlayed]);
+    // post/allPosts have a single producer (the data effect above) and,
+    // once set, never revert, so they are read here via closure rather
+    // than listed as dependencies; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);
@@ -369,7 +376,7 @@ export default function PastRabbisScriptProviderSlugV2({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   useGSAP(() => {
     // Set Timeline
@@ -642,7 +649,7 @@ export default function PastRabbisScriptProviderSlugV2({
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-col w-full items-center will-change-transform`}
+            className={`section-wrapp flex flex-col w-full items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}

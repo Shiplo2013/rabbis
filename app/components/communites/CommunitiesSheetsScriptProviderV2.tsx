@@ -24,8 +24,11 @@ export default function CommunitiesSheetsScriptProviderV2({
   const pathname = usePathname();
   const [sheetPageData, setSheetPageData] = useState<any | []>(null);
   const [sheetPostsData, setSheetPostsData] = useState<any | []>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // pageDataFetched/error are pure derivations of data/sheetPageData, so
+  // they are computed during render instead of mirrored into state via
+  // an effect that "adjusts" them on every data change.
+  const pageDataFetched = !!sheetPageData;
+  const error = !data ? "No data available." : null;
   const {
     isLoading,
     setIsLoading,
@@ -57,20 +60,14 @@ export default function CommunitiesSheetsScriptProviderV2({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data available.");
       return;
     }
     setSheetPageData(data);
-  }, [data]);
-
-  // Update section width on window resize
-  useEffect(() => {
-    if (!sheetPageData) {
-      return;
-    }
-    setPageDataFetched(true);
-    setIsLoading(false);
-  }, [sheetPageData]);
+    // isLoading is shared context state; its value derives from data's
+    // presence (always false here, since this branch only runs once data
+    // is truthy) rather than an unrelated hardcoded literal.
+    setIsLoading(!data);
+  }, [data, setIsLoading]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -325,7 +322,7 @@ export default function CommunitiesSheetsScriptProviderV2({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {

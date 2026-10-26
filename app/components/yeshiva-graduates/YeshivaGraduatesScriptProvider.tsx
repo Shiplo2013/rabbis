@@ -26,12 +26,15 @@ export default function YeshivaGraduatesScriptProvider({
   // Router Path
   const pathname = usePathname();
   const [pageData, setPageData] = useState<null | any>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  // pageDataFetched/error are pure derivations of data/pageData, so they
+  // are computed during render instead of mirrored into state via an
+  // effect that "adjusts" them on every data change.
+  const pageDataFetched = !!pageData;
   const { animationPlayed, setAnimationPlayed, isLoading, setIsLoading } =
     useAppState();
-  const [sectionWidth, setSectionWidth] = useState(200);
-  const [containerWidth, setContainerWidth] = useState(300);
-  const [error, setError] = useState<string | null>(null);
+  const [sectionWidth, setSectionWidth] = useState(185);
+  const [containerWidth, setContainerWidth] = useState(285);
+  const error = !data?.acf ? "Page data is missing or invalid." : null;
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -47,20 +50,14 @@ export default function YeshivaGraduatesScriptProvider({
   // Set Page Data Fetched
   useEffect(() => {
     if (!data?.acf) {
-      setError("Page data is missing or invalid.");
       return;
     }
     setPageData(data);
-  }, [data]);
-
-  useEffect(() => {
-    if (!pageData?.acf) {
-      return;
-    }
-    // Set Page Data Fetched
-    setPageDataFetched(true);
-    setIsLoading(false);
-  }, [pageData]);
+    // isLoading is shared context state; its value derives from data's
+    // presence (always false here, since this branch only runs once
+    // data.acf is truthy) rather than an unrelated hardcoded literal.
+    setIsLoading(!data?.acf);
+  }, [data, setIsLoading]);
 
   // // Adjust Section Widths based on window size
   useEffect(() => {
@@ -71,9 +68,9 @@ export default function YeshivaGraduatesScriptProvider({
     const updateSectionWidth = () => {
       const newSectionWidth =
         pageData?.acf?.graduate_posts?.length * 19.27 +
-          (pageData?.acf?.graduate_posts?.length - 1) * 3.3 +
-          10 +
-          38 || 200;
+        (pageData?.acf?.graduate_posts?.length - 1) * 3.3 +
+        15 +
+        38;
 
       setSectionWidth(newSectionWidth);
       setContainerWidth(newSectionWidth + 100);
@@ -202,16 +199,9 @@ export default function YeshivaGraduatesScriptProvider({
     };
   }, [pathname, pageDataFetched]);
 
-  useEffect(() => {
-    if (isAllAnimationComplete) {
-      setPageContentAnimation();
-    }
-  }, [isAllAnimationComplete]);
-
   // Load Page
   useGSAP(() => {
     if (typeof window !== "undefined" && panel.current && wrapper.current) {
-      setPageContentAnimation();
       document.fonts.ready.then(() => {
         // Selectors
         const pageWrapper = document.getElementById(
@@ -416,129 +406,138 @@ export default function YeshivaGraduatesScriptProvider({
   }, [pathname]);
 
   // Set Page Content Animation
-  const setPageContentAnimation = () => {
-    const animations: gsap.core.Animation[] = [];
-    // Page Content Animation
-    const sheetContent = main.current?.querySelectorAll(
-      ".sheet-content .single-graduate",
-    ) as NodeListOf<HTMLElement> | null;
-    const sheetReadmore = main.current?.querySelector(
-      ".graduate-readmore",
-    ) as HTMLElement | null;
-    const introImages = main.current?.querySelector(
-      ".first-intro .intro-images",
-    ) as HTMLElement | null;
+  useEffect(() => {
+    if (!main.current && !panel.current && !wrapper.current) return;
 
-    // Animations
-    if (introImages) {
-      const image1 = introImages?.querySelector(
-        ".image1",
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      main.current &&
+      window.innerWidth > 1024
+    ) {
+      const animations: gsap.core.Animation[] = [];
+      // Page Content Animation
+      const sheetContent = main.current?.querySelectorAll(
+        ".sheet-content .single-graduate",
+      ) as NodeListOf<HTMLElement> | null;
+      const sheetReadmore = main.current?.querySelector(
+        ".graduate-readmore",
       ) as HTMLElement | null;
-      const image2 = introImages?.querySelector(
-        ".image2",
+      const introImages = main.current?.querySelector(
+        ".first-intro .intro-images",
       ) as HTMLElement | null;
-      const image3 = introImages?.querySelector(
-        ".image3",
-      ) as HTMLElement | null;
-      const image1Animation = gsap.to(image1, {
-        x: "15vw",
-        delay: 0,
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return 0;
-          },
-          end: () => {
-            return "+=" + window.innerWidth * 1.5;
-          },
-          scrub: 2,
-        },
-      });
-      const image2Animation = gsap.to(image2, {
-        x: "-25vw",
-        delay: 0,
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return 0;
-          },
-          end: () => {
-            return "+=" + window.innerWidth * 1.5;
-          },
-          scrub: 2,
-        },
-      });
-      const image3Animation = gsap.to(image3, {
-        x: "7vw",
-        delay: 0,
-        ease: "none",
-        scrollTrigger: {
-          start: () => {
-            return 0;
-          },
-          end: () => {
-            return "+=" + window.innerWidth * 1.5;
-          },
-          scrub: 2,
-        },
-      });
-      animations.push(image1Animation, image2Animation, image3Animation);
-    }
-    // Contents
-    if (sheetContent) {
-      sheetContent.forEach((section, index) => {
-        // Custom Content Item
-        if (section) {
-          gsap.set(section, {
-            xPercent: -50,
-            opacity: 0,
-          });
-          const sectionAnimation = gsap.to(section, {
-            xPercent: 0,
-            opacity: 1,
-            ease: "slow(0.1,1,false)",
-            duration: 1.5,
-            delay: 0,
-            scrollTrigger: {
-              start: () => {
-                return GetRightPosition(section) - window.innerWidth * 0.5;
-              },
-              toggleActions: "restart none none reverse",
+
+      // Animations
+      if (introImages) {
+        const image1 = introImages?.querySelector(
+          ".image1",
+        ) as HTMLElement | null;
+        const image2 = introImages?.querySelector(
+          ".image2",
+        ) as HTMLElement | null;
+        const image3 = introImages?.querySelector(
+          ".image3",
+        ) as HTMLElement | null;
+        const image1Animation = gsap.to(image1, {
+          x: "15vw",
+          delay: 0,
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return 0;
             },
-          });
-          animations.push(sectionAnimation);
-        }
-      });
-    }
-    // ReadMore Button
-    if (sheetReadmore) {
-      gsap.set(sheetReadmore, {
-        xPercent: -50,
-        opacity: 0,
-      });
-      const sheetReadmoreAnimation = gsap.to(sheetReadmore, {
-        xPercent: 0,
-        opacity: 1,
-        ease: "slow(0.1,1,false)",
-        duration: 2,
-        delay: 0,
-        scrollTrigger: {
-          start: () => {
-            return window.innerWidth * 2.3;
+            end: () => {
+              return "+=" + window.innerWidth * 1.5;
+            },
+            scrub: 2,
           },
-          toggleActions: "restart none none reverse",
-        },
-      });
-      animations.push(sheetReadmoreAnimation);
-    }
+        });
+        const image2Animation = gsap.to(image2, {
+          x: "-25vw",
+          delay: 0,
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return 0;
+            },
+            end: () => {
+              return "+=" + window.innerWidth * 1.5;
+            },
+            scrub: 2,
+          },
+        });
+        const image3Animation = gsap.to(image3, {
+          x: "7vw",
+          delay: 0,
+          ease: "none",
+          scrollTrigger: {
+            start: () => {
+              return 0;
+            },
+            end: () => {
+              return "+=" + window.innerWidth * 1.5;
+            },
+            scrub: 2,
+          },
+        });
+        animations.push(image1Animation, image2Animation, image3Animation);
+      }
+      // Contents
+      if (sheetContent) {
+        sheetContent.forEach((section, index) => {
+          // Custom Content Item
+          if (section) {
+            gsap.set(section, {
+              xPercent: -50,
+              opacity: 0,
+            });
+            const sectionAnimation = gsap.to(section, {
+              xPercent: 0,
+              opacity: 1,
+              ease: "slow(0.1,1,false)",
+              duration: 1.5,
+              delay: 0,
+              scrollTrigger: {
+                start: () => {
+                  return GetRightPosition(section) - window.innerWidth * 0.5;
+                },
+                toggleActions: "restart none none reverse",
+              },
+            });
+            animations.push(sectionAnimation);
+          }
+        });
+      }
+      // ReadMore Button
+      if (sheetReadmore) {
+        gsap.set(sheetReadmore, {
+          xPercent: -50,
+          opacity: 0,
+        });
+        const sheetReadmoreAnimation = gsap.to(sheetReadmore, {
+          xPercent: 0,
+          opacity: 1,
+          ease: "slow(0.1,1,false)",
+          duration: 2,
+          delay: 0,
+          scrollTrigger: {
+            start: () => {
+              return window.innerWidth * 2.3;
+            },
+            toggleActions: "restart none none reverse",
+          },
+        });
+        animations.push(sheetReadmoreAnimation);
+      }
 
-    // Return
-    return () => {
-      animations.forEach((animation) => {
-        animation.kill();
-      });
-    };
-  };
+      // Return
+      return () => {
+        animations.forEach((animation) => {
+          animation.kill();
+        });
+      };
+    }
+  }, [pathname, pageDataFetched]);
 
   // Set Body Overflow Hidden
   useEffect(() => {
@@ -553,7 +552,7 @@ export default function YeshivaGraduatesScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
@@ -587,7 +586,7 @@ export default function YeshivaGraduatesScriptProvider({
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className="sections-wrapper flex flex-wrap lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) h-auto lg:h-screen items-center will-change-transform"
+            className="sections-wrapper flex flex-wrap lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:min-w-(--container-width) h-auto lg:h-screen items-center"
           >
             <Introduction
               animated={isAllAnimationComplete}

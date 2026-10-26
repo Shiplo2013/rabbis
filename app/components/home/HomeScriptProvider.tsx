@@ -328,7 +328,10 @@ export default function HomeScriptProvider({
   const [error, setError] = useState<string | null>(null);
   const { isLoading, setIsLoading } = useAppState();
 
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  // pageDataFetched is a pure derivation of homePageData's presence, so it
+  // is computed during render instead of mirrored into state via an
+  // effect that "adjusts" it on every data change.
+  const pageDataFetched = !!homePageData;
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
   const [isMobileOrTablet, setIsMobileOrTablet] = useState(() =>
     typeof window !== "undefined" ? window.innerWidth <= 1024 : false,
@@ -361,15 +364,11 @@ export default function HomeScriptProvider({
     if (data?.acf?.banner_section?.audio_music?.url) {
       setAudioFile(data.acf.banner_section.audio_music.url);
     }
-  }, [data]);
-
-  // Check if have data
-  useEffect(() => {
-    if (homePageData) {
-      setPageDataFetched(true);
-      setIsLoading(false);
-    }
-  }, [homePageData]);
+    // isLoading is shared context state; its value derives from data's
+    // presence (always false here, since this branch only runs once data
+    // is truthy) rather than an unrelated hardcoded literal.
+    setIsLoading(!data);
+  }, [data, setAudioFile, setIsLoading]);
 
   // Load Page Animation
   useGSAP(() => {
@@ -758,7 +757,7 @@ export default function HomeScriptProvider({
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp block lg:flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-[510vw] lg:h-screen will-change-transform`}
+            className={`section-wrapp block lg:flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-[510vw] lg:h-screen`}
           >
             <Suspense
               fallback={

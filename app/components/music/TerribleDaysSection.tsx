@@ -3,7 +3,7 @@ import GetRightPosition from "@/app/ui/GetRightPosition";
 import parse from "html-react-parser";
 import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
-import { useRef } from "react";
+import { RefObject, useRef } from "react";
 import SimpleBar from "simplebar-react";
 import AlbumIcon1 from "../../assets/images/album-icon1.png";
 import AlbumIcon2 from "../../assets/images/album-icon2.png";
@@ -27,6 +27,70 @@ interface ChildProps {
   setActiveMusicFolder: (value: number) => void;
   activeTab: number;
   setActiveTab: (value: number) => void;
+}
+
+// The two floating cover-art images share identical markup, differing only
+// in ref, position, size, and source image data; extracting this removes a
+// duplicated src-fallback chain from each call site.
+function TerribleFloatImage({
+  imageRef,
+  className,
+  src,
+  width,
+  height,
+}: {
+  imageRef: RefObject<HTMLDivElement | null>;
+  className: string;
+  src: any;
+  width: number;
+  height: number;
+}) {
+  return (
+    <div ref={imageRef} className={className}>
+      <Image
+        className="float-image w-full object-contain object-center h-full"
+        src={src}
+        width={width}
+        height={height}
+        blurDataURL={CreateShimmerDataUrl(width, height)}
+        placeholder={"blur"}
+        loading="lazy"
+        alt="Turntable"
+      />
+    </div>
+  );
+}
+
+// The content-right and content-left panels both conditionally wrap the
+// exact same children in a SimpleBar scroll area above a breakpoint, and
+// render the children plainly below it; centralizing that conditional
+// removes two duplicated branch-and-copy blocks from the parent.
+function ResponsiveScrollArea({
+  enabled,
+  maxHeight,
+  autoHide,
+  children,
+}: {
+  enabled: boolean;
+  maxHeight: string;
+  autoHide: boolean;
+  children: React.ReactNode;
+}) {
+  if (!enabled) {
+    return <>{children}</>;
+  }
+  return (
+    <SimpleBar
+      style={{
+        maxHeight,
+        paddingRight: 20,
+        marginRight: -20,
+      }}
+      autoHide={autoHide}
+    >
+      {children}
+    </SimpleBar>
+  );
 }
 
 export default function TerribleDaysSection(props: ChildProps) {
@@ -168,25 +232,17 @@ export default function TerribleDaysSection(props: ChildProps) {
       ></div>
       <div className="terrible-wrapper w-full h-full relative z-40 text-[#344128] flex flex-col lg:flex-row">
         <div className="terrible-intro w-full lg:w-[75vw] lg:h-full flex items-center justify-center relative p-[15vh_10vw_5vh_10vw] lg:p-[8vh_5vw]">
-          <div
-            ref={floatImage1}
+          <TerribleFloatImage
+            imageRef={floatImage1}
             className="float-image1 absolute top-[24.5%] left-0 sm:left-[5%] lg:left-[22.2%] w-22 h-auto lg:w-36.75 lg:h-55.25 -rotate-[7.97deg]"
-          >
-            <Image
-              className="float-image w-full object-contain object-center h-full"
-              src={
-                pageData?.acf?.introduction?.album_image_1?.sizes?.thumbnail ||
-                pageData?.acf?.introduction?.album_image_1?.url ||
-                pageData?.acf?.introduction?.album_image_1?.src
-              }
-              width="147"
-              height="221"
-              blurDataURL={CreateShimmerDataUrl(147, 221)}
-              placeholder={"blur"}
-              loading="lazy"
-              alt="Turntable"
-            />
-          </div>
+            src={
+              pageData?.acf?.introduction?.album_image_1?.sizes?.thumbnail ||
+              pageData?.acf?.introduction?.album_image_1?.url ||
+              pageData?.acf?.introduction?.album_image_1?.src
+            }
+            width={147}
+            height={221}
+          />
           <div className="intro-wrapper max-w-150 text-center flex flex-col gap-y-8 lg:gap-y-[3.6vh] relative z-30">
             <h2
               ref={introTitle}
@@ -201,75 +257,44 @@ export default function TerribleDaysSection(props: ChildProps) {
               {parse(pageData?.acf?.introduction?.album_subtitle || "")}
             </h5>
           </div>
-          <div
-            ref={floatImage2}
+          <TerribleFloatImage
+            imageRef={floatImage2}
             className="float-image2 absolute top-[25%] lg:top-[19%] right-0 sm:ight-[10%] lg:right-[27%] w-25 h-auto lg:w-39.5 lg:h-59.5 rotate-[7.97deg]"
-          >
-            <Image
-              className="float-image w-full object-contain object-center h-full"
-              src={
-                pageData?.acf?.introduction?.album_image_2?.sizes?.thumbnail ||
-                pageData?.acf?.introduction?.album_image_2?.url ||
-                pageData?.acf?.introduction?.album_image_2?.src
-              }
-              width="158"
-              height="238"
-              blurDataURL={CreateShimmerDataUrl(158, 238)}
-              placeholder={"blur"}
-              loading="lazy"
-              alt="Turntable"
-            />
-          </div>
+            src={
+              pageData?.acf?.introduction?.album_image_2?.sizes?.thumbnail ||
+              pageData?.acf?.introduction?.album_image_2?.url ||
+              pageData?.acf?.introduction?.album_image_2?.src
+            }
+            width={158}
+            height={238}
+          />
         </div>
         <div className="terrible-content w-full lg:w-[77vw] h-full flex items-center justify-center relative p-[5vh_8vw] lg:p-[8vh_5vw]">
           <div className="content-wrapper scroll-bar-content relative flex gap-x-[4.6vw] w-full items-start flex-col lg:flex-row gap-y-8">
             <div className="content-right w-full">
-              {typeof window !== "undefined" && window.innerWidth > 1024 ? (
-                <SimpleBar
-                  style={{
-                    maxHeight: "70vh",
-                    paddingRight: 20,
-                    marginRight: -20,
-                  }}
-                  autoHide={true}
-                >
-                  <h3 className="title text-[22px] sm:text-[28px] lg:text-[35px] mb-5 leading-[85%] text-right">
-                    {parse(pageData?.acf?.content_section?.title || "")}
-                  </h3>
-                  <div className="text text-[16px] sm:text-[18px] lg:text-[21px] leading-[150%]">
-                    {parse(pageData?.acf?.content_section?.text_1 || "")}
-                  </div>
-                </SimpleBar>
-              ) : (
-                <>
-                  <h3 className="title text-[22px] sm:text-[28px] lg:text-[35px] mb-5 leading-[85%] text-right">
-                    {parse(pageData?.acf?.content_section?.title || "")}
-                  </h3>
-                  <div className="text text-[16px] sm:text-[18px] lg:text-[21px] leading-[150%]">
-                    {parse(pageData?.acf?.content_section?.text_1 || "")}
-                  </div>
-                </>
-              )}
+              <ResponsiveScrollArea
+                enabled={typeof window !== "undefined" && window.innerWidth > 1024}
+                maxHeight="70vh"
+                autoHide={true}
+              >
+                <h3 className="title text-[22px] sm:text-[28px] lg:text-[35px] mb-5 leading-[85%] text-right">
+                  {parse(pageData?.acf?.content_section?.title || "")}
+                </h3>
+                <div className="text text-[16px] sm:text-[18px] lg:text-[21px] leading-[150%]">
+                  {parse(pageData?.acf?.content_section?.text_1 || "")}
+                </div>
+              </ResponsiveScrollArea>
             </div>
             <div className="content-left w-full text-[16px] sm:text-[18px] lg:text-[21px] leading-[150%] text-right relative max-h-[60vh]">
-              {typeof window !== "undefined" && window.innerHeight > 1024 ? (
-                <SimpleBar
-                  style={{
-                    maxHeight: "60vh",
-                    paddingRight: 20,
-                    marginRight: -20,
-                  }}
-                  autoHide={false}
-                >
-                  <div className="text w-full">
-                    {parse(pageData?.acf?.content_section?.text_2 || "")}
-                  </div>
-                </SimpleBar>
-              ) : (
+              <ResponsiveScrollArea
+                enabled={typeof window !== "undefined" && window.innerHeight > 1024}
+                maxHeight="60vh"
+                autoHide={false}
+              >
                 <div className="text w-full">
                   {parse(pageData?.acf?.content_section?.text_2 || "")}
                 </div>
-              )}
+              </ResponsiveScrollArea>
               <div className="float-image absolute left-0 bottom-0 w-62.25 h-39.75 -ml-22.5 -mb-10">
                 <Image
                   className="float-image w-full object-contain object-center h-full"

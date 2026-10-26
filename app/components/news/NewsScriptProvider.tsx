@@ -50,7 +50,10 @@ export default function NewsScriptProvider({
 }: NewsScriptProviderProps) {
   const [pageData, setPageData] = useState<NewsPageData | null>(null);
   const [pagePosts, setPagePosts] = useState<any[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -94,7 +97,6 @@ export default function NewsScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setPageData(data);
@@ -113,7 +115,7 @@ export default function NewsScriptProvider({
         };
       }) || [];
     setPagePosts(posts);
-  }, [data]);
+  }, [data, postsData]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -135,7 +137,12 @@ export default function NewsScriptProvider({
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [pageData, animationPlayed]);
+    // pageData has a single producer (the data effect above) and, once
+    // set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed, pageData]);
 
   // Update Section Width on Data Change
   useEffect(() => {
@@ -738,7 +745,7 @@ export default function NewsScriptProvider({
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}

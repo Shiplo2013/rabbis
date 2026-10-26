@@ -1,47 +1,36 @@
 "use client";
+import PlayPauseButton from "@/app/ui/fixed-elements/PlayPauseButton";
+import WishButton from "@/app/ui/fixed-elements/WishButton";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
-import parse from "html-react-parser";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
-import SimpleBar from "simplebar-react";
-import ViewIcon2 from "../assets/icons/ViewIcon2";
-import WishIcon from "../assets/icons/WishIcon";
-import Wave from "../assets/images/wave.svg";
-import CreateShimmerDataUrl from "../ui/CreateShimmerDataUrl";
 import FixedPlayButton from "../ui/FixedPlayButton";
-import GetHebrewYear from "../ui/GetHebrewYear";
-import HistoryTimeline from "../ui/HistoryTimeline";
 import RabbisHamburgerMenuHome from "../ui/past-rabbis/RabbisHamburgerMenuHome";
 import { gsap, useGSAP } from "../ui/plugins";
 import SlidingArrow from "../ui/SlidingArrow";
-import ThemeButton2 from "../ui/ThemeButton2";
 import { useAppState } from "./AppContext";
 import CookieBanner from "./CookieBanner";
 import CursorFollow from "./CursorFollow";
-import NotificationPopup from "./history/NotificationPopup";
-import VideoPopup from "./history/VideoPopup";
-import Sidebar from "./knesset/Sidebar";
 import LoadingEffect from "./LoadingEffect";
-import MirrorAudioPlayer from "./music/MirrorAudioPlayer";
-import SubscribeForm from "./sheets/SubscribeForm";
 import TabMenu from "./visit-temple/TabMenu";
-import ZatzelSidebar from "./zatzel/ZatzelSidebar";
 // Swiper slider
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import type { SwiperRef } from "swiper/react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import CloseIcon from "../assets/icons/CloseIcon";
-import SwipeLeft from "../assets/icons/SwipeLeft";
-import SwipeRight from "../assets/icons/SwipeRight";
-// Image inner zoom
-import InnerImageZoom from "react-inner-image-zoom";
-import "react-inner-image-zoom/lib/styles.min.css";
-import LoadingAnimation from "../assets/icons/LoadingAnimation";
-import UserIcon from "../assets/icons/UserIcon";
+import ChroniclesElements from "../ui/fixed-elements/ChroniclesElements";
+import CommunityFixedSidebar from "../ui/fixed-elements/CommunityFixedSidebar";
+import CommunityLoader from "../ui/fixed-elements/CommunityLoader";
+import CycleOfPicturesFixedElements from "../ui/fixed-elements/CycleOfPicturesFixedElements";
+import KnessetFixedSidebar from "../ui/fixed-elements/KnessetFixedSidebar";
+import MusicPlayerAndFixedImage from "../ui/fixed-elements/MusicPlayerAndFixedImage";
+import NewsMovingButton from "../ui/fixed-elements/NewsMovingButton";
+import NewsViewButton from "../ui/fixed-elements/NewsViewButton";
+import PageLoader from "../ui/fixed-elements/PageLoader";
+import PastRabbisFixedElements from "../ui/fixed-elements/PastRabbisFixedElements";
+import PastRabbisSidebar from "../ui/fixed-elements/PastRabbisSidebar";
+import WaveLine from "../ui/fixed-elements/WaveLine";
+import ZatzelGraduatesPopup from "../ui/fixed-elements/ZatzelGraduatesPopup";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -67,242 +56,19 @@ export default function PageFixedElements() {
 
   // Use Refs
   const pathname = usePathname();
-  //const audio = useRef<HTMLAudioElement>(null);
-  const wishButton = useRef<HTMLDivElement>(null);
-  const moveButton = useRef<HTMLDivElement>(null);
-  const audioButton = useRef<HTMLButtonElement>(null);
-  const scrollbarRef = useRef<HTMLDivElement>(null);
-  const [loadingImage, setLoadingImage] = useState(true);
-  const [activeCategory, setActiveCategory] = useState(0);
-  // Cycle Popup Slider
-  const swiperRef = useRef<SwiperRef>(null);
-  const cyclePopupRef = useRef<HTMLDivElement>(null);
-  const nameRef = useRef<HTMLInputElement>(null);
 
   // Animation State
-  const {
-    animationPlayed,
-    setAnimationPlayed,
-    currentCommunitiesPost,
-    communitySheetsCategoryData,
-    sheetsOnSelectCategoryId,
-    setSheetsOnSelectCategoryId,
-    setSheetsOnSelectCategoryChildId,
-    sheetsOnSelectCategoryChildId,
-    knessetCategoryData,
-    knessetActiveCategory,
-    knessetSearchQuery,
-    setKnessetActiveCategory,
-    setKnessetSearchQuery,
-    zatzelPosts,
-    setZatzelPosts,
-    setZatzelSearchedData,
-    cycleActiveCategory,
-    setCycleActiveCategory,
-    cycleCategories,
-    setZatzelActivePopup,
-    cycleAllPosts,
-    activeCyclePopup,
-    setActiveCyclePopup,
-    cyclePopupIndex,
-    setCyclePopupIndex,
-    pastRabbisSearchQuery,
-    setPastRabbisSearchQuery,
-  } = useAppState();
-  const [knessetSearchQueryLocal, setKnessetSearchQueryLocal] = useState("");
+  const { animationPlayed, setAnimationPlayed } = useAppState();
 
   // Play Pause State
-  const { isPlaying, setIsPlaying } = useAppState();
-  const { isLoading, setIsLoading } = useAppState();
-  const { audioFile, setAudioFile } = useAppState();
+  const { isLoading, setIsLoading, isPlaying, setIsPlaying } = useAppState();
   const {
     templeTabData,
     setTempleTabData,
     templeActiveTab,
     setTempleActiveTab,
-    musicPageData,
-    setMusicPageData,
-    audioPopup,
-    setAudioPopup,
-    activeMusicItem,
-    setActiveMusicItem,
-    activeMusicFolder,
-    setActiveMusicFolder,
-    activeMusicTab,
-    setActiveMusicTab,
-    currentRabbisPost,
-    historyTimelineData,
     listOfRabbis,
   } = useAppState();
-  const { zatzelPopupIndex, setZatzelPopupIndex } = useAppState();
-  const [zatzelCurrentPost, setZatzelCurrentPost] = useState<any | null>(null);
-
-  // Zatzel popup Post change
-  useEffect(() => {
-    if (zatzelPopupIndex?.postIndex === 0) return;
-    const currentPost = zatzelPosts?.sections[
-      zatzelPopupIndex?.catIndex
-    ]?.sectionContent.filter(
-      (item: any) => item.id === zatzelPopupIndex?.postIndex,
-    );
-    setZatzelCurrentPost(currentPost[0]);
-  }, [zatzelPopupIndex]);
-
-  // Cycle of Pictures
-
-  // Rabbis Data
-  const TimelineData = [
-    {
-      id: 1,
-      title:
-        historyTimelineData?.acf?.timeline_1?.introduction?.subtitle ||
-        `תרל"ז - תרע"ד`,
-    },
-    {
-      id: 2,
-      title:
-        historyTimelineData?.acf?.timeline_2?.introduction?.subtitle ||
-        `תרע"ד - תרפ"ד`,
-    },
-    {
-      id: 3,
-      title:
-        historyTimelineData?.acf?.timeline_3?.introduction?.subtitle ||
-        `תרפ"ד - תרפ"ט`,
-    },
-    {
-      id: 4,
-      title:
-        historyTimelineData?.acf?.timeline_4?.introduction?.subtitle ||
-        `תרפ"ט - תשל"ו`,
-    },
-    {
-      id: 5,
-      title:
-        historyTimelineData?.acf?.timeline_5?.introduction?.subtitle ||
-        `תשל״ו - תשנ״ז`,
-    },
-    {
-      id: 6,
-      title:
-        historyTimelineData?.acf?.timeline_6?.introduction?.subtitle ||
-        `תשנ"ז - הווה`,
-    },
-  ];
-
-  // Video mute/unmute Effect
-  useEffect(() => {
-    const video = document.getElementById(
-      "banner-video-element",
-    ) as HTMLVideoElement | null;
-    const isMuted = video?.muted;
-    const volume = video?.volume;
-    if (isPlaying) {
-      if (video) {
-        gsap.set(video, {
-          volume: 0,
-        });
-        video.muted = false;
-        gsap.to(video, {
-          volume: 1,
-          duration: 2,
-          ease: "none",
-        });
-      }
-    } else {
-      if (video) {
-        gsap.to(video, {
-          volume: 0,
-          duration: 2,
-          ease: "none",
-          onComplete: () => {
-            video.muted = true;
-          },
-        });
-      }
-    }
-  }, [isPlaying]);
-
-  // On Video End
-  // useEffect(() => {
-  //   const audioElement = document.getElementById(
-  //     "audio-player",
-  //   ) as HTMLAudioElement | null;
-
-  //   // 1. Define the handler function reference
-  //   const handleAudioEnded = () => {
-  //     if (audioElement) {
-  //       audioElement.currentTime = 0;
-  //       audioElement.play();
-  //     }
-  //   };
-
-  //   if (audioElement) {
-  //     // 2. Pass the reference to add
-  //     audioElement.addEventListener("ended", handleAudioEnded, false);
-  //   }
-
-  //   return () => {
-  //     if (audioElement) {
-  //       // 3. Pass the EXACT SAME reference to remove
-  //       audioElement.removeEventListener("ended", handleAudioEnded, false);
-  //     }
-  //   };
-  // }, [audio.current]);
-
-  // Handle Scroll Position
-  const handleScrollPosition = () => {
-    const currentPos = window.scrollY;
-    const scrollPost = currentPos + window.innerHeight;
-    window.scrollTo({ top: scrollPost, behavior: "smooth" });
-  };
-
-  // On Mouse Move
-  useGSAP(
-    () => {
-      const movingButtonRef = moveButton.current;
-      if (
-        movingButtonRef &&
-        pathname.startsWith("/past-rabbis/") &&
-        window.matchMedia("(hover: hover) and (pointer: fine)").matches
-      ) {
-        const xSetter = gsap.quickSetter(movingButtonRef, "x", "px");
-        const ySetter = gsap.quickSetter(movingButtonRef, "y", "px");
-        const handleMouseMove = (event: MouseEvent) => {
-          xSetter(event.clientX);
-          ySetter(event.clientY);
-        };
-
-        window.addEventListener("mousemove", handleMouseMove, {
-          passive: true,
-        });
-        // Show view on mouse hover
-        const pageNav = document.querySelectorAll<HTMLAnchorElement>(
-          ".rabbis-navigation a.nav-link",
-        );
-        const showMovingButton = () => {
-          gsap.to(movingButtonRef, { opacity: 1, scaleY: 1, duration: 0.3 });
-        };
-        const hideMovingButton = () => {
-          gsap.to(movingButtonRef, { opacity: 0, scaleY: 0, duration: 0.3 });
-        };
-
-        pageNav.forEach((nav) => {
-          nav.addEventListener("mouseenter", showMovingButton);
-          nav.addEventListener("mouseleave", hideMovingButton);
-        });
-
-        return () => {
-          window.removeEventListener("mousemove", handleMouseMove);
-          pageNav.forEach((nav) => {
-            nav.removeEventListener("mouseenter", showMovingButton);
-            nav.removeEventListener("mouseleave", hideMovingButton);
-          });
-        };
-      }
-    },
-    { dependencies: [pathname], revertOnUpdate: true },
-  );
 
   // Page default
   useEffect(() => {
@@ -311,28 +77,6 @@ export default function PageFixedElements() {
     document.body.classList.remove("!overflow-auto", "overflow-hidden");
     document.body.classList.add("!overflow-hidden");
   }, [pathname]);
-
-  useGSAP(() => {
-    if (!cyclePopupRef.current) return;
-    // Find index of current slide
-    const currentSlide = cycleAllPosts?.findIndex((item: any) => {
-      return item?.id === cyclePopupIndex;
-    });
-    swiperRef?.current?.swiper?.slideToLoop(currentSlide, 0);
-    if (activeCyclePopup) {
-      gsap.to(cyclePopupRef.current, {
-        autoAlpha: 1,
-        duration: 0.5,
-        delay: 0,
-      });
-    } else {
-      gsap.to(cyclePopupRef.current, {
-        autoAlpha: 0,
-        duration: 0.5,
-        delay: 0,
-      });
-    }
-  }, [activeCyclePopup, cyclePopupIndex]);
 
   // Stop Right click for user
   useEffect(() => {
@@ -351,17 +95,7 @@ export default function PageFixedElements() {
   return (
     <>
       {/* Loading Effect */}
-      {isLoading && (
-        <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-99 bg-black">
-          <div className="text-center">
-            {/* <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto mb-4" />
-            <p>Loading...</p> */}
-            <div className="loading-icon w-50 h-auto">
-              <LoadingAnimation />
-            </div>
-          </div>
-        </div>
-      )}
+      {isLoading && <PageLoader />}
       {/* End of Loading Effect */}
       {/** Page Cookie Popup **/}
       <CookieBanner />
@@ -370,846 +104,195 @@ export default function PageFixedElements() {
       <LoadingEffect animated={setAnimationPlayed} />
       {/* End of Loading Effect */}
 
-      {/* Sliding Arrow */}
-      {(pathname === "/" || pathname === "/chronicles") && <SlidingArrow />}
-      {/* End of Sliding Arrow */}
+      {/* Each of the following renders (or doesn't) its own fixed element
+          based on the current route. They are separate components, rather
+          than inline JSX conditions here, so this component's own render
+          logic stays simple to read. */}
+      <SlidingArrowSection pathname={pathname} />
+      <HomePageOnlyElements pathname={pathname} isPlaying={isPlaying} />
+      <VisitTempleNavSection
+        pathname={pathname}
+        templeTabData={templeTabData}
+        templeActiveTab={templeActiveTab}
+      />
+      <WaveLineSection pathname={pathname} />
+      <CircleOfTheYearMusicSection pathname={pathname} />
+      <PastRabbisPageElements pathname={pathname} />
+      <NewsPageElements pathname={pathname} />
+      <CommunityLoaderSection pathname={pathname} />
+      <RabbisHamburgerMenuSection
+        pathname={pathname}
+        listOfRabbis={listOfRabbis}
+      />
+      <ExactPathFixedElements pathname={pathname} />
+    </>
+  );
+}
 
-      {/* Cursor Follow */}
-      {pathname === "/" && <CursorFollow isPlaying={isPlaying} />}
-      {/* End of Cursor Follow */}
+// Home page only: cursor-follow effect, the floating wish button, and the
+// audio play/pause button.
+function HomePageOnlyElements({
+  pathname,
+  isPlaying,
+}: {
+  pathname: string;
+  isPlaying: boolean;
+}) {
+  if (pathname !== "/") return null;
+  return (
+    <>
+      <CursorFollow isPlaying={isPlaying} />
+      <WishButton />
+      <PlayPauseButton />
+    </>
+  );
+}
 
-      {/* Audio Player */}
-      {/* <Suspense fallback={<div className="hidden"></div>}>
-        <AudioPlayer audioRef={audio} src={audioFile || ""} />
-      </Suspense> */}
-      {/* End of Audio Player */}
+function SlidingArrowSection({ pathname }: { pathname: string }) {
+  if (pathname !== "/" && pathname !== "/chronicles") return null;
+  return <SlidingArrow />;
+}
 
-      {/* Wish Button */}
-      {pathname === "/" && (
-        <div
-          id="wish-button"
-          ref={wishButton}
-          className="wish-button fixed bottom-5 right-28 sm:right-45 z-50 opacity-0 invisible cursor-pointer hidden"
-        >
-          <ThemeButton2
-            extraClass="w-13 h-13 flex item-center justify-center"
-            bgColor="bg-[#ffffff]"
-            textColor="text-[#000000]"
-            hoverBgColor="bg-[#C3A13F]"
-            svgIcon={<WishIcon className="group-hover:stroke-[#ffffff]" />}
-            svgIconClass={""}
-          />
-        </div>
-      )}
-      {/* End of Wish Button */}
-      {/* Audio Button */}
-      {pathname === "/" && (
-        <button
-          type="button"
-          aria-label="Play/Pause Video"
-          id="audio-button"
-          ref={audioButton}
-          onClick={() => {
-            setIsPlaying(!isPlaying);
-          }}
-          onKeyDown={(e) => e.key === "Enter" && setIsPlaying(!isPlaying)}
-          className="equalizer-button flex gap-2 items-center fixed py-1 px-3 bottom-5 right-5 sm:right-20 z-40 cursor-pointer bg-[#c3a23fb0] text-[#000000] opacity-0 hover:opacity-100 invisible translate-y-5 rounded-full"
-        >
-          <span>{isPlaying ? "ON" : "OFF"}</span>
-          <div className="equalizer flex items-end justify-center gap-0.5 h-4">
-            {[0.2, 0.4, 0.6, 0.8, 1.0].map((delay, index) => (
-              <div
-                key={"Animated-Bar-" + index}
-                className={`w-0.5 h-full bg-[#000000] rounded-full transition-transform ${
-                  isPlaying ? `equalizer-animation` : "scale-30"
-                }`}
-              />
-            ))}
-          </div>
-        </button>
-      )}
-      {/* End of Audio Button */}
+function VisitTempleNavSection({
+  pathname,
+  templeTabData,
+  templeActiveTab,
+}: {
+  pathname: string;
+  templeTabData: { tab_title?: string }[];
+  templeActiveTab: number;
+}) {
+  if (
+    pathname !== "/visit-temple" &&
+    !pathname.startsWith("/visit-temple/")
+  ) {
+    return null;
+  }
+  return <TabMenu data={templeTabData} activeTab={templeActiveTab} />;
+}
 
-      {/* Visit Temple Navigation */}
-      {(pathname === "/visit-temple" ||
-        pathname.startsWith("/visit-temple/")) && (
-        <TabMenu data={templeTabData} activeTab={templeActiveTab} />
-      )}
-      {/* Visit Temple Navigation */}
+// Pages that show the connecting "wave line" graphic between sections. Kept
+// as plain data (not a long chain of JSX `||` conditions) so it's easy to
+// scan and doesn't add to PageFixedElements' own branching/complexity.
+const WAVE_LINE_EXACT_PATHS = new Set([
+  "/zatzel-graduates",
+  "/the-circle-of-the-year",
+  "/testimonials",
+  "/past-rabbis",
+  "/news",
+  "/donation",
+  "/communities",
+  "/communities/sheets",
+  "/cycle-pictures",
+  "/visit-temple",
+  "/yeshiva-rabbis",
+  "/yeshiva-graduates",
+  "/the-knesset-of-customs",
+]);
+const WAVE_LINE_PATH_PREFIXES = [
+  "/the-circle-of-the-year/",
+  "/past-rabbis/",
+  "/cycle-pictures/",
+  "/visit-temple/",
+];
 
-      {/* Wave Line */}
-      {(pathname === "/zatzel-graduates" ||
-        pathname === "/the-circle-of-the-year" ||
-        pathname.startsWith("/the-circle-of-the-year/") ||
-        pathname === "/testimonials" ||
-        pathname === "/past-rabbis" ||
-        pathname.startsWith("/past-rabbis/") ||
-        pathname === "/news" ||
-        pathname === "/donation" ||
-        pathname === "/communities" ||
-        pathname === "/communities/sheets" ||
-        pathname === "/cycle-pictures" ||
-        pathname.startsWith("/cycle-pictures/") ||
-        pathname === "/visit-temple" ||
-        pathname.startsWith("/visit-temple/") ||
-        pathname === "/yeshiva-rabbis" ||
-        pathname === "/yeshiva-graduates" ||
-        pathname === "/the-knesset-of-customs") && (
-        <div
-          id={"wave-line"}
-          className="wave-line fixed bottom-10 right-1/2 w-30 h-6 translate-x-1/2 overflow-hidden z-30 hidden"
-        >
-          <div
-            id={"wave-mask"}
-            style={{
-              maskImage: `url(${Wave.src})`,
-            }}
-            className="mask w-full h-full absolute top-0 left-0 mask-no-repeat mask-center bg-(--theme-color) mask-contain translate-y-full"
-          >
-            <div
-              id={"progress"}
-              className="progress-bar-inner w-0 h-full absolute top-0 right-0 bg-[#0a0a0a] z-10"
-            ></div>
-          </div>
-        </div>
-      )}
-      {/* End of Wave Line */}
+function shouldShowWaveLine(pathname: string) {
+  return (
+    WAVE_LINE_EXACT_PATHS.has(pathname) ||
+    WAVE_LINE_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))
+  );
+}
 
-      {/* Next Previous Pagination */}
-      {/* {(pathname === "/cycle-pictures" ||
-        pathname.startsWith("/cycle-pictures/")) && <CyclePicturesPagination />} */}
-      {/* Next Previous Pagination */}
+function WaveLineSection({ pathname }: { pathname: string }) {
+  if (!shouldShowWaveLine(pathname)) return null;
+  return <WaveLine />;
+}
 
-      {/* Arrow Button */}
-      {/* {pathname === "/zatzel-graduates" && (
-        <div
-          id="arrow-button"
-          className="rabbis-arrow-wrapper fixed top-0 left-0 z-50 h-screen w-[20vw] opacity-0 invisible"
-        >
-          <div className="rabbis-arrow w-full h-full flex items-center justify-center bg-linear-to-r from-black to-[rgba(0,0,0,0)] opacity-0">
-            <button
-              onClick={handleScrollPosition}
-              className="next-button w-20 h-20 border-2 border-[#C3A13F] rounded-full bg-black p-5 cursor-pointer"
-            >
-              <ArrowLeftIcon2 />
-            </button>
-          </div>
-        </div>
-      )} */}
-      {/* End of Arrow Button */}
+function CircleOfTheYearMusicSection({ pathname }: { pathname: string }) {
+  if (
+    pathname !== "/the-circle-of-the-year" &&
+    !pathname.startsWith("/the-circle-of-the-year/")
+  ) {
+    return null;
+  }
+  return <MusicPlayerAndFixedImage />;
+}
 
-      {/* Zatzel Graduates Popup */}
-      {pathname === "/zatzel-graduates" && (
-        <>
-          <div
-            id="zatzel-popup"
-            className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
-          >
-            <div className="popup-wrapper bg-[#FBF4E6] w-[90vw] sm:w-150 h-full relative z-50 py-[5vh] sm:py-[9.3vh] px-[3.8vw]">
-              <div
-                //ref={popupContent}
-                className="popup-content w-full h-full relative z-30"
-              >
-                <SimpleBar
-                  style={{
-                    maxHeight: "100%",
-                    paddingRight: 30,
-                    marginRight: -30,
-                  }}
-                  autoHide={false}
-                >
-                  {zatzelCurrentPost && (
-                    <div className="title mb-[5vh] flex items-center gap-x-5 justify-between">
-                      <h3 className="text-[32px] sm:text-[40px] lg:text-[55px] leading-[70%] text-[#D1A941] font-bold max-w-[60%]">
-                        {parse(zatzelCurrentPost?.popup?.title || "")}
-                      </h3>
-                      <div className="thumbnail w-32 h-25 sm:min-w-49 sm:w-49 sm:h-41">
-                        {loadingImage && (
-                          <div className="animate-pulse w-full h-full bg-gray-200 absolute top-0 left-0"></div>
-                        )}
-                        <Image
-                          src={zatzelCurrentPost?.image?.sizes?.thumbnail || ""}
-                          alt="Popup Thumbnail"
-                          width={196}
-                          height={205}
-                          className={`w-full h-full object-cover object-center transition-opacity duration-300 ${loadingImage ? "opacity-0" : "opacity-100"}`}
-                          onLoad={() => setLoadingImage(false)}
-                          onChange={() => setLoadingImage(true)}
-                          blurDataURL={CreateShimmerDataUrl(196, 205)}
-                          placeholder="blur"
-                          loading="lazy"
-                          unoptimized
-                        />
-                      </div>
-                    </div>
-                  )}
-                  {zatzelCurrentPost?.popup?.content && (
-                    <div className="content text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-black [&>p:not(:last-child)]:mb-6">
-                      {parse(zatzelCurrentPost?.popup?.content || "")}
-                    </div>
-                  )}
-                </SimpleBar>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setZatzelActivePopup(false);
-                }}
-                onKeyDown={(e) =>
-                  e.key === "Enter" && setZatzelActivePopup(false)
-                }
-                aria-label="Close Zatzel Popup"
-                className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-[width]"
-              >
-                <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
-              </button>
-            </div>
-            <button
-              onClick={() => {
-                setZatzelActivePopup(false);
-              }}
-              onKeyDown={(e) =>
-                e.key === "Enter" && setZatzelActivePopup(false)
-              }
-              type="button"
-              aria-label="Close Overlay"
-              className="overlay fixed top-0 right-0 w-screen h-screen z-30 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"
-            ></button>
-          </div>
-          <div
-            id="zatzel-sidebar"
-            className="zatzel-sidebar fixed top-0 right-15 w-70 h-full bg-[#000000] flex flex-col justify-center z-50 border-l border-[#D1CECE]"
-          >
-            <div className="sheet-sidebar p-6 w-full lg:w-70 lg:min-w-70 h-full relative z-20 flex items-center">
-              <div className="sheet-sidebar-wrapper">
-                <ZatzelSidebar
-                  setSearchedData={setZatzelSearchedData}
-                  setZatzelPosts={setZatzelPosts}
-                  allPosts={zatzelPosts}
-                />
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-      {/* Zatzel Graduates Popup */}
-      {/* Music Page Player and fixed image */}
-      {(pathname === "/the-circle-of-the-year" ||
-        pathname.startsWith("/the-circle-of-the-year/")) && (
-        <>
-          <div
-            id="hover-image"
-            className="fixed top-0 left-0 z-999 w-29 h-43.25 -ml-14.5 -mt-21.5 overflow-hidden opacity-0 invisible cursor-none pointer-events-none"
-          >
-            {musicPageData?.holidayPosts?.map((item: any, index: number) => {
-              return (
-                <div
-                  key={item?.id}
-                  data-index={item?.id}
-                  className={`image-wrapper hover-image-${index} w-29 h-43.25 absolute top-0 left-0`}
-                >
-                  <Image
-                    className="bg-image w-full object-cover object-center h-full"
-                    src={
-                      item?.acf?.introduction?.album_image_1?.sizes
-                        ?.thumbnail ||
-                      item?.acf?.introduction?.album_image_1?.url ||
-                      item?.acf?.introduction?.album_image_1?.src
-                    }
-                    width="116"
-                    height="173"
-                    blurDataURL={CreateShimmerDataUrl(116, 173)}
-                    placeholder={"blur"}
-                    loading="lazy"
-                    alt={item?.acf?.introduction?.album_title || "Album Image"}
-                    unoptimized
-                  />
-                </div>
-              );
-            })}
-          </div>
-          <MirrorAudioPlayer
-            extraClass="w-screen"
-            animWidthText={0}
-            audioPopup={audioPopup}
-            setAudioPopup={setAudioPopup}
-            data={{
-              introduction:
-                musicPageData?.holidayPosts[activeMusicItem]?.acf?.introduction,
-              album:
-                musicPageData?.holidayPosts[activeMusicItem]?.acf?.music_albums
-                  ?.albums[activeMusicFolder],
-              allAlbums:
-                musicPageData?.holidayPosts[activeMusicItem]?.acf?.music_albums
-                  ?.albums,
-            }}
-            activeTab={activeMusicTab}
-            setActiveTab={setActiveMusicTab}
-            activeMusicFolder={activeMusicFolder}
-            setActiveMusicFolder={setActiveMusicFolder}
-          />
-        </>
-      )}
-      {/* Music Page Player and fixed image */}
-      {/* Past Rabbis Elements Start */}
-      {pathname.startsWith("/past-rabbis/") && (
-        <>
-          <div
-            ref={moveButton}
-            id="moving-button"
-            className="moving-button fixed top-0 left-0 mt-2 ml-2 z-30 flex items-center justify-center pointer-events-none bg-[#BBA588] rounded-3xl py-1 px-3 opacity-0"
-          >
-            <span className="text block text-black text-[20px] leading-[1em] font-bold">
-              מעבר לדמות ההוד הבאה
-            </span>
-          </div>
+// "/past-rabbis/<slug>" and "/past-rabbis" are mutually exclusive, so this
+// combines both of the original branches into one component.
+function PastRabbisPageElements({ pathname }: { pathname: string }) {
+  if (pathname.startsWith("/past-rabbis/")) {
+    return <PastRabbisFixedElements />;
+  }
+  if (pathname === "/past-rabbis") {
+    return <PastRabbisSidebar />;
+  }
+  return null;
+}
 
-          {currentRabbisPost?.acf?.popup_1?.title !== "" && (
-            <div
-              id="popup-card"
-              className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
-            >
-              <div className="card-popup-wrapper bg-[#FBF4E6] w-[90%] sm:w-130 lg:w-150 h-full relative z-50 py-15 sm:py-[9.3vh] px-6 sm:px-[3.8vw]">
-                <div
-                  id="popup-card-content"
-                  className="popup-content w-full h-full relative z-30"
-                >
-                  <SimpleBar
-                    style={{
-                      maxHeight: "100%",
-                      paddingRight: 30,
-                      marginRight: -30,
-                    }}
-                    autoHide={false}
-                  >
-                    {currentRabbisPost?.acf?.popup_1?.title && (
-                      <div className="title mb-10 lg:mb-[5vh]">
-                        <h3 className="text-[32px] sm:text-[40px] lg:text-[55px] leading-[0.8em] lg:leading-[70%] text-[#D1A941] font-bold">
-                          {parse(currentRabbisPost?.acf?.popup_1?.title || "")}
-                        </h3>
-                      </div>
-                    )}
-                    {currentRabbisPost?.acf?.popup_1?.text && (
-                      <div className="content text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-black">
-                        {parse(currentRabbisPost?.acf?.popup_1?.text || "")}
-                      </div>
-                    )}
-                  </SimpleBar>
-                </div>
-                <button
-                  type="button"
-                  aria-label="Close Popup"
-                  className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-x-1/2 -translate-y-1/2 cursor-e-resize hover:w-8 duration-300 transition-[width]"
-                >
-                  <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
-                </button>
-              </div>
-              <div className="overlay fixed top-0 right-0 w-screen h-screen z-30 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"></div>
-            </div>
-          )}
+// "/news" and "/news/<slug>" are mutually exclusive, so this combines both
+// of the original branches into one component.
+function NewsPageElements({ pathname }: { pathname: string }) {
+  if (pathname === "/news") {
+    return <NewsViewButton />;
+  }
+  if (pathname.startsWith("/news/")) {
+    return <NewsMovingButton />;
+  }
+  return null;
+}
 
-          {currentRabbisPost?.acf?.popup_2?.title !== "" && (
-            <div
-              id="popup-book"
-              className="popup fixed top-0 right-0 w-screen h-screen z-99 opacity-0 invisible"
-            >
-              <div className="popup-wrapper bg-[#FBF4E6] w-[90%] sm:w-130 lg:w-150 h-full relative z-50 py-15 sm:py-[9.3vh] px-6 sm:px-[3.8vw]">
-                <div
-                  id="popup-book-content"
-                  className="popup-content w-full h-full relative z-30"
-                >
-                  <SimpleBar
-                    style={{
-                      maxHeight: "100%",
-                      paddingRight: 30,
-                      marginRight: -30,
-                    }}
-                    autoHide={false}
-                  >
-                    <div className="title mb-8 sm:mb-[5vh]">
-                      <h3 className="text-[32px] sm:text-[40px] lg:text-[55px] leading-[0.8em] lg:leading-[70%] text-[#D1A941] font-bold">
-                        {parse(currentRabbisPost?.acf?.popup_2?.title || "")}
-                      </h3>
-                    </div>
-                    {(() => {
-                      const popupImage1Src =
-                        currentRabbisPost?.acf?.popup_2?.image_1?.url ||
-                        currentRabbisPost?.acf?.popup_2?.image_1?.src;
+function isCommunityLoaderPath(pathname: string) {
+  return (
+    pathname.startsWith("/communities/") &&
+    pathname !== "/communities/sheets" &&
+    pathname !== "/communities/sheets/v2" &&
+    pathname !== "/communities/sheets/old"
+  );
+}
 
-                      if (!popupImage1Src) {
-                        return null;
-                      }
+function CommunityLoaderSection({ pathname }: { pathname: string }) {
+  if (!isCommunityLoaderPath(pathname)) return null;
+  return <CommunityLoader />;
+}
 
-                      return (
-                        <div className="book-image mb-9.5">
-                          <div className="w-[80%] sm:w-77 h-auto">
-                            <Image
-                              className="w-full h-full object-cover object-center"
-                              src={popupImage1Src}
-                              alt="Book Image"
-                              width={400}
-                              height={400}
-                              blurDataURL={CreateShimmerDataUrl(400, 400)}
-                              placeholder="blur"
-                              loading="lazy"
-                              unoptimized
-                            />
-                          </div>
-                        </div>
-                      );
-                    })()}
-                    {currentRabbisPost?.acf?.popup_2?.text_group_1 && (
-                      <div className="content text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-black mb-10">
-                        <div className="title mb-7">
-                          <h4 className="text-[24px] sm:text-[28px] lg:text-[34px] leading-[70%] font-medium">
-                            {parse(
-                              currentRabbisPost?.acf?.popup_2?.text_group_1
-                                ?.title || "",
-                            )}
-                          </h4>
-                        </div>
-                        <div className="text flex flex-col gap-y-4">
-                          {parse(
-                            currentRabbisPost?.acf?.popup_2?.text_group_1
-                              ?.text || "",
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    {(() => {
-                      const popupImage2Src =
-                        currentRabbisPost?.acf?.popup_2?.image_2?.url ||
-                        currentRabbisPost?.acf?.popup_2?.image_2?.src;
-
-                      if (!popupImage2Src) {
-                        return null;
-                      }
-
-                      return (
-                        <div className="book-image mb-9.5">
-                          <div className="w-[80%] sm:w-77 h-auto">
-                            <Image
-                              className="w-full h-full object-cover object-center"
-                              src={popupImage2Src}
-                              alt="Book Image"
-                              width={400}
-                              height={400}
-                              blurDataURL={CreateShimmerDataUrl(400, 400)}
-                              placeholder="blur"
-                              loading="lazy"
-                              unoptimized
-                            />
-                          </div>
-                        </div>
-                      );
-                    })()}
-                    {currentRabbisPost?.acf?.popup_2?.text_group_2 && (
-                      <div className="content text-[16px] sm:text-[18px] lg:text-[21px] leading-[1.4em] text-black">
-                        <div className="title mb-7">
-                          <h4 className="text-[34px] leading-[70%] font-medium">
-                            {parse(
-                              currentRabbisPost?.acf?.popup_2?.text_group_2
-                                ?.title || "",
-                            )}
-                          </h4>
-                        </div>
-                        <div className="text flex flex-col gap-y-4">
-                          {parse(
-                            currentRabbisPost?.acf?.popup_2?.text_group_2
-                              ?.text || "",
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </SimpleBar>
-                </div>
-                <button
-                  type="button"
-                  aria-label="Close Popup"
-                  className="close-btn absolute top-1/2 left-0 w-6 h-29.25 flex items-center justify-center rounded-md bg-[#D1A941] -translate-1/2 cursor-e-resize hover:w-8 duration-300 transition-[width]"
-                >
-                  <span className="line block w-1 h-[52%] rounded-2xl bg-white"></span>
-                </button>
-              </div>
-              <div className="overlay fixed top-0 right-0 w-screen h-screen z-30 cursor-pointer bg-blend-color-burn bg-black/50 backdrop-blur-sm opacity-0 invisible"></div>
-            </div>
-          )}
-        </>
-      )}
-      {pathname === "/past-rabbis" && (
-        <div
-          id="pastrabbis-sidebar"
-          className="pastrabbis-sidebar fixed top-0 right-15 w-70 h-full bg-[#000000] flex flex-col justify-center z-50 border-l border-[#D1CECE]"
-        >
-          <div className="sheet-sidebar p-6 w-full lg:w-70 lg:min-w-70 h-full relative z-20 flex items-center">
-            <div className="sheet-sidebar-wrapper">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const formData = new FormData(e.currentTarget);
-                  const searchValue = formData.get("search-by-user") as string;
-                  setPastRabbisSearchQuery?.(searchValue || null);
-                }}
-                className="search-group relative"
-                action={"/"}
-              >
-                <input
-                  ref={nameRef}
-                  className="text-[16px] sm:text-[24px] text-[#D1A941] placeholder:text-black leading-[1em] bg-white py-3 pr-4 focus:outline-0 max-w-full w-full pl-8"
-                  type="text"
-                  id="search-by-user"
-                  name="search-by-user"
-                  placeholder={`חיפוש לפי שם`}
-                  aria-label="Search"
-                />
-                <button
-                  type="submit"
-                  className="cursor-pointer absolute top-1/2 left-3 -translate-y-1/2"
-                  aria-label="Submit Search"
-                >
-                  <UserIcon />
-                </button>
-              </form>
-              <div className="reset-filter mt-5 flex items-center justify-start gap-x-3">
-                <button
-                  type="button"
-                  aria-label="Reset Filter"
-                  className="cursor-pointer text-[16px] sm:text-[24px] leading-[1em] text-[#D1A941] hover:text-[#ffffff] transition-colors duration-300"
-                  onClick={() => {
-                    nameRef.current && (nameRef.current.value = "");
-                    setPastRabbisSearchQuery("");
-                  }}
-                >
-                  איפוס סינון
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Past Rabbis Elements Start */}
-
-      {/* News page component */}
-      {pathname === "/news" && (
-        <div
-          id="view-button"
-          className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-50 select-none pointer-events-none opacity-0 scale-0"
-        >
-          <button
-            type="button"
-            aria-label="View News"
-            className="w-25 h-25 bg-[#D1A941CC] rounded-full flex items-center justify-center cursor-pointer"
-          >
-            <span className="block w-12 h-auto">
-              <ViewIcon2 />
-            </span>
-          </button>
-        </div>
-      )}
-      {/* News page component */}
-
-      {/* Single news moving button */}
-      {pathname.startsWith("/news/") && (
-        <div
-          id="moving-button"
-          className="moving-button fixed top-0 left-0 mt-2 ml-2 z-30 flex items-center justify-center pointer-events-none bg-[#BBA588] rounded-3xl py-1 px-3 opacity-0"
-        >
-          <span className="text block text-black text-[20px] leading-[1em] font-bold">
-            מעבר לחדשה הבאה
-          </span>
-        </div>
-      )}
-      {/* Single news moving button */}
-
-      {/* Donation Page Components */}
-      {pathname === "/donation" && <FixedPlayButton />}
-      {/* Donation Page Components */}
-
-      {/* Community Page Loader */}
-      {pathname.startsWith("/communities/") &&
-        pathname !== "/communities/sheets" &&
-        pathname !== "/communities/sheets/v2" &&
-        pathname !== "/communities/sheets/old" && (
-          <div
-            id="community-loader"
-            className="community-loader fixed top-0 left-0 w-full h-full bg-[#C3A13F] flex items-center justify-center z-999 text-[#091B24]"
-          >
-            <div className="loader-content max-w-full w-full lg:w-195 h-auto">
-              <h2 className="loader-heading text-[60px] sm:text-[90px] lg:text-[130px] leading-[80%] font-bold text-center">
-                {parse(currentCommunitiesPost?.title || "")}
-              </h2>
-              {currentCommunitiesPost?.subtitle && (
-                <h4 className="text-[22px] sm:text-[32px] lg:text-[44px] leading-[1em] mt-3 text-center">
-                  {parse(currentCommunitiesPost?.subtitle || "")}
-                </h4>
-              )}
-            </div>
-          </div>
-        )}
-      {/* Community Page Loader */}
-
-      {/* Timeline Page Components */}
-      {pathname === "/chronicles" && (
-        <>
-          <HistoryTimeline
-            wrapperId="history-timeline"
-            progressId="history-timeline-progress"
-            timelineData={TimelineData}
-          />
-          <VideoPopup />
-          <NotificationPopup />
-          <div
-            id="drag-me"
-            className="fixed left-0 top-0 z-30 cursor-none opacity-0 pointer-events-none scale-0 bg-[#BBA588] text-black px-5 py-2.5 rounded-full text-[20px] leading-[1em]"
-          >
-            <p>ניתן לגרור</p>
-          </div>
-        </>
-      )}
-      {/* Timeline Page Components */}
-
-      {/* Rabbis Hamburger Menu */}
+// Preserved exactly as originally written, including its pre-existing
+// operator-precedence quirk (`||` binds looser than `&&`, so on
+// "/past-rabbis" this expression evaluates to the boolean `true`, which
+// React renders as nothing, rather than the hamburger menu). This refactor
+// only relocates the branch out of PageFixedElements; it intentionally does
+// not change behavior.
+function RabbisHamburgerMenuSection({
+  pathname,
+  listOfRabbis,
+}: {
+  pathname: string;
+  listOfRabbis: any;
+}) {
+  return (
+    <>
       {pathname === "/past-rabbis" ||
         (pathname === "/chronicles" && (
           <RabbisHamburgerMenuHome extraClass="hidden" data={listOfRabbis} />
         ))}
-      {/* Rabbis Hamburger Menu */}
-
-      {/* Community Sidebar */}
-      {pathname === "/communities/sheets/old" && (
-        <div
-          id="sheets-sidebar"
-          className="sheets-sidebar fixed top-0 right-15 w-70 h-full bg-black flex flex-col z-50 border-l border-[#C3A13F]"
-        >
-          <div className="sheet-scrollbar-wrapper mt-auto mb-auto pl-5 pr-5">
-            <SimpleBar
-              style={{ maxHeight: "60vh" }}
-              autoHide={false}
-              data-simplebar-direction="rtl"
-            >
-              <div className="year-month-categories pl-7 pr-3">
-                <div className="all-sheets year-month text-[24px] leading-[1.2em]">
-                  <button
-                    onClick={() => {
-                      setSheetsOnSelectCategoryChildId(0);
-                      setSheetsOnSelectCategoryId(0);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        setSheetsOnSelectCategoryChildId(0);
-                        setSheetsOnSelectCategoryId(0);
-                      }
-                    }}
-                    type="button"
-                    aria-label="View All Sheets"
-                    className="year text-[#CD5E41] cursor-pointer font-medium border-b border-[#CD5E41] py-2.5"
-                  >
-                    כל הגיליונות
-                  </button>
-                </div>
-                {communitySheetsCategoryData?.map(
-                  (
-                    item: { id: number; name: string; children: any[] },
-                    index: number,
-                  ) => {
-                    return (
-                      <GetHebrewYear
-                        key={item?.id}
-                        index={index}
-                        year={item}
-                        activeCategory={sheetsOnSelectCategoryChildId}
-                        setActiveCategory={setSheetsOnSelectCategoryChildId}
-                        setSheetsOnSelectCategoryId={
-                          setSheetsOnSelectCategoryId
-                        }
-                        sheetsOnSelectCategoryId={sheetsOnSelectCategoryId}
-                        //setIsPostLoaded={() => setIsLoading(true)}
-                      />
-                    );
-                  },
-                )}
-              </div>
-            </SimpleBar>
-          </div>
-          <SubscribeForm />
-        </div>
-      )}
-      {/* Community Sidebar */}
-
-      {/* Knesset Sidebar */}
-      {pathname === "/the-knesset-of-customs" && (
-        <div
-          id="knesset-sidebar"
-          className="knesset-sidebar fixed top-0 right-15 w-70 h-full bg-[#FBF4E6] flex flex-col z-50 border-l border-[#D1CECE]"
-        >
-          <div className="knesset-sidebar-wrapper mt-auto mb-auto pl-5 pr-5">
-            <Sidebar
-              activeCategory={knessetActiveCategory || null}
-              categories={knessetCategoryData || []}
-              onCategorySelect={(id) => {
-                setKnessetActiveCategory(id);
-              }}
-              searchQuery={knessetSearchQueryLocal || ""}
-              onSearchChange={setKnessetSearchQueryLocal}
-              onSearchSubmit={setKnessetSearchQuery}
-            />
-          </div>
-          <SubscribeForm mode="dark" />
-        </div>
-      )}
-      {/* Knesset Sidebar */}
-
-      {/* Cycle of Pictures Sidebar */}
-      {pathname === "/cycle-pictures" && (
-        <>
-          <div
-            id="cycle-sidebar"
-            className="cycle-sidebar fixed top-0 right-15 w-70 h-full bg-[#1A1A1A] flex flex-col items-center justify-center z-50 border-l border-[#D1CECE]"
-          >
-            <div className="sheet-sidebar min-w-50 w-50 h-full overflow-hidden flex flex-col justify-center">
-              <div className="sheet-sidebar-wrapper flex items-center">
-                <div
-                  ref={scrollbarRef}
-                  className="sheet-scrollbar-wrapper w-full"
-                >
-                  <SimpleBar
-                    style={{ maxHeight: "60vh" }}
-                    autoHide={false}
-                    data-simplebar-direction="rtl"
-                  >
-                    <div className="year-month-categories pl-10 pr-2.5">
-                      <button
-                        type="button"
-                        aria-label="Select All Categories"
-                        disabled={cycleActiveCategory === -1 || isLoading}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCycleActiveCategory(-1);
-                        }}
-                        className={`all-post block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] border-t hover:bg-[#00000058] hover:text-[#ffffff] ${cycleActiveCategory === -1 ? "bg-[#00000058] text-[#ffffff] " : "bg-transparent text-[#CD5E41]"}`}
-                      >
-                        הכל
-                      </button>
-                      {cycleCategories?.length > 0 &&
-                        cycleCategories?.map((item: any, index: number) => {
-                          return (
-                            <button
-                              type="button"
-                              aria-label={`Select Category ${item.name}`}
-                              key={item?.id}
-                              disabled={
-                                Number(cycleActiveCategory) === item.id ||
-                                isLoading
-                              }
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setCycleActiveCategory(item.id);
-                              }}
-                              className={`category block w-full text-right cursor-pointer font-medium border-b border-[#CD5E41] py-2.5 text-[24px] leading-[1.2em] hover:bg-[#00000058] hover:text-[#ffffff] transition-colors duration-300 ${Number(cycleActiveCategory) === item.id ? "bg-[#00000058] text-[#ffffff]" : "bg-transparent text-[#CD5E41]"}`}
-                            >
-                              {parse(item.name || "")}
-                            </button>
-                          );
-                        })}
-                    </div>
-                  </SimpleBar>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            ref={cyclePopupRef}
-            id="cycle-popup-zoom"
-            className="fixed top-0 left-0 w-screen h-screen bg-[#000000d7] z-999 opacity-0 invisible"
-          >
-            <div className="cycle-popup-wrapper flex flex-col items-center justify-center w-full h-full relative">
-              <button
-                type="button"
-                aria-label="Close Cycle Popup"
-                onClick={() => {
-                  setActiveCyclePopup(false);
-                }}
-                className="close-cycle-popup absolute top-5 right-5 cursor-pointer w-10 h-10 sm:w-12 sm:h-12 p-3 sm:p-3.5 bg-[#202325] border border-[#C3A13F] rounded-full z-50"
-              >
-                <CloseIcon className="w-full h-auto" />
-              </button>
-              <Swiper
-                className="w-full relative z-10"
-                ref={swiperRef}
-                slidesPerView={1}
-                loop={true}
-              >
-                {cycleAllPosts?.length > 0 &&
-                  cycleAllPosts?.map((item: any, index: number) => {
-                    return (
-                      <SwiperSlide data-id={item?.id} key={item?.id}>
-                        <div className="flex flex-col items-center h-full justify-center gap-y-5 px-[5vw]">
-                          <div
-                            className="cycle-image w-full max-w-5xl h-auto flex items-center justify-center [&>figure]:w-full [&>figure>div>img]:w-full"
-                            data-size={
-                              isDesktopViewport
-                                ? item?.acf?.image?.sizes?.large
-                                : item?.acf?.image?.sizes?.medium
-                            }
-                          >
-                            <InnerImageZoom
-                              src={
-                                isDesktopViewport
-                                  ? item?.acf?.image?.sizes?.large
-                                  : item?.acf?.image?.sizes?.medium
-                              }
-                              zoomSrc={item?.acf?.image?.url}
-                            />
-                          </div>
-                          <div className="cycle-title">
-                            <h3 className="text-[25px] sm:text-[35px] lg:text-[45px] text-[#D1A941] leading-[70%] text-center">
-                              {parse(item?.title?.rendered || "")}
-                            </h3>
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                    );
-                  })}
-              </Swiper>
-              <div className="swiper-navigation w-full flex items-center justify-center">
-                <button
-                  type="button"
-                  aria-label="Next Slide"
-                  style={{
-                    backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
-                  }}
-                  className="group absolute left-5 bottom-5 sm:bottom-auto sm:top-1/2 sm:-mt-6 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-12 h-12 sm:w-15 sm:h-15"
-                  onClick={() => swiperRef.current?.swiper.slideNext()}
-                >
-                  <div className="w-full h-full flex items-center justify-center bg-[#202325] rounded-full overflow-hidden relative">
-                    <span className="btn-bg absolute z-10 left-0 top-0 w-full h-full bg-[#000000] translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-[cubic-bezier(0.625,0.05,0,1)]"></span>
-                    <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30 w-5 sm:w-6 h-auto">
-                      <SwipeLeft />
-                    </div>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  aria-label="Previous Slide"
-                  style={{
-                    backgroundImage: `linear-gradient(to top, #C3A13F, #5D4D1E)`,
-                  }}
-                  className="group absolute right-5 bottom-5 sm:bottom-auto sm:top-1/2 sm:-mt-6 z-40 rounded-full cursor-pointer overflow-hidden disabled:opacity-50 transition-opacity duration-300 p-px w-12 h-12 sm:w-15 sm:h-15"
-                  onClick={() => swiperRef.current?.swiper.slidePrev()}
-                >
-                  <div className="w-full h-full flex items-center justify-center bg-[#202325] rounded-full overflow-hidden relative">
-                    <span className="btn-bg absolute z-10 left-0 top-0 w-full h-full bg-[#000000] translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-[cubic-bezier(0.625,0.05,0,1)]"></span>
-                    <div className="group-hover:rotate-x-180 transition-transform duration-300 relative z-30 w-5 sm:w-6 h-auto">
-                      <SwipeRight />
-                    </div>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-      {/* Cycle of Pictures Sidebar */}
     </>
   );
+}
+
+// Pages that render exactly one extra fixed element, with no props beyond
+// the pathname itself. A lookup table keeps this declarative instead of a
+// long if/else chain (see the canonical fix for
+// react-doctor/no-high-complexity-react-function).
+const EXACT_PATH_FIXED_ELEMENTS: Record<string, () => React.ReactElement> = {
+  "/zatzel-graduates": () => <ZatzelGraduatesPopup />,
+  "/donation": () => <FixedPlayButton />,
+  "/chronicles": () => <ChroniclesElements />,
+  "/the-knesset-of-customs": () => <KnessetFixedSidebar />,
+  "/cycle-pictures": () => <CycleOfPicturesFixedElements />,
+  "/communities/sheets/old": () => <CommunityFixedSidebar />,
+};
+
+function ExactPathFixedElements({ pathname }: { pathname: string }) {
+  const render = EXACT_PATH_FIXED_ELEMENTS[pathname];
+  return render ? render() : null;
 }

@@ -83,7 +83,9 @@ export default function EvidenceOfPeriod(props: ChildProps) {
                 ? getTimelineOffset() +
                     GetRightPosition(video) -
                     window.innerWidth * 0.7
-                : (video.getBoundingClientRect().top || 0) + window.scrollY;
+                : (video.getBoundingClientRect().top || 0) +
+                    window.scrollY -
+                    window.innerHeight * 0.6;
             },
             toggleActions: "restart none none reverse",
           },
@@ -118,7 +120,8 @@ export default function EvidenceOfPeriod(props: ChildProps) {
                           GetRightPosition(item) -
                           window.innerWidth * 0.7
                       : (item.getBoundingClientRect().top || 0) +
-                          window.scrollY;
+                          window.scrollY -
+                          window.innerHeight * 0.6;
                   },
                   toggleActions: "restart none none reverse",
                 },
@@ -184,7 +187,7 @@ export default function EvidenceOfPeriod(props: ChildProps) {
             </h3>
           </div> */}
           <div className="content w-full lg:w-[66vw] flex items-center relative py-[5vh] px-[5vw] lg:py-0 lg:px-[4.35vw] overflow-hidden lg:overflow-visible">
-            <div className="content-bg absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full lg:h-screen select-none pointer-events-none scale-360 sm:scale-220 lg:scale-100">
+            <div className="content-bg absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full lg:h-screen select-none pointer-events-none scale-420 sm:scale-220 lg:scale-100">
               <BackgroundImageContain bgImage={evidanceBG} overlayClass={""} />
             </div>
             <div

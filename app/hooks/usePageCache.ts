@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 interface CacheEntry<T> {
   data: T;
@@ -25,36 +25,53 @@ const generateHash = (data: any): string => {
 };
 
 /**
+ * Reads and validates a cache entry for the given key from localStorage.
+ * Returns null on the server, on a cache miss, on expiry (after removing
+ * the stale entry), or on any parse/storage error. Pure from the caller's
+ * point of view aside from the (idempotent) expired-entry removal, so it's
+ * safe to call directly during render as a useState lazy initializer.
+ */
+function readCacheEntry<T>(cacheKey: string): CacheEntry<T> | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = localStorage.getItem(`${CACHE_PREFIX}${cacheKey}`);
+    if (!stored) return null;
+    const cacheEntry: CacheEntry<T> = JSON.parse(stored);
+    if (Date.now() - cacheEntry.timestamp >= CACHE_DURATION) {
+      localStorage.removeItem(`${CACHE_PREFIX}${cacheKey}`);
+      return null;
+    }
+    return cacheEntry;
+  } catch (error) {
+    console.error("Failed to load cache:", error);
+    return null;
+  }
+}
+
+/**
  * Hook for managing page cache with server comparison
  * @param cacheKey - Unique key for this page's cache
  * @param defaultData - Default data if cache doesn't exist
  */
 export function usePageCache<T>(cacheKey: string, defaultData: T) {
-  const [cachedData, setCachedData] = useState<T | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [cachedData, setCachedData] = useState<T | null>(
+    () => readCacheEntry<T>(cacheKey)?.data ?? null,
+  );
   const [hasUpdated, setHasUpdated] = useState(false);
+  // Tracks which cacheKey the state above currently reflects, so a change
+  // can be detected and handled synchronously during render instead of via
+  // an effect (which would briefly show the previous key's stale value
+  // before it re-runs). See
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [loadedForKey, setLoadedForKey] = useState(cacheKey);
 
-  // Load from cache on mount
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(`${CACHE_PREFIX}${cacheKey}`);
-      if (stored) {
-        const cacheEntry: CacheEntry<T> = JSON.parse(stored);
-        const now = Date.now();
+  if (cacheKey !== loadedForKey) {
+    setLoadedForKey(cacheKey);
+    setCachedData(readCacheEntry<T>(cacheKey)?.data ?? null);
+  }
 
-        // Check if cache is still valid (not expired)
-        if (now - cacheEntry.timestamp < CACHE_DURATION) {
-          setCachedData(cacheEntry.data);
-        } else {
-          // Cache expired, remove it
-          localStorage.removeItem(`${CACHE_PREFIX}${cacheKey}`);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to load cache:", error);
-    }
-    setIsLoading(false);
-  }, [cacheKey]);
+  // The read above is synchronous, so there is no separate loading phase.
+  const isLoading = false;
 
   /**
    * Save data to cache
@@ -140,29 +157,26 @@ export function useMultiPageCache(
   cacheKey: string,
   defaultData: Record<string, any>,
 ) {
-  const [cachedData, setCachedData] =
-    useState<Record<string, any>>(defaultData);
-  const [isLoading, setIsLoading] = useState(true);
+  const [cachedData, setCachedData] = useState<Record<string, any>>(
+    () => readCacheEntry<Record<string, any>>(cacheKey)?.data ?? defaultData,
+  );
   const [dataChanged, setDataChanged] = useState<Record<string, boolean>>({});
+  // Tracks which cacheKey the state above currently reflects, so a change
+  // can be detected and handled synchronously during render instead of via
+  // an effect (which would briefly show the previous key's stale value
+  // before it re-runs). See
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [loadedForKey, setLoadedForKey] = useState(cacheKey);
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(`${CACHE_PREFIX}${cacheKey}`);
-      if (stored) {
-        const cacheEntry: CacheEntry<Record<string, any>> = JSON.parse(stored);
-        const now = Date.now();
+  if (cacheKey !== loadedForKey) {
+    setLoadedForKey(cacheKey);
+    setCachedData(
+      readCacheEntry<Record<string, any>>(cacheKey)?.data ?? defaultData,
+    );
+  }
 
-        if (now - cacheEntry.timestamp < CACHE_DURATION) {
-          setCachedData(cacheEntry.data);
-        } else {
-          localStorage.removeItem(`${CACHE_PREFIX}${cacheKey}`);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to load cache:", error);
-    }
-    setIsLoading(false);
-  }, [cacheKey]);
+  // The read above is synchronous, so there is no separate loading phase.
+  const isLoading = false;
 
   const saveToCache = useCallback(
     (data: Record<string, any>, etag?: string) => {

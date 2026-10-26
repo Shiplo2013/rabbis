@@ -17,7 +17,10 @@ if (typeof window !== "undefined") {
 export default function PastRabbisScriptProvider({ data }: { data: any }) {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -40,7 +43,6 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setRabbisPageData(data);
@@ -55,7 +57,12 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [rabbisPageData, animationPlayed]);
+    // rabbisPageData has a single producer (the data effect above) and,
+    // once set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   useEffect(() => {
     if (!rabbisPageData?.pageData || !rabbisPageData?.posts) {
@@ -401,7 +408,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
@@ -448,7 +455,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}

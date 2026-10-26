@@ -1,15 +1,12 @@
 "use client";
 
-import parse from "html-react-parser";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 import CloseIcon from "../assets/icons/CloseIcon";
-import Search from "../assets/icons/Search";
 import bagImage from "../assets/images/main-menu-bg.jpg";
-import { parseJsonResponse } from "../lib/parseJsonResponse";
 import SubMenuItem from "../ui/SubMenuItem";
 import { useAppState } from "./AppContext";
+import BottomSearch from "./menu/BottomSearch";
 
 interface MainMenuProps {
   data?: any;
@@ -24,10 +21,6 @@ export default function MainMenu() {
     setActiveHamburgerMenu,
     appData,
   } = useAppState();
-  const [query, setQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchMessage, setSearchMessage] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
   const data = appData?.header?.acf?.hamburger_menu || {};
 
   const SUBMENU = [
@@ -42,115 +35,6 @@ export default function MainMenu() {
     { id: 1, title: "שם הרב", link: "/communities" },
     { id: 2, title: "שם הרב", link: "/communities" },
   ];
-  // Get elements
-  //const closeBTN = useRef(null);
-  //    const closeMenu = () => {
-  //     timeLine.reversed() ? timeLine.play() : timeLine.reverse();
-  //    }
-  const searchResultsRef = useRef<HTMLDivElement>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!query.trim()) {
-      setSearchMessage("אנא הזן מונח חיפוש");
-      return;
-    }
-    setIsSearching(true);
-    setSearchMessage("");
-    setSearchResults([]);
-    let isMounted = true;
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/search?search=${encodeURIComponent(query)}&per_page=100&_fields=id,title,url,subtype`,
-        {
-          cache: "no-store",
-        },
-      );
-      if (!response.ok) {
-        throw new Error("Failed to load search data.");
-        isMounted = false;
-      }
-
-      const data = await parseJsonResponse<any[]>(
-        response,
-        [],
-        "main-menu-search",
-      );
-
-      if (isMounted) {
-        if (data.length > 0) {
-          console.log("Search results:", data);
-          setSearchResults(data);
-        } else {
-          setSearchMessage("לא נמצאו תוצאות");
-        }
-      }
-    } catch (error) {
-      console.error("Search error:", error);
-      setSearchMessage("אירעה שגיאה בעת החיפוש");
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  useEffect(() => {
-    if (searchResults.length > 0) {
-      searchResultsRef.current?.classList.remove(
-        "opacity-0",
-        "visibility-hidden",
-      );
-    } else {
-      searchResultsRef.current?.classList.add("opacity-0", "visibility-hidden");
-    }
-  }, [searchResults]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchResultsRef.current &&
-        !searchResultsRef.current.contains(event.target as Node) &&
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
-        searchResultsRef.current?.classList.add(
-          "opacity-0",
-          "visibility-hidden",
-        );
-      } else {
-        searchResultsRef.current?.classList.remove(
-          "opacity-0",
-          "visibility-hidden",
-        );
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const getLinkUrl = (link: string, type: string) => {
-    const segments = new URL(link).pathname.match(/[^/]+/g);
-    const slug = segments ? segments.pop() : "";
-    if (type === "post") {
-      return `/news/${slug}`;
-    } else if (type === "page") {
-      return `/${slug}`;
-    } else if (type === "knesset-of-customs") {
-      return `/the-knesset-of-customs/${slug}`;
-    } else if (type === "zatzel-graduates") {
-      return `/zatzel-graduates`;
-    } else if (type === "communities") {
-      return `/communities/${slug}`;
-    } else if (type === "past-rabbis") {
-      return `/past-rabbis/${slug}`;
-    } else if (type === "holidays") {
-      return `/the-circle-of-the-year/${slug}`;
-    } else {
-      return `/${slug}`;
-    }
-  };
 
   // Handle Link Click
   const handleLinkClick = (
@@ -354,57 +238,7 @@ export default function MainMenu() {
             </ul>
           </div>
           <div className="bottom-search w-full sm:w-1/2 lg:w-1/4">
-            <p className="text-[26px] text-[#D1A941] mb-5 leading-[1em]">
-              חפש באתר
-            </p>
-            <form
-              className="search relative h-10 bg-[#FDF9F5] w-50 flex justify-stretch group"
-              onSubmit={handleSearch}
-              aria-label="Search Form"
-            >
-              <input
-                ref={searchRef}
-                className="w-full h-full border outline-0 text-black pl-8 text-[18px] leading-[1em] p-2"
-                type="text"
-                placeholder=""
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                disabled={isSearching}
-                aria-label="Search"
-              />
-              <button
-                className="absolute left-2 top-1/2 -translate-y-1/2 disabled:opacity-50"
-                type="submit"
-                disabled={isSearching}
-                aria-label="Submit Search"
-              >
-                <Search />
-              </button>
-              {searchResults.length > 0 && (
-                <div
-                  ref={searchResultsRef}
-                  className="search-result absolute w-full max-h-60 bg-white left-0 bottom-full overflow-y-auto opacity-0 visibility-hidden"
-                >
-                  <div className="search-link-list">
-                    {searchResults.map((result) => (
-                      <Link
-                        key={result.id}
-                        href={getLinkUrl(result.url, result.subtype)}
-                        onClick={handleLinkClick}
-                        prefetch={false}
-                        className="block py-3 px-3 text-[16px] leading-[1em] text-black hover:bg-gray-200 transition-colors duration-300 not-last:border-b not-last:border-b-[#C3A13F]"
-                        aria-label={result.title}
-                      >
-                        {parse(result.title)}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </form>
-            {searchMessage ? (
-              <p className="text-[14px] text-red-500 mt-2">{searchMessage}</p>
-            ) : null}
+            <BottomSearch />
           </div>
         </div>
       </div>

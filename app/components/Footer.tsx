@@ -1,13 +1,11 @@
 "use client";
-import parse from "html-react-parser";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import FooterProject from "../ui/FooterProject";
 import { gsap, ScrollToPlugin, ScrollTrigger, useGSAP } from "../ui/plugins";
-import SignUpButton from "../ui/SignUpButton";
 import { useAppState } from "./AppContext";
-import FooterCredits from "./FooterCredits";
+import FooterBottom from "./footer/FooterBottom";
+import FooterWidgets from "./footer/FooterWidgets";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, useGSAP);
@@ -49,7 +47,6 @@ function Footer(props: ChildProps) {
   // Footer Ref
   const router = useRouter();
   const footerRef = useRef<HTMLElement | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const { isLoading, setIsLoading, appData } = useAppState();
   const [footerData, setFooterData] = useState<FooterApiResponse | null>(
     appData?.footer || null,
@@ -153,11 +150,6 @@ function Footer(props: ChildProps) {
     let projects = gsap.utils.toArray(".single-project");
     if (projects.length > 0) {
       projects.forEach((project, index) => {
-        // Hide all project element
-        // gsap.set(project as HTMLElement, {
-        //   yPercent: 100,
-        //   opacity: 0,
-        // });
         // On MouseEnter
         (project as HTMLElement).addEventListener("mouseenter", (e) => {
           // Handle mouse enter event
@@ -180,124 +172,8 @@ function Footer(props: ChildProps) {
           });
           animations.push(animationImage);
         });
-        // Animate all project element on scroll
-        // const animationScroll = gsap.to(project as HTMLElement, {
-        //   yPercent: 0,
-        //   opacity: 1,
-        //   scrollTrigger: {
-        //     trigger: footerRef.current,
-        //     start: "top 60%",
-        //     toggleActions: "play none none none",
-        //   },
-        //   ease: "easeInOut",
-        //   duration: 1,
-        // });
-        // animations.push(animationScroll);
       });
     }
-    // Footer Widget
-    // const footerWidget1 = footerRef?.current?.querySelector(".footer-widget1");
-    // if (footerWidget1) {
-    //   gsap.set(footerWidget1, {
-    //     yPercent: 100,
-    //     opacity: 0,
-    //   });
-    //   const animationWidget1 = gsap.to(footerWidget1, {
-    //     yPercent: 0,
-    //     opacity: 1,
-    //     scrollTrigger: {
-    //       trigger: footerRef.current,
-    //       start: "top 30%",
-    //       toggleActions: "play none none none",
-    //     },
-    //     ease: "easeInOut",
-    //     duration: 1,
-    //   });
-    //   animations.push(animationWidget1);
-    // }
-    // // Footer Widget
-    // const footerWidget2 = footerRef?.current?.querySelector(".footer-widget2");
-    // if (footerWidget2) {
-    //   gsap.set(footerWidget2, {
-    //     yPercent: 100,
-    //     opacity: 0,
-    //   });
-    //   const animationWidget2 = gsap.to(footerWidget2, {
-    //     yPercent: 0,
-    //     opacity: 1,
-    //     scrollTrigger: {
-    //       trigger: footerRef.current,
-    //       start: "top 30%",
-    //       toggleActions: "play none none none",
-    //     },
-    //     ease: "easeInOut",
-    //     duration: 1,
-    //     delay: 0.2,
-    //   });
-    //   animations.push(animationWidget2);
-    // }
-    // // Footer Widget
-    // const footerWidget3 = footerRef?.current?.querySelector(".footer-widget3");
-    // if (footerWidget3) {
-    //   gsap.set(footerWidget3, {
-    //     yPercent: 100,
-    //     opacity: 0,
-    //   });
-    //   const animationWidget3 = gsap.to(footerWidget3, {
-    //     yPercent: 0,
-    //     opacity: 1,
-    //     scrollTrigger: {
-    //       trigger: footerRef.current,
-    //       start: "top 30%",
-    //       toggleActions: "play none none none",
-    //     },
-    //     ease: "easeInOut",
-    //     duration: 1,
-    //     delay: 0.4,
-    //   });
-    //   animations.push(animationWidget3);
-    // }
-    // // Privacy Policy
-    // const privacyPolicy = footerRef?.current?.querySelector(".privacy-policy");
-    // if (privacyPolicy) {
-    //   gsap.set(privacyPolicy, {
-    //     y: 100,
-    //     opacity: 0,
-    //   });
-    //   const animationPrivacyPolicy = gsap.to(privacyPolicy, {
-    //     y: 0,
-    //     opacity: 1,
-    //     scrollTrigger: {
-    //       trigger: footerRef.current,
-    //       start: "top 20%",
-    //       toggleActions: "play none none none",
-    //     },
-    //     ease: "easeInOut",
-    //     duration: 1,
-    //   });
-    //   animations.push(animationPrivacyPolicy);
-    // }
-    // // Footer Cookies
-    // const footerCookies = footerRef?.current?.querySelector(".footer-cookies");
-    // if (footerCookies) {
-    //   gsap.set(footerCookies, {
-    //     yPercent: 100,
-    //     opacity: 0,
-    //   });
-    //   const animationFooterCookies = gsap.to(footerCookies, {
-    //     yPercent: 0,
-    //     opacity: 1,
-    //     scrollTrigger: {
-    //       trigger: footerRef.current,
-    //       start: "top 20%",
-    //       toggleActions: "play none none none",
-    //     },
-    //     ease: "easeInOut",
-    //     duration: 1,
-    //     delay: 0.4,
-    //   });
-    //   animations.push(animationFooterCookies);
-    // }
 
     // Cleanup function to kill animations
     return () => {
@@ -319,24 +195,12 @@ function Footer(props: ChildProps) {
     return () => observer.disconnect();
   }, []);
 
-  // Handle Link Click
-  const handleLinkClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
-      setIsLoading(true);
-      window.scrollTo(0, 0);
-      router.push(e.currentTarget.href);
-    }
-  };
-
   return (
     footerData && (
       <footer
         ref={footerRef}
         id="footer"
-        className={`w-full h-auto flex items-center justify-end ${props.className} opacity-0 bg-[#F5F0EB] will-change-transform`}
+        className={`w-full h-auto flex items-center justify-end ${props.className} opacity-0 bg-[#F5F0EB]`}
       >
         <div className="footer-wrapper w-full bg-amber-50 flex items-center justify-center text-black pt-15 sm:pt-30 pb-25">
           <div className="w-[80%] max-w-282.5">
@@ -350,81 +214,8 @@ function Footer(props: ChildProps) {
                 />
               ))}
             </div>
-            <div className="footer-widgets mt-15 sm:mt-34 flex justify-between flex-col lg:flex-row gap-y-12 overflow-hidden">
-              <div className="footer-widget3 w-full lg:w-1/4">
-                <ul className="flex flex-col text-[20px] sm:text-2xl leading-[2em]">
-                  {footerData?.acf?.widget_3?.menu_items?.map((item, index) => (
-                    <li key={item.link}>
-                      <Link
-                        href={item.link}
-                        onClick={handleLinkClick}
-                        prefetch={false}
-                        className="hover:text-(--theme-color) transition-colors duration-300"
-                      >
-                        {item.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="footer-widget2 w-full lg:w-1/3">
-                {footerData?.acf?.widget_2?.widget_title && (
-                  <h3 className="text-[35px] sm:text-[52px] leading-[0.9] font-bold mb-4">
-                    {footerData?.acf?.widget_2?.widget_title}
-                  </h3>
-                )}
-                {footerData?.acf?.widget_2?.content && (
-                  <div className="footer-info text-[20px] sm:text-[28px] leading-[1.5em] [&>p>a]:hover:text-(--theme-color) [&>p>a]:transition-colors [&>p>a]:duration-300">
-                    {parse(footerData?.acf?.widget_2?.content || "")}
-                  </div>
-                )}
-              </div>
-              <div className="footer-widget1 w-full lg:w-1/4">
-                {footerData?.acf?.widget_1?.widget_title && (
-                  <h3 className="text-[35px] sm:text-[52px] leading-[0.9] font-bold mb-4">
-                    {footerData?.acf?.widget_1?.widget_title}
-                  </h3>
-                )}
-                {footerData?.acf?.widget_1?.content && (
-                  <div className="text-[20px] sm:text-[28px] leading-[0.9] [&>p>a]:hover:text-(--theme-color) [&>p>a]:transition-colors [&>p>a]:duration-300">
-                    {parse(footerData?.acf?.widget_1?.content || "")}
-                  </div>
-                )}
-                <div className="footer-form mt-7.5 w-full max-w-100">
-                  <SignUpButton
-                    text={"להרשמה"}
-                    extraClass="bg-[#D4AF37] pt-2 pb-1.25 px-5 rounded-none cursor-pointer"
-                    fontSize="text-[16px] lg:text-[22px]"
-                    textColor="text-black"
-                    hoverBgColor="bg-[#000000]"
-                    hoverTextColor="group-hover:text-[#D4AF37]"
-                  />
-                  {/* <FooterForm /> */}
-                </div>
-              </div>
-            </div>
-            <div className="footer-bottom flex justify-between gap-y-5 mt-10 lg:mt-5 flex-col lg:flex-row">
-              <div className="privacy-policy text-[20px] sm:text-2xl leading-[1.2em]">
-                <p>
-                  {footerData?.acf?.footer_menu?.map((item, index) => (
-                    <span key={item.link}>
-                      <Link
-                        href={item.link}
-                        onClick={handleLinkClick}
-                        prefetch={false}
-                        className="hover:text-(--theme-color) transition-colors duration-300"
-                      >
-                        {item.title}
-                      </Link>
-                      {index < footerData?.acf?.footer_menu.length - 1 && " - "}
-                    </span>
-                  ))}
-                </p>
-              </div>
-              <div className="footer-credits flex flex-col gap-y-2 items-end">
-                <FooterCredits />
-              </div>
-            </div>
+            <FooterWidgets footerData={footerData} />
+            <FooterBottom footerData={footerData} />
           </div>
         </div>
       </footer>

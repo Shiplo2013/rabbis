@@ -17,7 +17,7 @@ export default function SingleGraduates(props: ChildProps) {
     <div className="single-graduate w-full sm:w-[calc((100%-3.3vw)/2)] lg:w-[19.27vw] h-auto relative">
       <div className="text-bg">
         <Image
-          className="w-full object-cover object-center h-full relative z-10 will-change-transform"
+          className="w-full object-cover object-center h-full relative z-10"
           src={GraduateBG?.src}
           width="370"
           height="554"

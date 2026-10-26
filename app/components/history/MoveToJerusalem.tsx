@@ -76,7 +76,9 @@ export default function MoveToJerusalem(props: ChildProps) {
                 ? getTimelineOffset() +
                     GetRightPosition(image1) -
                     window.innerWidth * 0.7
-                : (image1?.getBoundingClientRect().top || 0) + window.scrollY;
+                : (image1?.getBoundingClientRect().top || 0) +
+                    window.scrollY -
+                    window.innerHeight * 0.6;
             },
             toggleActions: "restart pause play reverse",
           },
@@ -113,7 +115,9 @@ export default function MoveToJerusalem(props: ChildProps) {
                 ? getTimelineOffset() +
                     GetRightPosition(button) -
                     window.innerWidth * 0.5
-                : (button?.getBoundingClientRect().top || 0) + window.scrollY;
+                : (button?.getBoundingClientRect().top || 0) +
+                    window.scrollY -
+                    window.innerHeight * 0.6;
             },
             end: () => "+=" + window.innerWidth * 3,
             scrub: 2,
@@ -139,7 +143,9 @@ export default function MoveToJerusalem(props: ChildProps) {
                 ? getTimelineOffset() +
                     GetRightPosition(image2) -
                     window.innerWidth * 0.5
-                : (image2?.getBoundingClientRect().top || 0) + window.scrollY;
+                : (image2?.getBoundingClientRect().top || 0) +
+                    window.scrollY -
+                    window.innerHeight * 0.6;
             },
             toggleActions: "restart pause play reverse",
           },
@@ -154,7 +160,9 @@ export default function MoveToJerusalem(props: ChildProps) {
                 ? getTimelineOffset() +
                     GetRightPosition(image2) -
                     window.innerWidth * 0.5
-                : (image2?.getBoundingClientRect().top || 0) + window.scrollY;
+                : (image2?.getBoundingClientRect().top || 0) +
+                    window.scrollY -
+                    window.innerHeight * 0.6;
             },
             end: () => "+=" + window.innerWidth * 2.5,
             scrub: 2,
@@ -187,7 +195,8 @@ export default function MoveToJerusalem(props: ChildProps) {
                           GetRightPosition(text) -
                           window.innerWidth * 0.5
                       : (text?.getBoundingClientRect().top || 0) +
-                          window.scrollY;
+                          window.scrollY -
+                          window.innerHeight * 0.6;
                   },
                   toggleActions: "restart pause play reverse",
                 },
@@ -216,7 +225,7 @@ export default function MoveToJerusalem(props: ChildProps) {
     >
       <div className="widget-wrapper w-full h-full flex items-center">
         <div className="content-wrapper flex py-[7vh] px-[8vw] lg:py-0 lg:pl-0 lg:pr-[35vw] items-center flex-col lg:flex-row gap-y-[7vh]">
-          <div className="image1 w-full lg:w-auto lg:ml-11 relative will-change-transform">
+          <div className="image1 w-full lg:w-auto lg:ml-11 relative">
             <div className="relative w-full h-auto 2xl:h-143.5 2xl:w-188.75 lg:w-150">
               <Image
                 className="w-full object-cover object-center h-full"
@@ -231,13 +240,13 @@ export default function MoveToJerusalem(props: ChildProps) {
                 alt="Image 1"
               />
             </div>
-            <div className="period-button absolute bottom-0 right-0 -mr-[10vw] -mb-11 group will-change-transform">
+            <div className="period-button absolute bottom-0 right-0 -mr-[10vw] -mb-11 group">
               <div className="w-25 h-25 lg:w-38.25 lg:h-38.25 flex item-center justify-center border-2 lg:border-4 rounded-full bg-white text-black border-[#D1A941] text-[18px] sm:text-[22px] lg:text-[33px] leading-[0.8em] p-6 text-center font-bold -rotate-[9.97deg] group-hover:rotate-0 transition-transform duration-500">
                 <span className="block my-auto">{`המעבר לירושלים`}</span>
               </div>
             </div>
           </div>
-          <div className="image2 w-full lg:w-auto lg:ml-[9.1vw] will-change-transform">
+          <div className="image2 w-full lg:w-auto lg:ml-[9.1vw]">
             <div className="relative w-full h-auto 2xl:h-140 2xl:w-236.5 lg:w-180">
               <Image
                 className="w-full object-cover object-center h-full"

@@ -29,6 +29,69 @@ interface ChildProps {
   onMouseLeave: any;
 }
 
+// The three draggable images in the gallery share identical drag/zIndex/
+// Image-fallback logic and only differ in position, size, and source
+// image; extracting this removes 3 near-duplicated branchy JSX blocks.
+function NewsPapperDraggableImage({
+  index,
+  imageRef,
+  cmsImage,
+  fallbackImage,
+  width,
+  height,
+  className,
+  draggingImage,
+  setDraggingImage,
+  onMouseEnter,
+  onMouseLeave,
+}: {
+  index: 1 | 2 | 3;
+  imageRef: RefObject<HTMLDivElement | null>;
+  cmsImage: { large?: { url?: string } } | undefined;
+  fallbackImage: { src: string; blurDataURL?: string };
+  width: number;
+  height: number;
+  className: string;
+  draggingImage: 1 | 2 | 3 | null;
+  setDraggingImage: (value: 1 | 2 | 3 | null) => void;
+  onMouseEnter: any;
+  onMouseLeave: any;
+}) {
+  if (!cmsImage) {
+    return null;
+  }
+  return (
+    <Draggable
+      nodeRef={imageRef}
+      onStart={() => setDraggingImage(index)}
+      onStop={() => setDraggingImage(null)}
+    >
+      <div
+        ref={imageRef}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        className={className}
+        style={{ zIndex: draggingImage === index ? 50 : undefined }}
+        onDoubleClick={(e) => e.preventDefault()}
+      >
+        <Image
+          className="w-full object-cover object-center h-full user-select-none"
+          src={cmsImage?.large?.url || fallbackImage.src}
+          width={width}
+          height={height}
+          draggable={false}
+          loading="lazy"
+          placeholder="blur"
+          blurDataURL={
+            fallbackImage?.blurDataURL || CreateShimmerDataUrl(width, height)
+          }
+          alt={`Image ${index}`}
+        />
+      </div>
+    </Draggable>
+  );
+}
+
 export default function NewsPapperSection(props: ChildProps) {
   // Navigation
   const pathname = usePathname();
@@ -300,97 +363,45 @@ export default function NewsPapperSection(props: ChildProps) {
       >
         <div className="news-section-right w-full lg:w-[70%] flex flex-col gap-y-[7vh] sm:gap-y-[9.6vh]">
           <div className="news-section-images flex justify-center relative">
-            {props?.data?.image_1 && (
-              <Draggable
-                nodeRef={image1Ref}
-                onStart={() => setDraggingImage(1)}
-                onStop={() => setDraggingImage(null)}
-              >
-                <div
-                  ref={image1Ref}
-                  onMouseEnter={props.onMouseEnter}
-                  onMouseLeave={props.onMouseLeave}
-                  className="image1 w-full h-auto sm:w-137 sm:h-93.5 absolute right-0 bottom-0 rotate-[9.24deg] translate-x-[2vw] translate-y-[1vh] cursor-grab active:cursor-grabbing select-none"
-                  style={{ zIndex: draggingImage === 1 ? 50 : undefined }}
-                  onDoubleClick={(e) => e.preventDefault()}
-                >
-                  <Image
-                    className="w-full object-cover object-center h-full user-select-none"
-                    src={props?.data?.image_1?.large?.url || image1.src}
-                    width={548}
-                    height={374}
-                    draggable={false}
-                    loading="lazy"
-                    placeholder="blur"
-                    blurDataURL={
-                      image1?.blurDataURL || CreateShimmerDataUrl(548, 374)
-                    }
-                    alt="Image 1"
-                  />
-                </div>
-              </Draggable>
-            )}
-
-            {props?.data?.image_2 && (
-              <Draggable
-                nodeRef={image2Ref}
-                onStart={() => setDraggingImage(2)}
-                onStop={() => setDraggingImage(null)}
-              >
-                <div
-                  ref={image2Ref}
-                  onMouseEnter={props.onMouseEnter}
-                  onMouseLeave={props.onMouseLeave}
-                  className={`image2 w-full h-auto sm:w-139.5 sm:h-93 relative -translate-x-[2vw] cursor-grab active:cursor-grabbing select-none`}
-                  style={{ zIndex: draggingImage === 2 ? 50 : undefined }}
-                  onDoubleClick={(e) => e.preventDefault()}
-                >
-                  <Image
-                    className="w-full object-cover object-center h-full user-select-none"
-                    src={props?.data?.image_2?.large?.url || image2.src}
-                    width={558}
-                    height={372}
-                    draggable={false}
-                    loading="lazy"
-                    placeholder="blur"
-                    blurDataURL={
-                      image2?.blurDataURL || CreateShimmerDataUrl(558, 372)
-                    }
-                    alt="Image 2"
-                  />
-                </div>
-              </Draggable>
-            )}
-            {props?.data?.image_3 && (
-              <Draggable
-                nodeRef={image3Ref}
-                onStart={() => setDraggingImage(3)}
-                onStop={() => setDraggingImage(null)}
-              >
-                <div
-                  ref={image3Ref}
-                  onMouseEnter={props.onMouseEnter}
-                  onMouseLeave={props.onMouseLeave}
-                  className={`image3 w-full h-auto sm:w-104.75 sm:h-76 absolute top-0 left-0 -translate-x-[5vw] translate-y-[1.75vh] cursor-grab active:cursor-grabbing select-none`}
-                  style={{ zIndex: draggingImage === 3 ? 50 : undefined }}
-                  onDoubleClick={(e) => e.preventDefault()}
-                >
-                  <Image
-                    className="w-full object-cover object-center h-full user-select-none"
-                    src={props?.data?.image_3?.large?.url || image3.src}
-                    width={548}
-                    height={374}
-                    draggable={false}
-                    loading="lazy"
-                    placeholder="blur"
-                    blurDataURL={
-                      image3?.blurDataURL || CreateShimmerDataUrl(548, 374)
-                    }
-                    alt="Image 3"
-                  />
-                </div>
-              </Draggable>
-            )}
+            <NewsPapperDraggableImage
+              index={1}
+              imageRef={image1Ref}
+              cmsImage={props?.data?.image_1}
+              fallbackImage={image1}
+              width={548}
+              height={374}
+              className="image1 w-full h-auto sm:w-137 sm:h-93.5 absolute right-0 bottom-0 rotate-[9.24deg] translate-x-[2vw] translate-y-[1vh] cursor-grab active:cursor-grabbing select-none"
+              draggingImage={draggingImage}
+              setDraggingImage={setDraggingImage}
+              onMouseEnter={props.onMouseEnter}
+              onMouseLeave={props.onMouseLeave}
+            />
+            <NewsPapperDraggableImage
+              index={2}
+              imageRef={image2Ref}
+              cmsImage={props?.data?.image_2}
+              fallbackImage={image2}
+              width={558}
+              height={372}
+              className="image2 w-full h-auto sm:w-139.5 sm:h-93 relative -translate-x-[2vw] cursor-grab active:cursor-grabbing select-none"
+              draggingImage={draggingImage}
+              setDraggingImage={setDraggingImage}
+              onMouseEnter={props.onMouseEnter}
+              onMouseLeave={props.onMouseLeave}
+            />
+            <NewsPapperDraggableImage
+              index={3}
+              imageRef={image3Ref}
+              cmsImage={props?.data?.image_3}
+              fallbackImage={image3}
+              width={548}
+              height={374}
+              className="image3 w-full h-auto sm:w-104.75 sm:h-76 absolute top-0 left-0 -translate-x-[5vw] translate-y-[1.75vh] cursor-grab active:cursor-grabbing select-none"
+              draggingImage={draggingImage}
+              setDraggingImage={setDraggingImage}
+              onMouseEnter={props.onMouseEnter}
+              onMouseLeave={props.onMouseLeave}
+            />
           </div>
           <div
             dir="ltr"

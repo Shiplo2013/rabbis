@@ -134,10 +134,17 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
   const params = useParams();
   const id = params?.id as string;
   const [visitTempleData, setVisitTempleData] = useState<any>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  // pageDataFetched/error are pure derivations of data/visitTempleData, so
+  // they are computed during render instead of mirrored into state via
+  // an effect that "adjusts" them on every data change.
+  const pageDataFetched = !!visitTempleData;
   const [sectionWidth, setSectionWidth] = useState(200);
   const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
-  const [error, setError] = useState<string | null>(null);
+  const error = !data
+    ? "No data available."
+    : !data?.acf
+      ? "Invalid data format."
+      : null;
   const [tabGalleryData, setTabGalleryData] = useState<GalleryAnalysisByTab[]>(
     [],
   );
@@ -167,11 +174,9 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data available.");
       return;
     }
     if (!data?.acf) {
-      setError("Invalid data format.");
       return;
     }
     setVisitTempleData(data);
@@ -182,17 +187,21 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
         })) || [],
       );
     setTempleActiveTab(id ? parseInt(id) : 0);
-  }, [data]);
+  }, [data, templeTabData, setTempleTabData, setTempleActiveTab, id]);
 
   useEffect(() => {
     if (!visitTempleData?.acf) {
       return;
     }
     if (animationPlayed) {
-      setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [visitTempleData, animationPlayed]);
+    // visitTempleData has a single producer (the data effect above) and,
+    // once set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   useEffect(() => {
     if (!visitTempleData?.acf) {
@@ -412,7 +421,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
@@ -446,7 +455,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp w-screen flex flex-wrap flex-col lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp w-screen flex flex-wrap flex-col lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -469,7 +478,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:w-(--section-width) lg:min-w-(--section-width) panel-section will-change-transform`}
+              extraClass={`w-full lg:w-(--section-width) lg:min-w-(--section-width) panel-section`}
               animWidthText={0.8}
               sectionData={{
                 videoSection: visitTempleData?.acf?.video_section,

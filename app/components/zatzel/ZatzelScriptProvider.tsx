@@ -23,6 +23,23 @@ interface ZatzelPost {
   id: number;
 }
 
+// Default/fallback data: a static constant with no dependency on props or
+// state, so it is hoisted to module scope instead of being recreated (and
+// needing to be listed as an effect dependency) on every render.
+const defaultZatzelPageData = {
+  introduction: {
+    title: "זכרון להולכים",
+    content:
+      "במשך מאה וחמישים שנות ממלכת התורה, כנסת ישראל לדורותיה, הצמיחה הישיבה דורות של תלמידים אשר האירו את העולם בתורתם, בחכמתם ובמעשיהם הטובים. במדור זה נציב נר זיכרון לדמויות בוגרי הישיבה אשר הלכו לעולמם, למען תהיה דמותם חקוקה בליבנו. זכרם יעמוד לנגד עינינו כעמוד אש וענן, להאיר לנו את הדרך, להדריך את צעדינו ולהמשיך ולהנחיל את מורשת התורה לדורות הבאים.",
+  },
+  sections: [
+    {
+      sectionTitle: "זכרון להולכים",
+      sectionContent: [],
+    },
+  ],
+};
+
 export default function ZatzelScriptProvider({
   data,
   postData,
@@ -47,7 +64,10 @@ export default function ZatzelScriptProvider({
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState<number>(200);
   const [sectionWidth, setSectionWidth] = useState<number>(100);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided to ZatzelScriptProvider." : null;
   // Router Path
   const pathname = usePathname();
 
@@ -68,9 +88,6 @@ export default function ZatzelScriptProvider({
   //const [postPerPage, setPostPerPage] = useState(100);
   const postsPerLoad = useRef(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(() =>
-    Math.ceil(Number(postData?.length || 0) / postsPerLoad.current),
-  );
   // const [isPostLoaded, setIsPostLoaded] = useState(false);
   // const [noPostsFound, setNoPostsFound] = useState(false);
   // const [currentPage, setCurrentPage] = useState(1);
@@ -81,11 +98,28 @@ export default function ZatzelScriptProvider({
   //   Number(postData?.[0]?.totalPages ?? 1),
   // );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [verticalPosts, setVerticalPosts] = useState<{
+  // postLoadLimit/verticalPosts/normalPosts are pure derivations of
+  // allPosts/postLoadCount; computed during render instead of mirrored
+  // into state via an effect (avoids an avoidable render chain every time
+  // allPosts changes).
+  const postLoadLimit = Math.ceil(
+    Number(allPosts?.sections?.[0]?.sectionContent?.length || 0) /
+      postsPerLoad.current,
+  );
+  const verticalPosts: {
     sectionTitle: string;
     sectionContent: ZatzelPost[];
-  } | null>(null);
-  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  } | null = allPosts?.sections?.[0]
+    ? {
+        sectionTitle: allPosts.sections[0].sectionTitle,
+        sectionContent: allPosts.sections[0].sectionContent?.slice(0, 4) || [],
+      }
+    : null;
+  const normalPosts =
+    allPosts?.sections?.[0]?.sectionContent?.slice(
+      4,
+      postsPerLoad.current * postLoadCount,
+    ) || [];
   const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
     threshold: 0,
     triggerOnce: false,
@@ -93,25 +127,9 @@ export default function ZatzelScriptProvider({
   // Popup Timeline
   const cardPopupTimeline = useRef<gsap.core.Timeline | null>(null);
 
-  // Default Data
-  const defaultZatzelPageData = {
-    introduction: {
-      title: "זכרון להולכים",
-      content:
-        "במשך מאה וחמישים שנות ממלכת התורה, כנסת ישראל לדורותיה, הצמיחה הישיבה דורות של תלמידים אשר האירו את העולם בתורתם, בחכמתם ובמעשיהם הטובים. במדור זה נציב נר זיכרון לדמויות בוגרי הישיבה אשר הלכו לעולמם, למען תהיה דמותם חקוקה בליבנו. זכרם יעמוד לנגד עינינו כעמוד אש וענן, להאיר לנו את הדרך, להדריך את צעדינו ולהמשיך ולהנחיל את מורשת התורה לדורות הבאים.",
-    },
-    sections: [
-      {
-        sectionTitle: "זכרון להולכים",
-        sectionContent: [],
-      },
-    ],
-  };
-
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided to ZatzelScriptProvider.");
       return;
     }
     setZatzelPageData({
@@ -125,30 +143,7 @@ export default function ZatzelScriptProvider({
     setAllPosts({
       sections: postData.length ? postData : defaultZatzelPageData.sections,
     });
-  }, [data, postData]);
-
-  // Set Posts data when zatzelPosts changes
-  useEffect(() => {
-    if (!allPosts) return;
-    setPostLoadLimit(
-      Math.ceil(
-        Number(allPosts?.sections?.[0]?.sectionContent?.length || 0) /
-          postsPerLoad.current,
-      ),
-    );
-    setVerticalPosts({
-      sectionTitle: allPosts?.sections?.[0]?.sectionTitle,
-      sectionContent:
-        allPosts?.sections?.[0]?.sectionContent?.slice(0, 4) || [],
-    });
-    setNormalPosts(
-      allPosts?.sections?.[0]?.sectionContent?.slice(
-        4,
-        postsPerLoad.current * postLoadCount,
-      ) || [],
-    );
-    setIsLoadingMore(false);
-  }, [allPosts, postLoadCount]);
+  }, [data, postData, setZatzelPosts]);
 
   // Set Page Data Fetched
   useEffect(() => {
@@ -156,7 +151,12 @@ export default function ZatzelScriptProvider({
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [zatzelPageData, zatzelPosts, animationPlayed]);
+    // zatzelPageData/zatzelPosts have a single producer (the data effect
+    // above) and, once set, never revert, so this effect is not guarded on
+    // them; re-running it only when animationPlayed changes avoids an
+    // avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -456,8 +456,13 @@ export default function ZatzelScriptProvider({
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
-      setIsLoadingMore(true);
       setPostLoadCount((currenValue) => currenValue + 1);
+      // normalPosts is derived from allPosts/postLoadCount directly during
+      // render, so the next batch of posts is already visible in the same
+      // render pass; there is no actual async loading period here, so
+      // resolve the loading-more indicator immediately instead of relying
+      // on the removed mirror effect to flip it back on a later render.
+      setIsLoadingMore(false);
     }
   }, [isReadMoreInView]);
 
@@ -481,7 +486,7 @@ export default function ZatzelScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, zatzelVerticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
@@ -624,8 +629,7 @@ export default function ZatzelScriptProvider({
 
   // Filter Posts by Selected Date
   useEffect(() => {
-    if (zatzelSelectedDate !== null) {
-      let isMounted = true;
+    if (zatzelSelectedDate !== null && zatzelSelectedDate !== undefined) {
       const filteredSections = postData.map((section: any) => {
         const filteredContent = section.sectionContent.filter(
           (post: { yearOfDeath: string }) => {
@@ -640,33 +644,24 @@ export default function ZatzelScriptProvider({
           sectionContent: filteredContent,
         };
       });
-      if (isMounted) {
-        if (
-          filteredSections.length > 0 &&
-          filteredSections.some(
-            (section: any) => section.sectionContent.length > 0,
-          )
-        ) {
-          setAllPosts({ sections: filteredSections });
-        } else {
-          //setNoPostsFound(true);
-          setAllPosts({ sections: [] });
-        }
-      }
+      const hasMatches =
+        filteredSections.length > 0 &&
+        filteredSections.some(
+          (section: any) => section.sectionContent.length > 0,
+        );
+      setAllPosts({ sections: hasMatches ? filteredSections : [] });
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     } else {
-      //setNoPostsFound(false);
       setAllPosts({
         sections: postData.length ? postData : defaultZatzelPageData.sections,
       });
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     }
-  }, [zatzelSelectedDate]);
+  }, [zatzelSelectedDate, postData]);
 
-  // Filter Posts by Selected Date
+  // Filter Posts by Searched Data
   useEffect(() => {
-    if (zatzelSearchedData !== null) {
-      let isMounted = true;
+    if (zatzelSearchedData !== null && zatzelSearchedData !== undefined) {
       const filteredSections = postData.map((section: any) => {
         const filteredContent = section.sectionContent.filter(
           (post: { title: string }) => {
@@ -678,28 +673,20 @@ export default function ZatzelScriptProvider({
           sectionContent: filteredContent,
         };
       });
-      if (isMounted) {
-        if (
-          filteredSections.length > 0 &&
-          filteredSections.some(
-            (section: any) => section.sectionContent.length > 0,
-          )
-        ) {
-          setAllPosts({ sections: filteredSections });
-        } else {
-          //setNoPostsFound(true);
-          setAllPosts({ sections: [] });
-        }
-      }
+      const hasMatches =
+        filteredSections.length > 0 &&
+        filteredSections.some(
+          (section: any) => section.sectionContent.length > 0,
+        );
+      setAllPosts({ sections: hasMatches ? filteredSections : [] });
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     } else {
-      //setNoPostsFound(false);
       setAllPosts({
         sections: postData.length ? postData : defaultZatzelPageData.sections,
       });
       window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
     }
-  }, [zatzelSearchedData]);
+  }, [zatzelSearchedData, postData]);
 
   if (error) {
     return (
@@ -781,7 +768,7 @@ export default function ZatzelScriptProvider({
             />
           </div>
         </div>
-        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh]">
           <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
             <div
               className={`normal-posts w-full flex flex-row flex-wrap gap-x-10 gap-y-10 lg:gap-y-15 justify-end`}

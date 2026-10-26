@@ -2,7 +2,7 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import DonationScriptProvider from "../components/donation/DonationScriptProvider";
-import { parseJsonResponse } from "../lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "../lib/parseJsonResponseWithBackup";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await wpFetch(
@@ -28,10 +28,10 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
-    "donation-page",
+    "donation-page-meta",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
@@ -72,12 +72,8 @@ export default async function page() {
     },
   );
 
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let pageData = [{ acf: {} }];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     "donation-page",

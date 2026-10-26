@@ -2,7 +2,7 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import HomeScriptProvider from "./components/home/HomeScriptProvider";
-import { parseJsonResponse } from "./lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "./lib/parseJsonResponseWithBackup";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await wpFetch(
@@ -27,10 +27,10 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
-    "home-page",
+    "home-page-meta",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
@@ -57,10 +57,6 @@ export default async function page() {
       next: { revalidate: 60 }, // Cache data for 1 minute
     },
   );
-
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
 
   let pageData = [
     {
@@ -110,7 +106,7 @@ export default async function page() {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     "home-page",
@@ -132,10 +128,6 @@ export default async function page() {
     },
   );
 
-  if (!postsRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let postsData = [
     {
       id: 0,
@@ -152,7 +144,7 @@ export default async function page() {
     },
   ];
 
-  const parsedPostData = await parseJsonResponse<any[]>(
+  const parsedPostData = await parseJsonResponseWithBackup<any[]>(
     postsRes,
     postsData,
     "home-communities-posts",

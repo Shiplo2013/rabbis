@@ -39,7 +39,7 @@ export default function Introduction(props: ChildProps) {
             bgClass={props.bgClass}
             animatePosition={0.1}
           />
-          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform"></div>
+          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30"></div>
         </div>
       )}
       {props.bgOverlay !== "" && (
@@ -63,7 +63,7 @@ export default function Introduction(props: ChildProps) {
       >
         <div className="intro-wrapper text-right flex flex-col items-center gap-x-[3.75vw] w-full lg:w-162 px-[10vw] lg:px-0">
           {props.data.title && (
-            <h1 className="intro-title w-full text-[80px] sm:text-[120px] lg:text-[208px] text-[#AC832E] leading-[0.2em] sm:leading-[0.4em] overflow-hidden relative z-20 py-7.5 font-bold will-change-transform">
+            <h1 className="intro-title w-full text-[80px] sm:text-[120px] lg:text-[208px] text-[#AC832E] leading-[0.2em] sm:leading-[0.4em] overflow-hidden relative z-20 py-7.5 font-bold">
               {parse(props.data.title)}
             </h1>
           )}

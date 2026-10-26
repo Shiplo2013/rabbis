@@ -25,7 +25,10 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
   // Container Ref
   const main = useRef<HTMLDivElement>(null);
   const [pageData, setPageData] = useState<PageData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const [pageDataFetched, setPageDataFetched] = useState(false);
   // Page Data
   const sectionData = {
@@ -53,7 +56,6 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setPageData(data);
@@ -67,7 +69,12 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [pageData, animationPlayed]);
+    // pageData has a single producer (the data effect above) and, once
+    // set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   // Load Page
   useGSAP(() => {
@@ -306,7 +313,7 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
         ref={main}
         id="page"
         dir="rtl"
-        className="main relative overflow-hidden z-10 will-change-transform"
+        className="main relative overflow-hidden z-10"
       >
         <div className="privacy-policy-page flex w-screen h-auto min-h-screen items-center justify-center relative overflow-hidden pt-[12vh] sm:pt-[15vh] lg:pt-[20vh] pb-[6vh] lg:pb-[10vh]">
           <div className="privacy-policy-container w-full lg:w-[80%] max-w-287.5">

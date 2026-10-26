@@ -2,7 +2,7 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import CommunitiesScriptProvider from "../components/communites/CommunitesScriptProvider";
-import { parseJsonResponse } from "../lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "../lib/parseJsonResponseWithBackup";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await wpFetch(
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     "communities-page",
@@ -72,10 +72,7 @@ export default async function page() {
     },
   );
 
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-  const pageData = await parseJsonResponse<any[]>(
+  const pageData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     [{ acf: { select_categories: [] } }],
     "communities-page",
@@ -99,7 +96,7 @@ export default async function page() {
       );
       return null;
     }
-    const categoryPosts = await parseJsonResponse<any[]>(
+    const categoryPosts = await parseJsonResponseWithBackup<any[]>(
       categoryRes,
       [],
       `communities-category-${categoryId}`,
@@ -112,10 +109,6 @@ export default async function page() {
   });
 
   const validCategoryQueryResults = await Promise.all(validCategoryQuery);
-
-  if (!pageData || !validCategoryQueryResults) {
-    throw new Error("Failed to load data.");
-  }
 
   const successfulCategories = validCategoryQueryResults.filter(
     (item): item is { categoryId: any; categoryTitle: any; posts: any[] } =>

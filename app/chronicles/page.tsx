@@ -2,7 +2,7 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import HistoryScriptProvider from "../components/history/HistoryScriptProvider";
-import { parseJsonResponse } from "../lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "../lib/parseJsonResponseWithBackup";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await wpFetch(
@@ -28,10 +28,10 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
-    "chronicles-page",
+    "chronicles-page-meta",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
@@ -72,10 +72,6 @@ export default async function page() {
     },
   );
 
-  if (!pageRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   let pageData = [
     {
       id: 0,
@@ -108,7 +104,7 @@ export default async function page() {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     "chronicles-page",
@@ -222,7 +218,7 @@ export default async function page() {
     ]);
 
   const parseRabbisData = async (response: Response, index: number) => {
-    return parseJsonResponse<any[]>(response, [], `chronicles-rabbis-${index}`);
+    return parseJsonResponseWithBackup<any[]>(response, [], `chronicles-rabbis-${index}`);
   };
 
   const [rabbisData1, rabbisData2, rabbisData3, rabbisData4, rabbisData5] =

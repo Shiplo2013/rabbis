@@ -51,7 +51,7 @@ export default function DonationContentSection(props: ChildProps) {
         <div className="donation-content flex items-center gap-x-[10vw] flex-col lg:flex-row gap-y-15">
           <div className="donation-video1 w-full lg:w-[46.8vw] lg:h-[60vh]">
             <DonationVideo
-              extraClass={"donation-video w-full h-full will-change-transform"}
+              extraClass={"donation-video w-full h-full"}
               data={SectionData.video1}
             />
           </div>
@@ -81,7 +81,7 @@ export default function DonationContentSection(props: ChildProps) {
           </div>
           <div className="donation-video2 w-full lg:w-[23.33vw] lg:h-[72.33vh]">
             <DonationVideo
-              extraClass={"donation-video w-full h-full will-change-transform"}
+              extraClass={"donation-video w-full h-full"}
               data={SectionData.video2}
             />
           </div>
@@ -97,7 +97,7 @@ export default function DonationContentSection(props: ChildProps) {
             </div>
           </div>
         </div>
-        <div className="donation-readmore min-w-[15vw] lg:w-[15vw] will-change-transform">
+        <div className="donation-readmore min-w-[15vw] lg:w-[15vw]">
           <ThemeButton
             buttonLink={SectionData.button.link}
             svgIconClass={""}

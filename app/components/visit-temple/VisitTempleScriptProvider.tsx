@@ -135,10 +135,13 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
   // Router Path
   const pathname = usePathname();
   const [visitTempleData, setVisitTempleData] = useState<any>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  // pageDataFetched/error are pure derivations of data/visitTempleData, so
+  // they are computed during render instead of mirrored into state via
+  // an effect that "adjusts" them on every data change.
+  const pageDataFetched = !!visitTempleData;
   const [sectionWidth, setSectionWidth] = useState(200);
   const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
-  const [error, setError] = useState<string | null>(null);
+  const error = !data ? "No data provided." : null;
   const {
     animationPlayed,
     setAnimationPlayed,
@@ -168,7 +171,6 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setVisitTempleData(data);
@@ -178,13 +180,14 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
           tab_title: tab.tab_title,
         })) || [],
       );
-  }, [data]);
-
-  useEffect(() => {
-    if (!visitTempleData?.acf) {
+    // Merged from the sibling effect that used to react to visitTempleData
+    // changing; data.acf is already available here (visitTempleData is
+    // just being set to data above), so there is no need for a second
+    // render pass to compute the gallery analysis / section width.
+    if (!data?.acf) {
       return;
     }
-    const galleryAnalysisByTab = buildGalleryAnalysisByTab(visitTempleData.acf);
+    const galleryAnalysisByTab = buildGalleryAnalysisByTab(data.acf);
     setTabGalleryData(galleryAnalysisByTab);
     let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10;
     galleryAnalysisByTab[activeTab]?.images.forEach((tab) => {
@@ -196,9 +199,11 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
     });
     setSectionWidth(minSectionWidth);
     setContainerWidth(minSectionWidth + 100);
-    setPageDataFetched(true);
-    setIsLoading(false);
-  }, [visitTempleData]);
+    // isLoading is shared context state; its value derives from data's
+    // presence (always false here, since this branch only runs once data
+    // is truthy) rather than an unrelated hardcoded literal.
+    setIsLoading(!data);
+  }, [data, templeTabData, setTempleTabData, activeTab, setIsLoading]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -465,7 +470,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (
@@ -499,7 +504,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp w-screen flex flex-wrap flex-col lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp w-screen flex flex-wrap flex-col lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -529,7 +534,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
                     "--section-width": `${sectionWidth}vw`,
                   } as React.CSSProperties
                 }
-                extraClass={`w-full lg:w-(--section-width) lg:min-w-(--section-width) panel-section will-change-transform`}
+                extraClass={`w-full lg:w-(--section-width) lg:min-w-(--section-width) panel-section`}
                 animWidthText={0.8}
                 sectionData={{
                   videoSection: visitTempleData?.acf?.video_section,

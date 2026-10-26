@@ -105,6 +105,148 @@ const getDesktopViewportSnapshot = () =>
 
 const getServerDesktopViewportSnapshot = () => false;
 
+// Self-contained: owns its own "expanded/collapsed" state and the
+// line-count truncation logic, since no other part of MirrorAudioPlayer
+// reads them. Extracting this removes a state value, a memoized
+// computation, and 4 branches (tied to the same isExpanded flag) that
+// were repeated inline in the parent's render.
+function AlbumDescription({ text }: { text: string }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Calculate line count and truncate album text to 4 lines
+  const { lineCount, truncatedText } = useMemo(() => {
+    // Strip HTML tags to count actual content lines
+    const plainText = text
+      .replace(/<[^>]*>/g, "") // Remove HTML tags
+      .trim();
+    const lines = plainText
+      .split("\n")
+      .filter((line: string) => line.trim() !== "");
+    const count = lines.length;
+
+    if (count > 4) {
+      // Rejoin first 4 lines
+      const first4Lines = lines.slice(0, 4).join("\n");
+      return { lineCount: count, truncatedText: first4Lines };
+    }
+    return { lineCount: count, truncatedText: plainText };
+  }, [text]);
+
+  const shouldShowReadMore = lineCount > 4;
+
+  const handleReadMore = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  return (
+    <div className="text text-[18px] leading-[120%] max-w-191.25">
+      {parse(isExpanded ? text : truncatedText)}
+      {shouldShowReadMore && (
+        <button
+          type="button"
+          onClick={handleReadMore}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleReadMore();
+            }
+          }}
+          tabIndex={0}
+          aria-label={
+            isExpanded ? "Hide album description" : "Show album description"
+          }
+          className="read-more text-[14px] leading-[100%] text-[#E5C15A] mr-2 cursor-pointer hover:opacity-70 transition-opacity"
+        >
+          {isExpanded ? "הסתר..." : "קרא עוד..."}
+        </button>
+      )}
+    </div>
+  );
+}
+
+// The four transport buttons share onClick/onKeyDown-Enter-or-Space
+// wiring; isPlaying/isInfinityActive each drive 2-3 separate inline
+// ternaries in the parent (icon swap, className, aria-label), so
+// extracting this block removes that duplication from the parent too.
+function PlayerControls({
+  isPlaying,
+  isInfinityActive,
+  onBackward,
+  onPlayPause,
+  onForward,
+  onInfinityToggle,
+}: {
+  isPlaying: boolean;
+  isInfinityActive: boolean;
+  onBackward: () => void;
+  onPlayPause: () => void;
+  onForward: () => void;
+  onInfinityToggle: () => void;
+}) {
+  return (
+    <div className="controls flex gap-x-2.5 items-center flex-row-reverse">
+      <button
+        onClick={onBackward}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            onBackward();
+          }
+        }}
+        type="button"
+        tabIndex={0}
+        aria-label="Skip backward 10 seconds"
+        className="backward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-colors duration-300"
+      >
+        <BackwardIcon />
+      </button>
+      <button
+        onClick={onPlayPause}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            onPlayPause();
+          }
+        }}
+        type="button"
+        tabIndex={0}
+        aria-label={isPlaying ? "Pause" : "Play"}
+        className={`play cursor-pointer bg-[#C3A13F] border border-[#FFFFFF1A] w-10.5 h-10.5 rounded-full flex items-center justify-center pt-3.5 pr-3 pb-3.5 ${isPlaying ? "pl-3.5" : "pl-4"} hover:bg-[#eacb70] transition-colors duration-300`}
+      >
+        {isPlaying ? <PauseIcon /> : <PlayIcon3 />}
+      </button>
+      <button
+        onClick={onForward}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            onForward();
+          }
+        }}
+        type="button"
+        tabIndex={0}
+        aria-label="Skip forward 10 seconds"
+        className="forward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-colors duration-300"
+      >
+        <ForwardIcon />
+      </button>
+      <button
+        onClick={() => onInfinityToggle()}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            onInfinityToggle();
+          }
+        }}
+        type="button"
+        tabIndex={0}
+        aria-label={
+          isInfinityActive ? "Disable infinity mode" : "Enable infinity mode"
+        }
+        aria-pressed={isInfinityActive}
+        className={`infinity cursor-pointer border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-colors duration-300 ${isInfinityActive ? "bg-[#C3A13F]" : "bg-[#FFFFFF0A]"}`}
+      >
+        <ReplayIcon />
+      </button>
+    </div>
+  );
+}
+
 export default function MirrorAudioPlayer(props: ChildProps) {
   // Viewport Detection
   const isDesktopViewport = useSyncExternalStore(
@@ -125,7 +267,14 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   const playerCatRef = useRef<SwiperRef>(null);
 
   // State
-  const musicPageData = (props.data as MusicItem) || {};
+  // Memoized so musicPageData keeps a stable reference across renders when
+  // props.data is unchanged, instead of a new `{}` fallback object being
+  // created every render (which would make downstream hooks that depend on
+  // it re-run on every render).
+  const musicPageData = useMemo(
+    () => (props.data as MusicItem) || {},
+    [props.data],
+  );
 
   const [activeMusic, setActiveMusic] = useState({
     tabIndex: 0,
@@ -140,7 +289,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   const [musicDurations, setMusicDurations] = useState<Record<string, string>>(
     {},
   );
-  const [isAlbumTextExpanded, setIsAlbumTextExpanded] = useState(false);
 
   // Update music
   useEffect(() => {
@@ -151,34 +299,6 @@ export default function MirrorAudioPlayer(props: ChildProps) {
       link: `${musicPageData?.album?.music_category[0].musics[0].music?.url}`,
     });
   }, [musicPageData]);
-
-  // Calculate line count and truncate album text to 4 lines
-  const albumText =
-    musicPageData?.album?.music_category?.[props.activeTab]?.album_text || "";
-  const { lineCount: albumTextLineCount, truncatedAlbumText } = useMemo(() => {
-    // Strip HTML tags to count actual content lines
-    const plainText = albumText
-      .replace(/<[^>]*>/g, "") // Remove HTML tags
-      .trim();
-    const lines = plainText
-      .split("\n")
-      .filter((line: string) => line.trim() !== "");
-    const count = lines.length;
-
-    if (count > 4) {
-      // Rejoin first 4 lines
-      const first4Lines = lines.slice(0, 4).join("\n");
-      return { lineCount: count, truncatedAlbumText: first4Lines };
-    }
-    return { lineCount: count, truncatedAlbumText: plainText };
-  }, [albumText]);
-
-  const shouldShowAlbumReadMore = albumTextLineCount > 4;
-
-  // Handle album text read more click
-  const handleAlbumTextReadMore = () => {
-    setIsAlbumTextExpanded(!isAlbumTextExpanded);
-  };
 
   const currentMusicList =
     musicPageData?.allAlbums?.[props.activeMusicFolder]?.album
@@ -374,6 +494,16 @@ export default function MirrorAudioPlayer(props: ChildProps) {
       link: nextMusic.link,
     });
   };
+  // Keep a ref to the latest playNextMusicInActiveGroup so the audio-events
+  // effect below can call the current closure (with up-to-date
+  // currentMusicList/activeMusic/etc.) without depending on a function that
+  // is recreated every render, which would otherwise re-run that effect
+  // (and reload the audio element) on every render. The write happens in an
+  // effect (not during render) to keep rendering pure.
+  const playNextMusicInActiveGroupRef = useRef(playNextMusicInActiveGroup);
+  useEffect(() => {
+    playNextMusicInActiveGroupRef.current = playNextMusicInActiveGroup;
+  });
   // Infinity toggle
   const handleInfinityToggle = () => {
     setIsInfinityActive((prev) => !prev);
@@ -412,7 +542,7 @@ export default function MirrorAudioPlayer(props: ChildProps) {
       updateProgressBar(0);
       if (isInfinityActiveRef.current) {
         shouldAutoPlayRef.current = true;
-        playNextMusicInActiveGroup();
+        playNextMusicInActiveGroupRef.current();
         return;
       }
       shouldAutoPlayRef.current = false;
@@ -710,31 +840,13 @@ export default function MirrorAudioPlayer(props: ChildProps) {
               <div className="tab-content-wrapper">
                 {musicPageData?.album?.music_category[props.activeTab] && (
                   <div data-index={props.activeTab} className="tab-content">
-                    <div className="text text-[18px] leading-[120%] max-w-191.25">
-                      {parse(
-                        isAlbumTextExpanded ? albumText : truncatedAlbumText,
-                      )}
-                      {shouldShowAlbumReadMore && (
-                        <button
-                          type="button"
-                          onClick={handleAlbumTextReadMore}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              handleAlbumTextReadMore();
-                            }
-                          }}
-                          tabIndex={0}
-                          aria-label={
-                            isAlbumTextExpanded
-                              ? "Hide album description"
-                              : "Show album description"
-                          }
-                          className="read-more text-[14px] leading-[100%] text-[#E5C15A] mr-2 cursor-pointer hover:opacity-70 transition-opacity"
-                        >
-                          {isAlbumTextExpanded ? "הסתר..." : "קרא עוד..."}
-                        </button>
-                      )}
-                    </div>
+                    <AlbumDescription
+                      text={
+                        musicPageData?.album?.music_category?.[
+                          props.activeTab
+                        ]?.album_text || ""
+                      }
+                    />
 
                     {/* Music list */}
                     <div className="tab-music-list mt-7.5">
@@ -882,69 +994,14 @@ export default function MirrorAudioPlayer(props: ChildProps) {
                 </div>
 
                 {/* Buttons */}
-                <div className="controls flex gap-x-2.5 items-center flex-row-reverse">
-                  <button
-                    onClick={handleBackward}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        handleBackward();
-                      }
-                    }}
-                    type="button"
-                    tabIndex={0}
-                    aria-label="Skip backward 10 seconds"
-                    className="backward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-colors duration-300"
-                  >
-                    <BackwardIcon />
-                  </button>
-                  <button
-                    onClick={handlePlayPause}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        handlePlayPause();
-                      }
-                    }}
-                    type="button"
-                    tabIndex={0}
-                    aria-label={isPlaying ? "Pause" : "Play"}
-                    className={`play cursor-pointer bg-[#C3A13F] border border-[#FFFFFF1A] w-10.5 h-10.5 rounded-full flex items-center justify-center pt-3.5 pr-3 pb-3.5 ${isPlaying ? "pl-3.5" : "pl-4"} hover:bg-[#eacb70] transition-colors duration-300`}
-                  >
-                    {isPlaying ? <PauseIcon /> : <PlayIcon3 />}
-                  </button>
-                  <button
-                    onClick={handleForward}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        handleForward();
-                      }
-                    }}
-                    type="button"
-                    tabIndex={0}
-                    aria-label="Skip forward 10 seconds"
-                    className="forward cursor-pointer bg-[#FFFFFF0A] border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-colors duration-300"
-                  >
-                    <ForwardIcon />
-                  </button>
-                  <button
-                    onClick={() => handleInfinityToggle()}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        handleInfinityToggle();
-                      }
-                    }}
-                    type="button"
-                    tabIndex={0}
-                    aria-label={
-                      isInfinityActive
-                        ? "Disable infinity mode"
-                        : "Enable infinity mode"
-                    }
-                    aria-pressed={isInfinityActive}
-                    className={`infinity cursor-pointer border border-[#FFFFFF1A] w-9 h-9 rounded-full flex items-center justify-center p-2 hover:bg-[#C3A13F] transition-colors duration-300 ${isInfinityActive ? "bg-[#C3A13F]" : "bg-[#FFFFFF0A]"}`}
-                  >
-                    <ReplayIcon />
-                  </button>
-                </div>
+                <PlayerControls
+                  isPlaying={isPlaying}
+                  isInfinityActive={isInfinityActive}
+                  onBackward={handleBackward}
+                  onPlayPause={handlePlayPause}
+                  onForward={handleForward}
+                  onInfinityToggle={handleInfinityToggle}
+                />
               </div>
             </div>
           </div>

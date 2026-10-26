@@ -21,17 +21,22 @@ export default function CommunitiesScriptProvider({
   // Router Path
   const pathname = usePathname();
   const [communityPageData, setCommunityPageData] = useState<any | []>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState(300);
   const [sectionWidth, setSectionWidth] = useState(200);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
     useAppState();
+  // pageDataFetched is a pure derivation of animationPlayed/communityPageData;
+  // computed during render instead of mirrored into state via an effect,
+  // which was triggering a second effect (GSAP timeline setup) in a chain.
+  const pageDataFetched = !!(animationPlayed && communityPageData);
 
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setCommunityPageData(data);
@@ -39,10 +44,14 @@ export default function CommunitiesScriptProvider({
 
   useEffect(() => {
     if (animationPlayed && communityPageData) {
-      setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [animationPlayed, communityPageData]);
+    // communityPageData has a single producer (the data effect above) and,
+    // once set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed]);
 
   useEffect(() => {
     if (!communityPageData) {
@@ -321,7 +330,7 @@ export default function CommunitiesScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   if (error) {
     return (

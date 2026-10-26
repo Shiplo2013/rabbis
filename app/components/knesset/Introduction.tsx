@@ -59,7 +59,7 @@ export default function Introduction(props: ChildProps) {
             bgClass={props.bgClass}
             animatePosition={0.1}
           />
-          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform"></div>
+          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30"></div>
         </div>
       )}
       {props.bgOverlay !== "" && (

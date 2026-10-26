@@ -143,10 +143,10 @@ export default function TempleTabs2(props: ChildProps) {
                   </div>
                 </div>
 
-                <div className="tab-gallery flex items-center h-screen ml-auto mr-auto relative will-change-transform">
+                <div className="tab-gallery flex items-center h-screen ml-auto mr-auto relative">
                   <div
                     ref={galleryRef}
-                    className="gallery-wrapper w-full h-full flex items-center will-change-transform"
+                    className="gallery-wrapper w-full h-full flex items-center"
                   >
                     {Object.values(
                       tabsData[activeTab]?.gallery_images || [],
@@ -155,7 +155,7 @@ export default function TempleTabs2(props: ChildProps) {
                         return (
                           <div
                             key={item?.image?.id}
-                            className="single-gallery w-[32vw] h-[40vh] overflow-hidden"
+                            className="single-gallery w-[32vw] h-[40vh] overflow-hidden relative"
                           >
                             <div
                               className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
@@ -180,7 +180,7 @@ export default function TempleTabs2(props: ChildProps) {
                         return (
                           <div
                             key={item?.image?.id}
-                            className="single-gallery w-[22vw] h-[70vh] overflow-hidden"
+                            className="single-gallery w-[22vw] h-[70vh] overflow-hidden relative"
                           >
                             <div
                               className={`single-gallery-image w-[60vw] h-[85vh] absolute top-1/2 left-1/2 -translate-[50%]`}

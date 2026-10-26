@@ -79,7 +79,8 @@ export default function OnlyTextSection2(props: ChildProps) {
                           GetRightPosition(wrapper.current) -
                           window.innerWidth * 0.8
                       : (wrapper.current?.getBoundingClientRect().top || 0) +
-                          window.scrollY;
+                          window.scrollY -
+                          window.innerHeight * 0.6;
                   },
                   toggleActions: "restart pause play reverse",
                 },

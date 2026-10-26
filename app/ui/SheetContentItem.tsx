@@ -41,7 +41,7 @@ export default function SheetContentItem(props: { data?: any }) {
         {itemData?.acf?.thumbnail && (
           <div className="sheet-image backface-hidden overflow-hidden relative">
             <Image
-              className="w-full object-cover object-center h-full relative z-10 will-change-transform"
+              className="w-full object-cover object-center h-full relative z-10"
               src={
                 itemData?.acf?.thumbnail?.sizes?.medium ||
                 itemData?.acf?.thumbnail?.sizes?.community_sheets_image ||

@@ -1,7 +1,7 @@
 "use client";
 import parse from "html-react-parser";
 import { useParams, usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -33,6 +33,228 @@ type CommunityPost = {
   acf: any;
 };
 
+// The three info-row items (location/established/number of families) share
+// identical icon+label+value markup and the same "parse value, falling back
+// to an empty string" logic; extracting this removes 3 duplicated `||`
+// fallbacks from the parent.
+function CommunityInfoItem({
+  icon,
+  label,
+  value,
+  className,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | undefined;
+  className: string;
+}) {
+  return (
+    <div className={className}>
+      <div className="icon w-6 h-6 flex items-center justify-center mt-1">
+        {icon}
+      </div>
+      <div className="text text-[#091B24] text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] w-[calc(100%-32px)]">
+        <p>
+          <strong>{label}</strong>{" "}
+          {parse(value || "")}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// The gallery swiper and its pagination dots both render from the same
+// `community_gallery` array and were gated by two separate copies of the
+// same `&&` check; combining them into one component removes one of those
+// checks from the parent entirely.
+function CommunityGallerySwiper({
+  gallery,
+  swiperRef,
+}: {
+  gallery: any;
+  swiperRef: RefObject<SwiperRef | null>;
+}) {
+  if (!gallery) {
+    return null;
+  }
+  return (
+    <>
+      <Swiper
+        className="w-full border-b-4 border-[#C3A13F]"
+        ref={swiperRef}
+        slidesPerView={1}
+      >
+        {gallery.map((item: any, index: number) => {
+          if (item?.type === "image") {
+            return (
+              <SwiperSlide key={item.image?.id} data-key={item.image?.id}>
+                <div className="w-full h-[70vh]">
+                  <Image
+                    className="w-full h-full object-cover object-center"
+                    src={
+                      item.image?.sizes?.large ||
+                      item.image?.sizes?.medium ||
+                      item.image?.url ||
+                      item.image?.src
+                    }
+                    width={735}
+                    height={464}
+                    alt="Community Image"
+                    blurDataURL={CreateShimmerDataUrl(735, 464)}
+                    placeholder="blur"
+                    loading="lazy"
+                  />
+                </div>
+                {item?.caption && (
+                  <div className="caption w-full bg-black bg-opacity-50 text-white p-3 text-[18px] text-center font-bold">
+                    <p>{item.caption}</p>
+                  </div>
+                )}
+              </SwiperSlide>
+            );
+          } else {
+            return (
+              <SwiperSlide key={item.video?.id}>
+                <div className="w-full h-[50vh]">
+                  <video
+                    controls
+                    className="w-full h-full object-contain object-center"
+                    controlsList="nodownload"
+                  >
+                    <source
+                      src={item.video?.url || item.video?.src}
+                      type="video/mp4"
+                    />
+                  </video>
+                </div>
+                {item?.caption && (
+                  <div className="caption w-full bg-black bg-opacity-50 text-white p-3 text-[18px] text-center font-bold">
+                    <p>{item.caption}</p>
+                  </div>
+                )}
+              </SwiperSlide>
+            );
+          }
+        })}
+      </Swiper>
+      <div className="custom-pagination flex items-center justify-center gap-2 mt-5">
+        {gallery.map((item: any, index: number) => {
+          if (item?.type === "image") {
+            return (
+              <button
+                key={item.image?.id}
+                className="pagination-item w-7.5 h-22.5 bg-[#C3A13F] cursor-pointer"
+                onClick={() => {
+                  swiperRef.current?.swiper.slideTo(index);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    swiperRef.current?.swiper.slideTo(index);
+                  }
+                }}
+                type="button"
+                aria-label={`Go to slide ${index + 1}`}
+              >
+                <Image
+                  className="w-full h-full object-cover object-center"
+                  src={item.image?.sizes?.thumbnail || item.src}
+                  width={90}
+                  height={90}
+                  loading="lazy"
+                  alt="Community Image"
+                />
+              </button>
+            );
+          } else {
+            return (
+              <button
+                key={item.video?.id}
+                className="pagination-item w-7.5 h-22.5 bg-[#C3A13F] cursor-pointer rounded flex items-center justify-center"
+                onClick={() => {
+                  swiperRef.current?.swiper.slideTo(index);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    swiperRef.current?.swiper.slideTo(index);
+                  }
+                }}
+                type="button"
+                aria-label={`Go to slide ${index + 1}`}
+              >
+                <svg
+                  fill="#000000"
+                  height="20px"
+                  width="20px"
+                  viewBox="0 0 490.718 490.718"
+                >
+                  <g>
+                    <path d="M245.359,0.359C109.852,0.359,0,110.049,0,245.358s109.852,245,245.359,245s245.359-109.691,245.359-245   S380.866,0.359,245.359,0.359z M176.828,341.011V140.824l187.489,100.098L176.828,341.011z" />
+                  </g>
+                </svg>
+              </button>
+            );
+          }
+        })}
+      </div>
+    </>
+  );
+}
+
+// The two "updates" lists (updates_1/updates_2) share identical news-item
+// markup and only differ in icon, className, and data source; extracting
+// this removes both of their `&&` gates from the parent.
+function CommunityTabUpdates({ content }: { content: any }) {
+  return (
+    <div className="event-news-wrapper flex flex-col items-start justify-start gap-y-[8.5vh] w-full">
+      {content?.updates_1 && (
+        <div className="news flex items-start justify-start gap-y-[6.8vh] flex-col w-full">
+          <div className="news-icon w-10 h-auto">
+            <WishIcon2 />
+          </div>
+          <div className="news-list flex flex-wrap items-start justify-start gap-y-[5vh] gap-x-[3vw] w-full text-[22px] leading-[1em] text-[#C3A13F] flex-col sm:flex-row">
+            {content.updates_1.map((item: any, index: number) => (
+              <div
+                key={"Tab-Content2-" + index}
+                style={{
+                  backgroundImage: `url(${NewsBG.src})`,
+                }}
+                className="news-item flex flex-col gap-y-2 py-8 px-13 w-full sm:w-[calc((100%-3vw)/2)] max-w-110 bg-no-repeat bg-contain bg-right min-h-32 sm:min-h-28 lg:min-h-37.5"
+              >
+                {item.title && <p className="font-bold">{item.title}</p>}
+                {item.subtitle && <p>{item.subtitle}</p>}
+                {item.date && (
+                  <h3 className="text-[#5A7C4E] font-bold">{item.date}</h3>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {content?.updates_2 && (
+        <div className="news flex flex-col items-start justify-start gap-y-[4vh] sm:gap-y-[6.8vh] w-full">
+          <div className="news-icon w-10 h-auto">
+            <CandelIcon />
+          </div>
+          <div className="news-list flex flex-wrap items-start justify-start gap-y-[5vh] gap-x-[3vw] w-full text-[18px] sm:text-[20px] lg:text-[22px] leading-[1em] text-[#C3A13F] flex-col sm:flex-row">
+            {content.updates_2.map((item: any, index: number) => (
+              <div
+                key={"Tab-Content-" + index}
+                className="news-item bg-white flex flex-col gap-y-2 py-8 px-13 w-full sm:w-[calc((100%-3vw)/2)] max-w-110"
+              >
+                {item.title && <p className="font-bold">{item.title}</p>}
+                {item.subtitle && <p>{item.subtitle}</p>}
+                {item.date && (
+                  <h3 className="text-[#5A7C4E] font-bold">{item.date}</h3>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function CommunitiesSlugScriptProvider({
   data,
 }: {
@@ -43,7 +265,10 @@ export default function CommunitiesSlugScriptProvider({
   const params = useParams();
   const slug = params?.slug as string;
   const [post, setPost] = useState<CommunityPost | null>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  // pageDataFetched is a pure derivation of post's presence, so it is
+  // computed during render instead of mirrored into state via an effect
+  // that "adjusts" it on every data change.
+  const pageDataFetched = !!post;
   const {
     isLoading,
     setIsLoading,
@@ -63,7 +288,7 @@ export default function CommunitiesSlugScriptProvider({
       title: data?.title?.rendered,
       subtitle: data?.acf?.subtitle,
     });
-  }, [pathname]);
+  }, [pathname, data, setIsLoading, setCurrentCommunitiesPost]);
 
   // Get Page Data From backend
   useEffect(() => {
@@ -71,28 +296,24 @@ export default function CommunitiesSlugScriptProvider({
       return;
     }
     setPost(data);
-  }, [data]);
-
-  useEffect(() => {
-    if (!post) {
-      return;
-    }
-    setPageDataFetched(true);
+    // Merged from the sibling effect that used to react to `post` changing;
+    // post is always available together with data, so there is no need
+    // for a second render pass to derive these from it.
     setCommunityTabs([
       {
         title: "תולדות הקהילה",
-        content: post?.acf?.community_events,
+        content: data?.acf?.community_events,
       },
       {
         title: "אבני דרך",
-        content: post?.acf?.community_news,
+        content: data?.acf?.community_news,
       },
       {
         title: "עדכונים",
-        content: post?.acf?.community_updates,
+        content: data?.acf?.community_updates,
       },
     ]);
-  }, [post]);
+  }, [data]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -401,168 +622,31 @@ export default function CommunitiesSlugScriptProvider({
         <section className="single-communities bg-[#091B24] min-h-screen flex mt-18 lg:mt-25 relative flex-row lg:flex-row">
           <div className="community-content w-full lg:w-[calc(100%-450px)] h-auto bg-[#F5F0EB] text-[#091B24] relative z-40">
             <div className="community-info flex border-b sm:border-b border-[#000000] border-opacity-50 flex-col sm:flex-row">
-              <div className="location flex py-3 px-3 gap-x-3 w-full sm:w-[32%] items-center sm:items-start">
-                <div className="icon w-6 h-6 flex items-center justify-center mt-1">
-                  <MapMarker />
-                </div>
-                <div className="text text-[#091B24] text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] w-[calc(100%-32px)]">
-                  <p>
-                    <strong>כתובת:</strong>{" "}
-                    {parse(post?.acf?.informations?.location || "")}
-                  </p>
-                </div>
-              </div>
-              <div className="date flex py-3 px-3 gap-x-3 border-t sm:border-r border-[#000000] border-opacity-50 w-full sm:w-[32%] items-center sm:items-start">
-                <div className="icon w-6 h-6 flex items-center justify-center mt-1">
-                  <CalenderIcon2 />
-                </div>
-                <div className="text text-[#091B24] text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] w-[calc(100%-32px)]">
-                  <p>
-                    <strong>נוסד:</strong>{" "}
-                    {parse(post?.acf?.informations?.established || "")}
-                  </p>
-                </div>
-              </div>
-              <div className="people flex py-3 px-3 gap-x-3 border-t sm:border-r border-[#000000] border-opacity-50 w-full sm:w-[36%] items-center sm:items-start">
-                <div className="icon w-6 h-6 flex items-center justify-center mt-1">
-                  <UserIcon2 />
-                </div>
-                <div className="text text-[#091B24] text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] w-[calc(100%-32px)]">
-                  <p>
-                    <strong>מס' משפחות:</strong>{" "}
-                    {parse(post?.acf?.informations?.number_of_families || "")}
-                  </p>
-                </div>
-              </div>
+              <CommunityInfoItem
+                icon={<MapMarker />}
+                label="כתובת:"
+                value={post?.acf?.informations?.location}
+                className="location flex py-3 px-3 gap-x-3 w-full sm:w-[32%] items-center sm:items-start"
+              />
+              <CommunityInfoItem
+                icon={<CalenderIcon2 />}
+                label="נוסד:"
+                value={post?.acf?.informations?.established}
+                className="date flex py-3 px-3 gap-x-3 border-t sm:border-r border-[#000000] border-opacity-50 w-full sm:w-[32%] items-center sm:items-start"
+              />
+              <CommunityInfoItem
+                icon={<UserIcon2 />}
+                label="מס' משפחות:"
+                value={post?.acf?.informations?.number_of_families}
+                className="people flex py-3 px-3 gap-x-3 border-t sm:border-r border-[#000000] border-opacity-50 w-full sm:w-[36%] items-center sm:items-start"
+              />
             </div>
             <div className="community-description flex gap-x-[4.4vw] flex-col-reverse lg:flex-row">
               <div className="description-image w-full lg:w-[50%]">
-                <Swiper
-                  className="w-full border-b-4 border-[#C3A13F]"
-                  ref={swiperRef}
-                  slidesPerView={1}
-                >
-                  {post?.acf?.community_gallery &&
-                    post?.acf?.community_gallery?.map(
-                      (item: any, index: number) => {
-                        if (item?.type === "image") {
-                          return (
-                            <SwiperSlide
-                              key={item.image?.id}
-                              data-key={item.image?.id}
-                            >
-                              <div className="w-full h-[70vh]">
-                                <Image
-                                  className="w-full h-full object-cover object-center"
-                                  src={
-                                    item.image?.sizes?.large ||
-                                    item.image?.sizes?.medium ||
-                                    item.image?.url ||
-                                    item.image?.src
-                                  }
-                                  width={735}
-                                  height={464}
-                                  alt="Community Image"
-                                  blurDataURL={CreateShimmerDataUrl(735, 464)}
-                                  placeholder="blur"
-                                  loading="lazy"
-                                />
-                              </div>
-                              {item?.caption && (
-                                <div className="caption w-full bg-black bg-opacity-50 text-white p-3 text-[18px] text-center font-bold">
-                                  <p>{item.caption}</p>
-                                </div>
-                              )}
-                            </SwiperSlide>
-                          );
-                        } else {
-                          return (
-                            <SwiperSlide key={item.video?.id}>
-                              <div className="w-full h-[50vh]">
-                                <video
-                                  controls
-                                  className="w-full h-full object-contain object-center"
-                                  controlsList="nodownload"
-                                >
-                                  <source
-                                    src={item.video?.url || item.video?.src}
-                                    type="video/mp4"
-                                  />
-                                </video>
-                              </div>
-                              {item?.caption && (
-                                <div className="caption w-full bg-black bg-opacity-50 text-white p-3 text-[18px] text-center font-bold">
-                                  <p>{item.caption}</p>
-                                </div>
-                              )}
-                            </SwiperSlide>
-                          );
-                        }
-                      },
-                    )}
-                </Swiper>
-                <div className="custom-pagination flex items-center justify-center gap-2 mt-5">
-                  {post?.acf?.community_gallery &&
-                    post?.acf?.community_gallery?.map(
-                      (item: any, index: number) => {
-                        if (item?.type === "image") {
-                          return (
-                            <button
-                              key={item.image?.id}
-                              className="pagination-item w-7.5 h-22.5 bg-[#C3A13F] cursor-pointer"
-                              onClick={() => {
-                                swiperRef.current?.swiper.slideTo(index);
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  swiperRef.current?.swiper.slideTo(index);
-                                }
-                              }}
-                              type="button"
-                              aria-label={`Go to slide ${index + 1}`}
-                            >
-                              <Image
-                                className="w-full h-full object-cover object-center"
-                                src={item.image?.sizes?.thumbnail || item.src}
-                                width={90}
-                                height={90}
-                                loading="lazy"
-                                alt="Community Image"
-                              />
-                            </button>
-                          );
-                        } else {
-                          return (
-                            <button
-                              key={item.video?.id}
-                              className="pagination-item w-7.5 h-22.5 bg-[#C3A13F] cursor-pointer rounded flex items-center justify-center"
-                              onClick={() => {
-                                swiperRef.current?.swiper.slideTo(index);
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  swiperRef.current?.swiper.slideTo(index);
-                                }
-                              }}
-                              type="button"
-                              aria-label={`Go to slide ${index + 1}`}
-                            >
-                              <svg
-                                fill="#000000"
-                                height="20px"
-                                width="20px"
-                                viewBox="0 0 490.718 490.718"
-                              >
-                                <g>
-                                  <path d="M245.359,0.359C109.852,0.359,0,110.049,0,245.358s109.852,245,245.359,245s245.359-109.691,245.359-245   S380.866,0.359,245.359,0.359z M176.828,341.011V140.824l187.489,100.098L176.828,341.011z" />
-                                </g>
-                              </svg>
-                            </button>
-                          );
-                        }
-                      },
-                    )}
-                </div>
+                <CommunityGallerySwiper
+                  gallery={post?.acf?.community_gallery}
+                  swiperRef={swiperRef}
+                />
               </div>
               <div className="description-text w-full lg:w-[50%] px-[8vw] lg:px-0 py-[6vh] lg:pt-[7vh] lg:pl-[2.9vw] lg:pb-[5vh]">
                 <h1 className="text-[56px] sm:text-[80px] lg:text-[103px] leading-[77%] font-bold">
@@ -767,71 +851,9 @@ export default function CommunitiesSlugScriptProvider({
                           },
                         )}
                       {!Array.isArray(communityTabs[activeTab]?.content) && (
-                        <div className="event-news-wrapper flex flex-col items-start justify-start gap-y-[8.5vh] w-full">
-                          {communityTabs[activeTab]?.content?.updates_1 && (
-                            <div className="news flex items-start justify-start gap-y-[6.8vh] flex-col w-full">
-                              <div className="news-icon w-10 h-auto">
-                                <WishIcon2 />
-                              </div>
-                              <div className="news-list flex flex-wrap items-start justify-start gap-y-[5vh] gap-x-[3vw] w-full text-[22px] leading-[1em] text-[#C3A13F] flex-col sm:flex-row">
-                                {communityTabs[
-                                  activeTab
-                                ]?.content?.updates_1?.map(
-                                  (item: any, index: number) => (
-                                    <div
-                                      key={"Tab-Content2-" + index}
-                                      style={{
-                                        backgroundImage: `url(${NewsBG.src})`,
-                                      }}
-                                      className="news-item flex flex-col gap-y-2 py-8 px-13 w-full sm:w-[calc((100%-3vw)/2)] max-w-110 bg-no-repeat bg-contain bg-right min-h-32 sm:min-h-28 lg:min-h-37.5"
-                                    >
-                                      {item.title && (
-                                        <p className="font-bold">
-                                          {item.title}
-                                        </p>
-                                      )}
-                                      {item.subtitle && <p>{item.subtitle}</p>}
-                                      {item.date && (
-                                        <h3 className="text-[#5A7C4E] font-bold">
-                                          {item.date}
-                                        </h3>
-                                      )}
-                                    </div>
-                                  ),
-                                )}
-                              </div>
-                            </div>
-                          )}
-                          {communityTabs[activeTab]?.content?.updates_2 && (
-                            <div className="news flex flex-col items-start justify-start gap-y-[4vh] sm:gap-y-[6.8vh] w-full">
-                              <div className="news-icon w-10 h-auto">
-                                <CandelIcon />
-                              </div>
-                              <div className="news-list flex flex-wrap items-start justify-start gap-y-[5vh] gap-x-[3vw] w-full text-[18px] sm:text-[20px] lg:text-[22px] leading-[1em] text-[#C3A13F] flex-col sm:flex-row">
-                                {communityTabs[activeTab].content.updates_2.map(
-                                  (item: any, index: number) => (
-                                    <div
-                                      key={"Tab-Content-" + index}
-                                      className="news-item bg-white flex flex-col gap-y-2 py-8 px-13 w-full sm:w-[calc((100%-3vw)/2)] max-w-110"
-                                    >
-                                      {item.title && (
-                                        <p className="font-bold">
-                                          {item.title}
-                                        </p>
-                                      )}
-                                      {item.subtitle && <p>{item.subtitle}</p>}
-                                      {item.date && (
-                                        <h3 className="text-[#5A7C4E] font-bold">
-                                          {item.date}
-                                        </h3>
-                                      )}
-                                    </div>
-                                  ),
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                        <CommunityTabUpdates
+                          content={communityTabs[activeTab]?.content}
+                        />
                       )}
                     </div>
                   )}

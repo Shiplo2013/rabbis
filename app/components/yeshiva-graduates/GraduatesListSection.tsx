@@ -135,7 +135,7 @@ export default function GraduatesListSection(props: ChildProps) {
                 >
                   {item.page_image && (
                     <Image
-                      className="w-full object-cover object-center h-full relative z-10 will-change-transform"
+                      className="w-full object-cover object-center h-full relative z-10"
                       src={
                         item.page_image?.sizes?.large || item.page_image?.src
                       }

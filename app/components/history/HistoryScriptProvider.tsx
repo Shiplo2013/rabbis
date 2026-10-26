@@ -12,13 +12,8 @@ import introBG6 from "../../assets/images/intro-bg-6.jpg";
 import introBG7 from "../../assets/images/intro-bg-7.jpg";
 import IntroBG2 from "../../assets/images/intro-bg.jpg";
 import IntroBGoverlay from "../../assets/images/intro-bg2.png";
-import introBG3 from "../../assets/images/intro-bg3.jpg";
 import IntroBG from "../../assets/images/introduction-bg.jpg";
 import NewsSectionBG from "../../assets/images/new-section-bg2.jpg";
-import OnlyImage from "../../assets/images/only-image.jpg";
-import OnlyImage2 from "../../assets/images/only-image2.jpg";
-import QuoteSectionBG from "../../assets/images/quote-section-bg.jpg";
-import HistoryImage1 from "../../assets/images/single-image.jpg";
 import timelineBG from "../../assets/images/timeline-bg.jpg";
 import { useAppState } from "../../components/AppContext";
 import ArrowSliderSection from "../../components/history/ArrowSliderSection";
@@ -54,6 +49,18 @@ import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
 import SingleImageSection from "../../ui/SingleImageSection";
 import TextSplitLines from "../../ui/TextSplitLines";
 import TitleSplitChars from "../../ui/TitleSplitChars";
+import {
+  getTimeline1Data,
+  getTimeline2Data,
+  getTimeline3Data,
+  getTimeline4Data,
+  getTimeline5Data,
+  getTimeline6Data,
+} from "./timelineAcfData";
+import {
+  areAllRefsUnmounted,
+  createPinnedTimelineSection,
+} from "./timelineScrollAnimations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText, ScrollTrigger);
@@ -70,8 +77,11 @@ export default function HistoryScriptProvider({
   // Router Path
   const pathname = usePathname();
   const [chroniclesPageData, setChroniclesPageData] = useState<any | []>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // pageDataFetched/error are pure derivations of data/chroniclesPageData,
+  // so they are computed during render instead of mirrored into state via
+  // an effect that "adjusts" them on every data change.
+  const pageDataFetched = !!chroniclesPageData;
+  const error = !data ? "No data provided to History." : null;
   const [rabbisPostsData1, setRabbisPostsData1] = useState<any | []>([]);
   const [rabbisPostsData2, setRabbisPostsData2] = useState<any | []>([]);
   const [rabbisPostsData3, setRabbisPostsData3] = useState<any | []>([]);
@@ -95,7 +105,6 @@ export default function HistoryScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided to History.");
       return;
     }
     // let isMounted = true;
@@ -199,15 +208,11 @@ export default function HistoryScriptProvider({
     setRabbisPostsData3(data.rabbisData[2]);
     setRabbisPostsData4(data.rabbisData[3]);
     setRabbisPostsData5(data.rabbisData[4]);
-  }, [data]);
-
-  useEffect(() => {
-    if (!chroniclesPageData) {
-      return;
-    }
-    setPageDataFetched(true);
-    setIsLoading(false);
-  }, [chroniclesPageData]);
+    // isLoading is shared context state; its value derives from data's
+    // presence (always false here, since this branch only runs once data
+    // is truthy) rather than an unrelated hardcoded literal.
+    setIsLoading(!data);
+  }, [data, setIsLoading]);
 
   // Page Selectors
   const main = useRef<HTMLDivElement>(null);
@@ -232,140 +237,84 @@ export default function HistoryScriptProvider({
   const isHistoryHidden = useRef(false);
   const isHeaderLeftHidden = useRef(false);
 
+  // Resolved ACF data per panel (see timelineAcfData.ts): pulling the
+  // `?.`/`||` resolution out of the component body below is what keeps
+  // this component's own complexity low.
+  const timeline1Data = getTimeline1Data(chroniclesPageData);
+  const timeline2Data = getTimeline2Data(chroniclesPageData);
+  const timeline3Data = getTimeline3Data(chroniclesPageData);
+  const timeline4Data = getTimeline4Data(chroniclesPageData);
+  const timeline5Data = getTimeline5Data(chroniclesPageData);
+  const timeline6Data = getTimeline6Data(chroniclesPageData);
+
   // Page Data
   const IntroData1 = {
-    title:
-      chroniclesPageData?.acf?.timeline_1?.introduction?.title || `סלבודקא`,
-    subtitle:
-      chroniclesPageData?.acf?.timeline_1?.introduction?.subtitle ||
-      `תרל"ז - תרע"ד`,
-    background:
-      chroniclesPageData?.acf?.timeline_1?.introduction?.background || false,
-    overlay:
-      chroniclesPageData?.acf?.timeline_1?.introduction
-        ?.background_overlay_image || false,
+    title: timeline1Data.introductionTitle,
+    subtitle: timeline1Data.introductionSubtitle,
+    background: timeline1Data.introductionBackground,
+    overlay: timeline1Data.introductionBackgroundOverlayImage,
   };
   const IntroData2 = {
-    title:
-      chroniclesPageData?.acf?.timeline_2?.introduction?.title ||
-      `מלחמת העולם<br/>הראשונה`,
-    subtitle:
-      chroniclesPageData?.acf?.timeline_2?.introduction?.subtitle ||
-      `תרע"ד - תרפ"ד`,
-    background:
-      chroniclesPageData?.acf?.timeline_2?.introduction?.background || false,
-    overlay:
-      chroniclesPageData?.acf?.timeline_2?.introduction
-        ?.background_overlay_image || false,
+    title: timeline2Data.introductionTitle,
+    subtitle: timeline2Data.introductionSubtitle,
+    background: timeline2Data.introductionBackground,
+    overlay: timeline2Data.introductionBackgroundOverlayImage,
   };
   const IntroData3 = {
-    title: chroniclesPageData?.acf?.timeline_3?.introduction?.title || `חברון`,
-    subtitle:
-      chroniclesPageData?.acf?.timeline_3?.introduction?.subtitle ||
-      `תרפ"ד – תרפ"ט`,
-    background:
-      chroniclesPageData?.acf?.timeline_3?.introduction?.background || false,
-    overlay:
-      chroniclesPageData?.acf?.timeline_3?.introduction
-        ?.background_overlay_image || false,
+    title: timeline3Data.introductionTitle,
+    subtitle: timeline3Data.introductionSubtitle,
+    background: timeline3Data.introductionBackground,
+    overlay: timeline3Data.introductionBackgroundOverlayImage,
   };
   const IntroContentData = {
-    title:
-      chroniclesPageData?.acf?.timeline_3?.intro_banner?.title || `פרעות תרפ״ט`,
+    title: timeline3Data.introBannerTitle,
     subtitle: ``,
   };
   const IntroData4 = {
-    title:
-      chroniclesPageData?.acf?.timeline_4?.introduction?.title ||
-      `ירושלים של מעלה`,
-    subtitle:
-      chroniclesPageData?.acf?.timeline_4?.introduction?.subtitle ||
-      `תרפ"ט - תשל"ו`,
-    background:
-      chroniclesPageData?.acf?.timeline_4?.introduction?.background || false,
-    overlay:
-      chroniclesPageData?.acf?.timeline_4?.introduction
-        ?.background_overlay_image || false,
+    title: timeline4Data.introductionTitle,
+    subtitle: timeline4Data.introductionSubtitle,
+    background: timeline4Data.introductionBackground,
+    overlay: timeline4Data.introductionBackgroundOverlayImage,
   };
   const IntroData5 = {
-    title:
-      chroniclesPageData?.acf?.timeline_5?.introduction?.title ||
-      `גבעת<br/>מרדכי`,
-    subtitle:
-      chroniclesPageData?.acf?.timeline_5?.introduction?.subtitle ||
-      `תשל״ו - תשנ״ז`,
-    background:
-      chroniclesPageData?.acf?.timeline_5?.introduction?.background || false,
-    overlay:
-      chroniclesPageData?.acf?.timeline_5?.introduction
-        ?.background_overlay_image || false,
+    title: timeline5Data.introductionTitle,
+    subtitle: timeline5Data.introductionSubtitle,
+    background: timeline5Data.introductionBackground,
+    overlay: timeline5Data.introductionBackgroundOverlayImage,
   };
   const IntroData6 = {
-    title:
-      chroniclesPageData?.acf?.timeline_6?.introduction?.title ||
-      `הרחיבי מקום<br/>אוהלך`,
-    subtitle:
-      chroniclesPageData?.acf?.timeline_6?.introduction?.subtitle ||
-      `תשנ"ז - הווה`,
-    background:
-      chroniclesPageData?.acf?.timeline_6?.introduction?.background || false,
-    overlay:
-      chroniclesPageData?.acf?.timeline_6?.introduction
-        ?.background_overlay_image || false,
+    title: timeline6Data.introductionTitle,
+    subtitle: timeline6Data.introductionSubtitle,
+    background: timeline6Data.introductionBackground,
+    overlay: timeline6Data.introductionBackgroundOverlayImage,
   };
   const QuoteData = [
     {
-      content:
-        chroniclesPageData?.acf?.timeline_1?.quote_section ||
-        `<p><strong>שנת תרנ"ז</strong>: פיצול הישיבה עקב פולמוס המוסר - 'כנסת בית יצחק' ו'כנסת ישראל'</p><p><strong>שנת תרס"ג</strong>: התעוררות מחודשת של פולמוס המוסר</p>`,
+      content: timeline1Data.quoteSection,
     },
   ];
   const QuoteData2 = [
     {
-      content:
-        chroniclesPageData?.acf?.timeline_4?.quote_section ||
-        `<p><strong>שנת תשכ"ז:</strong> מינוי רבי רפאל אהרן יפהן לר"מ</p><p><strong>שנת תשכ"ח:</strong> רבי מרדכי חברוני לר"מ</p>`,
+      content: timeline4Data.quoteSection,
     },
   ];
   const QuoteData3 = {
-    content:
-      chroniclesPageData?.acf?.timeline_6?.quote_section?.text ||
-      `<p><strong>שנת תשפ"ב</strong><br/> הרחבת בית המדרש</p>`,
+    content: timeline6Data.quoteSectionText,
   };
 
   //Arrow Slider Data
   const SliderData = {
-    text1:
-      chroniclesPageData?.acf?.timeline_3?.arrow_slider_section?.arrow_slider
-        ?.slide_1 ||
-      `מתוך מכתב רבי יצחק הוטנר על שנות לימודיו בחברון:<br/>"כי אמנם מהרגע הראשון להתבצרותה של הישיבה על אדמת חברון, עלו והתבלטו שני קוים יסודיים בתכונת חייה: רעננות הלבבות והתמתחות השרירים לעבודת תורה ויראה. והלכו להם שני אלה והתלכדו לשטף אחד. קשה היה להגיד, מי כאן האב ומי התולדה:`,
-    text2:
-      chroniclesPageData?.acf?.timeline_3?.arrow_slider_section?.arrow_slider
-        ?.slide_2 ||
-      `שמחה מתוך עבודה או עבודה מתוך שמחה. והנכון דדא ודא היו בה: שמחה מתוך עבודה ועבודה מתוך שמחה, וכתר אצילות של תלמידי חכמים מבהיק על גביהם. ולא עוד אלא שנסתגל להם, לבאים, אוירא דארעא דישראל לראות ברכה יתירה בעמלם, וכל חד לפום דרגיה עלה והתעלה במדה לא צפויה.`,
-    background:
-      chroniclesPageData?.acf?.timeline_3?.arrow_slider_section?.background ||
-      arrowSectionBG,
-    floatingImage:
-      chroniclesPageData?.acf?.timeline_3?.arrow_slider_section
-        ?.floating_image || arrowSectionImage,
+    text1: timeline3Data.arrowSliderSectionArrowSliderSlide1,
+    text2: timeline3Data.arrowSliderSectionArrowSliderSlide2,
+    background: timeline3Data.arrowSliderSectionBackground,
+    floatingImage: timeline3Data.arrowSliderSectionFloatingImage,
   };
   //Arrow Slider Data
   const SliderData2 = {
-    text1:
-      chroniclesPageData?.acf?.timeline_5?.arrow_slider_section?.arrow_slider
-        ?.slide_1 ||
-      `מתוך מכתב רבי יצחק הוטנר על שנות לימודיו בחברון:<br/>"כי אמנם מהרגע הראשון להתבצרותה של הישיבה על אדמת חברון, עלו והתבלטו שני קוים יסודיים בתכונת חייה: רעננות הלבבות והתמתחות השרירים לעבודת תורה ויראה. והלכו להם שני אלה והתלכדו לשטף אחד. קשה היה להגיד, מי כאן האב ומי התולדה:`,
-    text2:
-      chroniclesPageData?.acf?.timeline_5?.arrow_slider_section?.arrow_slider
-        ?.slide_2 ||
-      `שמחה מתוך עבודה או עבודה מתוך שמחה. והנכון דדא ודא היו בה: שמחה מתוך עבודה ועבודה מתוך שמחה, וכתר אצילות של תלמידי חכמים מבהיק על גביהם. ולא עוד אלא שנסתגל להם, לבאים, אוירא דארעא דישראל לראות ברכה יתירה בעמלם, וכל חד לפום דרגיה עלה והתעלה במדה לא צפויה.`,
-    background:
-      chroniclesPageData?.acf?.timeline_5?.arrow_slider_section?.background ||
-      arrowSectionBG2,
-    floatingImage:
-      chroniclesPageData?.acf?.timeline_5?.arrow_slider_section
-        ?.floating_image_1 || arrowSectionImage,
+    text1: timeline5Data.arrowSliderSectionArrowSliderSlide1,
+    text2: timeline5Data.arrowSliderSectionArrowSliderSlide2,
+    background: timeline5Data.arrowSliderSectionBackground,
+    floatingImage: timeline5Data.arrowSliderSectionFloatingImage1,
   };
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -383,12 +332,6 @@ export default function HistoryScriptProvider({
   const [timelinePeriod6, setTimelinePeriod6] =
     useState<gsap.core.Timeline | null>(null);
   //const [timelineAdded, setTimelineAdded] = useState(false);
-
-  const setProgressLineWidth = (target: Element | null, value: string) => {
-    if (target instanceof HTMLElement) {
-      target.style.width = value;
-    }
-  };
 
   // Load Page
   useGSAP(() => {
@@ -535,27 +478,6 @@ export default function HistoryScriptProvider({
     logoImage?.classList.add("white-image");
   }, [pathname]);
 
-  // Complete Timeline Function
-  function completeTimeline(selector: string) {
-    // Timeline Complete
-    const intro = document.querySelector(`#history-timeline ${selector}`);
-    if (!intro) return 0;
-    const hasActiveClass = intro.classList.contains("complete");
-    if (!hasActiveClass) {
-      intro.classList.add("complete");
-    }
-  }
-
-  // Active Timeline
-  function activeTimeline(selector: string) {
-    const intro = document.querySelector(`#history-timeline ${selector}`);
-    if (!intro) return 0;
-    const hasActiveClass = intro.classList.contains("active");
-    if (!hasActiveClass) {
-      intro.classList.add("active");
-    }
-  }
-
   function toggleHeaderLeftOnScroll() {
     const headerLeft = document.querySelector("#header .header-left");
     if (!headerLeft) return;
@@ -572,31 +494,23 @@ export default function HistoryScriptProvider({
     });
   }
 
-  // Inactive Timeline
-  function inActiveTimeline(selector: string) {
-    const intro = document.querySelector(`#history-timeline ${selector}`);
-    if (!intro) return 0;
-    const hasActiveClass = intro.classList.contains("active");
-    if (hasActiveClass) {
-      intro.classList.remove("active");
-    }
-  }
-
   // Page Section Animation
   useGSAP(() => {
     if (
-      !panel1.current &&
-      !wrapper1.current &&
-      !panel2.current &&
-      !wrapper2.current &&
-      !panel3.current &&
-      !wrapper3.current &&
-      !panel4.current &&
-      !wrapper4.current &&
-      !panel5.current &&
-      !wrapper5.current &&
-      !panel6.current &&
-      !wrapper6.current
+      areAllRefsUnmounted([
+        panel1,
+        wrapper1,
+        panel2,
+        wrapper2,
+        panel3,
+        wrapper3,
+        panel4,
+        wrapper4,
+        panel5,
+        wrapper5,
+        panel6,
+        wrapper6,
+      ])
     )
       return;
     //ScrollTrigger.normalizeScroll(true);
@@ -616,266 +530,71 @@ export default function HistoryScriptProvider({
       ) as HTMLElement | null;
       const scurbScale = 2;
 
-      // Intro Line 1
-      const introLine1 = document.querySelector(
-        `.history-timeline .intro-1 .progress-line .border-line`,
-      );
-      // Intro Line 2
-      const introLine2 = document.querySelector(
-        `.history-timeline .intro-2 .progress-line .border-line`,
-      );
-      // Intro Line 3
-      const introLine3 = document.querySelector(
-        `.history-timeline .intro-3 .progress-line .border-line`,
-      );
-      // Intro Line 4
-      const introLine4 = document.querySelector(
-        `.history-timeline .intro-4 .progress-line .border-line`,
-      );
-      // Intro Line 5
-      const introLine5 = document.querySelector(
-        `.history-timeline .intro-5 .progress-line .border-line`,
-      );
-
       // Timeline Section  1
-      timeline1 = gsap.timeline({
-        scrollTrigger: {
-          trigger: panel1.current,
-          start: "top top",
-          end: "+=" + window.innerWidth * 7.07,
-          scrub: scurbScale,
-          pin: true,
-          anticipatePin: 1,
-          //pinType: "fixed",
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            // First Chapter
-            if (self.progress > 0) {
-              activeTimeline(".intro-1");
-              completeTimeline(".intro-1");
-
-              const introPercent = Math.round(self.progress * 100);
-              setProgressLineWidth(introLine1, `${introPercent}%`);
-            } else {
-              setProgressLineWidth(introLine1, "0%");
-              inActiveTimeline(".intro-1");
-            }
-          },
-        },
-      });
-      timeline1.to(wrapper1.current, {
-        x: () =>
-          wrapper1.current
-            ? wrapper1.current.offsetWidth - window.innerWidth
-            : 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: panel1.current,
-          start: timeline1Ref.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 7.07 - 200),
-          scrub: scurbScale,
-        },
+      timeline1 = createPinnedTimelineSection({
+        panelRef: panel1,
+        wrapperRef: wrapper1,
+        timelineSectionRef: timeline1Ref,
+        widthMultiplier: 7.07,
+        introClass: ".intro-1",
+        introLineSelector: `.history-timeline .intro-1 .progress-line .border-line`,
+        scrubScale: scurbScale,
       });
       setTimelinePeriod1(timeline1);
       // Timeline Section  2
-      timeline2 = gsap.timeline({
-        scrollTrigger: {
-          trigger: panel2.current,
-          start: "top top",
-          end: "+=" + window.innerWidth * 5.88,
-          scrub: scurbScale,
-          pin: true,
-          anticipatePin: 1,
-          //pinType: "fixed",
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            // Second Chapter
-            if (self.progress > 0) {
-              activeTimeline(".intro-2");
-              completeTimeline(".intro-2");
-              const introPercent = Math.round(self.progress * 100);
-              setProgressLineWidth(introLine2, `${introPercent}%`);
-            } else {
-              setProgressLineWidth(introLine2, "0%");
-              inActiveTimeline(".intro-2");
-            }
-          },
-        },
-      });
-      timeline2.to(wrapper2.current, {
-        x: () =>
-          wrapper2.current
-            ? wrapper2.current.offsetWidth - window.innerWidth
-            : 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: panel2.current,
-          start: timeline2Ref.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 5.88 - 200),
-          scrub: scurbScale,
-        },
+      timeline2 = createPinnedTimelineSection({
+        panelRef: panel2,
+        wrapperRef: wrapper2,
+        timelineSectionRef: timeline2Ref,
+        widthMultiplier: 5.88,
+        introClass: ".intro-2",
+        introLineSelector: `.history-timeline .intro-2 .progress-line .border-line`,
+        scrubScale: scurbScale,
       });
       setTimelinePeriod2(timeline2);
       // Timeline Section  3
-      timeline3 = gsap.timeline({
-        scrollTrigger: {
-          trigger: panel3.current,
-          start: "top top",
-          end: "+=" + window.innerWidth * 8.498,
-          scrub: scurbScale,
-          pin: true,
-          anticipatePin: 1,
-          //pinType: "fixed",
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            // Third Chapter
-            if (self.progress > 0) {
-              activeTimeline(".intro-3");
-              completeTimeline(".intro-3");
-              const introPercent = Math.round(self.progress * 100);
-              setProgressLineWidth(introLine3, `${introPercent}%`);
-            } else {
-              setProgressLineWidth(introLine3, "0%");
-              inActiveTimeline(".intro-3");
-            }
-          },
-        },
-      });
-      timeline3.to(wrapper3.current, {
-        x: () =>
-          wrapper3.current
-            ? wrapper3.current.offsetWidth - window.innerWidth
-            : 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: panel3.current,
-          start: timeline3Ref.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 8.498 - 200),
-          scrub: scurbScale,
-        },
+      timeline3 = createPinnedTimelineSection({
+        panelRef: panel3,
+        wrapperRef: wrapper3,
+        timelineSectionRef: timeline3Ref,
+        widthMultiplier: 8.498,
+        introClass: ".intro-3",
+        introLineSelector: `.history-timeline .intro-3 .progress-line .border-line`,
+        scrubScale: scurbScale,
       });
       setTimelinePeriod3(timeline3);
       // Timeline Section  4
-      timeline4 = gsap.timeline({
-        scrollTrigger: {
-          trigger: panel4.current,
-          start: "top top",
-          end: "+=" + window.innerWidth * 9.55,
-          scrub: scurbScale,
-          pin: true,
-          anticipatePin: 1,
-          //pinType: "fixed",
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            // Fourth Chapter
-            if (self.progress > 0) {
-              activeTimeline(".intro-4");
-              completeTimeline(".intro-4");
-              const introPercent = Math.round(self.progress * 100);
-              setProgressLineWidth(introLine4, `${introPercent}%`);
-            } else {
-              setProgressLineWidth(introLine4, "0%");
-              inActiveTimeline(".intro-4");
-            }
-          },
-        },
-      });
-      timeline4.to(wrapper4.current, {
-        x: () =>
-          wrapper4.current
-            ? wrapper4.current.offsetWidth - window.innerWidth
-            : 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: panel4.current,
-          start: timeline4Ref.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 9.55 - 200),
-          scrub: scurbScale,
-        },
+      timeline4 = createPinnedTimelineSection({
+        panelRef: panel4,
+        wrapperRef: wrapper4,
+        timelineSectionRef: timeline4Ref,
+        widthMultiplier: 9.55,
+        introClass: ".intro-4",
+        introLineSelector: `.history-timeline .intro-4 .progress-line .border-line`,
+        scrubScale: scurbScale,
       });
       setTimelinePeriod4(timeline4);
       // Timeline Section  5
-      timeline5 = gsap.timeline({
-        scrollTrigger: {
-          trigger: panel5.current,
-          start: "top top",
-          end: "+=" + window.innerWidth * 5.53,
-          scrub: scurbScale,
-          pin: true,
-          anticipatePin: 1,
-          //pinType: "fixed",
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            // Fifth Chapter
-            if (self.progress > 0) {
-              activeTimeline(".intro-5");
-              completeTimeline(".intro-5");
-              const introPercent = Math.round(self.progress * 100);
-              setProgressLineWidth(introLine5, `${introPercent}%`);
-            } else {
-              setProgressLineWidth(introLine5, "0%");
-              inActiveTimeline(".intro-5");
-            }
-          },
-        },
-      });
-      timeline5.to(wrapper5.current, {
-        x: () =>
-          wrapper5.current
-            ? wrapper5.current.offsetWidth - window.innerWidth
-            : 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: panel5.current,
-          start: timeline5Ref.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 5.53 - 200),
-          scrub: scurbScale,
-        },
+      timeline5 = createPinnedTimelineSection({
+        panelRef: panel5,
+        wrapperRef: wrapper5,
+        timelineSectionRef: timeline5Ref,
+        widthMultiplier: 5.53,
+        introClass: ".intro-5",
+        introLineSelector: `.history-timeline .intro-5 .progress-line .border-line`,
+        scrubScale: scurbScale,
       });
       setTimelinePeriod5(timeline5);
       // Timeline Section 6
-      timeline6 = gsap.timeline({
-        scrollTrigger: {
-          trigger: panel6.current,
-          start: "top top",
-          end: "+=" + window.innerWidth * 8.376,
-          scrub: scurbScale,
-          pin: true,
-          anticipatePin: 1,
-          //pinType: "fixed",
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            // Sixth Chapter
-            if (self.progress > 0) {
-              completeTimeline(".intro-6");
-              activeTimeline(".intro-6");
-            } else {
-              inActiveTimeline(".intro-6");
-            }
-            // Hide History Timeline on Last Chapter
-            const shouldHideHistory = self.progress > 0.99;
-            if (history && shouldHideHistory !== isHistoryHidden.current) {
-              isHistoryHidden.current = shouldHideHistory;
-              gsap.set(history, {
-                autoAlpha: shouldHideHistory ? 0 : 1,
-                pointerEvents: shouldHideHistory ? "none" : "auto",
-              });
-            }
-          },
-        },
-      });
-      timeline6.to(wrapper6.current, {
-        x: () =>
-          wrapper6.current
-            ? wrapper6.current.offsetWidth - window.innerWidth
-            : 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: panel6.current,
-          start: timeline6Ref.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 8.376 - 200),
-          scrub: scurbScale,
-        },
+      timeline6 = createPinnedTimelineSection({
+        panelRef: panel6,
+        wrapperRef: wrapper6,
+        timelineSectionRef: timeline6Ref,
+        widthMultiplier: 8.376,
+        introClass: ".intro-6",
+        scrubScale: scurbScale,
+        historyElement: history,
+        isHistoryHiddenRef: isHistoryHidden,
       });
       setTimelinePeriod6(timeline6);
     }
@@ -923,7 +642,15 @@ export default function HistoryScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [
+    isAllAnimationComplete,
+    timelinePeriod1,
+    timelinePeriod2,
+    timelinePeriod3,
+    timelinePeriod4,
+    timelinePeriod5,
+    timelinePeriod6,
+  ]);
 
   // Header Left Toggle on Scroll
   useEffect(() => {
@@ -1050,9 +777,23 @@ export default function HistoryScriptProvider({
     );
   }
 
+  // Resolved offsetTopTimelineN values (each was previously repeated as
+  // `pageDataFetched ? offsetTopTimelineN : 0` throughout the JSX below).
+  const resolvedOffsetTopTimeline1 = pageDataFetched ? offsetTopTimeline1 : 0;
+  const resolvedOffsetTopTimeline2 = pageDataFetched ? offsetTopTimeline2 : 0;
+  const resolvedOffsetTopTimeline3 = pageDataFetched ? offsetTopTimeline3 : 0;
+  const resolvedOffsetTopTimeline4 = pageDataFetched ? offsetTopTimeline4 : 0;
+  const resolvedOffsetTopTimeline5 = pageDataFetched ? offsetTopTimeline5 : 0;
+  const resolvedOffsetTopTimeline6 = pageDataFetched ? offsetTopTimeline6 : 0;
+
   return (
     chroniclesPageData && (
-      <main ref={main} id="page" dir="ltr" className="main relative z-10">
+      <main
+        ref={main}
+        id="page"
+        dir="ltr"
+        className="main relative z-10 overflow-hidden lg:overflow-auto"
+      >
         {/* First Panel Start Here */}
         <div ref={timeline1Ref} className="timeline1 timeline" id="timeline1">
           <div
@@ -1061,7 +802,7 @@ export default function HistoryScriptProvider({
           >
             <div
               ref={wrapper1}
-              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[707vw] lg:min-w-[707vw] lg:h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[707vw] lg:min-w-[707vw] lg:h-screen`}
             >
               <Introduction
                 animated={isAllAnimationComplete}
@@ -1078,7 +819,7 @@ export default function HistoryScriptProvider({
                   throw new Error("Function not implemented.");
                 }}
                 timeline={"timeline1"}
-                offsetTopTimeline={pageDataFetched ? offsetTopTimeline1 : 0}
+                offsetTopTimeline={resolvedOffsetTopTimeline1}
                 offsetTopAdded={offsetTopAdded}
               />
               <Suspense
@@ -1089,14 +830,12 @@ export default function HistoryScriptProvider({
                 <ContentSection2
                   animWidthText={0.5}
                   extraClass={
-                    "lg:min-w-[80vw] w-full lg:w-[80vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[80vw] w-full lg:w-[80vw] lg:h-screen panel-section"
                   }
-                  data={
-                    chroniclesPageData?.acf?.timeline_1?.content_section || ""
-                  }
+                  data={timeline1Data.contentSection}
                   panel={timeline1Ref}
                   loadAnimation={true}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline1 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1108,15 +847,13 @@ export default function HistoryScriptProvider({
                 <TitleSection
                   animWidthText={0.9}
                   extraClass={
-                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section"
                   }
                   leftShape={true}
                   rightShape={true}
                   panel={timeline1Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_1?.title_section || ""
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline1 : 0}
+                  data={timeline1Data.titleSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1128,16 +865,13 @@ export default function HistoryScriptProvider({
                 <RabbisPeriodSection
                   animWidthText={2}
                   extraClass={
-                    "lg:min-w-screen w-screen lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-screen w-screen lg:h-screen panel-section"
                   }
                   panel={timeline1Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_1?.past_rabbis_section ||
-                    []
-                  }
+                  data={timeline1Data.pastRabbisSection}
                   rabbisPosts={rabbisPostsData1}
                   rabbisData={setListOfRabbis}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline1 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1149,14 +883,11 @@ export default function HistoryScriptProvider({
                 <SingleImageSection
                   animWidthText={2.9}
                   extraClass={
-                    "lg:min-w-[32vw] w-full lg:w-[32vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[32vw] w-full lg:w-[32vw] lg:h-screen panel-section"
                   }
-                  image={
-                    chroniclesPageData?.acf?.timeline_1?.single_image ||
-                    HistoryImage1
-                  }
+                  image={timeline1Data.singleImage}
                   panel={timeline1Ref}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline1 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1169,12 +900,10 @@ export default function HistoryScriptProvider({
                   animWidthText={3.4}
                   panel={timeline1Ref}
                   extraClass={
-                    "lg:min-w-[150vw] w-full lg:w-[150vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[150vw] w-full lg:w-[150vw] lg:h-screen panel-section"
                   }
-                  data={
-                    chroniclesPageData?.acf?.timeline_1?.mark_of_the_road || []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline1 : 0}
+                  data={timeline1Data.markOfTheRoad}
+                  offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1186,14 +915,12 @@ export default function HistoryScriptProvider({
                 <RabbisTimeline
                   animWidthText={5.4}
                   extraClass={
-                    "lg:min-w-[150vw] w-full lg:w-[150vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[150vw] w-full lg:w-[150vw] lg:h-screen panel-section"
                   }
                   bgImage={timelineBG}
                   panel={timeline1Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_1?.rabbis_timeline || []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline1 : 0}
+                  data={timeline1Data.rabbisTimeline}
+                  offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1206,12 +933,12 @@ export default function HistoryScriptProvider({
                   animWidthText={6.9}
                   bgImage={""}
                   extraClass={
-                    "lg:min-w-[45vw] w-full lg:w-[45vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[45vw] w-full lg:w-[45vw] lg:h-screen panel-section"
                   }
                   data={QuoteData}
                   boxClass="lg:translate-x-[6vw]"
                   panel={timeline1Ref}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline1 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1227,7 +954,7 @@ export default function HistoryScriptProvider({
           >
             <div
               ref={wrapper2}
-              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[588vw] lg:min-w-[588vw] lg:h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[588vw] lg:min-w-[588vw] lg:h-screen`}
             >
               <Suspense
                 fallback={
@@ -1251,7 +978,7 @@ export default function HistoryScriptProvider({
                   audioControl={function (): void {
                     throw new Error("Function not implemented.");
                   }}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline2 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline2}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1264,14 +991,11 @@ export default function HistoryScriptProvider({
                   animWidthText={8.2}
                   panel={timeline2Ref}
                   extraClass={
-                    "lg:min-w-[128vw] w-full lg:w-[128vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[128vw] w-full lg:w-[128vw] lg:h-screen panel-section"
                   }
                   bgImage={NewsSectionBG}
-                  data={
-                    chroniclesPageData?.acf?.timeline_2?.news_paper_section ||
-                    []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline2 : 0}
+                  data={timeline2Data.newsPaperSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline2}
                   onMouseMove={moveCircle}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
@@ -1285,15 +1009,13 @@ export default function HistoryScriptProvider({
                 <TitleSection
                   animWidthText={9.1}
                   extraClass={
-                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section"
                   }
                   leftShape={true}
                   rightShape={true}
                   panel={timeline2Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_2?.title_section || ""
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline2 : 0}
+                  data={timeline2Data.titleSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline2}
                 />
               </Suspense>
               <Suspense
@@ -1304,15 +1026,12 @@ export default function HistoryScriptProvider({
                 <RabbisPeriodSection
                   animWidthText={10.2}
                   extraClass={
-                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section"
                   }
                   panel={timeline2Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_2?.past_rabbis_section ||
-                    []
-                  }
+                  data={timeline2Data.pastRabbisSection}
                   rabbisData={setListOfRabbis}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline2 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline2}
                   rabbisPosts={rabbisPostsData2}
                 />
               </Suspense>
@@ -1325,12 +1044,10 @@ export default function HistoryScriptProvider({
                   animWidthText={11.4}
                   panel={timeline2Ref}
                   extraClass={
-                    "lg:min-w-[210vw] w-full lg:w-[210vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[210vw] w-full lg:w-[210vw] lg:h-screen panel-section"
                   }
-                  data={
-                    chroniclesPageData?.acf?.timeline_2?.mark_of_the_road || []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline2 : 0}
+                  data={timeline2Data.markOfTheRoad}
+                  offsetTopTimeline={resolvedOffsetTopTimeline2}
                 />
               </Suspense>
             </div>
@@ -1345,7 +1062,7 @@ export default function HistoryScriptProvider({
           >
             <div
               ref={wrapper3}
-              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[849.8vw] lg:min-w-[849.8vw] lg:h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[849.8vw] lg:min-w-[849.8vw] lg:h-screen`}
             >
               <Suspense
                 fallback={
@@ -1369,7 +1086,7 @@ export default function HistoryScriptProvider({
                   }}
                   animWidthText={0.1}
                   timeline="timeline3"
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline3 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1381,7 +1098,7 @@ export default function HistoryScriptProvider({
                 <ArrowSliderSection
                   animWidthText={14}
                   extraClass={
-                    "lg:min-w-[65.8vw] w-full lg:w-[65.8vw] min-h-screen lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[65.8vw] w-full lg:w-[65.8vw] min-h-screen lg:h-screen panel-section"
                   }
                   bgImage={arrowSectionBG}
                   bgClass=""
@@ -1390,7 +1107,7 @@ export default function HistoryScriptProvider({
                   slideData={SliderData}
                   sectionImage={sectionImage}
                   panel={timeline3Ref}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline3 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1402,15 +1119,12 @@ export default function HistoryScriptProvider({
                 <EvidenceOfPeriod
                   animWidthText={14.65}
                   extraClass={
-                    "lg:min-w-[93vw] w-full lg:w-[93vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[93vw] w-full lg:w-[93vw] lg:h-screen panel-section"
                   }
                   panel={timeline3Ref}
                   videoControl={setIsVideoPopupOpen}
-                  data={
-                    chroniclesPageData?.acf?.timeline_3?.evidence_of_period ||
-                    []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline3 : 0}
+                  data={timeline3Data.evidenceOfPeriod}
+                  offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1422,15 +1136,13 @@ export default function HistoryScriptProvider({
                 <TitleSection
                   animWidthText={15}
                   extraClass={
-                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section"
                   }
                   leftShape={true}
                   rightShape={true}
                   panel={timeline3Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_3?.title_section || ""
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline3 : 0}
+                  data={timeline3Data.titleSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1442,15 +1154,12 @@ export default function HistoryScriptProvider({
                 <RabbisPeriodSection
                   animWidthText={15.9}
                   extraClass={
-                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section"
                   }
                   panel={timeline3Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_3?.past_rabbis_section ||
-                    []
-                  }
+                  data={timeline3Data.pastRabbisSection}
                   rabbisData={setListOfRabbis}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline3 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                   rabbisPosts={rabbisPostsData3}
                 />
@@ -1463,13 +1172,11 @@ export default function HistoryScriptProvider({
                 <MarkOfTheRoad3
                   animWidthText={17}
                   extraClass={
-                    "lg:min-w-[195vw] w-full lg:w-[195vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[195vw] w-full lg:w-[195vw] lg:h-screen panel-section"
                   }
                   panel={timeline3Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_3?.mark_of_the_road || []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline3 : 0}
+                  data={timeline3Data.markOfTheRoad}
+                  offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1480,11 +1187,8 @@ export default function HistoryScriptProvider({
               >
                 <IntroductionContent
                   animated={isAllAnimationComplete}
-                  bgImage={
-                    chroniclesPageData?.acf?.timeline_3?.intro_banner
-                      ?.background || introBG3
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline3 : 0}
+                  bgImage={timeline3Data.introBannerBackground}
+                  offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                   data={IntroContentData}
                   extraClass={
@@ -1510,14 +1214,11 @@ export default function HistoryScriptProvider({
                 <LambOfferingSection
                   animWidthText={20.65}
                   extraClass={
-                    "lg:min-w-[146vw] w-full lg:w-[146vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[146vw] w-full lg:w-[146vw] lg:h-screen panel-section"
                   }
                   panel={timeline3Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_3
-                      ?.lamb_offering_section || []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline3 : 0}
+                  data={timeline3Data.lambOfferingSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                   onMouseMove={moveCircle}
                   onMouseEnter={handleMouseEnter}
@@ -1536,7 +1237,7 @@ export default function HistoryScriptProvider({
           >
             <div
               ref={wrapper4}
-              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[955vw] lg:min-w-[955vw] lg:h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[955vw] lg:min-w-[955vw] lg:h-screen`}
             >
               <Suspense
                 fallback={
@@ -1560,7 +1261,7 @@ export default function HistoryScriptProvider({
                     throw new Error("Function not implemented.");
                   }}
                   animWidthText={0.1}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline4 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline4}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1572,13 +1273,11 @@ export default function HistoryScriptProvider({
                 <MoveToJerusalem
                   animWidthText={23.3}
                   extraClass={
-                    "lg:min-w-[170vw] w-full lg:w-[170vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[170vw] w-full lg:w-[170vw] lg:h-screen panel-section"
                   }
                   panel={timeline4Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_4?.move_to_jerusalem || []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline4 : 0}
+                  data={timeline4Data.moveToJerusalem}
+                  offsetTopTimeline={resolvedOffsetTopTimeline4}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1590,15 +1289,13 @@ export default function HistoryScriptProvider({
                 <TitleSection
                   animWidthText={24.3}
                   extraClass={
-                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section"
                   }
                   leftShape={true}
                   rightShape={true}
                   panel={timeline4Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_4?.title_section || ""
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline4 : 0}
+                  data={timeline4Data.titleSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline4}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1610,15 +1307,12 @@ export default function HistoryScriptProvider({
                 <RabbisPeriodSection
                   animWidthText={25.3}
                   extraClass={
-                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section"
                   }
                   panel={timeline4Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_4?.past_rabbis_section ||
-                    []
-                  }
+                  data={timeline4Data.pastRabbisSection}
                   rabbisData={setListOfRabbis}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline4 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline4}
                   offsetTopAdded={offsetTopAdded}
                   rabbisPosts={rabbisPostsData4}
                 />
@@ -1631,14 +1325,12 @@ export default function HistoryScriptProvider({
                 <RabbisTimeline2
                   animWidthText={26.1}
                   extraClass={
-                    "lg:min-w-[485vw] w-full lg:w-[485vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[485vw] w-full lg:w-[485vw] lg:h-screen panel-section"
                   }
                   bgImage={timelineBG}
                   panel={timeline4Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_4?.history_timeline || []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline4 : 0}
+                  data={timeline4Data.historyTimeline}
+                  offsetTopTimeline={resolvedOffsetTopTimeline4}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1651,12 +1343,12 @@ export default function HistoryScriptProvider({
                   animWidthText={30.3}
                   bgImage={""}
                   extraClass={
-                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section"
                   }
                   data={QuoteData2}
                   boxClass="lg:max-w-[40vw]"
                   panel={timeline4Ref}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline4 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline4}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1672,7 +1364,7 @@ export default function HistoryScriptProvider({
           >
             <div
               ref={wrapper5}
-              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[553vw] lg:min-w-[553vw] lg:h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[553vw] lg:min-w-[553vw] lg:h-screen`}
             >
               <Suspense
                 fallback={
@@ -1696,7 +1388,7 @@ export default function HistoryScriptProvider({
                     throw new Error("Function not implemented.");
                   }}
                   animWidthText={31.2}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline5 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1708,11 +1400,11 @@ export default function HistoryScriptProvider({
                 <OnlyTextSection
                   animWidthText={31.6}
                   extraClass={
-                    "lg:min-w-[32vw] w-full lg:w-[32vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[32vw] w-full lg:w-[32vw] lg:h-screen panel-section"
                   }
                   panel={timeline5Ref}
-                  data={chroniclesPageData?.acf?.timeline_5?.text_section || ""}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline5 : 0}
+                  data={timeline5Data.textSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1724,7 +1416,7 @@ export default function HistoryScriptProvider({
                 <ArrowSliderSection
                   animWidthText={32.3}
                   extraClass={
-                    "lg:min-w-[70vw] w-full lg:w-[70vw] min-h-screen lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[70vw] w-full lg:w-[70vw] min-h-screen lg:h-screen panel-section"
                   }
                   bgImage={arrowSectionBG2}
                   bgClass=""
@@ -1733,7 +1425,7 @@ export default function HistoryScriptProvider({
                   slideData={SliderData2}
                   sectionImage={arrowSectionImage}
                   panel={timeline5Ref}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline5 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1745,14 +1437,11 @@ export default function HistoryScriptProvider({
                 <ImageOnlySection
                   animWidthText={32.6}
                   extraClass={
-                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section"
                   }
                   panel={timeline5Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_5?.arrow_slider_section
-                      ?.floating_image_2 || ""
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline5 : 0}
+                  data={timeline5Data.arrowSliderSectionFloatingImage2}
+                  offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1764,11 +1453,11 @@ export default function HistoryScriptProvider({
                 <SingleVideoSection
                   animWidthText={33.2}
                   extraClass={
-                    "lg:min-w-[26vw] w-full lg:w-[26vw] h-screen panel-section will-change-transform"
+                    "lg:min-w-[26vw] w-full lg:w-[26vw] h-screen panel-section"
                   }
                   panel={timeline5Ref}
-                  data={chroniclesPageData?.acf?.timeline_5?.single_video || []}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline5 : 0}
+                  data={timeline5Data.singleVideo}
+                  offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1780,15 +1469,13 @@ export default function HistoryScriptProvider({
                 <TitleSection
                   animWidthText={33.4}
                   extraClass={
-                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section"
                   }
                   leftShape={true}
                   rightShape={true}
                   panel={timeline5Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_5?.title_section || ""
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline5 : 0}
+                  data={timeline5Data.titleSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1800,15 +1487,12 @@ export default function HistoryScriptProvider({
                 <RabbisPeriodSection
                   animWidthText={34.2}
                   extraClass={
-                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section"
                   }
                   panel={timeline5Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_5?.past_rabbis_section ||
-                    []
-                  }
+                  data={timeline5Data.pastRabbisSection}
                   rabbisData={setListOfRabbis}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline5 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                   rabbisPosts={rabbisPostsData5}
                 />
@@ -1821,14 +1505,12 @@ export default function HistoryScriptProvider({
                 <RabbisTimeline3
                   animWidthText={35.1}
                   extraClass={
-                    "lg:min-w-[125vw] w-full lg:w-[125vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[125vw] w-full lg:w-[125vw] lg:h-screen panel-section"
                   }
                   bgImage={timelineBG}
                   panel={timeline5Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_5?.history_timeline || []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline5 : 0}
+                  data={timeline5Data.historyTimeline}
+                  offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1844,7 +1526,7 @@ export default function HistoryScriptProvider({
           >
             <div
               ref={wrapper6}
-              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[837.6vw] lg:min-w-[837.6vw] lg:h-screen will-change-transform`}
+              className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[837.6vw] lg:min-w-[837.6vw] lg:h-screen`}
             >
               <Suspense
                 fallback={
@@ -1868,7 +1550,7 @@ export default function HistoryScriptProvider({
                     throw new Error("Function not implemented.");
                   }}
                   animWidthText={36.6}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline6 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1880,11 +1562,11 @@ export default function HistoryScriptProvider({
                 <OnlyTextSection2
                   animWidthText={37.2}
                   extraClass={
-                    "lg:min-w-[32.5vw] w-full lg:w-[32.5vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[32.5vw] w-full lg:w-[32.5vw] lg:h-screen panel-section"
                   }
                   panel={timeline6Ref}
-                  data={chroniclesPageData?.acf?.timeline_6?.text_section || ""}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline6 : 0}
+                  data={timeline6Data.textSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1896,11 +1578,11 @@ export default function HistoryScriptProvider({
                 <ImageOnlySection2
                   animWidthText={38}
                   extraClass={
-                    "lg:min-w-[55.5vw] w-full lg:w-[55.5vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[55.5vw] w-full lg:w-[55.5vw] lg:h-screen panel-section"
                   }
                   panel={timeline6Ref}
-                  data={chroniclesPageData?.acf?.timeline_6?.single_image || ""}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline6 : 0}
+                  data={timeline6Data.singleImage}
+                  offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1915,8 +1597,8 @@ export default function HistoryScriptProvider({
                   }
                   animWidthText={38.4}
                   panel={timeline6Ref}
-                  data={chroniclesPageData?.acf?.timeline_6?.card_section || []}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline6 : 0}
+                  data={timeline6Data.cardSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1929,13 +1611,10 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "panel-section lg:min-w-[61.8vw] w-full lg:w-[61.8vw] lg:h-screen"
                   }
-                  image={
-                    chroniclesPageData?.acf?.timeline_6?.parallax_image ||
-                    OnlyImage
-                  }
+                  image={timeline6Data.parallaxImage}
                   animWidthText={40}
                   panel={timeline6Ref}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline6 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1947,13 +1626,11 @@ export default function HistoryScriptProvider({
                 <MarkOfTheRoad4
                   animWidthText={41.2}
                   extraClass={
-                    "lg:min-w-[130vw] w-full lg:w-[130vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[130vw] w-full lg:w-[130vw] lg:h-screen panel-section"
                   }
                   panel={timeline6Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_6?.mark_of_the_road || []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline6 : 0}
+                  data={timeline6Data.markOfTheRoad}
+                  offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1964,15 +1641,12 @@ export default function HistoryScriptProvider({
               >
                 <ImageWithTextSection
                   extraClass={
-                    "lg:min-w-[137vw] w-full lg:w-[137vw] lg:h-screen panel-section will-change-transform"
+                    "lg:min-w-[137vw] w-full lg:w-[137vw] lg:h-screen panel-section"
                   }
                   animWidthText={42.7}
                   panel={timeline6Ref}
-                  data={
-                    chroniclesPageData?.acf?.timeline_6
-                      ?.image_with_text_section || []
-                  }
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline6 : 0}
+                  data={timeline6Data.imageWithTextSection}
+                  offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -1985,12 +1659,9 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "panel-section lg:min-w-[35.8vw] w-full lg:w-[35.8vw] lg:h-screen"
                   }
-                  image={
-                    chroniclesPageData?.acf?.timeline_6?.only_image ||
-                    OnlyImage2
-                  }
+                  image={timeline6Data.onlyImage}
                   animWidthText={43.5}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline6 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>
@@ -2004,14 +1675,11 @@ export default function HistoryScriptProvider({
                     "panel-section lg:min-w-[75vw] w-full lg:w-[75vw] lg:h-screen"
                   }
                   animWidthText={44.2}
-                  bgImage={
-                    chroniclesPageData?.acf?.timeline_6?.quote_section
-                      ?.background || QuoteSectionBG
-                  }
+                  bgImage={timeline6Data.quoteSectionBackground}
                   boxClass={""}
                   data={QuoteData3}
                   panel={timeline6Ref}
-                  offsetTopTimeline={pageDataFetched ? offsetTopTimeline6 : 0}
+                  offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
               </Suspense>

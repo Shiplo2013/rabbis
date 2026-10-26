@@ -82,7 +82,8 @@ export default function OnlyTextSection(props: ChildProps) {
                           GetRightPosition(wrapper.current) -
                           window.innerWidth * 0.7
                       : (wrapper.current?.getBoundingClientRect().top || 0) +
-                          window.scrollY;
+                          window.scrollY -
+                          window.innerHeight * 0.6;
                   },
                   toggleActions: "restart none none reverse",
                 },
@@ -115,7 +116,8 @@ export default function OnlyTextSection(props: ChildProps) {
                           GetRightPosition(wrapper.current) -
                           window.innerWidth * 0.7
                       : (wrapper.current?.getBoundingClientRect().top || 0) +
-                          window.scrollY;
+                          window.scrollY -
+                          window.innerHeight * 0.6;
                   },
                   toggleActions: "restart none none reverse",
                 },

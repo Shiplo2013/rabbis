@@ -26,19 +26,20 @@ export default function CyclePicturesScriptProvider({
   const [pageDataFetched, setPageDataFetched] = useState(false);
   const [containerWidth, setContainerWidth] = useState(200);
   const [sectionWidth, setSectionWidth] = useState(100);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   // Router Path
   const pathname = usePathname();
   const [activeCategory, setActiveCategory] = useState(-1);
   const [totalPostPages, setTotalPostPages] = useState(1);
   const [currentPositions, setCurrentPositions] = useState(0);
-  const [postDataLoaded, setPostDataLoaded] = useState(false);
+  //const [postDataLoaded, setPostDataLoaded] = useState(false);
   // Animation State
   const {
-    isLoading,
     setIsLoading,
     animationPlayed,
-    setAnimationPlayed,
     cycleCategories,
     setCycleCategories,
     cycleActiveCategory,
@@ -72,8 +73,12 @@ export default function CyclePicturesScriptProvider({
   //   Number(data?.postsData?.totalPage ?? 1),
   // );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
-  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  // Derived from allPosts/postLoadCount; computed during render instead of
+  // mirrored into state via an effect (avoids an avoidable render chain
+  // every time allPosts changes).
+  const verticalPosts = allPosts?.slice(0, 2) || [];
+  const normalPosts =
+    allPosts?.slice(2, postsPerLoad.current * postLoadCount) || [];
   const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
     threshold: 0,
     triggerOnce: false,
@@ -82,7 +87,6 @@ export default function CyclePicturesScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setPicturesPageData({
@@ -91,21 +95,9 @@ export default function CyclePicturesScriptProvider({
       parentCategories: data.categoryData,
     });
     setAllPosts(data.postsData?.posts || []);
+    setCycleAllPosts(data.postsData?.posts || []);
     setCycleCategories(data.categoryData);
-  }, [data]);
-
-  // All posts data loaded
-  useEffect(() => {
-    if (!allPosts) {
-      return;
-    }
-    setCycleAllPosts(allPosts);
-    setVerticalPosts(allPosts?.slice(0, 2) || []);
-    setNormalPosts(
-      allPosts?.slice(2, postsPerLoad.current * postLoadCount) || [],
-    );
-    setIsLoadingMore(false);
-  }, [allPosts, postLoadCount]);
+  }, [data, setCycleAllPosts, setCycleCategories]);
 
   // Load More Posts when inView is true
   useEffect(() => {
@@ -117,8 +109,13 @@ export default function CyclePicturesScriptProvider({
 
   // On Category select
   useEffect(() => {
+    // allPosts is replaced below; reset the load-more spinner here instead
+    // of via a sibling effect reacting to that state change.
+    setIsLoadingMore(false);
     if (cycleActiveCategory === -1) {
-      setAllPosts(data.postsData?.posts || []);
+      const posts = data.postsData?.posts || [];
+      setAllPosts(posts);
+      setCycleAllPosts(posts);
     } else {
       const filteredPosts = data.postsData?.posts?.filter((post: any) => {
         const postCategoryId = post?.committee_cat?.[0] || 0;
@@ -127,14 +124,21 @@ export default function CyclePicturesScriptProvider({
       if (filteredPosts?.length === 0) {
         //setNoPostsFound(true);
         setAllPosts([]);
+        setCycleAllPosts([]);
       } else {
         //setNoPostsFound(false);
         setAllPosts(filteredPosts);
+        setCycleAllPosts(filteredPosts);
       }
     }
 
     window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
-  }, [cycleActiveCategory]);
+    // data is intentionally read via closure, not listed as a dependency:
+    // it is a stable prop for this component's lifetime, and excluding it
+    // keeps this effect triggered only by the user-driven category
+    // selection it actually reacts to.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cycleActiveCategory, setCycleAllPosts]);
 
   // Page data loaded
   useEffect(() => {
@@ -145,77 +149,82 @@ export default function CyclePicturesScriptProvider({
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [picturesPageData, animationPlayed]);
+    // picturesPageData has a single producer (the data effect above) and,
+    // once set, never reverts, so it is read here via closure rather than
+    // listed as a dependency; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed, picturesPageData]);
 
-  useEffect(() => {
-    const animations: gsap.core.Animation[] = [];
-    // Selectors
-    const pageWrapper = document.getElementById(
-      "page-wrapper",
-    ) as HTMLDivElement | null;
-    const headerLeft = document.querySelector(
-      ".header-left",
-    ) as HTMLDivElement | null;
-    const headerRight = document.querySelector(
-      ".header-right",
-    ) as HTMLDivElement | null;
-    const bannerBackgroundOverlay = main.current?.querySelector(
-      ".first-intro .intro-background .intro-bg-mask",
-    );
-    if (pageWrapper) {
-      const mainAnim = gsap.to(pageWrapper, {
-        opacity: 1,
-        ease: "none",
-        duration: 0.5,
-        delay: 0,
-      });
-      animations.push(mainAnim);
-    }
-    if (headerLeft) {
-      const headerLeftAnim = gsap.to(headerLeft, {
-        autoAlpha: 1,
-        ease: "none",
-        duration: 1,
-      });
-      animations.push(headerLeftAnim);
-    }
-    if (headerRight) {
-      const headerRightAnim = gsap.to(headerRight, {
-        autoAlpha: 1,
-        ease: "none",
-        duration: 0,
-      });
-      animations.push(headerRightAnim);
-    }
-    // Wave Line Animation
-    const waveMask = document.getElementById(
-      "wave-mask",
-    ) as HTMLDivElement | null;
-    if (waveMask) {
-      const waveMaskAnim = gsap.to(waveMask, {
-        translateY: 0,
-        opacity: 1,
-        ease: "expo.inOut",
-        duration: 0,
-        delay: 0,
-      });
-      animations.push(waveMaskAnim);
-    }
-    if (bannerBackgroundOverlay) {
-      const bannerBackgroundOverlayAnim = gsap.to(bannerBackgroundOverlay, {
-        translateY: "-100%",
-        delay: 0,
-        duration: 0,
-        ease: "expo.inOut",
-      });
-      animations.push(bannerBackgroundOverlayAnim);
-    }
+  // useEffect(() => {
+  //   const animations: gsap.core.Animation[] = [];
+  //   // Selectors
+  //   const pageWrapper = document.getElementById(
+  //     "page-wrapper",
+  //   ) as HTMLDivElement | null;
+  //   const headerLeft = document.querySelector(
+  //     ".header-left",
+  //   ) as HTMLDivElement | null;
+  //   const headerRight = document.querySelector(
+  //     ".header-right",
+  //   ) as HTMLDivElement | null;
+  //   const bannerBackgroundOverlay = main.current?.querySelector(
+  //     ".first-intro .intro-background .intro-bg-mask",
+  //   );
+  //   if (pageWrapper) {
+  //     const mainAnim = gsap.to(pageWrapper, {
+  //       opacity: 1,
+  //       ease: "none",
+  //       duration: 0.5,
+  //       delay: 0,
+  //     });
+  //     animations.push(mainAnim);
+  //   }
+  //   if (headerLeft) {
+  //     const headerLeftAnim = gsap.to(headerLeft, {
+  //       autoAlpha: 1,
+  //       ease: "none",
+  //       duration: 1,
+  //     });
+  //     animations.push(headerLeftAnim);
+  //   }
+  //   if (headerRight) {
+  //     const headerRightAnim = gsap.to(headerRight, {
+  //       autoAlpha: 1,
+  //       ease: "none",
+  //       duration: 0,
+  //     });
+  //     animations.push(headerRightAnim);
+  //   }
+  //   // Wave Line Animation
+  //   const waveMask = document.getElementById(
+  //     "wave-mask",
+  //   ) as HTMLDivElement | null;
+  //   if (waveMask) {
+  //     const waveMaskAnim = gsap.to(waveMask, {
+  //       translateY: 0,
+  //       opacity: 1,
+  //       ease: "expo.inOut",
+  //       duration: 0,
+  //       delay: 0,
+  //     });
+  //     animations.push(waveMaskAnim);
+  //   }
+  //   if (bannerBackgroundOverlay) {
+  //     const bannerBackgroundOverlayAnim = gsap.to(bannerBackgroundOverlay, {
+  //       translateY: "-100%",
+  //       delay: 0,
+  //       duration: 0,
+  //       ease: "expo.inOut",
+  //     });
+  //     animations.push(bannerBackgroundOverlayAnim);
+  //   }
 
-    // Return
-    return () => {
-      animations.forEach((anim) => anim.kill());
-    };
-  }, [postDataLoaded]);
+  //   // Return
+  //   return () => {
+  //     animations.forEach((anim) => anim.kill());
+  //   };
+  // }, [postDataLoaded]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -529,7 +538,7 @@ export default function CyclePicturesScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
@@ -643,7 +652,7 @@ export default function CyclePicturesScriptProvider({
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -676,7 +685,7 @@ export default function CyclePicturesScriptProvider({
             />
           </div>
         </div>
-        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh]">
           <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
             <div
               className={`normal-posts flex flex-row flex-wrap gap-x-15 gap-y-15 justify-end`}

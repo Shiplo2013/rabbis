@@ -1,5 +1,5 @@
 import KnessetScriptProviderSlug from "@/app/components/knesset/KnessetScriptProviderSlug";
-import { parseJsonResponse } from "@/app/lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "@/app/lib/parseJsonResponseWithBackup";
 import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -35,7 +35,7 @@ export async function generateMetadata({
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     `knesset-slug-post-${slug}`,
@@ -88,13 +88,13 @@ export default async function Page({ params }: PageProps) {
     allPostsRes,
   ]);
 
-  if (!postsDataRes.ok || !allPostsDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   const [postsData, allPostsData] = await Promise.all([
-    parseJsonResponse<any[]>(postsDataRes, [], `circle-of-year-page`),
-    parseJsonResponse<any[]>(allPostsDataRes, [], "circle-of-year-posts"),
+    parseJsonResponseWithBackup<any[]>(
+      postsDataRes,
+      [],
+      `knesset-slug-page-${slug}`,
+    ),
+    parseJsonResponseWithBackup<any[]>(allPostsDataRes, [], "knesset-all-posts"),
   ]);
 
   if (!postsData || postsData.length === 0) {

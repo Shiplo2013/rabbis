@@ -6,7 +6,7 @@ import PostNavigation from "@/app/ui/past-rabbis/PostNavigation";
 import RabbisOptions from "@/app/ui/past-rabbis/RabbisOptions";
 import QuoteSection from "@/app/ui/QuoteSection";
 import TextSplitLines2 from "@/app/ui/TextSplitLines2";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import IntroBG from "../../assets/images/past-rabbis-bg.jpg";
 import ContentSection from "../../components/past-rabbis/single/ContentSection";
@@ -139,18 +139,16 @@ type AllPosts = {
 export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
   // Router Path
   const pathname = usePathname();
-  const params = useParams();
-  const slug = params?.slug as string;
   const [post, setPost] = useState<RabbiPost | null>(null);
   const [allPosts, setAllPosts] = useState<AllPosts | null | any>(null);
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const {
-    isLoading,
     setIsLoading,
     animationPlayed,
-    setAnimationPlayed,
     setCurrentRabbisPost,
-    allRabbisPosts,
     setAllRabbisPosts,
   } = useAppState();
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -164,7 +162,6 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setPost(data.postsData);
@@ -173,7 +170,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     if (data.allPostsData && data.allPostsData.length > 0) {
       setAllRabbisPosts(data.allPostsData);
     }
-  }, [data]);
+  }, [data, setCurrentRabbisPost, setAllRabbisPosts]);
 
   // Page Data Loade
   useEffect(() => {
@@ -184,7 +181,12 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [post, allPosts, animationPlayed]);
+    // post/allPosts have a single producer (the data effect above) and,
+    // once set, never revert, so they are read here via closure rather
+    // than listed as dependencies; re-running this effect only when
+    // animationPlayed changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed, post]);
 
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);
@@ -439,7 +441,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   useGSAP(() => {
     // Set Timeline
@@ -711,7 +713,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[330vw] lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-[330vw] lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}

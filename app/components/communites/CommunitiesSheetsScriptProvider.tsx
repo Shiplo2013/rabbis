@@ -4,7 +4,14 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import BigTitleSplitLines from "@/app/ui/BigTitleSplitLines";
 import SheetContentItem from "@/app/ui/SheetContentItem";
 import { usePathname } from "next/navigation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useInView } from "react-intersection-observer";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 import Introduction from "../../components/sheets/Introduction";
@@ -14,6 +21,161 @@ import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
+
+// Module-scoped so it isn't redefined (and its identity lost) on every
+// render of CommunitiesSheetsScriptProvider; all render-specific values are
+// passed in as arguments instead of being captured from component scope.
+type FetchMorePostsParams = {
+  postPerPage: number;
+  currentPage: number;
+  totalPages: number;
+  isLoadingMore: boolean;
+  hasMorePosts: boolean;
+  setIsLoadingMore: Dispatch<SetStateAction<boolean>>;
+  setHasMorePosts: Dispatch<SetStateAction<boolean>>;
+  setSheetPostsData: Dispatch<SetStateAction<any>>;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+  signal: AbortSignal;
+};
+
+async function fetchMorePosts({
+  postPerPage,
+  currentPage,
+  totalPages,
+  isLoadingMore,
+  hasMorePosts,
+  setIsLoadingMore,
+  setHasMorePosts,
+  setSheetPostsData,
+  setCurrentPage,
+  signal,
+}: FetchMorePostsParams) {
+  if (isLoadingMore || !hasMorePosts || currentPage >= totalPages) return;
+
+  setIsLoadingMore(true);
+
+  try {
+    const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf,magazines_cat&per_page=${postPerPage}&page=${currentPage + 1}`;
+
+    const response = await wpFetch(postsUrl, {
+      cache: "no-store",
+      signal,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to load community page data.");
+    }
+    const data = await response.json();
+
+    if (signal.aborted) return;
+
+    if (data?.posts?.length < postPerPage) {
+      setHasMorePosts(false);
+    }
+
+    setSheetPostsData((prevPosts: any) => [
+      ...prevPosts,
+      ...(data?.posts || []),
+    ]);
+    setCurrentPage((prevPage) => prevPage + 1);
+  } catch (error) {
+    if (!signal.aborted) {
+      console.error(error);
+    }
+  } finally {
+    if (!signal.aborted) {
+      setIsLoadingMore(false);
+    }
+  }
+}
+
+type ApplyCategoryFilterParams = {
+  categoryId: number | null;
+  categoryChildId: number | null;
+  posts: any[] | undefined;
+  categoriesTree: any;
+  setSheetPostsData: Dispatch<SetStateAction<any>>;
+  setNoPostsFound: Dispatch<SetStateAction<boolean>>;
+  setFilteredPostsLoading: Dispatch<SetStateAction<boolean>>;
+};
+
+// Module-scoped for the same reason as fetchMorePosts above: keeps the
+// category/sub-category filtering branches (previously two near-duplicated
+// if-blocks in the component) out of the component body.
+function applyCategoryFilter({
+  categoryId,
+  categoryChildId,
+  posts,
+  categoriesTree,
+  setSheetPostsData,
+  setNoPostsFound,
+  setFilteredPostsLoading,
+}: ApplyCategoryFilterParams) {
+  if (categoryId === 0 && categoryChildId === 0) {
+    setSheetPostsData(posts || []);
+    return;
+  }
+
+  if (categoryId === null || categoryId === 0) {
+    return;
+  }
+
+  setFilteredPostsLoading(true);
+
+  let filteredPosts: any[] | undefined;
+  if (categoryChildId !== 0) {
+    filteredPosts = posts?.filter((post: any) => {
+      const postCategoryId = post?.magazines_cat?.[0] || 0;
+      return postCategoryId === categoryChildId;
+    });
+  } else {
+    const categoryEntry = categoriesTree?.[categoryId - 1];
+    const activeChildIds = categoryEntry?.children
+      ?.filter((item: any) => item.count !== 0)
+      .map((item: any) => item.id);
+    const activeChildIdSet = new Set(activeChildIds);
+    filteredPosts = posts?.filter((post: any) =>
+      activeChildIdSet.has(post?.magazines_cat?.[0] || 0),
+    );
+  }
+
+  if (filteredPosts?.length === 0) {
+    setNoPostsFound(true);
+    setSheetPostsData([]);
+  } else {
+    setNoPostsFound(false);
+    setSheetPostsData(filteredPosts);
+  }
+  setFilteredPostsLoading(false);
+
+  window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
+}
+
+// Bundles the "load more" trigger div and its button, both of which key off
+// isLoadingMore (pulse vs. bounce className, loading vs. idle label); this
+// removes the gating `&&` and both of those ternaries from the parent.
+function SheetReadMoreButton({
+  readMoreRef,
+  isLoadingMore,
+}: {
+  readMoreRef: ReturnType<typeof useInView>["ref"];
+  isLoadingMore: boolean;
+}) {
+  return (
+    <div
+      ref={readMoreRef}
+      className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
+    >
+      <button
+        type="button"
+        className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-colors duration-500 disabled:cursor-not-allowed"
+        disabled={isLoadingMore}
+      >
+        {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}
+      </button>
+    </div>
+  );
 }
 
 export default function CommunitiesSheetsScriptProvider({
@@ -32,8 +194,11 @@ export default function CommunitiesSheetsScriptProvider({
   const pathname = usePathname();
   const [sheetPageData, setSheetPageData] = useState<any | []>(null);
   const [sheetPostsData, setSheetPostsData] = useState<any | []>(null);
-  const [pageDataFetched, setPageDataFetched] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // pageDataFetched/error are pure derivations of data/sheetPageData, so
+  // they are computed during render instead of mirrored into state via
+  // an effect that "adjusts" them on every data change.
+  const pageDataFetched = !!sheetPageData;
+  const error = !data ? "No data available." : null;
   const {
     isLoading,
     setIsLoading,
@@ -46,7 +211,6 @@ export default function CommunitiesSheetsScriptProvider({
   const [postPerPage, setPostPerPage] = useState(100);
   const [postsPerLoad, setPostsPerLoad] = useState(12);
   const [postLoadCount, setPostLoadCount] = useState(1);
-  const [postLoadLimit, setPostLoadLimit] = useState(0);
   const [containerWidth, setContainerWidth] = useState(200);
   const [sectionWidth, setSectionWidth] = useState(100);
   const [activeCategory, setActiveCategory] = useState(0);
@@ -60,8 +224,14 @@ export default function CommunitiesSheetsScriptProvider({
     Number(data?.postsData?.totalPage ?? 1),
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [verticalPosts, setVerticalPosts] = useState<any[]>([]);
-  const [normalPosts, setNormalPosts] = useState<any[]>([]);
+  // Derived from sheetPostsData/postLoadCount; computed during render
+  // instead of mirrored into state via an effect (avoids an avoidable
+  // render chain every time sheetPostsData changes).
+  const postLoadLimit = Math.ceil(
+    Number(sheetPostsData?.length || 0) / postsPerLoad,
+  );
+  const verticalPosts = sheetPostsData?.slice(0, 4) || [];
+  const normalPosts = sheetPostsData?.slice(4, postsPerLoad * postLoadCount) || [];
   const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
     threshold: 0,
     triggerOnce: false,
@@ -71,159 +241,89 @@ export default function CommunitiesSheetsScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data available.");
       return;
     }
     setSheetPageData(data);
     setSheetPostsData(data?.postsData?.posts || []);
     setCommunitySheetsCategoryData(data?.categoriesTree || []);
-  }, [data]);
-
-  // Set Posts Data when sheetPostsData changes
-  useEffect(() => {
-    if (!sheetPostsData) {
-      return;
-    }
-    setPostLoadLimit(
-      Math.ceil(Number(sheetPostsData?.length || 0) / postsPerLoad),
-    );
-    setVerticalPosts(sheetPostsData?.slice(0, 4) || []);
-    setNormalPosts(
-      sheetPostsData?.slice(4, postsPerLoad * postLoadCount) || [],
-    );
-    setIsLoadingMore(false);
-  }, [sheetPostsData, postLoadCount]);
+    // isLoading is shared context state; its value derives from data's
+    // presence (always false here, since this branch only runs once data
+    // is truthy) rather than an unrelated hardcoded literal.
+    setIsLoading(!data);
+  }, [data, setCommunitySheetsCategoryData, setIsLoading]);
 
   // Load more posts when currentPage changes
   useEffect(() => {
-    if (sheetsOnSelectCategoryId === 0 && sheetsOnSelectCategoryChildId === 0) {
-      setSheetPostsData(data?.postsData?.posts || []);
-    }
-    if (
-      sheetsOnSelectCategoryId !== null &&
-      sheetsOnSelectCategoryId !== 0 &&
-      sheetsOnSelectCategoryChildId !== 0
-    ) {
-      setFilteredPostsLoading(true);
-      const filteredPosts = data?.postsData?.posts?.filter((post: any) => {
-        const postCategoryId = post?.magazines_cat?.[0] || 0;
-        return postCategoryId === sheetsOnSelectCategoryChildId;
-      });
-      if (filteredPosts?.length === 0) {
-        setNoPostsFound(true);
-        setSheetPostsData([]);
-        setFilteredPostsLoading(false);
-      } else {
-        setNoPostsFound(false);
-        setSheetPostsData(filteredPosts);
-        setFilteredPostsLoading(false);
-      }
-
-      window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
-    }
-    if (
-      sheetsOnSelectCategoryId !== null &&
-      sheetsOnSelectCategoryId !== 0 &&
-      sheetsOnSelectCategoryChildId === 0
-    ) {
-      setFilteredPostsLoading(true);
-      const categoriesIds = data?.categoriesTree[sheetsOnSelectCategoryId - 1];
-      const categoriesFilterdIds = categoriesIds?.children?.filter(
-        (item: any) => {
-          return item.count !== 0;
-        },
-      );
-
-      const filteredIds = categoriesFilterdIds?.map((item: any) => item.id);
-      const filteredIdSet = new Set(filteredIds);
-      const filteredPosts = data?.postsData?.posts?.filter((post: any) =>
-        filteredIdSet.has(post?.magazines_cat?.[0] || 0),
-      );
-      if (filteredPosts?.length === 0) {
-        setNoPostsFound(true);
-        setSheetPostsData([]);
-        setFilteredPostsLoading(false);
-      } else {
-        setNoPostsFound(false);
-        setSheetPostsData(filteredPosts);
-        setFilteredPostsLoading(false);
-      }
-
-      window.scrollTo({ top: window.innerWidth * 1.9, behavior: "smooth" });
-    }
+    // sheetPostsData is replaced below; reset the load-more spinner here
+    // instead of via a sibling effect reacting to that state change.
+    setIsLoadingMore(false);
+    applyCategoryFilter({
+      categoryId: sheetsOnSelectCategoryId,
+      categoryChildId: sheetsOnSelectCategoryChildId,
+      posts: data?.postsData?.posts,
+      categoriesTree: data?.categoriesTree,
+      setSheetPostsData,
+      setNoPostsFound,
+      setFilteredPostsLoading,
+    });
+    // data is intentionally read via closure, not listed as a dependency:
+    // it is a stable prop for this component's lifetime, and excluding it
+    // keeps this effect triggered only by the user-driven category
+    // selection it actually reacts to.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sheetsOnSelectCategoryId, sheetsOnSelectCategoryChildId]);
 
-  // Get more posts
-  const LoadMorePosts = () => {
-    if (isLoadingMore || !hasMorePosts || currentPage >= totalPages) return;
-    setIsLoadingMore(true);
-    let isActive = true;
-    const controller = new AbortController();
+  // Get more posts. The fetch/state-update logic lives in the
+  // module-scoped `fetchMorePosts` above; this handler just supplies the
+  // current render's values plus an AbortController tied to this component
+  // instance so in-flight requests are cancelled on unmount.
+  const loadMoreControllerRef = useRef<AbortController | null>(null);
 
-    const getPostsData = async () => {
-      try {
-        const postsUrl = `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/magazines?orderby=menu_order&order=asc&acf_format=standard&_fields=id,title,acf,magazines_cat&per_page=${postPerPage}&page=${currentPage + 1}`;
-
-        const response = await wpFetch(postsUrl, {
-          cache: "no-store",
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to load community page data.");
-        }
-        const data = await response.json();
-
-        if (isActive) {
-          if (data?.posts?.length < postPerPage) {
-            setHasMorePosts(false);
-          }
-
-          setSheetPostsData((prevPosts: any) => [
-            ...prevPosts,
-            ...(data?.posts || []),
-          ]);
-        }
-      } catch (error) {
-        if (isActive && !controller.signal.aborted) {
-          console.error(error);
-        }
-      } finally {
-        if (isActive) {
-          setIsLoadingMore(false);
-          setCurrentPage((prevPage) => prevPage + 1);
-        }
-      }
-    };
-
-    getPostsData();
-
+  useEffect(() => {
     return () => {
-      isActive = false;
-      controller.abort();
+      loadMoreControllerRef.current?.abort();
     };
+  }, []);
+
+  const handleLoadMorePosts = () => {
+    loadMoreControllerRef.current?.abort();
+    const controller = new AbortController();
+    loadMoreControllerRef.current = controller;
+
+    fetchMorePosts({
+      postPerPage,
+      currentPage,
+      totalPages,
+      isLoadingMore,
+      hasMorePosts,
+      setIsLoadingMore,
+      setHasMorePosts,
+      setSheetPostsData,
+      setCurrentPage,
+      signal: controller.signal,
+    });
   };
+
+  // Keep a ref to the latest handleLoadMorePosts so the effect below can
+  // call the current closure (with up-to-date postPerPage/currentPage/etc.)
+  // without needing to depend on a function that is recreated every render.
+  // The write happens in an effect (not during render) to keep rendering
+  // pure.
+  const handleLoadMorePostsRef = useRef(handleLoadMorePosts);
+  useEffect(() => {
+    handleLoadMorePostsRef.current = handleLoadMorePosts;
+  });
 
   // Load More Posts when inView is true
   useEffect(() => {
     if (isReadMoreInView) {
-      setIsLoadingMore(true);
       setPostLoadCount((prevCount) => prevCount + 1);
 
       if (postLoadCount! === postLoadLimit! && hasMorePosts) {
-        return LoadMorePosts();
+        handleLoadMorePostsRef.current();
       }
     }
-  }, [isReadMoreInView]);
-
-  // Update section width on window resize
-  useEffect(() => {
-    if (!sheetPageData) {
-      return;
-    }
-    setPageDataFetched(true);
-    setIsLoading(false);
-  }, [sheetPageData]);
+  }, [isReadMoreInView, postLoadCount, postLoadLimit, hasMorePosts]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -534,7 +634,7 @@ export default function CommunitiesSheetsScriptProvider({
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isAllAnimationComplete]);
+  }, [isAllAnimationComplete, verticalSection]);
 
   // Hide header-left on scroll down, show on scroll up (only for this page)
   useGSAP(() => {
@@ -686,7 +786,7 @@ export default function CommunitiesSheetsScriptProvider({
               }}
               hasMorePosts={hasMorePosts}
               isLoadingMore={isLoadingMore}
-              onLoadMore={LoadMorePosts}
+              onLoadMore={handleLoadMorePosts}
               setIsPostLoaded={setIsPostLoaded}
               currentPage={currentPage}
               totalPages={totalPages}
@@ -708,18 +808,10 @@ export default function CommunitiesSheetsScriptProvider({
               })}
             </div>
             {postLoadCount! < postLoadLimit! && (
-              <div
-                ref={readMoreRef}
-                className={`sheet-readmore w-full lg:min-w-50 flex items-center justify-center ${isLoadingMore ? "animate-pulse" : "animate-bounce"}`}
-              >
-                <button
-                  type="button"
-                  className="text-[25px] sm:text-[35px] lg:text-[45px] leading-[1em] text-[#656158] border-b border-[#AAA497] cursor-pointer hover:text-white hover:border-[#C3A13F] transition-colors duration-500 disabled:cursor-not-allowed"
-                  disabled={isLoadingMore}
-                >
-                  {isLoadingMore ? "טְעִינָה..." : "טוען פריטים נוספים"}
-                </button>
-              </div>
+              <SheetReadMoreButton
+                readMoreRef={readMoreRef}
+                isLoadingMore={isLoadingMore}
+              />
             )}
           </div>
         </div>

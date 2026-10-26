@@ -2,7 +2,7 @@ import { wpFetch } from "@/app/lib/wpFetch";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import MusicScriptProvider from "../../components/music/MusicScriptProvider";
-import { parseJsonResponse } from "../../lib/parseJsonResponse";
+import { parseJsonResponseWithBackup } from "../../lib/parseJsonResponseWithBackup";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await wpFetch(
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   ];
-  const parsedData = await parseJsonResponse<any[]>(
+  const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
     "circle-of-year-slug-page",
@@ -81,13 +81,9 @@ export default async function Page() {
 
   const [pageDataRes, postsDataRes] = await Promise.all([pageRes, postsRes]);
 
-  if (!pageDataRes.ok || !postsDataRes.ok) {
-    throw new Error("Failed to load data.");
-  }
-
   const [pageData, postsData] = await Promise.all([
-    parseJsonResponse<any[]>(pageDataRes, [], `circle-of-year-page`),
-    parseJsonResponse<any[]>(postsDataRes, [], "circle-of-year-posts"),
+    parseJsonResponseWithBackup<any[]>(pageDataRes, [], `circle-of-year-page`),
+    parseJsonResponseWithBackup<any[]>(postsDataRes, [], "circle-of-year-posts"),
   ]);
 
   if (!pageData[0]) {

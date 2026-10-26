@@ -9,10 +9,6 @@ export default function LoadingAnimation() {
       aria-labelledby="title desc"
       className="w-full h-auto"
     >
-      <title id="title">אנימציית קיפול בגוני זהב</title>
-      <desc id="desc">
-        SVG וקטורי טהור, ללא תמונות מוטמעות וללא כיתוב, בלולאה רציפה
-      </desc>
       <g id="frame-0" className="animation-frame">
         <path
           d="M145,137L143,138L143,177L142,178L124,177L123,176L112,176L111,175L101,175L101,427L104,426L114,426L115,425L126,425L127,424L142,423L143,424L143,464L144,464L144,139Z"

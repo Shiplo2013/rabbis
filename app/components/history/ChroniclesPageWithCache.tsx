@@ -37,7 +37,6 @@ export function ChroniclesPageWithCache({ data }: ChronclesPageDataProps) {
   );
 
   // Compare server data with cache on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const changes = compareAndUpdate(serverData);
 
@@ -48,6 +47,10 @@ export function ChroniclesPageWithCache({ data }: ChronclesPageDataProps) {
     if (changes.rabbisData) {
       console.log("[Cache] Rabbis data updated from server");
     }
+    // compareAndUpdate/data are intentionally excluded: this effect must
+    // only run once on mount to seed the cache from the initial server
+    // response, not whenever compareAndUpdate is recreated or data changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency - runs only once on mount
 
   return (

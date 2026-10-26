@@ -87,6 +87,15 @@ function resolvePaths(payload: RevalidationPayload) {
         addPath(targets, `/communities/${slug}`);
       }
       break;
+    // Best-effort mapping for the communities/sheets (magazines) content
+    // type: this content has no [slug] sub-route, it only backs the single
+    // /communities/sheets list page, so just revalidate that path. The
+    // exact post_type string WordPress sends for this content type is
+    // unconfirmed; both of these are included defensively.
+    case "magazines":
+    case "communities-sheets":
+      addPath(targets, "/communities/sheets");
+      break;
     case "past-rabbis":
       addPath(targets, "/past-rabbis");
       if (slug) {

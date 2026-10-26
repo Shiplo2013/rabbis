@@ -62,7 +62,10 @@ export default function SingleNewsScriptProvider({
   const [navigationData, setNavigationData] = useState<NavigationData | null>(
     null,
   );
-  const [error, setError] = useState<string | null>(null);
+  // error is a pure derivation of the data prop (true exactly when data is
+  // missing), so it is computed during render instead of mirrored into
+  // state via an effect that "adjusts" it on every data change.
+  const error = !data ? "No data provided." : null;
   const [pageDataFetched, setPageDataFetched] = useState(false);
 
   // Animation State
@@ -124,7 +127,6 @@ export default function SingleNewsScriptProvider({
   // Get Page Data From backend
   useEffect(() => {
     if (!data) {
-      setError("No data provided.");
       return;
     }
     setPost(data.post);
@@ -140,7 +142,12 @@ export default function SingleNewsScriptProvider({
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [post, animationPlayed]);
+    // post has a single producer (the data effect above) and, once set,
+    // never reverts, so it is read here via closure rather than listed as
+    // a dependency; re-running this effect only when animationPlayed
+    // changes avoids an avoidable extra render chain.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationPlayed, post]);
 
   // Page Section Animation
   useGSAP(() => {
