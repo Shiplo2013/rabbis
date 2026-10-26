@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
-    "accessibility-page",
+    "accessibility-page-meta",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 

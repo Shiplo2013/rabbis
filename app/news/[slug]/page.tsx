@@ -38,7 +38,7 @@ export async function generateMetadata({
   const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
-    `news-slug-page-${slug}`,
+    `news-slug-page-${slug}-meta`,
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 
@@ -90,7 +90,7 @@ export default async function page({ params }: PageProps) {
 
   const [pageData, postsData] = await Promise.all([
     parseJsonResponseWithBackup<any[]>(pageDataRes, [], `news-slug-page-${slug}`),
-    parseJsonResponseWithBackup<any[]>(postsDataRes, [], "news-posts"),
+    parseJsonResponseWithBackup<any[]>(postsDataRes, [], "news-posts-nav"),
   ]);
 
   // Find the index of the current post in the list of all posts

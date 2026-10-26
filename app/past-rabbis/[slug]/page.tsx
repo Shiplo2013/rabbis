@@ -38,7 +38,7 @@ export async function generateMetadata({
   const parsedData = await parseJsonResponseWithBackup<any[]>(
     pageRes,
     pageData,
-    `past-rabbis-slug-${slug}`,
+    `past-rabbis-slug-${slug}-meta`,
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
 

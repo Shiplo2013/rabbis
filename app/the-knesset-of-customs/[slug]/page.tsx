@@ -89,8 +89,12 @@ export default async function Page({ params }: PageProps) {
   ]);
 
   const [postsData, allPostsData] = await Promise.all([
-    parseJsonResponseWithBackup<any[]>(postsDataRes, [], `circle-of-year-page`),
-    parseJsonResponseWithBackup<any[]>(allPostsDataRes, [], "circle-of-year-posts"),
+    parseJsonResponseWithBackup<any[]>(
+      postsDataRes,
+      [],
+      `knesset-slug-page-${slug}`,
+    ),
+    parseJsonResponseWithBackup<any[]>(allPostsDataRes, [], "knesset-all-posts"),
   ]);
 
   if (!postsData || postsData.length === 0) {
