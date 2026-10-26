@@ -147,7 +147,7 @@ export default function SingleNewsScriptProvider({
     // a dependency; re-running this effect only when animationPlayed
     // changes avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, post]);
 
   // Page Section Animation
   useGSAP(() => {

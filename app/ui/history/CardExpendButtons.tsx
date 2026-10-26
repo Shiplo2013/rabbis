@@ -1,0 +1,464 @@
+import MinusIcon2 from "@/app/assets/icons/MinusIcon2";
+import PlusIcon from "@/app/assets/icons/PlusIcon";
+import { gsap, useGSAP } from "@/app/ui/plugins";
+import React, { useSyncExternalStore } from "react";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP);
+}
+
+// Viewport detection functions
+const subscribeToDesktopViewport = (callback: () => void) => {
+  const mediaQuery = window.matchMedia("(min-width: 768px)");
+  mediaQuery.addEventListener("change", callback);
+  return () => mediaQuery.removeEventListener("change", callback);
+};
+
+const getDesktopViewportSnapshot = () =>
+  window.matchMedia("(min-width: 768px)").matches;
+
+const getServerDesktopViewportSnapshot = () => false;
+
+export default function CardExpendButtons(props: {
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+  wrapper: React.RefObject<HTMLDivElement>;
+  setSingleVideoPlaying: (value: boolean) => void;
+}) {
+  // Viewport Detection
+  const isDesktopViewport = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    getDesktopViewportSnapshot,
+    getServerDesktopViewportSnapshot,
+  );
+  // Use Gsap
+  const { contextSafe } = useGSAP({ scope: props.wrapper });
+
+  // Active Card Animation
+  const ActiveCardAnimation = (item: any) => {
+    item?.classList.add("z-[100]", "active");
+    const imagesDiv = item?.querySelector(".expand-images");
+    const imagesWrap = item?.querySelector(".expand-images>.images-wrapper");
+    const button = item?.querySelector(".expand-button");
+    const plusButton = item?.querySelector(".expand-button .plus-button");
+    const minusButton = item?.querySelector(".expand-button .minus-button");
+    !props.isOpen && props.setIsOpen(true);
+    if (isDesktopViewport) {
+      if (button) {
+        button.classList.remove("opacity-0");
+      }
+      if (plusButton) {
+        gsap.to(plusButton, {
+          yPercent: -100,
+          ease: "expo.inOut",
+          duration: 2,
+        });
+      }
+      if (minusButton) {
+        gsap.to(minusButton, {
+          yPercent: -100,
+          ease: "expo.inOut",
+          duration: 2,
+        });
+      }
+      const tl = gsap.timeline();
+      if (imagesDiv) {
+        tl.to(imagesDiv, {
+          opacity: 1,
+          visibility: "visible",
+          delay: 0,
+          duration: 0,
+        });
+      }
+      if (imagesWrap) {
+        tl.to(imagesWrap, {
+          x: "0%",
+          ease: "expo.inOut",
+          duration: 2,
+        });
+      }
+      // Other Items Animation
+      const itemIndex = Number(item?.getAttribute("data-index"));
+      if (itemIndex && itemIndex < 5) {
+        const siblingIndex1 = item?.nextElementSibling;
+        const siblingIndex2 = siblingIndex1?.nextElementSibling;
+        const siblingIndex3 = siblingIndex2?.nextElementSibling;
+        const siblingIndex4 = siblingIndex3?.nextElementSibling;
+        // Siblings Animation
+        if (siblingIndex1) {
+          gsap.to(siblingIndex1, {
+            x: "-55vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex2) {
+          gsap.to(siblingIndex2, {
+            x: "-40vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex3) {
+          gsap.to(siblingIndex3, {
+            x: "-30vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex4) {
+          gsap.to(siblingIndex4, {
+            x: "-15vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+      }
+      if (itemIndex === 5) {
+        const siblingIndex1 = item?.nextElementSibling;
+        const siblingIndex2 = siblingIndex1?.nextElementSibling;
+        const siblingIndex3 = siblingIndex2?.nextElementSibling;
+        // Siblings Animation
+        if (siblingIndex1) {
+          gsap.to(siblingIndex1, {
+            x: "-55vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex2) {
+          gsap.to(siblingIndex2, {
+            x: "-40vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex3) {
+          gsap.to(siblingIndex3, {
+            x: "-20vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+      }
+      if (itemIndex === 6) {
+        const siblingIndex1 = item?.nextElementSibling;
+        const siblingIndex2 = siblingIndex1?.nextElementSibling;
+        // Siblings Animation
+        if (siblingIndex1) {
+          gsap.to(siblingIndex1, {
+            x: "-52vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex2) {
+          gsap.to(siblingIndex2, {
+            x: "-25vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+      }
+      if (itemIndex === 7) {
+        const siblingIndex1 = item?.nextElementSibling;
+        const siblingIndex2 = siblingIndex1?.nextElementSibling;
+        // Siblings Animation
+        if (item) {
+          gsap.to(item, {
+            x: "15vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex1) {
+          gsap.to(siblingIndex1, {
+            x: "-25vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex2) {
+          gsap.to(siblingIndex2, {
+            x: "-5vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+      }
+      if (itemIndex === 8) {
+        const siblingIndex1 = item?.previousElementSibling;
+        const siblingIndex2 = siblingIndex1?.previousElementSibling;
+        const siblingIndex3 = siblingIndex2?.previousElementSibling;
+        // Siblings Animation
+        if (item) {
+          gsap.to(item, {
+            x: "44vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex1) {
+          gsap.to(siblingIndex1, {
+            x: "45vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex2) {
+          gsap.to(siblingIndex2, {
+            x: "40vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex3) {
+          gsap.to(siblingIndex3, {
+            x: "30vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+      }
+    } else {
+      if (plusButton) {
+        gsap.to(plusButton, {
+          yPercent: -100,
+          ease: "expo.inOut",
+          duration: 2,
+        });
+      }
+      if (minusButton) {
+        gsap.to(minusButton, {
+          yPercent: -100,
+          ease: "expo.inOut",
+          duration: 2,
+        });
+      }
+    }
+  };
+  // Deactive Card Animation
+  const DeactiveCardAnimation = (item: any) => {
+    item?.classList.remove("z-[100]", "active");
+    const imagesDiv = item?.querySelector(".expand-images");
+    const imagesWrap = item?.querySelector(".expand-images>.images-wrapper");
+    const button = item?.querySelector(".expand-button");
+    const plusButton = item?.querySelector(".expand-button .plus-button");
+    const minusButton = item?.querySelector(".expand-button .minus-button");
+    props.isOpen && props.setIsOpen(false);
+    if (isDesktopViewport) {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          if (button) {
+            button.classList.add("opacity-0");
+          }
+          item?.classList.remove("z-[100]", "active");
+        },
+      });
+      if (plusButton) {
+        tl.to(plusButton, {
+          yPercent: 0,
+          ease: "expo.inOut",
+          duration: 2,
+          delay: 0,
+        });
+      }
+      if (minusButton) {
+        tl.to(
+          minusButton,
+          {
+            yPercent: 0,
+            ease: "expo.inOut",
+            duration: 2,
+            delay: 0,
+          },
+          "-=2",
+        );
+      }
+      if (imagesWrap) {
+        tl.to(
+          imagesWrap,
+          {
+            x: "100%",
+            ease: "expo.inOut",
+            duration: 2,
+          },
+          "-=2",
+        );
+      }
+      if (imagesDiv) {
+        tl.to(imagesDiv, {
+          opacity: 0,
+          visibility: "hidden",
+          delay: 0,
+          duration: 0,
+        });
+      }
+      // Other Items Animation
+      const itemIndex = Number(item?.getAttribute("data-index"));
+      if (itemIndex && itemIndex < 5) {
+        const siblingIndex1 = item?.nextElementSibling;
+        const siblingIndex2 = siblingIndex1?.nextElementSibling;
+        const siblingIndex3 = siblingIndex2?.nextElementSibling;
+        const siblingIndex4 = siblingIndex3?.nextElementSibling;
+        // Siblings Animation
+        if (siblingIndex1) {
+          gsap.to(siblingIndex1, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex2) {
+          gsap.to(siblingIndex2, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex3) {
+          gsap.to(siblingIndex3, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex4) {
+          gsap.to(siblingIndex4, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+      } else if (itemIndex > 4 && itemIndex < 8) {
+        const siblingIndex1 = item?.nextElementSibling;
+        const siblingIndex2 = siblingIndex1?.nextElementSibling;
+        const siblingIndex3 = siblingIndex2?.nextElementSibling;
+        // Siblings Animation
+        if (item) {
+          gsap.to(item, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex1) {
+          gsap.to(siblingIndex1, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex2) {
+          gsap.to(siblingIndex2, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex3) {
+          gsap.to(siblingIndex3, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+      } else {
+        const siblingIndex1 = item?.previousElementSibling;
+        const siblingIndex2 = siblingIndex1?.previousElementSibling;
+        const siblingIndex3 = siblingIndex2?.previousElementSibling;
+        // Siblings Animation
+        if (item) {
+          gsap.to(item, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex1) {
+          gsap.to(siblingIndex1, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex2) {
+          gsap.to(siblingIndex2, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+        if (siblingIndex3) {
+          gsap.to(siblingIndex3, {
+            x: "0vw",
+            ease: "expo.inOut",
+            duration: 2,
+          });
+        }
+      }
+    } else {
+      if (plusButton) {
+        gsap.to(plusButton, {
+          yPercent: 0,
+          ease: "expo.inOut",
+          duration: 2,
+        });
+      }
+      if (minusButton) {
+        gsap.to(minusButton, {
+          yPercent: 0,
+          ease: "expo.inOut",
+          duration: 2,
+        });
+      }
+    }
+  };
+
+  // Card Animation
+  const handlePlusButtonClick = contextSafe(() => {
+    const getActiveCard = document.querySelectorAll(".timeline-card.active");
+    props.setSingleVideoPlaying(false);
+    // If Any Card is Active
+    if (getActiveCard.length === 0) {
+      ActiveCardAnimation(props.wrapper.current);
+    } else {
+      DeactiveCardAnimation(getActiveCard[0]);
+      ActiveCardAnimation(props.wrapper.current);
+    }
+  });
+  const handleMinusButtonClick = contextSafe(() => {
+    DeactiveCardAnimation(props.wrapper.current);
+  });
+
+  return (
+    <div className="expand-button bg-linear-to-t from-[#C3A13F] to-[#966814] w-12 h-12 sm:w-16.75 sm:h-16.75 rounded-full p-0.5 shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] cursor-pointer absolute bottom-0 lg:bottom-auto lg:top-1/2 left-1/2 -ml-8 lg:ml-0 lg:left-auto lg:right-full lg:-translate-y-1/2 lg:translate-x-1/2 transition-opacity duration-500 lg:opacity-0 group-hover:opacity-100 z-50">
+      <div className="button-wrapper overflow-hidden w-full h-full rounded-full relative">
+        <button
+          onClick={handlePlusButtonClick}
+          onKeyDown={(e) => e.key === "Enter" && handlePlusButtonClick()}
+          type="button"
+          aria-label="Expand Images"
+          tabIndex={0}
+          className={`plus-button bg-black w-full h-full flex items-center justify-center absolute top-0 left-0`}
+        >
+          <div className="w-6 h-6 sm:w-8 sm:h-8">
+            <PlusIcon />
+          </div>
+        </button>
+        <button
+          onClick={handleMinusButtonClick}
+          onKeyDown={(e) => e.key === "Enter" && handleMinusButtonClick()}
+          type="button"
+          aria-label="Collapse Images"
+          tabIndex={0}
+          className="minus-button bg-black w-full h-full flex items-center justify-center absolute top-full left-0"
+        >
+          <div className="w-4 h-4 sm:w-5 sm:h-5">
+            <MinusIcon2 />
+          </div>
+        </button>
+      </div>
+    </div>
+  );
+}

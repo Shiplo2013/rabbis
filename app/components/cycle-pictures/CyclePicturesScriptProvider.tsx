@@ -35,13 +35,11 @@ export default function CyclePicturesScriptProvider({
   const [activeCategory, setActiveCategory] = useState(-1);
   const [totalPostPages, setTotalPostPages] = useState(1);
   const [currentPositions, setCurrentPositions] = useState(0);
-  const [postDataLoaded, setPostDataLoaded] = useState(false);
+  //const [postDataLoaded, setPostDataLoaded] = useState(false);
   // Animation State
   const {
-    isLoading,
     setIsLoading,
     animationPlayed,
-    setAnimationPlayed,
     cycleCategories,
     setCycleCategories,
     cycleActiveCategory,
@@ -156,77 +154,77 @@ export default function CyclePicturesScriptProvider({
     // listed as a dependency; re-running this effect only when
     // animationPlayed changes avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, picturesPageData]);
 
-  useEffect(() => {
-    const animations: gsap.core.Animation[] = [];
-    // Selectors
-    const pageWrapper = document.getElementById(
-      "page-wrapper",
-    ) as HTMLDivElement | null;
-    const headerLeft = document.querySelector(
-      ".header-left",
-    ) as HTMLDivElement | null;
-    const headerRight = document.querySelector(
-      ".header-right",
-    ) as HTMLDivElement | null;
-    const bannerBackgroundOverlay = main.current?.querySelector(
-      ".first-intro .intro-background .intro-bg-mask",
-    );
-    if (pageWrapper) {
-      const mainAnim = gsap.to(pageWrapper, {
-        opacity: 1,
-        ease: "none",
-        duration: 0.5,
-        delay: 0,
-      });
-      animations.push(mainAnim);
-    }
-    if (headerLeft) {
-      const headerLeftAnim = gsap.to(headerLeft, {
-        autoAlpha: 1,
-        ease: "none",
-        duration: 1,
-      });
-      animations.push(headerLeftAnim);
-    }
-    if (headerRight) {
-      const headerRightAnim = gsap.to(headerRight, {
-        autoAlpha: 1,
-        ease: "none",
-        duration: 0,
-      });
-      animations.push(headerRightAnim);
-    }
-    // Wave Line Animation
-    const waveMask = document.getElementById(
-      "wave-mask",
-    ) as HTMLDivElement | null;
-    if (waveMask) {
-      const waveMaskAnim = gsap.to(waveMask, {
-        translateY: 0,
-        opacity: 1,
-        ease: "expo.inOut",
-        duration: 0,
-        delay: 0,
-      });
-      animations.push(waveMaskAnim);
-    }
-    if (bannerBackgroundOverlay) {
-      const bannerBackgroundOverlayAnim = gsap.to(bannerBackgroundOverlay, {
-        translateY: "-100%",
-        delay: 0,
-        duration: 0,
-        ease: "expo.inOut",
-      });
-      animations.push(bannerBackgroundOverlayAnim);
-    }
+  // useEffect(() => {
+  //   const animations: gsap.core.Animation[] = [];
+  //   // Selectors
+  //   const pageWrapper = document.getElementById(
+  //     "page-wrapper",
+  //   ) as HTMLDivElement | null;
+  //   const headerLeft = document.querySelector(
+  //     ".header-left",
+  //   ) as HTMLDivElement | null;
+  //   const headerRight = document.querySelector(
+  //     ".header-right",
+  //   ) as HTMLDivElement | null;
+  //   const bannerBackgroundOverlay = main.current?.querySelector(
+  //     ".first-intro .intro-background .intro-bg-mask",
+  //   );
+  //   if (pageWrapper) {
+  //     const mainAnim = gsap.to(pageWrapper, {
+  //       opacity: 1,
+  //       ease: "none",
+  //       duration: 0.5,
+  //       delay: 0,
+  //     });
+  //     animations.push(mainAnim);
+  //   }
+  //   if (headerLeft) {
+  //     const headerLeftAnim = gsap.to(headerLeft, {
+  //       autoAlpha: 1,
+  //       ease: "none",
+  //       duration: 1,
+  //     });
+  //     animations.push(headerLeftAnim);
+  //   }
+  //   if (headerRight) {
+  //     const headerRightAnim = gsap.to(headerRight, {
+  //       autoAlpha: 1,
+  //       ease: "none",
+  //       duration: 0,
+  //     });
+  //     animations.push(headerRightAnim);
+  //   }
+  //   // Wave Line Animation
+  //   const waveMask = document.getElementById(
+  //     "wave-mask",
+  //   ) as HTMLDivElement | null;
+  //   if (waveMask) {
+  //     const waveMaskAnim = gsap.to(waveMask, {
+  //       translateY: 0,
+  //       opacity: 1,
+  //       ease: "expo.inOut",
+  //       duration: 0,
+  //       delay: 0,
+  //     });
+  //     animations.push(waveMaskAnim);
+  //   }
+  //   if (bannerBackgroundOverlay) {
+  //     const bannerBackgroundOverlayAnim = gsap.to(bannerBackgroundOverlay, {
+  //       translateY: "-100%",
+  //       delay: 0,
+  //       duration: 0,
+  //       ease: "expo.inOut",
+  //     });
+  //     animations.push(bannerBackgroundOverlayAnim);
+  //   }
 
-    // Return
-    return () => {
-      animations.forEach((anim) => anim.kill());
-    };
-  }, [postDataLoaded]);
+  //   // Return
+  //   return () => {
+  //     animations.forEach((anim) => anim.kill());
+  //   };
+  // }, [postDataLoaded]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -654,7 +652,7 @@ export default function CyclePicturesScriptProvider({
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap flex-col lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -687,7 +685,7 @@ export default function CyclePicturesScriptProvider({
             />
           </div>
         </div>
-        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh]">
           <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
             <div
               className={`normal-posts flex flex-row flex-wrap gap-x-15 gap-y-15 justify-end`}

@@ -29,11 +29,7 @@ export default function VideoBackground() {
   }, [pathname]);
 
   return (
-    <div
-      ref={background}
-      id="banner-video"
-      className="relative w-full h-full will-change-transform"
-    >
+    <div ref={background} id="banner-video" className="relative w-full h-full">
       <video
         id="banner-video-element"
         poster="/home-banner.jpg"

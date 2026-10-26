@@ -300,7 +300,6 @@ export default function DonationScriptProvider({ data }: { data: any }) {
           }
         }
       });
-      setPageContentAnimation();
     }
   }, [pageDataFetched, animationPlayed]);
 
@@ -312,7 +311,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
   }, [pathname]);
 
   // Set Page Content Animation
-  const setPageContentAnimation = () => {
+  useGSAP(() => {
     // Page Content Animation
     const donationReadmore = main.current?.querySelector(
       ".donation-readmore",
@@ -569,7 +568,7 @@ export default function DonationScriptProvider({ data }: { data: any }) {
         },
       });
     }
-  };
+  }, [pageDataFetched, animationPlayed, isAllAnimationComplete]);
 
   // Set Body Overflow Hidden
   useEffect(() => {

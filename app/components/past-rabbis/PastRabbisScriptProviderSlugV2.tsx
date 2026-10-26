@@ -649,7 +649,7 @@ export default function PastRabbisScriptProviderSlugV2({
           <div
             ref={wrapper}
             id="section-wrapper"
-            className={`section-wrapp flex flex-col w-full items-center will-change-transform`}
+            className={`section-wrapp flex flex-col w-full items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}

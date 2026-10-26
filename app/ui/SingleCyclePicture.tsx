@@ -40,7 +40,7 @@ export default function SingleCyclePicture(props: ChildProps) {
   return (
     <div
       data-index={props.index}
-      className="single-cycle-picture w-full lg:w-[calc((100%-60px)/2)] will-change-transform"
+      className="single-cycle-picture w-full lg:w-[calc((100%-60px)/2)]"
     >
       <div className="cycle-frame relative">
         <div className="group relative z-40 w-full h-full max-w-full">
@@ -58,7 +58,7 @@ export default function SingleCyclePicture(props: ChildProps) {
             {SingleData?.acf?.image ? (
               <div className="picture-image absolute top-2.5 left-2.5 right-2.5 bottom-2.5 sm:top-5 sm:left-5 sm:right-5 sm:bottom-5 z-10 w-auto h-auto">
                 <Image
-                  className="w-full object-cover object-center h-full relative z-10 will-change-transform"
+                  className="w-full object-cover object-center h-full relative z-10"
                   src={
                     isDesktopViewport
                       ? SingleData?.acf?.image?.sizes?.medium_large

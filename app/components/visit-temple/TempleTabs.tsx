@@ -267,10 +267,10 @@ export default function TempleTabs(props: ChildProps) {
                     </button>
                   </div>
                 )}
-                <div className="tab-gallery flex items-center w-full lg:h-screen ml-auto mr-auto relative will-change-transform">
+                <div className="tab-gallery flex items-center w-full lg:h-screen ml-auto mr-auto relative">
                   <div
                     ref={galleryRef}
-                    className="gallery-wrapper w-full h-full flex items-center flex-col lg:flex-row will-change-transform"
+                    className="gallery-wrapper w-full h-full flex items-center flex-col lg:flex-row"
                   >
                     {isDesktopViewport ? (
                       Object.values(
@@ -283,7 +283,7 @@ export default function TempleTabs(props: ChildProps) {
                           return (
                             <div
                               key={item?.id}
-                              className="single-gallery w-75 h-45 sm:w-140 sm:h-85 lg:w-[32vw] lg:h-[40vh] overflow-hidden"
+                              className="single-gallery w-75 h-45 sm:w-140 sm:h-85 lg:w-[32vw] lg:h-[40vh] overflow-hidden relative"
                             >
                               <div
                                 className={`single-gallery-image w-[120%] h-[120%] lg:w-[40vw] lg:h-[60vh] absolute top-1/2 left-1/2 -translate-[50%] cursor-none pointer-events-none`}
@@ -308,7 +308,7 @@ export default function TempleTabs(props: ChildProps) {
                           return (
                             <div
                               key={item?.id}
-                              className="single-gallery w-50 h-70 sm:w-100 sm:h-140 lg:w-[22vw] lg:h-[70vh] overflow-hidden"
+                              className="single-gallery w-50 h-70 sm:w-100 sm:h-140 lg:w-[22vw] lg:h-[70vh] overflow-hidden relative"
                             >
                               <div
                                 className={`single-gallery-image w-[120%] h-[120%] lg:w-[30vw] lg:h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}

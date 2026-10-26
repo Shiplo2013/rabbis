@@ -116,7 +116,8 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                           GetRightPosition(mainTitle) -
                           window.innerWidth * 0.4
                       : (mainTitle.getBoundingClientRect().top || 0) +
-                          window.scrollY;
+                          window.scrollY -
+                          window.innerHeight * 0.6;
                   },
                   toggleActions: "restart none none reverse",
                 },
@@ -153,7 +154,8 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                         GetRightPosition(image) -
                         window.innerWidth * 0.4
                     : (image?.getBoundingClientRect().top || 0) +
-                        window.scrollY;
+                        window.scrollY -
+                        window.innerHeight * 0.6;
                 },
                 toggleActions: "restart none none reverse",
               },
@@ -181,7 +183,8 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                         GetRightPosition(image) -
                         window.innerWidth * 0.4
                     : (image?.getBoundingClientRect().top || 0) +
-                        window.scrollY;
+                        window.scrollY -
+                        window.innerHeight * 0.6;
                 },
                 toggleActions: "restart none none reverse",
               },
@@ -206,7 +209,8 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                         GetRightPosition(image) -
                         window.innerWidth * 0.4
                     : (image?.getBoundingClientRect().top || 0) +
-                        window.scrollY;
+                        window.scrollY -
+                        window.innerHeight * 0.6;
                 },
                 toggleActions: "restart none none reverse",
               },
@@ -236,7 +240,8 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                             GetRightPosition(title) -
                             window.innerWidth * 0.4
                         : (title?.getBoundingClientRect().top || 0) +
-                            window.scrollY;
+                            window.scrollY -
+                            window.innerHeight * 0.6;
                     },
                     toggleActions: "restart none none reverse",
                   },

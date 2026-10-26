@@ -35,8 +35,8 @@ export default function Introduction(props: ChildProps) {
             bgClass={props.bgClass}
             animatePosition={0.1}
           />
-          <div className="intro-left-mask absolute top-0 left-0 w-[7vw] h-full bg-linear-to-r from-[#1A1A1A] to-[#1a1a1a00] z-20 will-change-transform"></div>
-          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30 will-change-transform"></div>
+          <div className="intro-left-mask absolute top-0 left-0 w-[7vw] h-full bg-linear-to-r from-[#1A1A1A] to-[#1a1a1a00] z-20"></div>
+          <div className="intro-bg-mask absolute top-0 left-0 w-full h-full bg-black z-30"></div>
         </div>
       )}
       {props.bgOverlay !== "" && (
@@ -59,11 +59,11 @@ export default function Introduction(props: ChildProps) {
           <h1 className="intro-title text-[64px] sm:text-[128px] lg:text-[208px] text-[#AC832E] leading-[0.2em] sm:leading-[0.5em] lg:leading-[0.6em] overflow-hidden relative py-7.5 font-bold z-30">
             {parse(props.data[0].title)}
           </h1>
-          <div className="intro-images absolute bottom-[5vh] lg:bottom-0 left-0 sm:left-[10vw] lg:left-[28vw] lg:-mb-[5vh] w-40 h-50 sm:w-60 sm:h-75 lg:w-89 lg:h-133.5 z-10 will-change-transform">
+          <div className="intro-images absolute bottom-[5vh] lg:bottom-0 left-0 sm:left-[10vw] lg:left-[28vw] lg:-mb-[5vh] w-40 h-50 sm:w-60 sm:h-75 lg:w-89 lg:h-133.5 z-10">
             {props.data[0].images.image1 && (
-              <div className="image image1 w-[90%] lg:w-77.75 lg:h-116.5 absolute top-0 right-0 -mr-[4vw] z-10 origin-center will-change-transform">
+              <div className="image image1 w-[90%] lg:w-77.75 lg:h-116.5 absolute top-0 right-0 -mr-[4vw] z-10 origin-center">
                 <Image
-                  className="w-full object-cover object-center h-full relative z-10 will-change-transform"
+                  className="w-full object-cover object-center h-full relative z-10"
                   src={
                     props.data[0].images.image1?.sizes?.large ||
                     props.data[0].images.image1?.src
@@ -81,9 +81,9 @@ export default function Introduction(props: ChildProps) {
               </div>
             )}
             {props.data[0].images.image2 && (
-              <div className="image image2 lg:w-89 lg:h-133.5 absolute top-0 left-0 z-30 origin-center will-change-transform">
+              <div className="image image2 lg:w-89 lg:h-133.5 absolute top-0 left-0 z-30 origin-center">
                 <Image
-                  className="w-full object-cover object-center h-full relative z-10 will-change-transform"
+                  className="w-full object-cover object-center h-full relative z-10"
                   src={
                     props.data[0].images.image2?.sizes?.large ||
                     props.data[0].images.image2?.src
@@ -101,9 +101,9 @@ export default function Introduction(props: ChildProps) {
               </div>
             )}
             {props.data[0].images.image3 && (
-              <div className="image image3 lg:w-83.75 lg:h-125.75 absolute top-0 left-0 -ml-[2.5vw] z-20 origin-center will-change-transform">
+              <div className="image image3 lg:w-83.75 lg:h-125.75 absolute top-0 left-0 -ml-[2.5vw] z-20 origin-center">
                 <Image
-                  className="w-full object-cover object-center h-full relative z-10 will-change-transform"
+                  className="w-full object-cover object-center h-full relative z-10"
                   src={
                     props.data[0].images.image3?.sizes?.large ||
                     props.data[0].images.image3?.src

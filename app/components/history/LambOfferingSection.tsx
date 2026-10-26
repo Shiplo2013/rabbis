@@ -95,7 +95,8 @@ export default function LambOfferingSection(props: ChildProps) {
                       GetRightPosition(imagesAll) -
                       window.innerWidth * 0.1
                   : (wrapper.current?.getBoundingClientRect().top || 0) +
-                      window.scrollY;
+                      window.scrollY -
+                      window.innerHeight * 0.6;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -115,7 +116,8 @@ export default function LambOfferingSection(props: ChildProps) {
                       GetRightPosition(imagesAll) -
                       window.innerWidth * 0.1
                   : (wrapper.current?.getBoundingClientRect().top || 0) +
-                      window.scrollY;
+                      window.scrollY -
+                      window.innerHeight * 0.6;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -135,7 +137,8 @@ export default function LambOfferingSection(props: ChildProps) {
                       GetRightPosition(imagesAll) -
                       window.innerWidth * 0.1
                   : (wrapper.current?.getBoundingClientRect().top || 0) +
-                      window.scrollY;
+                      window.scrollY -
+                      window.innerHeight * 0.6;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -160,7 +163,8 @@ export default function LambOfferingSection(props: ChildProps) {
                       GetRightPosition(notification) +
                       window.innerWidth * 0.2
                   : (wrapper.current?.getBoundingClientRect().top || 0) +
-                      window.scrollY;
+                      window.scrollY -
+                      window.innerHeight * 0.6;
               },
               toggleActions: "restart pause play reverse",
             },
@@ -188,7 +192,8 @@ export default function LambOfferingSection(props: ChildProps) {
                       GetRightPosition(notification) +
                       window.innerWidth * 0.2
                   : (wrapper.current?.getBoundingClientRect().top || 0) +
-                      window.scrollY;
+                      window.scrollY -
+                      window.innerHeight * 0.6;
               },
               toggleActions: "restart none none reverse",
             },
@@ -299,7 +304,8 @@ export default function LambOfferingSection(props: ChildProps) {
                             GetRightPosition(sectionTitle) -
                             window.innerWidth * 0.1
                         : (wrapper.current?.getBoundingClientRect().top || 0) +
-                            window.scrollY;
+                            window.scrollY -
+                            window.innerHeight * 0.6;
                     },
                     end: () => "+=" + window.innerWidth * 0.5,
                     toggleActions: "restart none none reverse",
@@ -333,7 +339,8 @@ export default function LambOfferingSection(props: ChildProps) {
                             GetRightPosition(sectionText1) -
                             window.innerWidth * 0.1
                         : (wrapper.current?.getBoundingClientRect().top || 0) +
-                            window.scrollY;
+                            window.scrollY -
+                            window.innerHeight * 0.6;
                     },
                     end: () => "+=" + window.innerWidth * 0.5,
                     toggleActions: "restart none none reverse",
@@ -367,7 +374,8 @@ export default function LambOfferingSection(props: ChildProps) {
                             GetRightPosition(sectionText2) -
                             window.innerWidth * 0.1
                         : (wrapper.current?.getBoundingClientRect().top || 0) +
-                            window.scrollY;
+                            window.scrollY -
+                            window.innerHeight * 0.6;
                     },
                     end: () => "+=" + window.innerWidth * 0.5,
                     toggleActions: "restart none none reverse",

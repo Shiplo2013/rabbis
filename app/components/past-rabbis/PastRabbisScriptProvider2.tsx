@@ -22,7 +22,7 @@ if (typeof window !== "undefined") {
 export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   // Selectors
   const [rabbisPageData, setRabbisPageData] = useState<null | any>(null);
-  const [rabbisPosts, setRabbisPosts] = useState<null | any>(data?.posts);
+  const [rabbisPostsData, setRabbisPostsData] = useState<null | any>(null);
   const [containerWidth, setContainerWidth] = useState<number>(200);
   const [sectionWidth, setSectionWidth] = useState<number>(100);
   // error is a pure derivation of the data prop (true exactly when data is
@@ -61,8 +61,8 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
   // and the search-filter effect below); computed during render instead
   // of mirrored into state via an effect (avoids an avoidable render
   // chain every time rabbisPosts changes).
-  const verticalPosts = rabbisPosts?.slice(0, 1) || [];
-  const normalPosts = rabbisPosts?.slice(1, rabbisPosts?.length) || [];
+  // const verticalPosts = rabbisPostsData?.slice(0, 1) || [];
+  // const normalPosts = rabbisPostsData?.slice(1, rabbisPostsData?.length) || [];
 
   // Get Page Data From backend
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
       return;
     }
     setRabbisPageData(data);
-    setRabbisPosts(data?.posts);
+    setRabbisPostsData(data?.posts);
   }, [data]);
 
   // Page Data Loaded
@@ -87,7 +87,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
     // listed as a dependency; re-running this effect only when
     // animationPlayed changes avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, rabbisPageData]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -507,16 +507,17 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
 
   // Rabbis Search Result
   useEffect(() => {
+    if (pastRabbisSearchQuery === undefined) return;
     if (pastRabbisSearchQuery !== null && pastRabbisSearchQuery !== "") {
       const filteredContent = rabbisPageData?.posts.filter(
         (post: { title: { rendered: string } }) => {
           return post.title.rendered.includes(pastRabbisSearchQuery);
         },
       );
-      setRabbisPosts(filteredContent);
+      setRabbisPostsData(filteredContent);
       window.scrollTo({ top: window.innerWidth * 1.8, behavior: "smooth" });
     } else {
-      setRabbisPosts(rabbisPageData?.posts);
+      setRabbisPostsData(rabbisPageData?.posts);
       window.scrollTo({ top: window.innerWidth * 1.8, behavior: "smooth" });
     }
     // rabbisPageData has a single producer (the data effect above), which
@@ -613,7 +614,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
               }
               extraClass={`w-full lg:min-w-(--section-width) lg:w-(--section-width) lg:h-screen panel-section pt-[5vh] pb-[8vh] lg:pt-[5vw] lg:pb-[10vh] px-[8vw] lg:px-[6.25vw]`}
               animWidthText={1}
-              data={verticalPosts || []}
+              data={rabbisPostsData?.slice(0, 1) || []}
             />
           </div>
         </div>
@@ -622,78 +623,84 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
             <div
               className={`normal-posts w-full flex flex-row flex-wrap gap-x-10 gap-y-10 lg:gap-y-[12vh] justify-end`}
             >
-              {normalPosts?.map((item: any, index: number) => {
-                return (
-                  <div
-                    key={item.id}
-                    data-id={item.id}
-                    className={`rabbis-item w-full h-full flex items-end justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] flex-col lg:flex-row-reverse`}
-                  >
-                    <div className="rabbis-image w-full lg:w-[27.1vw] relative">
-                      <div className="image w-full h-auto lg:h-[57.2vh] relative">
-                        <Link
-                          href={item?.slug ? `/past-rabbis/${item.slug}` : "#"}
-                          onClick={handleLinkClick}
-                        >
-                          <Image
-                            className="w-full h-full object-cover object-center"
-                            src={
-                              item?.acf?.thumbnail?.sizes?.medium_large ||
-                              item?.acf?.thumbnail?.url ||
-                              item?.acf?.thumbnail?.src
-                            }
-                            width={522}
-                            height={532}
-                            alt={
-                              item?.acf?.thumbnail?.alt ||
-                              item?.title?.rendered ||
-                              "Past Rabbi"
-                            }
-                            blurDataURL={CreateShimmerDataUrl(522, 532)}
-                            placeholder="blur"
-                            loading="lazy"
-                          />
-                        </Link>
-                      </div>
-                      <div className="read-more absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 z-30">
-                        <ThemeButton
-                          extraClass="rounded-none py-4 sm:py-5 px-5 lg:px-10 items-center leading-[80%] min-w-40 sm:min-w-60 justify-center"
-                          text="הרחב קריאה"
-                          textColor="text-black"
-                          hoverBgColor="bg-[#111111]"
-                          hoverTextColor="group-hover:text-white"
-                          bgColor="bg-[#C3A13F]"
-                          fontSize="text-[18px] sm:text-[22px] lg:text-[30px]"
-                          svgIconClass=""
-                          buttonLink={
-                            item?.slug ? `/past-rabbis/${item.slug}` : "#"
-                          }
-                        />
-                      </div>
-                    </div>
+              {(rabbisPostsData?.slice(1, rabbisPostsData?.length) || [])?.map(
+                (item: any, index: number) => {
+                  return (
                     <div
-                      dir="rtl"
-                      className="rabbis-content w-full lg:w-[28vw] text-[#D1A941]"
+                      key={item.id}
+                      data-id={item.id}
+                      className={`rabbis-item w-full h-full flex items-end justify-center gap-y-12 sm:gap-y-[8vh] gap-x-[3.3vw] flex-col lg:flex-row-reverse`}
                     >
-                      <h2 className="text-[30px] sm:text-[40px] lg:text-[55px] leading-[0.85em] overflow-hidden relative">
-                        <Link
-                          href={item?.slug ? `/past-rabbis/${item.slug}` : "#"}
-                          onClick={handleLinkClick}
-                        >
-                          {parse(
-                            item.title?.rendered
-                              ? item.title.rendered
-                              : item.title,
-                          )}
-                        </Link>
-                      </h2>
-                      <div className="content text-[20px] sm:text-[25px] lg:text-[33px] leading-[1em] mt-5 relative">
-                        {parse(item?.acf?.time)}
+                      <div className="rabbis-image w-full lg:w-[27.1vw] relative">
+                        <div className="image w-full h-auto lg:h-[57.2vh] relative">
+                          <Link
+                            href={
+                              item?.slug ? `/past-rabbis/${item.slug}` : "#"
+                            }
+                            onClick={handleLinkClick}
+                          >
+                            <Image
+                              className="w-full h-full object-cover object-center"
+                              src={
+                                item?.acf?.thumbnail?.sizes?.medium_large ||
+                                item?.acf?.thumbnail?.url ||
+                                item?.acf?.thumbnail?.src
+                              }
+                              width={522}
+                              height={532}
+                              alt={
+                                item?.acf?.thumbnail?.alt ||
+                                item?.title?.rendered ||
+                                "Past Rabbi"
+                              }
+                              blurDataURL={CreateShimmerDataUrl(522, 532)}
+                              placeholder="blur"
+                              loading="lazy"
+                            />
+                          </Link>
+                        </div>
+                        <div className="read-more absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 z-30">
+                          <ThemeButton
+                            extraClass="rounded-none py-4 sm:py-5 px-5 lg:px-10 items-center leading-[80%] min-w-40 sm:min-w-60 justify-center"
+                            text="הרחב קריאה"
+                            textColor="text-black"
+                            hoverBgColor="bg-[#111111]"
+                            hoverTextColor="group-hover:text-white"
+                            bgColor="bg-[#C3A13F]"
+                            fontSize="text-[18px] sm:text-[22px] lg:text-[30px]"
+                            svgIconClass=""
+                            buttonLink={
+                              item?.slug ? `/past-rabbis/${item.slug}` : "#"
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div
+                        dir="rtl"
+                        className="rabbis-content w-full lg:w-[28vw] text-[#D1A941]"
+                      >
+                        <h2 className="text-[30px] sm:text-[40px] lg:text-[55px] leading-[0.85em] overflow-hidden relative">
+                          <Link
+                            href={
+                              item?.slug ? `/past-rabbis/${item.slug}` : "#"
+                            }
+                            onClick={handleLinkClick}
+                          >
+                            {parse(
+                              item.title?.rendered
+                                ? item.title.rendered
+                                : item.title,
+                            )}
+                          </Link>
+                        </h2>
+                        <div className="content text-[20px] sm:text-[25px] lg:text-[33px] leading-[1em] mt-5 relative">
+                          {parse(item?.acf?.time)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                },
+              )}
             </div>
           </div>
         </div>

@@ -58,11 +58,7 @@ export default function HomeBannerVideo({ bannerData }: HomeBannerVideoProps) {
   // }
 
   return (
-    <div
-      ref={background}
-      id="banner-video"
-      className="relative w-full h-full will-change-transform"
-    >
+    <div ref={background} id="banner-video" className="relative w-full h-full">
       <video
         id="banner-video-element"
         poster={BannerImage.src}

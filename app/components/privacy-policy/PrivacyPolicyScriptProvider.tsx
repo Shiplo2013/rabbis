@@ -313,7 +313,7 @@ export default function ContactScriptProvider({ data }: { data: PageData }) {
         ref={main}
         id="page"
         dir="rtl"
-        className="main relative overflow-hidden z-10 will-change-transform"
+        className="main relative overflow-hidden z-10"
       >
         <div className="privacy-policy-page flex w-screen h-auto min-h-screen items-center justify-center relative overflow-hidden pt-[12vh] sm:pt-[15vh] lg:pt-[20vh] pb-[6vh] lg:pb-[10vh]">
           <div className="privacy-policy-container w-full lg:w-[80%] max-w-287.5">

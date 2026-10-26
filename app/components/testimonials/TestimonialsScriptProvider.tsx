@@ -387,7 +387,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center`}
           >
             <div
               dir="rtl"
@@ -429,7 +429,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                           {testimonial?.media_type === "video" && (
                             <DonationVideo
                               extraClass={
-                                "donation-video w-full h-full will-change-transform"
+                                "donation-video w-full h-full"
                               }
                               data={testimonial?.video}
                             />
@@ -442,7 +442,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
                                   testimonial?.image?.url
                                 }
                                 alt={testimonial?.title || "Testimonial Image"}
-                                className="w-full h-full object-cover object-center will-change-transform"
+                                className="w-full h-full object-cover object-center"
                                 width={768}
                                 height={464}
                                 blurDataURL={CreateShimmerDataUrl(768, 464)}

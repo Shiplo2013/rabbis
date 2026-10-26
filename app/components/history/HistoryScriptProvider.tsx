@@ -12,13 +12,8 @@ import introBG6 from "../../assets/images/intro-bg-6.jpg";
 import introBG7 from "../../assets/images/intro-bg-7.jpg";
 import IntroBG2 from "../../assets/images/intro-bg.jpg";
 import IntroBGoverlay from "../../assets/images/intro-bg2.png";
-import introBG3 from "../../assets/images/intro-bg3.jpg";
 import IntroBG from "../../assets/images/introduction-bg.jpg";
 import NewsSectionBG from "../../assets/images/new-section-bg2.jpg";
-import OnlyImage from "../../assets/images/only-image.jpg";
-import OnlyImage2 from "../../assets/images/only-image2.jpg";
-import QuoteSectionBG from "../../assets/images/quote-section-bg.jpg";
-import HistoryImage1 from "../../assets/images/single-image.jpg";
 import timelineBG from "../../assets/images/timeline-bg.jpg";
 import { useAppState } from "../../components/AppContext";
 import ArrowSliderSection from "../../components/history/ArrowSliderSection";
@@ -254,107 +249,72 @@ export default function HistoryScriptProvider({
 
   // Page Data
   const IntroData1 = {
-    title:
-      timeline1Data.introductionTitle,
-    subtitle:
-      timeline1Data.introductionSubtitle,
-    background:
-      timeline1Data.introductionBackground,
-    overlay:
-      timeline1Data.introductionBackgroundOverlayImage,
+    title: timeline1Data.introductionTitle,
+    subtitle: timeline1Data.introductionSubtitle,
+    background: timeline1Data.introductionBackground,
+    overlay: timeline1Data.introductionBackgroundOverlayImage,
   };
   const IntroData2 = {
-    title:
-      timeline2Data.introductionTitle,
-    subtitle:
-      timeline2Data.introductionSubtitle,
-    background:
-      timeline2Data.introductionBackground,
-    overlay:
-      timeline2Data.introductionBackgroundOverlayImage,
+    title: timeline2Data.introductionTitle,
+    subtitle: timeline2Data.introductionSubtitle,
+    background: timeline2Data.introductionBackground,
+    overlay: timeline2Data.introductionBackgroundOverlayImage,
   };
   const IntroData3 = {
     title: timeline3Data.introductionTitle,
-    subtitle:
-      timeline3Data.introductionSubtitle,
-    background:
-      timeline3Data.introductionBackground,
-    overlay:
-      timeline3Data.introductionBackgroundOverlayImage,
+    subtitle: timeline3Data.introductionSubtitle,
+    background: timeline3Data.introductionBackground,
+    overlay: timeline3Data.introductionBackgroundOverlayImage,
   };
   const IntroContentData = {
-    title:
-      timeline3Data.introBannerTitle,
+    title: timeline3Data.introBannerTitle,
     subtitle: ``,
   };
   const IntroData4 = {
-    title:
-      timeline4Data.introductionTitle,
-    subtitle:
-      timeline4Data.introductionSubtitle,
-    background:
-      timeline4Data.introductionBackground,
-    overlay:
-      timeline4Data.introductionBackgroundOverlayImage,
+    title: timeline4Data.introductionTitle,
+    subtitle: timeline4Data.introductionSubtitle,
+    background: timeline4Data.introductionBackground,
+    overlay: timeline4Data.introductionBackgroundOverlayImage,
   };
   const IntroData5 = {
-    title:
-      timeline5Data.introductionTitle,
-    subtitle:
-      timeline5Data.introductionSubtitle,
-    background:
-      timeline5Data.introductionBackground,
-    overlay:
-      timeline5Data.introductionBackgroundOverlayImage,
+    title: timeline5Data.introductionTitle,
+    subtitle: timeline5Data.introductionSubtitle,
+    background: timeline5Data.introductionBackground,
+    overlay: timeline5Data.introductionBackgroundOverlayImage,
   };
   const IntroData6 = {
-    title:
-      timeline6Data.introductionTitle,
-    subtitle:
-      timeline6Data.introductionSubtitle,
-    background:
-      timeline6Data.introductionBackground,
-    overlay:
-      timeline6Data.introductionBackgroundOverlayImage,
+    title: timeline6Data.introductionTitle,
+    subtitle: timeline6Data.introductionSubtitle,
+    background: timeline6Data.introductionBackground,
+    overlay: timeline6Data.introductionBackgroundOverlayImage,
   };
   const QuoteData = [
     {
-      content:
-        timeline1Data.quoteSection,
+      content: timeline1Data.quoteSection,
     },
   ];
   const QuoteData2 = [
     {
-      content:
-        timeline4Data.quoteSection,
+      content: timeline4Data.quoteSection,
     },
   ];
   const QuoteData3 = {
-    content:
-      timeline6Data.quoteSectionText,
+    content: timeline6Data.quoteSectionText,
   };
 
   //Arrow Slider Data
   const SliderData = {
-    text1:
-      timeline3Data.arrowSliderSectionArrowSliderSlide1,
-    text2:
-      timeline3Data.arrowSliderSectionArrowSliderSlide2,
-    background:
-      timeline3Data.arrowSliderSectionBackground,
-    floatingImage:
-      timeline3Data.arrowSliderSectionFloatingImage,
+    text1: timeline3Data.arrowSliderSectionArrowSliderSlide1,
+    text2: timeline3Data.arrowSliderSectionArrowSliderSlide2,
+    background: timeline3Data.arrowSliderSectionBackground,
+    floatingImage: timeline3Data.arrowSliderSectionFloatingImage,
   };
   //Arrow Slider Data
   const SliderData2 = {
-    text1:
-      timeline5Data.arrowSliderSectionArrowSliderSlide1,
-    text2:
-      timeline5Data.arrowSliderSectionArrowSliderSlide2,
-    background:
-      timeline5Data.arrowSliderSectionBackground,
-    floatingImage:
-      timeline5Data.arrowSliderSectionFloatingImage1,
+    text1: timeline5Data.arrowSliderSectionArrowSliderSlide1,
+    text2: timeline5Data.arrowSliderSectionArrowSliderSlide2,
+    background: timeline5Data.arrowSliderSectionBackground,
+    floatingImage: timeline5Data.arrowSliderSectionFloatingImage1,
   };
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -828,7 +788,12 @@ export default function HistoryScriptProvider({
 
   return (
     chroniclesPageData && (
-      <main ref={main} id="page" dir="ltr" className="main relative z-10">
+      <main
+        ref={main}
+        id="page"
+        dir="ltr"
+        className="main relative z-10 overflow-hidden lg:overflow-auto"
+      >
         {/* First Panel Start Here */}
         <div ref={timeline1Ref} className="timeline1 timeline" id="timeline1">
           <div
@@ -867,9 +832,7 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "lg:min-w-[80vw] w-full lg:w-[80vw] lg:h-screen panel-section"
                   }
-                  data={
-                    timeline1Data.contentSection
-                  }
+                  data={timeline1Data.contentSection}
                   panel={timeline1Ref}
                   loadAnimation={true}
                   offsetTopTimeline={resolvedOffsetTopTimeline1}
@@ -889,9 +852,7 @@ export default function HistoryScriptProvider({
                   leftShape={true}
                   rightShape={true}
                   panel={timeline1Ref}
-                  data={
-                    timeline1Data.titleSection
-                  }
+                  data={timeline1Data.titleSection}
                   offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -907,9 +868,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-screen w-screen lg:h-screen panel-section"
                   }
                   panel={timeline1Ref}
-                  data={
-                    timeline1Data.pastRabbisSection
-                  }
+                  data={timeline1Data.pastRabbisSection}
                   rabbisPosts={rabbisPostsData1}
                   rabbisData={setListOfRabbis}
                   offsetTopTimeline={resolvedOffsetTopTimeline1}
@@ -926,9 +885,7 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "lg:min-w-[32vw] w-full lg:w-[32vw] lg:h-screen panel-section"
                   }
-                  image={
-                    timeline1Data.singleImage
-                  }
+                  image={timeline1Data.singleImage}
                   panel={timeline1Ref}
                   offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
@@ -945,9 +902,7 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "lg:min-w-[150vw] w-full lg:w-[150vw] lg:h-screen panel-section"
                   }
-                  data={
-                    timeline1Data.markOfTheRoad
-                  }
+                  data={timeline1Data.markOfTheRoad}
                   offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -964,9 +919,7 @@ export default function HistoryScriptProvider({
                   }
                   bgImage={timelineBG}
                   panel={timeline1Ref}
-                  data={
-                    timeline1Data.rabbisTimeline
-                  }
+                  data={timeline1Data.rabbisTimeline}
                   offsetTopTimeline={resolvedOffsetTopTimeline1}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1041,9 +994,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-[128vw] w-full lg:w-[128vw] lg:h-screen panel-section"
                   }
                   bgImage={NewsSectionBG}
-                  data={
-                    timeline2Data.newsPaperSection
-                  }
+                  data={timeline2Data.newsPaperSection}
                   offsetTopTimeline={resolvedOffsetTopTimeline2}
                   onMouseMove={moveCircle}
                   onMouseEnter={handleMouseEnter}
@@ -1063,9 +1014,7 @@ export default function HistoryScriptProvider({
                   leftShape={true}
                   rightShape={true}
                   panel={timeline2Ref}
-                  data={
-                    timeline2Data.titleSection
-                  }
+                  data={timeline2Data.titleSection}
                   offsetTopTimeline={resolvedOffsetTopTimeline2}
                 />
               </Suspense>
@@ -1080,9 +1029,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section"
                   }
                   panel={timeline2Ref}
-                  data={
-                    timeline2Data.pastRabbisSection
-                  }
+                  data={timeline2Data.pastRabbisSection}
                   rabbisData={setListOfRabbis}
                   offsetTopTimeline={resolvedOffsetTopTimeline2}
                   rabbisPosts={rabbisPostsData2}
@@ -1099,9 +1046,7 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "lg:min-w-[210vw] w-full lg:w-[210vw] lg:h-screen panel-section"
                   }
-                  data={
-                    timeline2Data.markOfTheRoad
-                  }
+                  data={timeline2Data.markOfTheRoad}
                   offsetTopTimeline={resolvedOffsetTopTimeline2}
                 />
               </Suspense>
@@ -1178,9 +1123,7 @@ export default function HistoryScriptProvider({
                   }
                   panel={timeline3Ref}
                   videoControl={setIsVideoPopupOpen}
-                  data={
-                    timeline3Data.evidenceOfPeriod
-                  }
+                  data={timeline3Data.evidenceOfPeriod}
                   offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1198,9 +1141,7 @@ export default function HistoryScriptProvider({
                   leftShape={true}
                   rightShape={true}
                   panel={timeline3Ref}
-                  data={
-                    timeline3Data.titleSection
-                  }
+                  data={timeline3Data.titleSection}
                   offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1216,9 +1157,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section"
                   }
                   panel={timeline3Ref}
-                  data={
-                    timeline3Data.pastRabbisSection
-                  }
+                  data={timeline3Data.pastRabbisSection}
                   rabbisData={setListOfRabbis}
                   offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
@@ -1236,9 +1175,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-[195vw] w-full lg:w-[195vw] lg:h-screen panel-section"
                   }
                   panel={timeline3Ref}
-                  data={
-                    timeline3Data.markOfTheRoad
-                  }
+                  data={timeline3Data.markOfTheRoad}
                   offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1250,9 +1187,7 @@ export default function HistoryScriptProvider({
               >
                 <IntroductionContent
                   animated={isAllAnimationComplete}
-                  bgImage={
-                    timeline3Data.introBannerBackground
-                  }
+                  bgImage={timeline3Data.introBannerBackground}
                   offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                   data={IntroContentData}
@@ -1282,9 +1217,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-[146vw] w-full lg:w-[146vw] lg:h-screen panel-section"
                   }
                   panel={timeline3Ref}
-                  data={
-                    timeline3Data.lambOfferingSection
-                  }
+                  data={timeline3Data.lambOfferingSection}
                   offsetTopTimeline={resolvedOffsetTopTimeline3}
                   offsetTopAdded={offsetTopAdded}
                   onMouseMove={moveCircle}
@@ -1343,9 +1276,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-[170vw] w-full lg:w-[170vw] lg:h-screen panel-section"
                   }
                   panel={timeline4Ref}
-                  data={
-                    timeline4Data.moveToJerusalem
-                  }
+                  data={timeline4Data.moveToJerusalem}
                   offsetTopTimeline={resolvedOffsetTopTimeline4}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1363,9 +1294,7 @@ export default function HistoryScriptProvider({
                   leftShape={true}
                   rightShape={true}
                   panel={timeline4Ref}
-                  data={
-                    timeline4Data.titleSection
-                  }
+                  data={timeline4Data.titleSection}
                   offsetTopTimeline={resolvedOffsetTopTimeline4}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1381,9 +1310,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section"
                   }
                   panel={timeline4Ref}
-                  data={
-                    timeline4Data.pastRabbisSection
-                  }
+                  data={timeline4Data.pastRabbisSection}
                   rabbisData={setListOfRabbis}
                   offsetTopTimeline={resolvedOffsetTopTimeline4}
                   offsetTopAdded={offsetTopAdded}
@@ -1402,9 +1329,7 @@ export default function HistoryScriptProvider({
                   }
                   bgImage={timelineBG}
                   panel={timeline4Ref}
-                  data={
-                    timeline4Data.historyTimeline
-                  }
+                  data={timeline4Data.historyTimeline}
                   offsetTopTimeline={resolvedOffsetTopTimeline4}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1515,9 +1440,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-[50vw] w-full lg:w-[50vw] lg:h-screen panel-section"
                   }
                   panel={timeline5Ref}
-                  data={
-                    timeline5Data.arrowSliderSectionFloatingImage2
-                  }
+                  data={timeline5Data.arrowSliderSectionFloatingImage2}
                   offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1551,9 +1474,7 @@ export default function HistoryScriptProvider({
                   leftShape={true}
                   rightShape={true}
                   panel={timeline5Ref}
-                  data={
-                    timeline5Data.titleSection
-                  }
+                  data={timeline5Data.titleSection}
                   offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1569,9 +1490,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-screen w-full lg:w-screen lg:h-screen panel-section"
                   }
                   panel={timeline5Ref}
-                  data={
-                    timeline5Data.pastRabbisSection
-                  }
+                  data={timeline5Data.pastRabbisSection}
                   rabbisData={setListOfRabbis}
                   offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
@@ -1590,9 +1509,7 @@ export default function HistoryScriptProvider({
                   }
                   bgImage={timelineBG}
                   panel={timeline5Ref}
-                  data={
-                    timeline5Data.historyTimeline
-                  }
+                  data={timeline5Data.historyTimeline}
                   offsetTopTimeline={resolvedOffsetTopTimeline5}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1694,9 +1611,7 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "panel-section lg:min-w-[61.8vw] w-full lg:w-[61.8vw] lg:h-screen"
                   }
-                  image={
-                    timeline6Data.parallaxImage
-                  }
+                  image={timeline6Data.parallaxImage}
                   animWidthText={40}
                   panel={timeline6Ref}
                   offsetTopTimeline={resolvedOffsetTopTimeline6}
@@ -1714,9 +1629,7 @@ export default function HistoryScriptProvider({
                     "lg:min-w-[130vw] w-full lg:w-[130vw] lg:h-screen panel-section"
                   }
                   panel={timeline6Ref}
-                  data={
-                    timeline6Data.markOfTheRoad
-                  }
+                  data={timeline6Data.markOfTheRoad}
                   offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1732,9 +1645,7 @@ export default function HistoryScriptProvider({
                   }
                   animWidthText={42.7}
                   panel={timeline6Ref}
-                  data={
-                    timeline6Data.imageWithTextSection
-                  }
+                  data={timeline6Data.imageWithTextSection}
                   offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
                 />
@@ -1748,9 +1659,7 @@ export default function HistoryScriptProvider({
                   extraClass={
                     "panel-section lg:min-w-[35.8vw] w-full lg:w-[35.8vw] lg:h-screen"
                   }
-                  image={
-                    timeline6Data.onlyImage
-                  }
+                  image={timeline6Data.onlyImage}
                   animWidthText={43.5}
                   offsetTopTimeline={resolvedOffsetTopTimeline6}
                   offsetTopAdded={offsetTopAdded}
@@ -1766,9 +1675,7 @@ export default function HistoryScriptProvider({
                     "panel-section lg:min-w-[75vw] w-full lg:w-[75vw] lg:h-screen"
                   }
                   animWidthText={44.2}
-                  bgImage={
-                    timeline6Data.quoteSectionBackground
-                  }
+                  bgImage={timeline6Data.quoteSectionBackground}
                   boxClass={""}
                   data={QuoteData3}
                   panel={timeline6Ref}

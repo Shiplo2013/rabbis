@@ -629,7 +629,7 @@ export default function ZatzelScriptProvider({
 
   // Filter Posts by Selected Date
   useEffect(() => {
-    if (zatzelSelectedDate !== null) {
+    if (zatzelSelectedDate !== null && zatzelSelectedDate !== undefined) {
       const filteredSections = postData.map((section: any) => {
         const filteredContent = section.sectionContent.filter(
           (post: { yearOfDeath: string }) => {
@@ -661,7 +661,7 @@ export default function ZatzelScriptProvider({
 
   // Filter Posts by Searched Data
   useEffect(() => {
-    if (zatzelSearchedData !== null) {
+    if (zatzelSearchedData !== null && zatzelSearchedData !== undefined) {
       const filteredSections = postData.map((section: any) => {
         const filteredContent = section.sectionContent.filter(
           (post: { title: string }) => {
@@ -768,7 +768,7 @@ export default function ZatzelScriptProvider({
             />
           </div>
         </div>
-        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh] will-change-transform">
+        <div className="normal-scrolling w-full lg:min-h-[50vh] bg-[#1A1A1A] px-[8vw] lg:px-14.5 pb-[10vh]">
           <div className="wrapper w-full flex flex-col items-center justify-center gap-y-[10vh] relative lg:pr-85">
             <div
               className={`normal-posts w-full flex flex-row flex-wrap gap-x-10 gap-y-10 lg:gap-y-15 justify-end`}

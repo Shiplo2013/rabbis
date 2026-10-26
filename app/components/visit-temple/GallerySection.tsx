@@ -141,7 +141,7 @@ export default function GallerySection(props: GallerySectionProps) {
       ref={gallerySectionRef}
       className={`h-screen w-screen bg-black flex items-center relative z-20 overflow-hidden`}
     >
-      <div className="tab-gallery flex items-start h-screen ml-auto mr-auto relative will-change-transform">
+      <div className="tab-gallery flex items-start h-screen ml-auto mr-auto relative">
         <div
           ref={galleryRef}
           id="gallery"
@@ -156,7 +156,7 @@ export default function GallerySection(props: GallerySectionProps) {
                 return (
                   <div
                     key={item?.id}
-                    className={`single-gallery w-[32vw] h-[40vh] overflow-hidden ${orientation}`}
+                    className={`single-gallery w-[32vw] h-[40vh] overflow-hidden ${orientation} relative`}
                   >
                     <div
                       className={`single-gallery-image w-[50vw] h-[70vh] absolute top-1/2 left-1/2 -translate-[50%]`}
@@ -181,7 +181,7 @@ export default function GallerySection(props: GallerySectionProps) {
                 return (
                   <div
                     key={item?.id}
-                    className={`single-gallery w-[22vw] h-[50vh] overflow-hidden ${orientation}`}
+                    className={`single-gallery w-[22vw] h-[50vh] overflow-hidden ${orientation} relative`}
                   >
                     <div
                       className={`single-gallery-image w-[60vw] h-[80vh] absolute top-1/2 left-1/2 -translate-[50%]`}

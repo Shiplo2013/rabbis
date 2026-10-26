@@ -419,7 +419,7 @@ export default function YeshivaRabbisScriptProvider({
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className="section-wrapp flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center will-change-transform"
+            className="section-wrapp flex lg:flex-nowrap lg:flex-row-reverse w-full lg:w-(--container-width) lg:h-screen items-center"
           >
             <section
               style={

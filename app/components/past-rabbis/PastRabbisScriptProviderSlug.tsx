@@ -6,7 +6,7 @@ import PostNavigation from "@/app/ui/past-rabbis/PostNavigation";
 import RabbisOptions from "@/app/ui/past-rabbis/RabbisOptions";
 import QuoteSection from "@/app/ui/QuoteSection";
 import TextSplitLines2 from "@/app/ui/TextSplitLines2";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import IntroBG from "../../assets/images/past-rabbis-bg.jpg";
 import ContentSection from "../../components/past-rabbis/single/ContentSection";
@@ -139,8 +139,6 @@ type AllPosts = {
 export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
   // Router Path
   const pathname = usePathname();
-  const params = useParams();
-  const slug = params?.slug as string;
   const [post, setPost] = useState<RabbiPost | null>(null);
   const [allPosts, setAllPosts] = useState<AllPosts | null | any>(null);
   // error is a pure derivation of the data prop (true exactly when data is
@@ -148,12 +146,9 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
   // state via an effect that "adjusts" it on every data change.
   const error = !data ? "No data provided." : null;
   const {
-    isLoading,
     setIsLoading,
     animationPlayed,
-    setAnimationPlayed,
     setCurrentRabbisPost,
-    allRabbisPosts,
     setAllRabbisPosts,
   } = useAppState();
   const [pageDataFetched, setPageDataFetched] = useState(false);
@@ -191,7 +186,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     // than listed as dependencies; re-running this effect only when
     // animationPlayed changes avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, post]);
 
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);

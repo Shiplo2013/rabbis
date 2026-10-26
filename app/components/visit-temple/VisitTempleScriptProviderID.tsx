@@ -455,7 +455,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
                 "--container-width": `${containerWidth}vw`,
               } as React.CSSProperties
             }
-            className={`section-wrapp w-screen flex flex-wrap flex-col lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center will-change-transform`}
+            className={`section-wrapp w-screen flex flex-wrap flex-col lg:flex-nowrap lg:flex-row-reverse lg:w-(--container-width) lg:h-screen items-center`}
           >
             <Introduction
               animated={isAllAnimationComplete}
@@ -478,7 +478,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
                   "--section-width": `${sectionWidth}vw`,
                 } as React.CSSProperties
               }
-              extraClass={`w-full lg:w-(--section-width) lg:min-w-(--section-width) panel-section will-change-transform`}
+              extraClass={`w-full lg:w-(--section-width) lg:min-w-(--section-width) panel-section`}
               animWidthText={0.8}
               sectionData={{
                 videoSection: visitTempleData?.acf?.video_section,
