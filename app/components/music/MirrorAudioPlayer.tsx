@@ -498,9 +498,12 @@ export default function MirrorAudioPlayer(props: ChildProps) {
   // effect below can call the current closure (with up-to-date
   // currentMusicList/activeMusic/etc.) without depending on a function that
   // is recreated every render, which would otherwise re-run that effect
-  // (and reload the audio element) on every render.
+  // (and reload the audio element) on every render. The write happens in an
+  // effect (not during render) to keep rendering pure.
   const playNextMusicInActiveGroupRef = useRef(playNextMusicInActiveGroup);
-  playNextMusicInActiveGroupRef.current = playNextMusicInActiveGroup;
+  useEffect(() => {
+    playNextMusicInActiveGroupRef.current = playNextMusicInActiveGroup;
+  });
   // Infinity toggle
   const handleInfinityToggle = () => {
     setIsInfinityActive((prev) => !prev);

@@ -295,8 +295,12 @@ export default function KnessetScriptProvider({
   // Keep a ref to the latest handleLoadMorePosts so the effect below can
   // call the current closure (with up-to-date postPerPage/currentPage/etc.)
   // without needing to depend on a function that is recreated every render.
+  // The write happens in an effect (not during render) to keep rendering
+  // pure.
   const handleLoadMorePostsRef = useRef(handleLoadMorePosts);
-  handleLoadMorePostsRef.current = handleLoadMorePosts;
+  useEffect(() => {
+    handleLoadMorePostsRef.current = handleLoadMorePosts;
+  });
 
   // Load More Posts when inView is true
   useEffect(() => {
