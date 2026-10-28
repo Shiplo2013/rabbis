@@ -13,7 +13,6 @@ function Video(props: {
 }) {
   const video = useRef<HTMLVideoElement | null>(null);
   const [isVideoComplete, setIsVideoComplete] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
   function videoPlayed() {
     setIsVideoComplete(true);
   }
@@ -62,7 +61,11 @@ function Video(props: {
   }, [isVideoComplete]);
   // PLAY OR PAUSE VIDEO BASED ON isComplete
   useEffect(() => {
-    if (video.current !== null && isLoaded) {
+    if (
+      video.current !== null &&
+      video.current !== undefined &&
+      video.current.readyState >= 3
+    ) {
       if (props.isComplete == true) {
         video.current.currentTime = 0;
         video.current.play();
@@ -71,7 +74,7 @@ function Video(props: {
         video.current.pause();
       }
     }
-  }, [props.isComplete, isLoaded]);
+  }, [props.isComplete]);
   return (
     <video
       ref={video}
@@ -83,7 +86,6 @@ function Video(props: {
       muted
       onEnded={videoPlayed}
       controlsList="nodownload"
-      onLoadedData={() => setIsLoaded(true)}
     >
       <source src={props.link} type="video/mp4" />
       <track kind="captions" />
