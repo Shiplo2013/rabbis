@@ -61,11 +61,7 @@ function Video(props: {
   }, [isVideoComplete]);
   // PLAY OR PAUSE VIDEO BASED ON isComplete
   useEffect(() => {
-    if (
-      video.current !== null &&
-      video.current !== undefined &&
-      video.current.readyState >= 3
-    ) {
+    if (video.current !== null) {
       if (props.isComplete == true) {
         video.current.currentTime = 0;
         video.current.play();
