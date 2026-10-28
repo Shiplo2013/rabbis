@@ -75,7 +75,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
             mask: "lines",
             onSplit: (self) => {
               splititle = gsap.from(self.lines, {
-                duration: 2,
+                duration: window.innerWidth > 1024 ? 2 : 1,
                 yPercent: 100,
                 opacity: 0,
                 delay: -0.5,
@@ -100,7 +100,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
           });
         }
         // Section Moving Image
-        if (imageMove.current) {
+        if (imageMove.current && window.innerWidth > 1024) {
           gsap.set(imageMove.current, { x: 200 });
           const tl = gsap.timeline({
             scrollTrigger: {
@@ -111,7 +111,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
                       window.innerWidth * 0.8
                   : (imageMove.current?.getBoundingClientRect().top || 0) +
                       window.scrollY -
-                      window.innerHeight * 0.8;
+                      window.innerHeight * 1.5;
               },
               end: () => "+=" + window.innerWidth * 2,
               scrub: 2,
@@ -129,7 +129,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
           const image1Animation = gsap.to(image1.current, {
             y: 0,
             opacity: 1,
-            duration: 2,
+            duration: window.innerWidth > 1024 ? 2 : 1,
             delay: -0.5,
             ease: "expo.inOut",
             scrollTrigger: {
@@ -155,7 +155,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
           const image2Animation = gsap.to(image2.current, {
             y: 0,
             opacity: 1,
-            duration: 2,
+            duration: window.innerWidth > 1024 ? 2 : 1,
             delay: -0.5,
             ease: "expo.inOut",
             scrollTrigger: {
@@ -185,7 +185,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
             mask: "lines",
             onSplit: (self) => {
               splitext1 = gsap.from(self.lines, {
-                duration: 1,
+                duration: window.innerWidth > 1024 ? 1 : 0.5,
                 yPercent: 100,
                 opacity: 0,
                 delay: 0,
@@ -220,7 +220,7 @@ export default function MarkOfTheRoad(props: ChildProps) {
             mask: "lines",
             onSplit: (self) => {
               splitext2 = gsap.from(self.lines, {
-                duration: 1,
+                duration: window.innerWidth > 1024 ? 1 : 0.5,
                 yPercent: 100,
                 opacity: 0,
                 delay: 0,

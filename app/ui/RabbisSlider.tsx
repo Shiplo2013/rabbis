@@ -177,7 +177,7 @@ export default function RabbisSlider(props: ChildProps) {
       <div className="swiper-navigation relative h-13 sm:h-27 w-full flex items-center justify-center">
         <div
           ref={paginationRef}
-          className="custom-pagination flex items-center justify-center gap-5"
+          className="custom-pagination hidden sm:items-center sm:justify-center gap-5 sm:flex"
         ></div>
         <button
           type="button"

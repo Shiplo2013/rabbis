@@ -302,7 +302,7 @@ export default function MarkOfTheRoad3(props: ChildProps) {
                 type="button"
                 aria-label="Open Notification Popup"
                 tabIndex={0}
-                className="notifiaction notification-button py-5 px-8 w-full sm:w-108 bg-[#5A7C4E] relative pl-19 mx-auto z-20 cursor-pointer select-none"
+                className="notifiaction notification-button py-3 sm:py-5 px-8 w-full sm:w-108 bg-[#5A7C4E] relative pl-12 sm:pl-19 mx-auto z-20 cursor-pointer select-none"
               >
                 <div className="notify-icon w-22 lg:w-33.75 lg:h-25 absolute top-3 lg:top-0 left-0 -translate-x-1/2">
                   <Image

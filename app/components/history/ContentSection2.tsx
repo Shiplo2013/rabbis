@@ -72,7 +72,7 @@ export default function ContentSection2(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splititle = gsap.from(self.lines, {
-              duration: 3,
+              duration: window.innerWidth > 1024 ? 3 : 1.5,
               yPercent: 100,
               opacity: 0,
               delay: -1,
@@ -107,7 +107,7 @@ export default function ContentSection2(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             spContent1 = gsap.from(self.lines, {
-              duration: 3,
+              duration: window.innerWidth > 1024 ? 3 : 1.5,
               yPercent: 100,
               opacity: 0,
               delay: -1,
@@ -142,7 +142,7 @@ export default function ContentSection2(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             spContent2 = gsap.from(self.lines, {
-              duration: 3,
+              duration: window.innerWidth > 1024 ? 3 : 1.5,
               yPercent: 100,
               opacity: 0,
               delay: -1,

@@ -118,7 +118,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
           mask: "lines",
           onSplit: (self) => {
             splititle = gsap.from(self.lines, {
-              duration: 2,
+              duration: window.innerWidth > 1024 ? 2 : 1,
               yPercent: 100,
               opacity: 0,
               delay: -0.5,
@@ -132,7 +132,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
                         window.innerWidth * 0.5
                     : (title.current?.getBoundingClientRect().top || 0) +
                         window.scrollY -
-                        window.innerHeight * 0.7;
+                        window.innerHeight;
                 },
                 toggleActions: "restart none none reverse",
               },
@@ -147,7 +147,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
         const sliderAnimation = gsap.from(slider.current, {
           yPercent: 50,
           opacity: 0,
-          duration: 2,
+          duration: window.innerWidth > 1024 ? 2 : 1,
           delay: -0.5,
           ease: "expo.inOut",
           scrollTrigger: {
@@ -158,7 +158,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
                     window.innerWidth * 0.5
                 : (slider.current?.getBoundingClientRect().top || 0) +
                     window.scrollY -
-                    window.innerHeight * 0.7;
+                    window.innerHeight;
             },
             toggleActions: "restart none none reverse",
           },
@@ -171,7 +171,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
         const buttonAnimation = gsap.to(button.current, {
           yPercent: 0,
           opacity: 1,
-          duration: 2,
+          duration: window.innerWidth > 1024 ? 2 : 1,
           delay: 0,
           ease: "expo.inOut",
           scrollTrigger: {
@@ -182,7 +182,7 @@ export default function RabbisPeriodSection(props: ChildProps) {
                     window.innerWidth * 0.5
                 : (button.current?.getBoundingClientRect().top || 0) +
                     window.scrollY -
-                    window.innerHeight * 0.7;
+                    window.innerHeight;
             },
             toggleActions: "restart none none reverse",
           },

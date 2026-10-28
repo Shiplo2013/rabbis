@@ -414,7 +414,7 @@ export default function LambOfferingSection(props: ChildProps) {
         panel={props.panel}
       />
       <div className="content-wrapper w-full h-full px-[8vw] lg:pr-[11.7vw] lg:pl-[9.6vw] py-[7vh] lg:pt-[7vh] lg:pb-[12vh] relative z-30 flex items-center gap-y-[7vh] gap-x-[12vw] flex-col lg:flex-row">
-        <div className="section-image w-full lg:w-[50vw] self-end relative pt-[10vh] sm:pt-[20vh] lg:pt-0 pb-20 lg:pb-0">
+        <div className="section-image w-full lg:w-[50vw] self-end relative pt-[10vh] sm:pt-[20vh] lg:pt-0 pb-25 lg:pb-0">
           <Draggable
             nodeRef={image1Ref}
             onStart={() => setDraggingImage(1)}
@@ -468,7 +468,7 @@ export default function LambOfferingSection(props: ChildProps) {
               ref={image3Ref}
               onMouseEnter={props.onMouseEnter}
               onMouseLeave={props.onMouseLeave}
-              className="image3 w-[60%] sm:w-80 h-auto lg:w-[25vw] lg:h-[60vh] absolute bottom-[9vh] right-[35vw] lg:right-[20vw] -rotate-[7.84deg] cursor-grab active:cursor-grabbing select-none touch-none"
+              className="image3 w-[60%] sm:w-80 h-auto lg:w-[25vw] lg:h-[60vh] absolute bottom-[12vh] sm:bottom-[9vh] right-[35vw] lg:right-[20vw] -rotate-[7.84deg] cursor-grab active:cursor-grabbing select-none touch-none"
               style={{ zIndex: draggingImage === 3 ? 50 : undefined }}
               onDoubleClick={(e) => e.preventDefault()}
             >
@@ -503,7 +503,7 @@ export default function LambOfferingSection(props: ChildProps) {
             type="button"
             aria-label="Open Notification Popup"
             tabIndex={0}
-            className="notifiaction notification-button py-5 p-5 lg:px-8 w-full sm:w-108 bg-[#5A7C4E] absolute pl-15 lg:pl-19 mx-auto bottom-0 lg:bottom-[6.38vh] right-0 lg:right-[21vw] z-40 cursor-pointer select-none"
+            className="notifiaction notification-button py-3 sm:py-5 p-5 lg:px-8 w-full sm:w-108 bg-[#5A7C4E] absolute pl-12 sm:pl-19 mx-auto bottom-0 lg:bottom-[6.38vh] right-0 lg:right-[21vw] z-40 cursor-pointer select-none"
           >
             <div className="notify-icon w-20 sm:w-30 h-auto lg:w-50.5 lg:h-33.75 absolute top-4 sm:top-0 left-0 -translate-x-1/2">
               <Image

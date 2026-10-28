@@ -7,7 +7,7 @@ export default function CardItemImages(props: { data: any; isOpen: boolean }) {
     <div
       className={`expand-images ${props.isOpen ? "block" : "hidden"} lg:block lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:right-full overflow-hidden z-40`}
     >
-      <div className="images-wrapper flex gap-x-[2.7vw]">
+      <div className="images-wrapper flex gap-x-[2.7vw] flex-col sm:flex-row">
         {props.data?.content &&
           props.data?.content?.map((item: any, index: number) => {
             if (item.type === "image" && item.image) {

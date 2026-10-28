@@ -75,7 +75,7 @@ export default function HomeSection2(props: ChildProps) {
               ? window.innerWidth * (props.animWidthText - 0.7)
               : (wrapper.current?.getBoundingClientRect().top || 0) +
                   window.scrollY -
-                  window.innerHeight * 0.8;
+                  window.innerHeight;
           },
           end: () => {
             return "+=" + window.innerWidth * 2;
