@@ -71,7 +71,7 @@ function Video(props: {
         video.current.pause();
       }
     }
-  }, [props.isComplete]);
+  }, [props.isComplete, isLoaded]);
   return (
     <video
       ref={video}
