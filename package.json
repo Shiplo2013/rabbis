@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS=--use-system-ca next dev",
-    "build": "NODE_OPTIONS=--use-system-ca next build",
-    "start": "NODE_OPTIONS=--use-system-ca next start",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "eslint",
     "doctor": "npx react-doctor@latest",
     "analyze": "ANALYZE=true next build"
