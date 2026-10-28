@@ -1,7 +1,7 @@
 import ThemeButton2 from "@/app/ui/ThemeButton2";
 import VideoPlayer from "@/app/ui/VideoPlayer";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useSyncExternalStore } from "react";
 import PlusIcon from "../assets/icons/PlusIcon";
 import thumb from "../assets/images/video-thumb.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../ui/plugins";
@@ -22,7 +22,25 @@ interface ChildProps {
   singleVideoPlaying: boolean;
 }
 
+// Viewport detection functions
+const subscribeToDesktopViewport = (callback: () => void) => {
+  const mediaQuery = window.matchMedia("(min-width: 768px)");
+  mediaQuery.addEventListener("change", callback);
+  return () => mediaQuery.removeEventListener("change", callback);
+};
+
+const getDesktopViewportSnapshot = () =>
+  window.matchMedia("(min-width: 768px)").matches;
+
+const getServerDesktopViewportSnapshot = () => false;
+
 export default function VideoItem(props: ChildProps) {
+  // Viewport Detection
+  const isDesktopViewport = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    getDesktopViewportSnapshot,
+    getServerDesktopViewportSnapshot,
+  );
   // Navigation
   const pathname = usePathname();
   const timeline = props.panel;
@@ -118,7 +136,7 @@ export default function VideoItem(props: ChildProps) {
           });
           gsap.to(videoButton.current, {
             duration: 0.5,
-            y: "-45vh",
+            y: !isDesktopViewport ? "-45vh" : "-40px",
             scale: 0.5,
             delay: 0,
             ease: "easeInOut",
@@ -196,7 +214,7 @@ export default function VideoItem(props: ChildProps) {
         </div>
         <div
           ref={videoButton}
-          className="absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+          className={`absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 cursor-pointer ${props.singleVideoPlaying && !isDesktopViewport ? "hidden" : "block"}`}
         >
           <ThemeButton2
             onClick={() =>

@@ -128,9 +128,6 @@ export default function NewsPapperSection(props: ChildProps) {
     () => {
       const animations: gsap.core.Animation[] = [];
       // Image Animations
-      const image1 = wrapper.current?.querySelector(".image1");
-      const image2 = wrapper.current?.querySelector(".image2");
-      const image3 = wrapper.current?.querySelector(".image3");
       const content1 = wrapper.current?.querySelector(".content-text1");
       const content2 = wrapper.current?.querySelector(".content-text2");
       const content3 = wrapper.current?.querySelector(".content-text3");
@@ -226,8 +223,9 @@ export default function NewsPapperSection(props: ChildProps) {
                   ? getTimelineOffset() +
                       GetRightPosition(content1) -
                       window.innerWidth * 0.5
-                  : (wrapper.current?.getBoundingClientRect().top || 0) +
-                      window.scrollY;
+                  : (content1?.getBoundingClientRect().top || 0) +
+                      window.scrollY -
+                      window.innerHeight;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -257,8 +255,9 @@ export default function NewsPapperSection(props: ChildProps) {
                   ? getTimelineOffset() +
                       GetRightPosition(content2) -
                       window.innerWidth * 0.5
-                  : (wrapper.current?.getBoundingClientRect().top || 0) +
-                      window.scrollY;
+                  : (content2?.getBoundingClientRect().top || 0) +
+                      window.scrollY -
+                      window.innerHeight;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -288,8 +287,9 @@ export default function NewsPapperSection(props: ChildProps) {
                   ? getTimelineOffset() +
                       GetRightPosition(content3) -
                       window.innerWidth * 0.5
-                  : (wrapper.current?.getBoundingClientRect().top || 0) +
-                      window.scrollY;
+                  : (content3?.getBoundingClientRect().top || 0) +
+                      window.scrollY -
+                      window.innerHeight;
               },
               toggleActions: "restart pause resume reverse",
             },
@@ -319,8 +319,9 @@ export default function NewsPapperSection(props: ChildProps) {
                   ? getTimelineOffset() +
                       GetRightPosition(content4) -
                       window.innerWidth * 0.5
-                  : (wrapper.current?.getBoundingClientRect().top || 0) +
-                      window.scrollY;
+                  : (content4?.getBoundingClientRect().top || 0) +
+                      window.scrollY -
+                      window.innerHeight;
               },
               toggleActions: "restart pause resume reverse",
             },

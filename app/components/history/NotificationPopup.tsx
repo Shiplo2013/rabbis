@@ -48,17 +48,17 @@ export default function NotificationPopup() {
         type="button"
         aria-label="Close Notification Popup"
         tabIndex={0}
-        className="close-notification w-12 h-12 p-3.5 lg:p-0 lg:w-15 lg:h-15 border border-white rounded-full flex items-center justify-center absolute top-5 right-5 cursor-pointer z-50"
+        className="close-notification w-10 sm:w-12 h-10 sm:h-12 p-3 sm:p-3.5 lg:p-0 lg:w-15 lg:h-15 border border-white rounded-full flex items-center justify-center absolute top-4 sm:top-5 right-4 sm:right-5 cursor-pointer z-50"
       >
         <CloseIcon2 />
       </button>
       <div className="popup-wrapper flex items-center justify-center h-full w-full max-w-300 gap-x-[4vw] gap-y-[4vw] flex-col-reverse lg:flex-row overflow-auto">
-        <div className="notification-content w-full lg:w-[55%]  bg-[#5A7C4E] text-[#F8F8F8] text-[20px] leading-[150%] flex flex-col items-start justify-start gap-y-[2.5vh] pl-[2vw]">
+        <div className="notification-content w-full lg:w-[55%]  bg-[#5A7C4E] text-[#F8F8F8] text-[16px] sm:text-[20px] leading-[150%] flex flex-col items-start justify-start gap-y-[2.5vh] pl-[2vw]">
           {parse(notificationData?.content ? notificationData?.content : "")}
         </div>
         <div className="divider w-full h-px lg:w-px lg:h-[80%] bg-white opacity-50"></div>
         <div className="notification-heading w-full lg:w-[45%]">
-          <h3 className="text-[35px] sm:text-[50px] lg:text-[70px] leading-[0.8em] lg:leading-[70%] text-black">
+          <h3 className="text-[32px] sm:text-[50px] lg:text-[70px] leading-[0.8em] lg:leading-[70%] text-black">
             {parse(notificationData?.title ? notificationData?.title : "")}
           </h3>
         </div>

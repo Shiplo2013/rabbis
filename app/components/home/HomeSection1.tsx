@@ -88,9 +88,9 @@ export default function HomeSection1(props: ChildProps) {
         start: () => {
           return window.innerWidth > 1024
             ? window.innerWidth * props.animWidthPost
-            : (cyclePreview.getBoundingClientRect().top ?? 0) +
+            : (wrapper.current?.getBoundingClientRect().top ?? 0) +
                 window.scrollY -
-                window.innerHeight * 0.2;
+                100;
         },
         toggleActions: "restart none none reverse",
       },

@@ -82,13 +82,23 @@ export default function TimelineCardItem(props: ChildProps) {
         <div className="card-wrapper text-[20px] sm:text-[30px] leading-[90%] text-black w-51">
           {parse(props.data?.text || "")}
         </div>
+        {!isDesktopViewport && (
+          <CardExpendButtons
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            wrapper={wrapper}
+            setSingleVideoPlaying={props.setSingleVideoPlaying}
+          />
+        )}
       </div>
-      <CardExpendButtons
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        wrapper={wrapper}
-        setSingleVideoPlaying={props.setSingleVideoPlaying}
-      />
+      {isDesktopViewport && (
+        <CardExpendButtons
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          wrapper={wrapper}
+          setSingleVideoPlaying={props.setSingleVideoPlaying}
+        />
+      )}
       <CardItemImages data={props.data} isOpen={isOpen} />
     </div>
   );

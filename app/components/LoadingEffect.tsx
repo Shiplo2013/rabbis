@@ -8,7 +8,6 @@ function LoadingEffect(props: { animated: (value: boolean) => void }) {
   // Initialize state to check if the user has visited
   const [isFirstVisit, setIsFirstVisit] = useState(false);
   const pathname = usePathname();
-  const [hardRefresh, setHardRefresh] = useState(false);
   const { animationPlayed, setAnimationPlayed } = useAppState();
   // Check localStorage on component mount
   useEffect(() => {

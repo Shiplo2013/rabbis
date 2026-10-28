@@ -1,7 +1,7 @@
 import MinusIcon2 from "@/app/assets/icons/MinusIcon2";
 import PlusIcon from "@/app/assets/icons/PlusIcon";
 import { gsap, useGSAP } from "@/app/ui/plugins";
-import React, { useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -51,14 +51,14 @@ export default function CardExpendButtons(props: {
         gsap.to(plusButton, {
           yPercent: -100,
           ease: "expo.inOut",
-          duration: 2,
+          duration: window.innerWidth > 768 ? 2 : 0.5,
         });
       }
       if (minusButton) {
         gsap.to(minusButton, {
           yPercent: -100,
           ease: "expo.inOut",
-          duration: 2,
+          duration: window.innerWidth > 768 ? 2 : 0.5,
         });
       }
       const tl = gsap.timeline();
@@ -225,14 +225,14 @@ export default function CardExpendButtons(props: {
         gsap.to(plusButton, {
           yPercent: -100,
           ease: "expo.inOut",
-          duration: 2,
+          duration: isDesktopViewport ? 2 : 0.5,
         });
       }
       if (minusButton) {
         gsap.to(minusButton, {
           yPercent: -100,
           ease: "expo.inOut",
-          duration: 2,
+          duration: isDesktopViewport ? 2 : 0.5,
         });
       }
     }
@@ -259,7 +259,7 @@ export default function CardExpendButtons(props: {
         tl.to(plusButton, {
           yPercent: 0,
           ease: "expo.inOut",
-          duration: 2,
+          duration: isDesktopViewport ? 2 : 0.5,
           delay: 0,
         });
       }
@@ -269,7 +269,7 @@ export default function CardExpendButtons(props: {
           {
             yPercent: 0,
             ease: "expo.inOut",
-            duration: 2,
+            duration: isDesktopViewport ? 2 : 0.5,
             delay: 0,
           },
           "-=2",
@@ -402,14 +402,14 @@ export default function CardExpendButtons(props: {
         gsap.to(plusButton, {
           yPercent: 0,
           ease: "expo.inOut",
-          duration: 2,
+          duration: isDesktopViewport ? 2 : 0.5,
         });
       }
       if (minusButton) {
         gsap.to(minusButton, {
           yPercent: 0,
           ease: "expo.inOut",
-          duration: 2,
+          duration: isDesktopViewport ? 2 : 0.5,
         });
       }
     }
@@ -440,7 +440,7 @@ export default function CardExpendButtons(props: {
           type="button"
           aria-label="Expand Images"
           tabIndex={0}
-          className={`plus-button bg-black w-full h-full flex items-center justify-center absolute top-0 left-0`}
+          className={`plus-button bg-black w-full h-full flex items-center justify-center absolute top-0 left-0 cursor-pointer`}
         >
           <div className="w-6 h-6 sm:w-8 sm:h-8">
             <PlusIcon />
@@ -452,7 +452,7 @@ export default function CardExpendButtons(props: {
           type="button"
           aria-label="Collapse Images"
           tabIndex={0}
-          className="minus-button bg-black w-full h-full flex items-center justify-center absolute top-full left-0"
+          className="minus-button bg-black w-full h-full flex items-center justify-center absolute top-full left-0 cursor-pointer"
         >
           <div className="w-4 h-4 sm:w-5 sm:h-5">
             <MinusIcon2 />
