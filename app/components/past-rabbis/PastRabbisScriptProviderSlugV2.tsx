@@ -195,7 +195,7 @@ export default function PastRabbisScriptProviderSlugV2({
     // than listed as dependencies; re-running this effect only when
     // animationPlayed changes avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, post]);
 
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);

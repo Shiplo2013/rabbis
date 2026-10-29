@@ -71,7 +71,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
     }
     setRabbisPageData(data);
     setRabbisPostsData(data?.posts);
-  }, [data]);
+  }, [data, isLoading]);
 
   // Page Data Loaded
   useEffect(() => {

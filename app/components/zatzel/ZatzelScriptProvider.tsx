@@ -143,7 +143,7 @@ export default function ZatzelScriptProvider({
     setAllPosts({
       sections: postData.length ? postData : defaultZatzelPageData.sections,
     });
-  }, [data, postData, setZatzelPosts]);
+  }, [data, postData, isLoading]);
 
   // Set Page Data Fetched
   useEffect(() => {
@@ -156,7 +156,7 @@ export default function ZatzelScriptProvider({
     // them; re-running it only when animationPlayed changes avoids an
     // avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, zatzelPageData]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -249,7 +249,7 @@ export default function ZatzelScriptProvider({
         zatzelVerticalSection.kill();
       }
     };
-  }, [pathname, pageDataFetched]);
+  }, [pathname, pageDataFetched, animationPlayed]);
 
   // Load Page
   useGSAP(() => {

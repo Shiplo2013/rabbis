@@ -66,7 +66,7 @@ export default function ContactScriptProvider({
       return;
     }
     setPageData(data);
-  }, [data]);
+  }, [data, isLoading]);
 
   // Set Page Data Fetched
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function ContactScriptProvider({
     // dependency; re-running this effect only when animationPlayed changes
     // avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, pageData]);
 
   // Load Page
   useGSAP(() => {

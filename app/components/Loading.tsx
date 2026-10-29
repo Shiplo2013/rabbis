@@ -64,7 +64,7 @@ function Loading(props: { animated: (value: boolean) => void }) {
           isComplete={animComplete}
           poster_image={poster.src}
           video_id="doors-video"
-          classes={"object-contain w-full h-full"}
+          classes={"object-contain w-[150vw] sm:w-full h-full"}
           link={videoLink}
         />
         <div className="video-animated-text absolute top-[50%] left-[50%] text-center text-[#D1A941] text-2xl md:text-3xl lg:text-4xl translate-x-[-50%] mt-[-10vh]">

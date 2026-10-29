@@ -55,8 +55,7 @@ function CommunityInfoItem({
       </div>
       <div className="text text-[#091B24] text-[18px] sm:text-[22px] lg:text-[28px] leading-[1em] w-[calc(100%-32px)]">
         <p>
-          <strong>{label}</strong>{" "}
-          {parse(value || "")}
+          <strong>{label}</strong> {parse(value || "")}
         </p>
       </div>
     </div>
@@ -313,7 +312,7 @@ export default function CommunitiesSlugScriptProvider({
         content: data?.acf?.community_updates,
       },
     ]);
-  }, [data]);
+  }, [data, isLoading]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -330,6 +329,7 @@ export default function CommunitiesSlugScriptProvider({
 
   // Load Page
   useGSAP(() => {
+    if (!post) return;
     const animations: gsap.core.Animation[] = [];
     if (typeof window !== "undefined" && main.current) {
       document.fonts.ready.then(() => {

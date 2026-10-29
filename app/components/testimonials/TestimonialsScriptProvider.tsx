@@ -44,7 +44,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
       return;
     }
     setTestimonialsPageData(data);
-  }, [data]);
+  }, [data, isLoading]);
 
   useEffect(() => {
     if (!testimonialsPageData) {
@@ -59,7 +59,7 @@ export default function TestimonialsScriptProvider({ data }: { data: any }) {
     // than listed as a dependency; re-running this effect only when
     // animationPlayed changes avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, testimonialsPageData]);
 
   // useEffect(() => {
   //   if (!testimonialsPageData) {

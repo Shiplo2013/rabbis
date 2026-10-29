@@ -8,6 +8,9 @@ export async function sendFormData(prevState: unknown, formData: FormData) {
       "https://api.chevronyeshiva.org/wp-json/contact-form-7/v1/contact-forms/2049/feedback",
       {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: formData,
       },
     );

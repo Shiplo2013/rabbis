@@ -40,7 +40,7 @@ export default function CommunitiesScriptProvider({
       return;
     }
     setCommunityPageData(data);
-  }, [data]);
+  }, [data, isLoading]);
 
   useEffect(() => {
     if (animationPlayed && communityPageData) {
@@ -51,7 +51,7 @@ export default function CommunitiesScriptProvider({
     // listed as a dependency; re-running this effect only when
     // animationPlayed changes avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, communityPageData]);
 
   useEffect(() => {
     if (!communityPageData) {
