@@ -203,7 +203,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
     // presence (always false here, since this branch only runs once data
     // is truthy) rather than an unrelated hardcoded literal.
     setIsLoading(!data);
-  }, [data, templeTabData, setTempleTabData, activeTab, setIsLoading]);
+  }, [data, isLoading]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -277,7 +277,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [pathname, pageDataFetched, activeTab, containerWidth]);
+  }, [pageDataFetched, visitTempleData]);
 
   // Load Page
   useGSAP(() => {

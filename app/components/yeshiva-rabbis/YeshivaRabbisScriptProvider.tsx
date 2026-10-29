@@ -44,7 +44,8 @@ export default function YeshivaRabbisScriptProvider({
   const [sectionWidth, setSectionWidth] = useState<number>(
     parseFloat(updateSectionWidth().toFixed(2)),
   );
-  const error = !postsData || !data ? "No data provided to Yeshiva Rabbis." : null;
+  const error =
+    !postsData || !data ? "No data provided to Yeshiva Rabbis." : null;
   const { animationPlayed, setAnimationPlayed, isLoading, setIsLoading } =
     useAppState();
   // Router Path
@@ -71,7 +72,7 @@ export default function YeshivaRabbisScriptProvider({
     // only runs once both are truthy) rather than an unrelated
     // hardcoded literal.
     setIsLoading(!postsData || !data);
-  }, [data, postsData, setIsLoading]);
+  }, [data, postsData, isLoading]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -164,7 +165,7 @@ export default function YeshivaRabbisScriptProvider({
         verticalSection.kill();
       }
     };
-  }, [!isLoading]);
+  }, [pageDataFetched, animationPlayed]);
 
   // Load Page
   useGSAP(() => {

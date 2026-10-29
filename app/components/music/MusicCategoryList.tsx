@@ -161,7 +161,7 @@ export default function MusicCategoryList(props: ChildProps) {
               </div>
             </SimpleBar>
           ) : (
-            <div className="music-cat-list border-b border-[#F4EDDD]">
+            <div className="music-cat-list border-b border-[#F4EDDD] flex flex-col">
               {catList?.map((item: any, index: number) => (
                 <button
                   key={item?.id}

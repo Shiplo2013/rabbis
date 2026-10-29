@@ -131,7 +131,7 @@ export default function SingleNewsScriptProvider({
     }
     setPost(data.post);
     setNavigationData(data.navigationData);
-  }, [data]);
+  }, [data, isLoading]);
 
   // Page Data Loade
   useEffect(() => {

@@ -187,7 +187,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
         })) || [],
       );
     setTempleActiveTab(id ? parseInt(id) : 0);
-  }, [data, templeTabData, setTempleTabData, setTempleActiveTab, id]);
+  }, [data, isLoading]);
 
   useEffect(() => {
     if (!visitTempleData?.acf) {
@@ -201,7 +201,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
     // listed as a dependency; re-running this effect only when
     // animationPlayed changes avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, visitTempleData]);
 
   useEffect(() => {
     if (!visitTempleData?.acf) {
@@ -302,7 +302,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [pathname, pageDataFetched]);
+  }, [pathname, pageDataFetched, animationPlayed]);
 
   // Load Page
   useGSAP(() => {

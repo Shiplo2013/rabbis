@@ -46,7 +46,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
       return;
     }
     setRabbisPageData(data);
-  }, [data]);
+  }, [data, isLoading]);
 
   // Page Data Loaded
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function PastRabbisScriptProvider({ data }: { data: any }) {
     // listed as a dependency; re-running this effect only when
     // animationPlayed changes avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, rabbisPageData]);
 
   useEffect(() => {
     if (!rabbisPageData?.pageData || !rabbisPageData?.posts) {

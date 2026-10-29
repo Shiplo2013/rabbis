@@ -92,7 +92,7 @@ export default function ConferenceScriptProvider({
       return;
     }
     setAlumniConferenceData(data);
-  }, [data]);
+  }, [data, isLoading]);
 
   useEffect(() => {
     if (!alumniConferenceData) {
@@ -108,7 +108,7 @@ export default function ConferenceScriptProvider({
     // than listed as a dependency; re-running this effect only when
     // animationPlayed changes avoids an avoidable extra render chain.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed]);
+  }, [animationPlayed, alumniConferenceData]);
 
   // Update Section Width on Data Change
   useEffect(() => {
@@ -212,7 +212,7 @@ export default function ConferenceScriptProvider({
       cleanupPageContentAnimation?.();
       animations.forEach((anim) => anim.kill());
     };
-  }, [pathname, pageDataFetched]);
+  }, [pageDataFetched, alumniConferenceData]);
 
   // Load Page
   useGSAP(() => {

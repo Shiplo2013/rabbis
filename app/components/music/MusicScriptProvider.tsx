@@ -43,7 +43,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
         holidayPosts: data.postsData,
       });
     }
-  }, [data, musicPageData, setMusicPageData]);
+  }, [data, musicPageData]);
 
   useEffect(() => {
     if (!musicPageData?.musicPage?.acf) {

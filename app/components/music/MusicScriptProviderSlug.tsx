@@ -43,7 +43,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
         holidayPosts: data.postsData,
       });
     }
-  }, [data, musicPageData, setMusicPageData]);
+  }, [data, isLoading]);
 
   useEffect(() => {
     if (!musicPageData?.musicPage?.acf) {
@@ -51,7 +51,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
     }
     setPageDataFetched(true);
     setIsLoading(false);
-  }, [musicPageData, setIsLoading]);
+  }, [musicPageData, animationPlayed]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] =

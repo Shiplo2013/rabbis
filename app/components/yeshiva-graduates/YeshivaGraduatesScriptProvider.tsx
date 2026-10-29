@@ -57,7 +57,7 @@ export default function YeshivaGraduatesScriptProvider({
     // presence (always false here, since this branch only runs once
     // data.acf is truthy) rather than an unrelated hardcoded literal.
     setIsLoading(!data?.acf);
-  }, [data, setIsLoading]);
+  }, [data, isLoading]);
 
   // // Adjust Section Widths based on window size
   useEffect(() => {
@@ -197,7 +197,7 @@ export default function YeshivaGraduatesScriptProvider({
         verticalSection.kill();
       }
     };
-  }, [pathname, pageDataFetched]);
+  }, [animationPlayed, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {

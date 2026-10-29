@@ -71,7 +71,7 @@ export default function KnessetScriptProviderSlug({
     }
     setPost(data.postsData);
     setAllPosts(data.allPostsData);
-  }, [data]);
+  }, [data, isLoading]);
 
   useEffect(() => {
     if (!post) {
