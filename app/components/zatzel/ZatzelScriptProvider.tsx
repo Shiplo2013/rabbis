@@ -148,7 +148,7 @@ export default function ZatzelScriptProvider({
       setIsLoading(false);
     }, 500);
     return () => clearTimeout(timeout);
-  }, [data, postData, setIsLoading]);
+  }, [data, postData, setIsLoading, setZatzelPosts]);
 
   // Page Section Animation
   useGSAP(() => {

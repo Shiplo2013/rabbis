@@ -82,7 +82,7 @@ export default function KnessetScriptProviderSlug({
       setPageDataFetched(true);
       setIsLoading(false);
     }
-  }, [animationPlayed, post]);
+  }, [animationPlayed, post, setIsLoading]);
 
   // Load Page
   useGSAP(() => {

@@ -1,5 +1,6 @@
 import { sendFormData } from "@/app/server/actions";
 import SubmitButton from "@/app/ui/SubmitButton";
+import { Turnstile } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { useActionState } from "react";
 
@@ -121,6 +122,9 @@ export default function ContactForm() {
             {state.invalid_fields_object["form-message"]}
           </p>
         )}
+      </div>
+      <div className="turnstile-container hidden">
+        <Turnstile siteKey="0x4AAAAAAFxLG8HhpCcQ335k" />
       </div>
       <div className="contact-row flex justify-between flex-col lg:flex-row gap-y-5">
         <div className="text lg:text-[18px] text-[14px] leading-[1em]text-center flex gap-x-2 items-center">

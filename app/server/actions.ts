@@ -8,18 +8,41 @@ export async function sendFormData(prevState: unknown, formData: FormData) {
       "https://api.chevronyeshiva.org/wp-json/contact-form-7/v1/contact-forms/2049/feedback",
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: formData,
       },
     );
 
     if (!response.ok) {
-      throw new Error("Failed to send form data.");
+      console.error("Contact form API returned an unsuccessful status.", {
+        status: response.status,
+        contentType: response.headers.get("content-type"),
+      });
+      return {
+        success: false,
+        error: `Contact form API returned HTTP ${response.status}.`,
+        message: "An unexpected error occurred. Please try again later.",
+        payload: formData,
+      };
     }
 
-    const result = await response.json();
+    const responseText = await response.text();
+    let result: Record<string, any>;
+
+    try {
+      result = JSON.parse(responseText);
+    } catch {
+      console.error("Contact form API returned a non-JSON response.", {
+        status: response.status,
+        contentType: response.headers.get("content-type"),
+        botChallenge: response.headers.get("sg-captcha"),
+      });
+      return {
+        success: false,
+        error: "Contact form API returned an invalid response.",
+        message: "An unexpected error occurred. Please try again later.",
+        payload: formData,
+      };
+    }
 
     if (result.invalid_fields && result.invalid_fields.length > 0) {
       result.invalid_fields_object = {};
@@ -30,7 +53,8 @@ export async function sendFormData(prevState: unknown, formData: FormData) {
 
     result.payload = formData;
     return result;
-  } catch (error: any) {
+  } catch (error) {
+    console.error("Contact form submission request failed.", error);
     return {
       success: false,
       error: "Failed to send form data.",
