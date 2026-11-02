@@ -115,7 +115,7 @@ export default function NewsScriptProvider({
         };
       }) || [];
     setPagePosts(posts);
-  }, [data, isLoading]);
+  }, [data, isLoading, postsData]);
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);

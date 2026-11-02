@@ -5,7 +5,7 @@ import { SafeUriDecoder } from "@/app/ui/SafeUriDecoder";
 import ThemeButton from "@/app/ui/ThemeButton";
 import parse from "html-react-parser";
 import Link from "next/dist/client/link";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import IntroBG from "../../assets/images/intro-bg-10.jpg";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../ui/plugins";
@@ -52,6 +52,7 @@ export default function KnessetScriptProviderSlug({
   };
   // Router Path
   const pathname = usePathname();
+  const router = useRouter();
   const params = useParams();
   const slug = params?.slug as string;
   const [post, setPost] = useState<KnessetPosts | null>(null);
@@ -81,11 +82,6 @@ export default function KnessetScriptProviderSlug({
       setPageDataFetched(true);
       setIsLoading(false);
     }
-    // post/allPosts have a single producer (the data effect above) and,
-    // once set, never revert, so they are read here via closure rather
-    // than listed as dependencies; re-running this effect only when
-    // animationPlayed changes avoids an avoidable extra render chain.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [animationPlayed, post]);
 
   // Load Page
@@ -232,6 +228,18 @@ export default function KnessetScriptProviderSlug({
     };
   }, [isAllAnimationComplete]);
 
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (window.location.pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center text-center">
@@ -273,6 +281,8 @@ export default function KnessetScriptProviderSlug({
               <div className="breadcumb text-[18px] leading-[1em] sm:text-[22px] sm:leading-[1.1em] text-[#000000] my-10 sm:mt-[5vh] sm:mb-[6vh] flex items-center gap-x-3">
                 <Link
                   href="/"
+                  onClick={handleLinkClick}
+                  aria-label="Link to home page"
                   className="home hover:text-[#D1A941] transition-colors duration-300"
                 >
                   בית
@@ -282,6 +292,8 @@ export default function KnessetScriptProviderSlug({
                 </span>
                 <Link
                   href="/the-knesset-of-customs"
+                  onClick={handleLinkClick}
+                  aria-label="Link to the knesset page"
                   className="knesset hover:text-[#D1A941] transition-colors duration-300"
                 >
                   מאמרים
@@ -308,6 +320,8 @@ export default function KnessetScriptProviderSlug({
                     >
                       <Link
                         href={`/the-knesset-of-customs/${item.slug}`}
+                        onClick={handleLinkClick}
+                        aria-label="Link to the knesset page"
                         className="text-[24px] sm:text-[30px] leading-[90%] sm:leading-[70%] text-[#D1A941] hover:text-[#000000] transition-colors duration-300"
                       >
                         {parse(item?.title?.rendered)}

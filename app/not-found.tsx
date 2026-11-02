@@ -1,13 +1,12 @@
 "use client";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAppState } from "./components/AppContext";
 import { gsap } from "./ui/plugins";
 
 export default function NotFound() {
   // Variable to track if the page data has been fetched
-  const pathname = usePathname();
   const router = useRouter();
   const { isLoading, setIsLoading, animationPlayed } = useAppState();
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -68,7 +67,7 @@ export default function NotFound() {
         }
       });
     }
-  }, [pathname, animationPlayed, setIsLoading]);
+  }, [animationPlayed, setIsLoading]);
 
   // Set Body Overflow Hidden
   useEffect(() => {
@@ -87,7 +86,7 @@ export default function NotFound() {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);

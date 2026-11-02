@@ -4,8 +4,10 @@ import parse from "html-react-parser";
 import { usePathname } from "next/dist/client/components/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "../../ui/plugins";
+import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -31,6 +33,8 @@ export default function HomeSection2(props: ChildProps) {
   const wrapper = useRef<HTMLElement>(null);
   // Route
   const pathname = usePathname();
+  const router = useRouter();
+  const { setIsLoading } = useAppState();
 
   useGSAP(() => {
     // Selectors
@@ -146,6 +150,18 @@ export default function HomeSection2(props: ChildProps) {
     return slug;
   };
 
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (window.location.pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     <section
       ref={wrapper}
@@ -196,6 +212,7 @@ export default function HomeSection2(props: ChildProps) {
         >
           <Link
             href={getRabbisURL(props.sectionData?.rabbis_link || "#") || "#"}
+            onClick={handleLinkClick}
             className="block"
             aria-label={props.sectionData?.title || "Link to the rabbis page"}
           >

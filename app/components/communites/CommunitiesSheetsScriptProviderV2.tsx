@@ -406,9 +406,9 @@ export default function CommunitiesSheetsScriptProviderV2({
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <h1 className="text-2xl font-bold">Community Sheets Not Found</h1>
           <p className="text-gray-600">
-            The requested rabbi post could not be found.
+            The requested community sheets could not be found.
           </p>
         </div>
       </div>

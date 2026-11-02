@@ -15,10 +15,10 @@ if (typeof window !== "undefined") {
 }
 
 export default function MusicScriptProvider({ data }: { data: any }) {
-  // Selectors
-  const [pageDataFetched, setPageDataFetched] = useState(false);
-  // error is a pure derivation of the data prop (true exactly when data is
-  // missing), so it is computed during render instead of mirrored into
+  // Page Refs
+  const main = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const wrapper = useRef<HTMLDivElement>(null);
   // state via an effect that "adjusts" it on every data change.
   const error = !data ? "No data provided." : null;
   const {
@@ -28,41 +28,6 @@ export default function MusicScriptProvider({ data }: { data: any }) {
     setAnimationPlayed,
     musicPageData,
     setMusicPageData,
-  } = useAppState();
-  // Router Path
-  const pathname = usePathname();
-
-  // Get Page Data From backend
-  useEffect(() => {
-    if (!data) {
-      return;
-    }
-    if (!musicPageData?.musicPage?.acf) {
-      setMusicPageData({
-        musicPage: data.pageData,
-        holidayPosts: data.postsData,
-      });
-    }
-  }, [data, musicPageData]);
-
-  useEffect(() => {
-    if (!musicPageData?.musicPage?.acf) {
-      return;
-    }
-    setPageDataFetched(true);
-    setIsLoading(false);
-  }, [musicPageData, setIsLoading]);
-
-  // Animation State
-  const [isAllAnimationComplete, setIsAllAnimationComplete] =
-    useState<boolean>(false);
-  const [updateProgress, setUpdateProgress] = useState<number>(0);
-  // Vertical Section
-  const [verticalSection, setVerticalSection] =
-    useState<gsap.core.Timeline | null>(null);
-
-  // Audio Player States
-  const {
     audioPopup,
     setAudioPopup,
     activeMusicItem,
@@ -72,15 +37,120 @@ export default function MusicScriptProvider({ data }: { data: any }) {
     activeMusicTab,
     setActiveMusicTab,
   } = useAppState();
+  // Router Path
+  const pathname = usePathname();
+  // Selectors
+  const pageDataFetched = !!musicPageData;
 
-  // Page Refs
-  const main = useRef<HTMLDivElement>(null);
-  const panel = useRef<HTMLDivElement>(null);
-  const wrapper = useRef<HTMLDivElement>(null);
+  // Get Page Data From backend
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+    setMusicPageData({
+      musicPage: data.pageData,
+      holidayPosts: data.postsData,
+    });
+
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [data, isLoading, setIsLoading, setMusicPageData]);
+
+  // Animation State
+  const [isAllAnimationComplete, setIsAllAnimationComplete] =
+    useState<boolean>(false);
+  // Vertical Section
+  const [verticalSection, setVerticalSection] =
+    useState<gsap.core.Timeline | null>(null);
+
+  // Page Section Animation
+  useGSAP(() => {
+    if (!panel.current && !wrapper.current) return;
+    const animations: gsap.core.Animation[] = [];
+    if (
+      typeof window !== "undefined" &&
+      panel.current &&
+      wrapper.current &&
+      window.innerWidth > 1024
+    ) {
+      // Overflow body
+      const progress = document.getElementById(
+        "progress",
+      ) as HTMLElement | null;
+      const waveLine = document.getElementById(
+        "wave-line",
+      ) as HTMLElement | null;
+      const musicCatList = main.current?.querySelector(".music-cat-wrapper");
+      waveLine?.classList.remove("hidden");
+      const scurbScale = 2;
+
+      // default Animations
+      if (musicCatList) {
+        gsap.set(musicCatList, {
+          xPercent: -100,
+          opacity: 0,
+        });
+      }
+
+      // Vertical Section
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: panel.current,
+          start: "top top",
+          end: "+=" + window.innerWidth * 6,
+          scrub: scurbScale,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (progress) {
+              gsap.to(progress, { width: `${100 * self.progress}%` });
+            }
+            if (waveLine) {
+              if (self.progress > 0.97) {
+                gsap.to(waveLine, {
+                  opacity: 0,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              } else {
+                gsap.to(waveLine, {
+                  opacity: 1,
+                  duration: 0.1,
+                  delay: 0,
+                });
+              }
+            }
+          },
+        },
+      });
+      timeline.to(wrapper.current, {
+        x: () =>
+          wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: panel.current,
+          start: panel.current?.offsetTop,
+          end: "+=" + (window.innerWidth * 6 - window.innerWidth * 2.5),
+          scrub: scurbScale,
+          invalidateOnRefresh: true,
+        },
+      });
+      setVerticalSection(timeline);
+      animations.push(timeline);
+    }
+
+    // Return
+    return () => {
+      animations.forEach((anim) => anim.kill());
+    };
+  }, [pageDataFetched, pathname]);
 
   // Load Page
   useGSAP(() => {
-    if (typeof window !== "undefined" && panel) {
+    if (typeof window !== "undefined" && panel.current && main.current) {
       document.fonts.ready.then(() => {
         // Selectors
         const page = document.getElementById(
@@ -116,7 +186,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
         }
         // Set localStorage variable
         const userVisit = localStorage.getItem("hasVisited");
-        if (userVisit === "true") {
+        if (userVisit === "true" && animationPlayed && pageDataFetched) {
           // Timeline
           const tl = gsap.timeline({
             onComplete: () => {
@@ -202,7 +272,7 @@ export default function MusicScriptProvider({ data }: { data: any }) {
         }
       });
     }
-  }, [pageDataFetched, animationPlayed]);
+  }, [pageDataFetched, pathname]);
 
   // Change logo
   useEffect(() => {
@@ -210,89 +280,6 @@ export default function MusicScriptProvider({ data }: { data: any }) {
     const logoImage = logo?.querySelector("img") as HTMLImageElement | null;
     logoImage?.classList.add("white-image");
   }, [pathname]);
-
-  // Page Section Animation
-  useGSAP(() => {
-    if (!panel.current && !wrapper.current) return;
-    if (
-      typeof window !== "undefined" &&
-      panel.current &&
-      wrapper.current &&
-      window.innerWidth > 1024
-    ) {
-      // Overflow body
-      const progress = document.getElementById(
-        "progress",
-      ) as HTMLElement | null;
-      const waveLine = document.getElementById(
-        "wave-line",
-      ) as HTMLElement | null;
-      const musicCatList = main.current?.querySelector(".music-cat-wrapper");
-      waveLine?.classList.remove("hidden");
-      const scurbScale = 2;
-
-      // default Animations
-      if (musicCatList) {
-        gsap.set(musicCatList, {
-          xPercent: -100,
-          opacity: 0,
-        });
-      }
-
-      // Vertical Section
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: panel.current,
-          start: "top top",
-          end: "+=" + window.innerWidth * 6,
-          scrub: scurbScale,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            if (progress) {
-              gsap.to(progress, { width: `${100 * self.progress}%` });
-            }
-            if (waveLine) {
-              if (self.progress > 0.97) {
-                gsap.to(waveLine, {
-                  opacity: 0,
-                  duration: 0.1,
-                  delay: 0,
-                });
-              } else {
-                gsap.to(waveLine, {
-                  opacity: 1,
-                  duration: 0.1,
-                  delay: 0,
-                });
-              }
-            }
-          },
-        },
-      });
-      timeline.to(wrapper.current, {
-        x: () =>
-          wrapper.current ? wrapper.current.offsetWidth - window.innerWidth : 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: panel.current,
-          start: panel.current?.offsetTop,
-          end: "+=" + (window.innerWidth * 6 - window.innerWidth * 2.5),
-          scrub: scurbScale,
-          invalidateOnRefresh: true,
-        },
-      });
-      setVerticalSection(timeline);
-    }
-
-    // Return
-    return () => {
-      if (verticalSection) {
-        verticalSection.kill();
-      }
-    };
-  }, [pageDataFetched, pathname]);
 
   // Set Page Content Animation
   useGSAP(() => {

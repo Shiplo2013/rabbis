@@ -139,7 +139,7 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
   // an effect that "adjusts" them on every data change.
   const pageDataFetched = !!visitTempleData;
   const [sectionWidth, setSectionWidth] = useState(200);
-  const [containerWidth, setContainerWidth] = useState(sectionWidth + 100);
+  const [containerWidth, setContainerWidth] = useState(300);
   const error = !data
     ? "No data available."
     : !data?.acf
@@ -152,7 +152,6 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
   // Animation State
   const {
     animationPlayed,
-    setAnimationPlayed,
     isLoading,
     setIsLoading,
     templeActiveTab,
@@ -176,61 +175,37 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
     if (!data) {
       return;
     }
-    if (!data?.acf) {
-      return;
-    }
     setVisitTempleData(data);
+    console.log("ID:", id);
     templeTabData.length === 0 &&
       setTempleTabData(
         data?.acf?.temple_tabs.map((tab: any) => ({
           tab_title: tab.tab_title,
         })) || [],
       );
+    // render pass to compute the gallery analysis / section width.
+    if (!data?.acf) {
+      return;
+    }
+    const galleryAnalysisByTab = buildGalleryAnalysisByTab(data.acf);
+    console.log(galleryAnalysisByTab);
+    setTabGalleryData(galleryAnalysisByTab);
+    let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10 + 5;
+    galleryAnalysisByTab[id ? parseInt(id) : 0]?.images.forEach((tab) => {
+      if (tab.orientation === "landscape") {
+        minSectionWidth += 32;
+      } else {
+        minSectionWidth += 22;
+      }
+    });
+    setSectionWidth(minSectionWidth);
+    setContainerWidth(minSectionWidth + 100);
     setTempleActiveTab(id ? parseInt(id) : 0);
-  }, [data, isLoading]);
-
-  useEffect(() => {
-    if (!visitTempleData?.acf) {
-      return;
-    }
-    if (animationPlayed) {
+    const timeout = setTimeout(() => {
       setIsLoading(false);
-    }
-    // visitTempleData has a single producer (the data effect above) and,
-    // once set, never reverts, so it is read here via closure rather than
-    // listed as a dependency; re-running this effect only when
-    // animationPlayed changes avoids an avoidable extra render chain.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed, visitTempleData]);
-
-  useEffect(() => {
-    if (!visitTempleData?.acf) {
-      return;
-    }
-    // Update Section Width on Data Change
-    const updateSectionWidth = () => {
-      const galleryAnalysisByTab = buildGalleryAnalysisByTab(
-        visitTempleData.acf,
-      );
-      setTabGalleryData(galleryAnalysisByTab);
-      let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10;
-      galleryAnalysisByTab[templeActiveTab]?.images.forEach((tab) => {
-        if (tab.orientation === "landscape") {
-          minSectionWidth += 32;
-        } else {
-          minSectionWidth += 22;
-        }
-      });
-      setSectionWidth(minSectionWidth);
-      setContainerWidth(minSectionWidth + 100);
-    };
-
-    updateSectionWidth();
-    window.addEventListener("resize", updateSectionWidth);
-    return () => {
-      window.removeEventListener("resize", updateSectionWidth);
-    };
-  }, [visitTempleData, templeActiveTab]);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [data, isLoading, setIsLoading]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -294,15 +269,14 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
           scrub: scurbScale,
         },
       });
-
+      setVerticalSection(timeline);
       animations.push(timeline);
     }
     // Return
-
     return () => {
       animations.forEach((animation) => animation.kill());
     };
-  }, [pathname, pageDataFetched, animationPlayed]);
+  }, [pageDataFetched, visitTempleData]);
 
   // Load Page
   useGSAP(() => {

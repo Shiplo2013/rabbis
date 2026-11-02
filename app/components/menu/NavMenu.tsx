@@ -1,19 +1,23 @@
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
+import { useAppState } from "../AppContext";
 import HeaderDonationButton from "./HeaderDonationButton";
 import HeaderRightMenuItem from "./HeaderRightMenuItem";
 
 export default function NavMenu({ data }: { data: any }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { setIsLoading, isLoading } = useAppState();
   // handle link click
   const handleLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
     if (window.location.pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
       window.scrollTo(0, 0);
-      window.location.href = e.currentTarget.href;
+      router.push(e.currentTarget.href);
     }
   };
 

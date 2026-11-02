@@ -444,7 +444,7 @@ export default function KnessetScriptProvider({
         verticalSection.kill();
       }
     };
-  }, [pageDataFetched]);
+  }, [pathname, pageDataFetched]);
 
   // Revalidate Timeline
   useEffect(() => {

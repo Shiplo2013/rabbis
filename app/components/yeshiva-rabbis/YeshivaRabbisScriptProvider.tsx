@@ -71,8 +71,11 @@ export default function YeshivaRabbisScriptProvider({
     // data/postsData's presence (always false here, since this branch
     // only runs once both are truthy) rather than an unrelated
     // hardcoded literal.
-    setIsLoading(!postsData || !data);
-  }, [data, postsData, isLoading]);
+    const timeout = setTimeout(() => {
+      setIsLoading(!postsData || !data);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [data, postsData, isLoading, setIsLoading]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -165,7 +168,7 @@ export default function YeshivaRabbisScriptProvider({
         verticalSection.kill();
       }
     };
-  }, [pageDataFetched, animationPlayed]);
+  }, [pageDataFetched, pathname]);
 
   // Load Page
   useGSAP(() => {
@@ -178,7 +181,6 @@ export default function YeshivaRabbisScriptProvider({
       if (page) {
         gsap.set(page, { opacity: 0 });
       }
-      const rabbisContent = main.current?.querySelectorAll(".rabbis-section");
       // Set localStorage variable
       const userVisit = localStorage.getItem("hasVisited");
       if (userVisit === "true" && animationPlayed && pageDataFetched) {
@@ -194,7 +196,7 @@ export default function YeshivaRabbisScriptProvider({
             opacity: 1,
             ease: "none",
             duration: 0.5,
-            delay: 0,
+            delay: 0.5,
           });
         }
         if (headerLeft) {
@@ -233,7 +235,10 @@ export default function YeshivaRabbisScriptProvider({
         }
       }
     }
-    setPageContentAnimation();
+    const timeout = setTimeout(() => {
+      setPageContentAnimation();
+    }, 500);
+    return () => clearTimeout(timeout);
   }, [pageDataFetched, animationPlayed]);
 
   // Change logo
@@ -390,9 +395,9 @@ export default function YeshivaRabbisScriptProvider({
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <h1 className="text-2xl font-bold">Yeshiva Rabbi Not Found</h1>
           <p className="text-gray-600">
-            The requested rabbi post could not be found.
+            The requested yeshiva rabbi post could not be found.
           </p>
         </div>
       </div>

@@ -54,8 +54,7 @@ export default function ConferenceScriptProvider({
   // missing), so it is computed during render instead of mirrored into
   // state via an effect that "adjusts" it on every data change.
   const error = !data ? "No data provided to Alumni Conference." : null;
-  const { isLoading, setIsLoading, animationPlayed, setAnimationPlayed } =
-    useAppState();
+  const { isLoading, setIsLoading, animationPlayed } = useAppState();
   // Router Path
   const pathname = usePathname();
 
@@ -70,6 +69,15 @@ export default function ConferenceScriptProvider({
   const panel = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
 
+  // Get Page Data From backend
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+    setAlumniConferenceData(data);
+  }, [data, isLoading]);
+
+  // Get Gallery Size
   const galleryImageSizes = useMemo<ImageOrientation[]>(() => {
     const gallery = Array.isArray(alumniConferenceData?.acf?.gallery)
       ? alumniConferenceData.acf.gallery
@@ -86,29 +94,15 @@ export default function ConferenceScriptProvider({
     );
   }, [alumniConferenceData]);
 
-  // Get Page Data From backend
-  useEffect(() => {
-    if (!data) {
-      return;
-    }
-    setAlumniConferenceData(data);
-  }, [data, isLoading]);
-
+  // Set Page Data Fetched When Animation Played
   useEffect(() => {
     if (!alumniConferenceData) {
       return;
     }
 
-    if (animationPlayed) {
-      setPageDataFetched(true);
-      setIsLoading(false);
-    }
-    // alumniConferenceData has a single producer (the data effect above)
-    // and, once set, never reverts, so it is read here via closure rather
-    // than listed as a dependency; re-running this effect only when
-    // animationPlayed changes avoids an avoidable extra render chain.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed, alumniConferenceData]);
+    setPageDataFetched(true);
+    setIsLoading(false);
+  }, [animationPlayed, alumniConferenceData, setIsLoading]);
 
   // Update Section Width on Data Change
   useEffect(() => {
@@ -160,9 +154,6 @@ export default function ConferenceScriptProvider({
       const waveLine = document.getElementById(
         "wave-line",
       ) as HTMLElement | null;
-      const arrowButton = document.getElementById(
-        "arrow-button",
-      ) as HTMLElement | null;
       waveLine?.classList.remove("hidden");
       const scurbScale = 2;
       const progressSetter = progress
@@ -205,6 +196,7 @@ export default function ConferenceScriptProvider({
           },
         });
       }
+      setVerticalSection(timeline);
       animations.push(timeline);
     }
     // Return
@@ -212,7 +204,7 @@ export default function ConferenceScriptProvider({
       cleanupPageContentAnimation?.();
       animations.forEach((anim) => anim.kill());
     };
-  }, [pageDataFetched, alumniConferenceData]);
+  }, [pageDataFetched, pathname]);
 
   // Load Page
   useGSAP(() => {
@@ -368,7 +360,7 @@ export default function ConferenceScriptProvider({
     return () => {
       animations.forEach((anim) => anim.kill());
     };
-  }, [pageDataFetched, animationPlayed]);
+  }, [pageDataFetched, pathname]);
 
   // Change logo
   useEffect(() => {
@@ -551,9 +543,9 @@ export default function ConferenceScriptProvider({
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <h1 className="text-2xl font-bold">Conference Not Found</h1>
           <p className="text-gray-600">
-            The requested rabbi post could not be found.
+            The requested conference could not be found.
           </p>
         </div>
       </div>

@@ -95,6 +95,7 @@ export default function PostNavigation(props: ChildProps) {
       {navigationData?.nextPost && (
         <Link
           href={navigationData?.nextPost?.link}
+          onClick={handleLinkClick}
           className="next-post relative group ml-auto"
         >
           {nextImageSrc ? (
@@ -130,6 +131,7 @@ export default function PostNavigation(props: ChildProps) {
       {navigationData?.prevPost && (
         <Link
           href={navigationData?.prevPost?.link}
+          onClick={handleLinkClick}
           className="prev-post relative group mr-auto"
         >
           {prevImageSrc ? (
