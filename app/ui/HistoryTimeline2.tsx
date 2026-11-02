@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/dist/client/link";
+import { useRouter } from "next/navigation";
 import { Ref } from "react";
+import { useAppState } from "../components/AppContext";
 
 interface ChildProps {
   wrapperRef: Ref<HTMLDivElement>;
@@ -8,6 +10,20 @@ interface ChildProps {
   timelineData: { id: number; title: string; link: string }[];
 }
 export default function HistoryTimeline2(props: ChildProps) {
+  const router = useRouter();
+  const { setIsLoading } = useAppState();
+  // Link click handler for navigation
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    const target = e.currentTarget as HTMLAnchorElement;
+    if (window.location.pathname !== target.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(target.href);
+    }
+  };
   return (
     <div
       ref={props.wrapperRef}
@@ -20,6 +36,7 @@ export default function HistoryTimeline2(props: ChildProps) {
             return (
               <Link
                 href={item.link}
+                onClick={handleLinkClick}
                 className={`flex flex-col gap-y-5 items-center relative w-36 pb-10 pt-2 cursor-pointer timeline-step intro-${index + 1}`}
                 key={item.id}
                 data-id={item.id}

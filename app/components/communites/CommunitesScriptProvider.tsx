@@ -161,7 +161,7 @@ export default function CommunitiesScriptProvider({
         verticalSection.kill();
       }
     };
-  }, [pageDataFetched]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useEffect(() => {

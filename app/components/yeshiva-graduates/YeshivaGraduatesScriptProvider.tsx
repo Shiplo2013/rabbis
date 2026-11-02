@@ -56,8 +56,11 @@ export default function YeshivaGraduatesScriptProvider({
     // isLoading is shared context state; its value derives from data's
     // presence (always false here, since this branch only runs once
     // data.acf is truthy) rather than an unrelated hardcoded literal.
-    setIsLoading(!data?.acf);
-  }, [data, isLoading]);
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [data, isLoading, setIsLoading]);
 
   // // Adjust Section Widths based on window size
   useEffect(() => {
@@ -197,7 +200,7 @@ export default function YeshivaGraduatesScriptProvider({
         verticalSection.kill();
       }
     };
-  }, [animationPlayed, pageDataFetched]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {

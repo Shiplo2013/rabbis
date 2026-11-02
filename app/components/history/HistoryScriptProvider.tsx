@@ -211,8 +211,11 @@ export default function HistoryScriptProvider({
     // isLoading is shared context state; its value derives from data's
     // presence (always false here, since this branch only runs once data
     // is truthy) rather than an unrelated hardcoded literal.
-    setIsLoading(!data);
-  }, [data, setIsLoading]);
+    const timeout = setTimeout(() => {
+      setIsLoading(!data);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [data, isLoading, setIsLoading]);
 
   // Page Selectors
   const main = useRef<HTMLDivElement>(null);

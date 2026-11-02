@@ -194,7 +194,7 @@ export default function SingleNewsScriptProvider({
         }
       };
     }
-  }, [isAllAnimationComplete]);
+  }, [pathname, pageDataFetched]);
 
   // Load Page
   useGSAP(() => {

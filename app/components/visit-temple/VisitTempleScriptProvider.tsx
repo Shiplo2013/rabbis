@@ -152,7 +152,6 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
     templeActiveTab,
     setTempleActiveTab,
   } = useAppState();
-  const [activeTab, setActiveTab] = useState(0);
   const [tabGalleryData, setTabGalleryData] = useState<GalleryAnalysisByTab[]>(
     [],
   );
@@ -174,6 +173,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
       return;
     }
     setVisitTempleData(data);
+    setTempleActiveTab(0);
     templeTabData.length === 0 &&
       setTempleTabData(
         data?.acf?.temple_tabs.map((tab: any) => ({
@@ -189,8 +189,8 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
     }
     const galleryAnalysisByTab = buildGalleryAnalysisByTab(data.acf);
     setTabGalleryData(galleryAnalysisByTab);
-    let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10;
-    galleryAnalysisByTab[activeTab]?.images.forEach((tab) => {
+    let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10 + 5;
+    galleryAnalysisByTab[0]?.images.forEach((tab) => {
       if (tab.orientation === "landscape") {
         minSectionWidth += 32;
       } else {
@@ -198,12 +198,16 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
       }
     });
     setSectionWidth(minSectionWidth);
+    console.log("minSectionWidth:", minSectionWidth);
     setContainerWidth(minSectionWidth + 100);
     // isLoading is shared context state; its value derives from data's
     // presence (always false here, since this branch only runs once data
     // is truthy) rather than an unrelated hardcoded literal.
-    setIsLoading(!data);
-  }, [data, isLoading]);
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [data, isLoading, setIsLoading]);
 
   // Page Section Animation
   useGSAP(() => {
@@ -414,6 +418,7 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
               "-=2.5",
             );
           }
+          setVerticalSection(tl);
           animations.push(tl);
         }
       });

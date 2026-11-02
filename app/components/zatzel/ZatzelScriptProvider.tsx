@@ -61,7 +61,7 @@ export default function ZatzelScriptProvider({
     setZatzelSearchedData,
     zatzelSelectedDate,
   } = useAppState();
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  const pageDataFetched = !!zatzelPageData;
   const [containerWidth, setContainerWidth] = useState<number>(200);
   const [sectionWidth, setSectionWidth] = useState<number>(100);
   // error is a pure derivation of the data prop (true exactly when data is
@@ -143,20 +143,12 @@ export default function ZatzelScriptProvider({
     setAllPosts({
       sections: postData.length ? postData : defaultZatzelPageData.sections,
     });
-  }, [data, postData, isLoading]);
 
-  // Set Page Data Fetched
-  useEffect(() => {
-    if (animationPlayed) {
-      setPageDataFetched(true);
+    const timeout = setTimeout(() => {
       setIsLoading(false);
-    }
-    // zatzelPageData/zatzelPosts have a single producer (the data effect
-    // above) and, once set, never revert, so this effect is not guarded on
-    // them; re-running it only when animationPlayed changes avoids an
-    // avoidable extra render chain.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed, zatzelPageData]);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [data, postData, setIsLoading]);
 
   // Page Section Animation
   useGSAP(() => {

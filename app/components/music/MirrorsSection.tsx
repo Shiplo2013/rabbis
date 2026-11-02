@@ -179,7 +179,7 @@ export default function MirrorsSection(props: ChildProps) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);

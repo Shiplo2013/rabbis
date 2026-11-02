@@ -129,7 +129,7 @@ export default function TempleTabs(props: ChildProps) {
         ) as HTMLElement | null;
         if (image) {
           // Banner Background
-          //gsap.set(image, { scale: 1, x: "5vw" });
+          //gsap.set(image, { x: "5vw" });
           gsap.to(image, {
             x: "-10vw",
             ease: "none",
@@ -176,7 +176,7 @@ export default function TempleTabs(props: ChildProps) {
           <div className="tab-head-wrapper flex flex-col gap-y-5 relative z-30">
             {tabsData.map((tab: any, index: number) => (
               <Link
-                href={`/visit-temple/${index}`}
+                href={index === 0 ? `/visit-temple` : `/visit-temple/${index}`}
                 key={tab.tab_title}
                 onClick={handleLinkClick}
                 className={`group flex text-[24px] leading-[1.2em] relative cursor-pointer ${templeActiveTab === index ? "active" : ""}`}

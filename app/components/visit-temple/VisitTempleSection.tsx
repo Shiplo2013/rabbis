@@ -1,4 +1,3 @@
-import { useAppState } from "../AppContext";
 import TempleTabs from "./TempleTabs";
 import VideoSection from "./VideoSection";
 
@@ -16,7 +15,6 @@ interface ChildProps {
 }
 
 export default function VisitTempleSection(props: ChildProps) {
-  const { templeActiveTab, setTempleActiveTab } = useAppState();
   // Video Section Data
   const sectionData = props.sectionData as SectionData;
   const videoSectionData = sectionData.videoSection || {};

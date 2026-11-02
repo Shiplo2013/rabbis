@@ -2,6 +2,7 @@
 import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSyncExternalStore } from "react";
 import ViewIcon2 from "../assets/icons/ViewIcon2";
 import Frame from "../assets/images/pictures-frame.png";
@@ -35,7 +36,21 @@ export default function SingleCyclePicture(props: ChildProps) {
   // Section Data
   const SingleData = props.data || {};
 
-  const { setActiveCyclePopup, setCyclePopupIndex } = useAppState();
+  const { setActiveCyclePopup, setCyclePopupIndex, setIsLoading } =
+    useAppState();
+  const router = useRouter();
+
+  // Link click handler for navigation
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (window.location.pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
 
   return (
     <div
@@ -87,6 +102,7 @@ export default function SingleCyclePicture(props: ChildProps) {
                 </p>
                 <Link
                   href={"/contact"}
+                  onClick={handleLinkClick}
                   className="border-b border-[#D1A941] hover:border-[#ffffff] hover:text-white transition-colors duration-300"
                 >
                   לחץ כאן

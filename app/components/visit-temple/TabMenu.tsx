@@ -1,8 +1,10 @@
 import { gsap, ScrollTrigger, useGSAP } from "@/app/ui/plugins";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import HeadBG from "../../assets/images/head-bg.jpg";
+import { useAppState } from "../AppContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -25,6 +27,8 @@ interface ChildProps {
 export default function TabMenu(props: ChildProps) {
   const tabsData = props.data as TabsData[];
   const activeTab = props.activeTab ?? 0;
+  const router = useRouter();
+  const { setIsLoading, templeActiveTab, setTempleActiveTab } = useAppState();
 
   // Ref for the tab menu container
   const tabMenuRef = useRef<HTMLDivElement>(null);
@@ -68,6 +72,18 @@ export default function TabMenu(props: ChildProps) {
     };
   }, [activeTab]);
 
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (window.location.pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
+  };
+
   return (
     <div
       ref={tabMenuRef}
@@ -89,14 +105,18 @@ export default function TabMenu(props: ChildProps) {
       <div className="tab-head-wrapper flex flex-col gap-y-5 relative z-30">
         {tabsData.map((tab: any, index: number) => (
           <Link
-            href={`/visit-temple/${index}`}
+            href={index === 0 ? `/visit-temple` : `/visit-temple/${index}`}
             key={tab.tab_title}
-            className={`group flex text-[24px] leading-[1.2em] relative cursor-pointer ${activeTab === index ? "active" : ""}`}
+            onClick={(e) => {
+              handleLinkClick(e);
+              setTempleActiveTab(index);
+            }}
+            className={`group flex text-[24px] leading-[1.2em] relative cursor-pointer ${templeActiveTab === index ? "active" : ""}`}
           >
             <span className="relative">
               {tab.tab_title}
               <div
-                className={`w-full h-0.5  bg-[#FBF4E6] ${activeTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-opacity duration-300`}
+                className={`w-full h-0.5  bg-[#FBF4E6] ${templeActiveTab === index ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-opacity duration-300`}
               ></div>
             </span>
           </Link>

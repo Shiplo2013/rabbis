@@ -231,7 +231,8 @@ export default function CommunitiesSheetsScriptProvider({
     Number(sheetPostsData?.length || 0) / postsPerLoad,
   );
   const verticalPosts = sheetPostsData?.slice(0, 4) || [];
-  const normalPosts = sheetPostsData?.slice(4, postsPerLoad * postLoadCount) || [];
+  const normalPosts =
+    sheetPostsData?.slice(4, postsPerLoad * postLoadCount) || [];
   const { ref: readMoreRef, inView: isReadMoreInView } = useInView({
     threshold: 0,
     triggerOnce: false,
@@ -718,9 +719,9 @@ export default function CommunitiesSheetsScriptProvider({
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <h1 className="text-2xl font-bold">Rabbi Not Found</h1>
+          <h1 className="text-2xl font-bold">Community Sheets Not Found</h1>
           <p className="text-gray-600">
-            The requested rabbi post could not be found.
+            The requested community sheets could not be found.
           </p>
         </div>
       </div>

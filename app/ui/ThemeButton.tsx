@@ -1,6 +1,6 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAppState } from "../components/AppContext";
 
 interface ChildProps {
@@ -19,16 +19,15 @@ interface ChildProps {
 
 export default function ThemeButton(props: ChildProps) {
   // states
-  const { isLoading, setIsLoading } = useAppState();
+  const { setIsLoading } = useAppState();
   const router = useRouter();
-  const pathname = usePathname();
 
   // OnClick Handler for Link Navigation
   const handleLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (pathname !== e.currentTarget.pathname) {
+    if (window.location.pathname !== e.currentTarget.pathname) {
       setIsLoading(true);
       window.scrollTo(0, 0);
       router.push(e.currentTarget.href);

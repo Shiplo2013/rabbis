@@ -1,19 +1,22 @@
 import donationIcon from "@/app/assets/images/donation-icon.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React from "react";
+import { useAppState } from "../AppContext";
 
 export default function HeaderDonationButton({ data }: { data: any }) {
-  const pathname = usePathname();
+  const router = useRouter();
+  const { setIsLoading } = useAppState();
   // handle link click
   const handleLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     e.preventDefault();
     if (window.location.pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
       window.scrollTo(0, 0);
-      window.location.href = e.currentTarget.href;
+      router.push(e.currentTarget.href);
     }
   };
   return (

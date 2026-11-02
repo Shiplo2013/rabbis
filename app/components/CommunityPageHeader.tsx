@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import HambergerIcon from "../assets/icons/HambergerIcon";
 import logo from "../assets/images/logo.png";
 import { gsap, ScrollTrigger, useGSAP } from "../ui/plugins";
@@ -15,52 +16,20 @@ export default function CommunityPageHeader() {
     animationPlayed,
     activeHamburgerMenu,
     setActiveHamburgerMenu,
+    setIsLoading,
   } = useAppState();
-  const SectionData = {
-    leftMenu: [
-      {
-        title: `כנסת הבוגרים`,
-        link: `/`,
-        id: 1,
-      },
-      {
-        title: `תמונות מחזור`,
-        link: `/`,
-        id: 2,
-      },
-      {
-        title: `בוגרים זצ״ל`,
-        link: `/`,
-        id: 3,
-      },
-      {
-        title: `ראיונות`,
-        link: `/`,
-        id: 4,
-      },
-    ],
-    rightMenu: [
-      {
-        title: `כל הקהילות`,
-        link: `/`,
-        id: 5,
-      },
-      {
-        title: `עד שבחברון`,
-        link: `/`,
-        id: 6,
-      },
-      {
-        title: `ביטאון`,
-        link: `/`,
-        id: 7,
-      },
-      {
-        title: `כנסת המנהגים`,
-        link: `/`,
-        id: 8,
-      },
-    ],
+  const router = useRouter();
+
+  // Handle Link Click
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    if (window.location.pathname !== e.currentTarget.pathname) {
+      setIsLoading(true);
+      window.scrollTo(0, 0);
+      router.push(e.currentTarget.href);
+    }
   };
 
   return (
@@ -85,6 +54,7 @@ export default function CommunityPageHeader() {
                       key={item.link}
                       href={item.link}
                       className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
+                      onClick={handleLinkClick}
                     >
                       {item.title}
                     </Link>
@@ -94,7 +64,7 @@ export default function CommunityPageHeader() {
           </div>
           <div className="header-center">
             <div className="small-logo w-18 h-13">
-              <Link href={"/"}>
+              <Link onClick={handleLinkClick} href={"/"}>
                 <Image
                   className="w-auto h-auto white-image"
                   src={logo.src}
@@ -116,6 +86,7 @@ export default function CommunityPageHeader() {
                       key={item.link}
                       href={item.link}
                       className="menu-item text-[#ffffff] text-[26px] hover:text-[#C3A13F] transition-colors duration-300"
+                      onClick={handleLinkClick}
                     >
                       {item.title}
                     </Link>
