@@ -180,9 +180,6 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
           tab_title: tab.tab_title,
         })) || [],
       );
-    // Merged from the sibling effect that used to react to visitTempleData
-    // changing; data.acf is already available here (visitTempleData is
-    // just being set to data above), so there is no need for a second
     // render pass to compute the gallery analysis / section width.
     if (!data?.acf) {
       return;
@@ -198,16 +195,20 @@ export default function VisitTempleScriptProvider({ data }: { data: any }) {
       }
     });
     setSectionWidth(minSectionWidth);
-    console.log("minSectionWidth:", minSectionWidth);
     setContainerWidth(minSectionWidth + 100);
     // isLoading is shared context state; its value derives from data's
-    // presence (always false here, since this branch only runs once data
-    // is truthy) rather than an unrelated hardcoded literal.
     const timeout = setTimeout(() => {
       setIsLoading(false);
     }, 500);
     return () => clearTimeout(timeout);
-  }, [data, isLoading, setIsLoading]);
+  }, [
+    data,
+    isLoading,
+    setIsLoading,
+    setTempleActiveTab,
+    templeTabData.length,
+    setTempleTabData,
+  ]);
 
   // Page Section Animation
   useGSAP(() => {

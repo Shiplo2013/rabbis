@@ -481,7 +481,7 @@ export default function PastRabbisScriptProvider2({ data }: { data: any }) {
       setRabbisPostsData(rabbisPageData?.posts);
       window.scrollTo({ top: window.innerWidth * 1.8, behavior: "smooth" });
     }
-  }, [pastRabbisSearchQuery]);
+  }, [pastRabbisSearchQuery, rabbisPageData]);
 
   if (error) {
     return (

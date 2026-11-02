@@ -176,7 +176,6 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
       return;
     }
     setVisitTempleData(data);
-    console.log("ID:", id);
     templeTabData.length === 0 &&
       setTempleTabData(
         data?.acf?.temple_tabs.map((tab: any) => ({
@@ -188,7 +187,6 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
       return;
     }
     const galleryAnalysisByTab = buildGalleryAnalysisByTab(data.acf);
-    console.log(galleryAnalysisByTab);
     setTabGalleryData(galleryAnalysisByTab);
     let minSectionWidth = 25.6 + 32 + 308 / window.innerWidth + 17 + 10 + 5;
     galleryAnalysisByTab[id ? parseInt(id) : 0]?.images.forEach((tab) => {
@@ -205,7 +203,15 @@ export default function VisitTempleScriptProviderID({ data }: { data: any }) {
       setIsLoading(false);
     }, 500);
     return () => clearTimeout(timeout);
-  }, [data, isLoading, setIsLoading]);
+  }, [
+    data,
+    isLoading,
+    setIsLoading,
+    id,
+    templeTabData.length,
+    setTempleTabData,
+    setTempleActiveTab,
+  ]);
 
   // Page Section Animation
   useGSAP(() => {

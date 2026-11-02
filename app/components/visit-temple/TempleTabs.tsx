@@ -131,7 +131,7 @@ export default function TempleTabs(props: ChildProps) {
           // Banner Background
           //gsap.set(image, { x: "5vw" });
           gsap.to(image, {
-            x: "-10vw",
+            x: "-8vw",
             ease: "none",
             scrollTrigger: {
               trigger: image,
