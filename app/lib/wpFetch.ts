@@ -1,6 +1,6 @@
 export async function wpFetch(url: string, options?: RequestInit) {
   const nextOptions = options ?? {};
-  const cacheOptions = nextOptions.cache ?? "force-cache";
+  const cacheOptions = nextOptions.cache ?? "no-store";
   const nextConfig = nextOptions.next as RequestInit["next"] | undefined;
   const existingTags = Array.isArray(nextConfig?.tags) ? nextConfig.tags : [];
   const mergedTags = [
