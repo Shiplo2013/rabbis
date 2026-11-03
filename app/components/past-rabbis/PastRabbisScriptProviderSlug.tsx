@@ -151,7 +151,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     setCurrentRabbisPost,
     setAllRabbisPosts,
   } = useAppState();
-  const [pageDataFetched, setPageDataFetched] = useState(false);
+  const pageDataFetched = !!post;
 
   // Animation State
   const [isAllAnimationComplete, setIsAllAnimationComplete] = useState(false);
@@ -170,23 +170,12 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
     if (data.allPostsData && data.allPostsData.length > 0) {
       setAllRabbisPosts(data.allPostsData);
     }
-  }, [data, setCurrentRabbisPost, setAllRabbisPosts]);
 
-  // Page Data Loade
-  useEffect(() => {
-    if (!post) {
-      return;
-    }
-    if (animationPlayed) {
-      setPageDataFetched(true);
+    const timeout = setTimeout(() => {
       setIsLoading(false);
-    }
-    // post/allPosts have a single producer (the data effect above) and,
-    // once set, never revert, so they are read here via closure rather
-    // than listed as dependencies; re-running this effect only when
-    // animationPlayed changes avoids an avoidable extra render chain.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animationPlayed, post]);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [data, setCurrentRabbisPost, setAllRabbisPosts]);
 
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);
