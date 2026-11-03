@@ -175,7 +175,7 @@ export default function PastRabbisScriptProviderSlug({ data }: { data: any }) {
       setIsLoading(false);
     }, 500);
     return () => clearTimeout(timeout);
-  }, [data, setCurrentRabbisPost, setAllRabbisPosts]);
+  }, [data, setCurrentRabbisPost, setAllRabbisPosts, setIsLoading]);
 
   // Popup State
   const [activeCardPopup, setActiveCardPopup] = useState(false);
