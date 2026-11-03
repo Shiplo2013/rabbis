@@ -4,14 +4,9 @@ import { notFound } from "next/navigation";
 import HomeScriptProvider from "./components/home/HomeScriptProvider";
 import { parseJsonResponseWithBackup } from "./lib/parseJsonResponseWithBackup";
 
-export const revalidate = 0;
-
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?slug=home&_fields=title,content,yoast_head_json`,
-    {
-      next: { revalidate: 0 },
-    },
   );
   let pageData = [
     {
@@ -55,9 +50,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function page() {
   const pageRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/pages?acf_format=standard&slug=home&_fields=id,acf,yoast_head_json`,
-    {
-      next: { revalidate: 0 },
-    },
   );
 
   let pageData = [
@@ -125,9 +117,6 @@ export default async function page() {
 
   const postsRes = await wpFetch(
     `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/communities?${params.toString()}&_fields=id,title,slug,acf.subtitle,acf.informations.established`,
-    {
-      next: { revalidate: 0 },
-    },
   );
 
   let postsData = [
