@@ -106,6 +106,7 @@ export default async function page() {
     "home-page",
   );
   pageData = Array.isArray(parsedData) ? parsedData : [parsedData];
+  console.log("[home-debug]", new Date().toISOString(), JSON.stringify(pageData[0]?.acf).slice(0, 500));
 
   const postsIds = pageData[0]?.acf?.home_section_1?.community_posts;
   const params = new URLSearchParams({
